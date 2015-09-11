@@ -228,6 +228,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				if (null == timeslots || 0 == timeslots.size()) {
 					toast(R.string.toast_no_timeslot);
 					// TODO 弹出选择框
+					
 					return;
 				}
 				break;
