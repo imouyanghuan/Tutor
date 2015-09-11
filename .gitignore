@@ -41,3 +41,10 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# 不需要提交的文件夹
+.svn/
+*.class
+*.apk
+bin/
+gen/
