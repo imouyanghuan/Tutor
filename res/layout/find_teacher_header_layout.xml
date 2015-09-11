@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/fragment_find_teacher_rg"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/default_bg_color"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="@dimen/dp_15" >
+
+    <RadioButton
+        android:id="@id/fragment_find_teacher_rb1"
+        style="@style/find_teacher_tab"
+        android:background="@drawable/find_teacher_tab_left"
+        android:checked="true"
+        android:text="@string/btn_fragment_find_teacher_rating" />
+
+    <RadioButton
+        android:id="@id/fragment_find_teacher_rb2"
+        style="@style/find_teacher_tab"
+        android:background="@drawable/find_teacher_tab_right"
+        android:text="@string/btn_fragment_find_teacher_popularity" />
+
+</RadioGroup>

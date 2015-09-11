@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/default_bg_color"
+    android:orientation="vertical" >
+
+    <include layout="@layout/title_bar" />
+
+    <FrameLayout
+        android:id="@id/ac_main_content_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:orientation="vertical" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_height"
+            android:background="@color/black_line" />
+
+        <RadioGroup
+            android:id="@id/ac_main_rg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_55"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@id/ac_main_rb1"
+                style="@style/main_tab"
+                android:checked="true"
+                android:drawableTop="@drawable/tab_search_selector"
+                android:text="@string/findteacher" />
+
+            <RadioButton
+                android:id="@id/ac_main_rb2"
+                style="@style/main_tab"
+                android:drawableTop="@drawable/tab_oe_selector"
+                android:text="@string/overseas_education" />
+
+            <RadioButton
+                android:id="@id/ac_main_rb3"
+                style="@style/main_tab"
+                android:drawableTop="@drawable/tab_my_ts_selector"
+                android:text="@string/myteachers" />
+
+            <RadioButton
+                android:id="@id/ac_main_rb4"
+                style="@style/main_tab"
+                android:drawableTop="@drawable/tab_mp_selector"
+                android:text="@string/my" />
+        </RadioGroup>
+    </LinearLayout>
+
+</LinearLayout>

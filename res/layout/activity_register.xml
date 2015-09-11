@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/default_bg_color"
+    android:orientation="vertical" >
+
+    <include layout="@layout/title_bar" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_bar"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_50" >
+
+        <!-- 郵箱 -->
+
+        <EditText
+            android:id="@id/ac_register_et_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:background="@drawable/editview_bg"
+            android:ems="20"
+            android:hint="@string/hint_email"
+            android:inputType="textEmailAddress"
+            android:maxLength="30" >
+
+            <requestFocus />
+        </EditText>
+        <!-- 密碼 -->
+
+        <EditText
+            android:id="@id/ac_register_et_pswd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@drawable/editview_bg"
+            android:ems="20"
+            android:hint="@string/hint_password"
+            android:inputType="textPassword"
+            android:maxLength="20" />
+
+        <!-- 重複密碼 -->
+
+        <EditText
+            android:id="@id/ac_register_et_repeatpswd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:background="@drawable/editview_bg"
+            android:ems="20"
+            android:hint="@string/hint_password"
+            android:inputType="textPassword"
+            android:maxLength="20" />
+
+        <CheckBox
+            android:id="@id/ac_register_cb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_20"
+            android:checked="true"
+            android:text="@string/register_cbtxt"
+            android:textSize="@dimen/sp_12" />
+
+        <Button
+            android:id="@id/ac_register_btn_register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_20"
+            android:background="@drawable/choice_role_tutor_btn_bg"
+            android:gravity="center"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@id/ac_register_tv_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/dp_10"
+        android:gravity="center"
+        android:textSize="@dimen/sp_16" />
+
+</RelativeLayout>

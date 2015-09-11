@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="default_bg_color">#ffffff</color>
+    <color name="welcome_txt_color">#f6aa00</color>
+    <color name="choicerole_txt_color">#054f7a</color>
+    <color name="title_bar_bg_color">#0a94e3</color>
+    <color name="btn_normal">#0a94e3</color>
+    <color name="btn_press">#0881c7</color>
+    <color name="black">#000000</color>
+    <color name="black1">#626262</color>
+    <color name="red">#ff0000</color>
+    <color name="black_line">#c9ced6</color>
+    <color name="transparent">#00000000</color>
+    <color name="gray">#b7bbc2</color>
+    <color name="tab_txt_color">#b7bbc2</color>
+    <color name="tab_txt_color_checked">#39a8e7</color>
+    <color name="menu_bg">#1a2830</color>
+    <color name="menu_txt_color">#b7bbc2</color>
+    <color name="menu_bg_press">#233b4a</color>
+
+</resources>

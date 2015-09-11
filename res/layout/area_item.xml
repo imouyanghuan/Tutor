@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/dp_3" >
+
+    <TextView
+        android:id="@id/area_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_18" />
+
+    <com.tutor.ui.view.CustomGridView
+        android:id="@id/area_item_gv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_3"
+        android:cacheColorHint="@color/transparent"
+        android:listSelector="@color/transparent"
+        android:numColumns="2" />
+
+</LinearLayout>

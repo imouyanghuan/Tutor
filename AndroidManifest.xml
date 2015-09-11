@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tutor"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="23" />
+    <!-- 访问网络和读取sdcard的权限 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:name="com.tutor.TutorApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.tutor.ui.activity.WelcomeActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- 選擇身份 -->
+        <activity
+            android:name="com.tutor.ui.activity.ChoiceRoleActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 教師主頁 -->
+        <activity
+            android:name="com.tutor.ui.activity.TeacherMainActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 學生主頁 -->
+        <activity
+            android:name="com.tutor.ui.activity.StudentMainActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 註冊 -->
+        <activity
+            android:name="com.tutor.ui.activity.RegisterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
+        </activity>
+        <!-- 登錄 -->
+        <activity
+            android:name="com.tutor.ui.activity.LoginActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
+        </activity>
+        <!-- 協議界面 -->
+        <activity
+            android:name="com.tutor.ui.activity.TeamConditionsActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 完善資料 -->
+        <activity
+            android:name="com.tutor.ui.activity.FillPersonalInfoActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
+        </activity>
+        <!-- 消息 -->
+        <activity
+            android:name="com.tutor.ui.activity.NotificationActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 收藏夾 -->
+        <activity
+            android:name="com.tutor.ui.activity.BookmarkActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+
+        <!-- IM服务 -->
+        <service android:name="com.tutor.service.IMService" >
+        </service>
+        <!-- facebook -->
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationName"
+            android:value="@string/app_name" />
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider508961679269484"
+            android:exported="true" />
+
+        <receiver
+            android:name="com.facebook.receive.MyFacebookBroadcastReceiver"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.facebook.platform.AppCallResultBroadcast" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
