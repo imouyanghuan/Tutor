@@ -21,8 +21,8 @@ import com.tutor.TutorApplication;
 import com.tutor.model.Account;
 import com.tutor.model.CheckExistResult;
 import com.tutor.model.LoginResponseResult;
-import com.tutor.model.RegisterLoginModel;
 import com.tutor.model.RegisterInfoResult;
+import com.tutor.model.RegisterLoginModel;
 import com.tutor.params.Constants;
 import com.tutor.service.UserService;
 import com.tutor.ui.view.TitleBar;
@@ -201,7 +201,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 					account.set_id(UUIDUtils.getID(6));
 					account.setMemberId(result.getResult().getMemberId());
 					account.setStatus(0);
-					account.setCreatedTime("");
+					account.setCreatedTime(null);
 					account.setRole(role);
 					account.setEmail(model.getEmail());
 					account.setPswd(model.getPassword());

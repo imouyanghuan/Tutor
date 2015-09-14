@@ -18,7 +18,7 @@ public class TeacherProfile implements Serializable {
 	// 辅导经验年数
 	private int Exprience;
 	// 综合评分 decimal number
-	private float DecRatingGrade;
+	private double RatingGrade;
 	// 收藏次数
 	private int BookmarkedCount;
 	// 学生数
@@ -37,6 +37,7 @@ public class TeacherProfile implements Serializable {
 	private String Password;
 	private String FBOpenID;
 	private String IMID;
+	private String Avatar;
 	private Date Birth;
 	private String Gender;
 	private String Introduction;
@@ -51,7 +52,6 @@ public class TeacherProfile implements Serializable {
 	private int AccountType;
 	// 注册时间
 	private Date CreatedTime;
-	private String Grade;
 	private ArrayList<Course> Courses;
 	private ArrayList<Area> Areas;
 	private ArrayList<Timeslot> Timeslots;
@@ -80,12 +80,20 @@ public class TeacherProfile implements Serializable {
 		Exprience = exprience;
 	}
 
-	public float getDecRatingGrade() {
-		return DecRatingGrade;
+	public double getRatingGrade() {
+		return RatingGrade;
 	}
 
-	public void setDecRatingGrade(float decRatingGrade) {
-		DecRatingGrade = decRatingGrade;
+	public void setRatingGrade(double ratingGrade) {
+		RatingGrade = ratingGrade;
+	}
+
+	public String getAvatar() {
+		return Avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		Avatar = avatar;
 	}
 
 	public int getBookmarkedCount() {
@@ -254,14 +262,6 @@ public class TeacherProfile implements Serializable {
 
 	public void setCreatedTime(Date createdTime) {
 		CreatedTime = createdTime;
-	}
-
-	public String getGrade() {
-		return Grade;
-	}
-
-	public void setGrade(String grade) {
-		Grade = grade;
 	}
 
 	public ArrayList<Course> getCourses() {

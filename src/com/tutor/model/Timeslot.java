@@ -64,4 +64,9 @@ public class Timeslot implements Serializable {
 	public void setEndMinute(int endMinute) {
 		this.endMinute = endMinute;
 	}
+
+	@Override
+	public String toString() {
+		return "Timeslot [memberId=" + memberId + ", dayOfWeek=" + dayOfWeek + ", starHour=" + starHour + ", startMinute=" + startMinute + ", endHour=" + endHour + ", endMinute=" + endMinute + "]";
+	}
 }

@@ -1,6 +1,5 @@
 package com.tutor.ui.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,7 +10,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.tutor.R;
-import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
 
 /**
@@ -23,17 +21,12 @@ import com.tutor.ui.view.TitleBar;
  */
 public class TeamConditionsActivity extends BaseActivity implements OnClickListener, OnCheckedChangeListener {
 
-	private int role;
 	private Button button;
 	private TextView textView;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
-		role = getIntent().getIntExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, -1);
-		if (-1 == role) {
-			throw new IllegalArgumentException("role is -1");
-		}
 		setContentView(R.layout.activity_team_conditions);
 		initView();
 	}
@@ -41,7 +34,6 @@ public class TeamConditionsActivity extends BaseActivity implements OnClickListe
 	@Override
 	protected void initView() {
 		TitleBar bar = getView(R.id.title_bar);
-		bar.initBack(this);
 		bar.setTitle(R.string.team_conditions);
 		textView = getView(R.id.ac_teamcondition_tv);
 		button = getView(R.id.ac_teamcondition_btn);
@@ -54,10 +46,7 @@ public class TeamConditionsActivity extends BaseActivity implements OnClickListe
 	@Override
 	public void onClick(View v) {
 		if (v == button) {
-			Intent intent = new Intent(this, FillPersonalInfoActivity.class);
-			intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, role);
-			startActivity(intent);
-			finishNoAnim();
+			finish();
 		}
 	}
 
@@ -65,4 +54,7 @@ public class TeamConditionsActivity extends BaseActivity implements OnClickListe
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		button.setEnabled(isChecked);
 	}
+
+	@Override
+	public void onBackPressed() {}
 }

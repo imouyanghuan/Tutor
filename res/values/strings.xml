@@ -24,7 +24,7 @@
     <string name="register_tip_tutor">Will be Register as Student/Parent when select Student/Parent at first</string>
     <string name="register_tip_student">Will be Register as Tutor when select Tutor at first</string>
     <string name="team_conditions">Team&amp;Conditions</string>
-    <string name="team_conditions_txt">Lorem ipsum dolor sit er elit lamet&#8230;</string>
+    <string name="team_conditions_txt">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
     <string name="teamcondition_cbtxt">I understand and agree with above</string>
     <string name="fill_personal_info">Fill Personal Information</string>
     <string name="add_timeslot">Add Timeslot</string>
@@ -53,6 +53,8 @@
     <string name="label_date">1990&#8211;01&#8211;01</string>
     <string name="label_teach_time_slot">Preferred Teaching Time Slot</string>
     <string name="label_none_area">None area</string>
+    <string name="label_from">From</string>
+    <string name="label_to">&#160;&#160;&#160;&#160;&#160;To</string>
     <!-- button -->
     <string name="btn_role_student">Find tutors</string>
     <string name="btn_role_tutor">Join 2utor</string>
@@ -67,6 +69,8 @@
     <string name="btn_fragment_find_teacher_popularity">Popularity</string>
     <string name="btn_gallery">Gallery</string>
     <string name="btn_take_photo">Take Photo</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_delete">Delete</string>
     <!-- hint -->
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -90,7 +94,7 @@
     <string name="toast_avatar_isEmpty">Please Choice an Avatar Picture!</string>
     <string name="toast_avatar_upload">Upload Avatar Successed</string>
     <string name="toast_avatar_upload_fail">Upload Avatar Failed</string>
-     <string name="toast_no_timeslot">Please add timeslot!</string>
+    <string name="toast_no_timeslot">Please add timeslot!</string>
     <string name="toast_name_isEmpty">Name is Empty!</string>
     <string name="toast_hkid_isEmpty">HKID is Empty!</string>
     <string name="toast_phone_isEmpty">Phone number is Empty!</string>
@@ -100,6 +104,8 @@
     <string name="toast_netwrok_disconnected">Network Disconnected!</string>
     <string name="toast_login_im_fail">IM Service does not Started!</string>
     <string name="toast_no_match_student">No match student</string>
+    <string name="toast_not_select_cours">Please choice a Course at least</string>
+    <string name="toast_not_select_area">Please choice an Area at least</string>
     <!-- xmpp聊天相關 -->
     <string name="new_message">New short message received</string>
     <string name="system_message">System message</string>

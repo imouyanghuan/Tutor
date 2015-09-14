@@ -32,6 +32,7 @@
     <item name="ac_register_cb" type="id"></item>
     <item name="ac_register_btn_register" type="id"></item>
     <item name="ac_register_tv_tip" type="id"></item>
+    <item name="ac_register_tv_team" type="id"></item>
     <!-- 隱私聲明 -->
     <item name="ac_teamcondition_tv" type="id"></item>
     <item name="ac_teamcondition_btn" type="id"></item>
@@ -49,7 +50,7 @@
     <item name="ac_fill_personal_info_tv_couress" type="id"></item>
     <item name="ac_fill_personal_info_ll_couress" type="id"></item>
     <item name="ac_fill_personal_info_ll_area" type="id"></item>
-    <item name="ac_fill_personal_info_ll_timeslot" type="id"></item>
+    <item name="ac_fill_personal_info_fl_eb" type="id"></item>
     <item name="ac_fill_personal_info_btn_add_timeslot" type="id"></item>
     <item name="ac_fill_personal_info_btn_submit" type="id"></item>
     <item name="ac_fill_personal_info_rg_eb" type="id"></item>
@@ -57,6 +58,7 @@
     <item name="ac_fill_personal_info_rb_eb2" type="id"></item>
     <item name="ac_fill_personal_info_rb_eb3" type="id"></item>
     <item name="ac_fill_personal_info_rb_eb4" type="id"></item>
+    <item name="ac_fill_personal_info_timeslot_lv" type="id"></item>
     <!-- 菜單 -->
     <item name="menu_item_notification" type="id"></item>
     <item name="menu_item_bookmark" type="id"></item>
@@ -96,5 +98,14 @@
     <item name="fragment_my_iv_avatar" type="id"></item>
     <item name="fragment_my_tv_username" type="id"></item>
     <item name="fragment_my_iv_nickname" type="id"></item>
-
-</resources>
+    <!-- add timeslot dialog -->
+    <item name="add_timeslot_dialog_spinner" type="id"></item>
+    <item name="add_timeslot_dialog_date1" type="id"></item>
+    <item name="add_timeslot_dialog_date2" type="id"></item>
+    <item name="add_timeslot_dialog_btn_ok" type="id"></item>
+    <item name="add_timeslot_dialog_spinner_item" type="id"></item>
+    <item name="add_timeslot_dialog_btn_cancle" type="id"></item>
+    <!-- timeslot item -->
+    <item name="timeslot_item_tv" type="id"></item>
+    <item name="timeslot_item_btn_delete" type="id"></item>
+</resources>

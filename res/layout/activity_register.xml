@@ -10,11 +10,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title_bar"
+        android:layout_centerInParent="true"
         android:orientation="vertical"
         android:paddingLeft="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_50" >
+        android:paddingRight="@dimen/dp_10" >
 
         <!-- 郵箱 -->
 
@@ -57,23 +56,34 @@
             android:inputType="textPassword"
             android:maxLength="20" />
 
-        <CheckBox
-            android:id="@id/ac_register_cb"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginBottom="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_20"
-            android:checked="true"
-            android:text="@string/register_cbtxt"
-            android:textSize="@dimen/sp_12" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <CheckBox
+                android:id="@id/ac_register_cb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true" />
+
+            <TextView
+                android:id="@id/ac_register_tv_team"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/register_cbtxt"
+                android:textSize="@dimen/sp_12" />
+        </LinearLayout>
 
         <Button
             android:id="@id/ac_register_btn_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dp_20"
-            android:background="@drawable/choice_role_tutor_btn_bg"
+            android:background="@drawable/register_btn_bg"
             android:gravity="center"
             android:textColor="@color/white" />
     </LinearLayout>

@@ -1,5 +1,7 @@
 package com.tutor.model;
 
+import java.util.Date;
+
 /**
  * @author bruce.chen
  * 
@@ -16,7 +18,7 @@ public class Account extends BaseModel {
 	private String imAccount;
 	private String imPswd;
 	private String token;
-	private String createdTime;
+	private Date createdTime;
 	private Integer status;
 
 	public Integer getMemberId() {
@@ -83,11 +85,11 @@ public class Account extends BaseModel {
 		this.token = token;
 	}
 
-	public String getCreatedTime() {
+	public Date getCreatedTime() {
 		return createdTime;
 	}
 
-	public void setCreatedTime(String createdTime) {
+	public void setCreatedTime(Date createdTime) {
 		this.createdTime = createdTime;
 	}
 

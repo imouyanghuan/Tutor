@@ -76,6 +76,7 @@ public class IMService extends Service {
 		// 註冊网络连接廣播
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+		receive = new IMBroadCastReceive();
 		registerReceiver(receive, filter);
 		// 初始化IM消息監聽
 		initIMMsgListener();

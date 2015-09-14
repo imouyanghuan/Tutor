@@ -2,6 +2,7 @@ package com.tutor.ui.activity;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -21,24 +23,36 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.lidroid.xutils.exception.DbException;
+import com.mssky.mobile.ui.view.CustomListView;
 import com.tutor.R;
 import com.tutor.TutorApplication;
+import com.tutor.adapter.TimeSlotAdapter;
 import com.tutor.model.Account;
 import com.tutor.model.Area;
+import com.tutor.model.Area1;
 import com.tutor.model.AreaListResult;
 import com.tutor.model.Course;
+import com.tutor.model.CourseItem1;
+import com.tutor.model.CourseItem2;
 import com.tutor.model.CourseListResult;
+import com.tutor.model.EditProfileResult;
+import com.tutor.model.StudentProfile;
+import com.tutor.model.TeacherProfile;
 import com.tutor.model.TimeSlotListResult;
 import com.tutor.model.Timeslot;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.service.TutorService;
 import com.tutor.service.UserService;
+import com.tutor.ui.dialog.AddTimeSlotDialog;
+import com.tutor.ui.dialog.AddTimeSlotDialog.CallBack;
 import com.tutor.ui.dialog.ChangeAvatarDialog;
 import com.tutor.ui.view.AreaItemLayout;
 import com.tutor.ui.view.CourseLayout;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.DateTimeUtil;
 import com.tutor.util.ImageUtils;
+import com.tutor.util.LogUtils;
 
 /**
  * 完善資料界面
@@ -47,33 +61,41 @@ import com.tutor.util.ImageUtils;
  * 
  *         2015-8-24
  */
-public class FillPersonalInfoActivity extends BaseActivity implements OnClickListener {
+public class FillPersonalInfoActivity extends BaseActivity implements OnClickListener, CallBack {
 
 	private int role;
+	private Account account;
 	// views
 	/** 頭像 */
 	private ImageView avatarImageView;
 	/** 姓名,證件號,電話號碼 */
 	private EditText nameEditText, hKidEditText, phoneEditText;
-	/** 證件佈局,課程佈局,時間佈局 */
-	private LinearLayout hkidLinearLayout, couressLinearLayout, areaLinearLayout, timeSlotLinearLayout;
+	/** 證件佈局,課程佈局 */
+	private LinearLayout hkidLinearLayout, couressLinearLayout, areaLinearLayout;
+	/** 教育背景 布局 */
+	private FrameLayout ebFrameLayout;
 	/** 性別 ,教育背景 */
 	private RadioGroup sexRadioGroup, ebRadioGroup;
 	/** 出生日期, 課程標題 */
 	private TextView brithTextView, couressTextView;
 	/** 提交,添加時間 */
 	private Button submit, addTimeSlot;
+	/** 时间段列表 */
+	private CustomListView listView;
+	private TimeSlotAdapter adapter;
 	// 數據
 	private ArrayList<Course> courses;
 	private ArrayList<Area> areas;
 	private ArrayList<Timeslot> timeslots;
-	private boolean isUploadAvatar = false;
+	private String avatar;
 	private String sex = Constants.General.MALE;
-	private String brith;
+	private String birth;
 	/** 教育背景 */
 	private String eb;
 	// 頭像對話框
-	private ChangeAvatarDialog dialog;
+	private ChangeAvatarDialog avatarDialog;
+	// 添加时间对话框
+	private AddTimeSlotDialog timeSlotDialog;
 	// 保存拍照圖片uri
 	private Uri imageUri, zoomUri;
 
@@ -84,10 +106,19 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		if (-1 == role) {
 			throw new IllegalArgumentException("role is -1");
 		}
+		try {
+			account = TutorApplication.dbUtils.findFirst(Account.class);
+		} catch (DbException e) {
+			e.printStackTrace();
+		}
+		if (null == account) {
+			throw new IllegalArgumentException("account is null");
+		}
 		setContentView(R.layout.activity_fill_personal_info);
 		initView();
-		brith = getString(R.string.label_date);
+		birth = getString(R.string.label_date);
 		eb = getString(R.string.eb_1);
+		timeSlotDialog = new AddTimeSlotDialog(this, this);
 		new GetDataTask().execute();
 	}
 
@@ -117,7 +148,12 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		}
 		couressLinearLayout = getView(R.id.ac_fill_personal_info_ll_couress);
 		areaLinearLayout = getView(R.id.ac_fill_personal_info_ll_area);
-		timeSlotLinearLayout = getView(R.id.ac_fill_personal_info_ll_timeslot);
+		ebFrameLayout = getView(R.id.ac_fill_personal_info_fl_eb);
+		if (Constants.General.ROLE_TUTOR == role) {
+			ebFrameLayout.setVisibility(View.VISIBLE);
+		} else {
+			ebFrameLayout.setVisibility(View.GONE);
+		}
 		sexRadioGroup = getView(R.id.ac_fill_personal_info_rg);
 		sexRadioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -167,6 +203,9 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		} else {
 			ebRadioGroup.setVisibility(View.GONE);
 		}
+		listView = getView(R.id.ac_fill_personal_info_timeslot_lv);
+		adapter = new TimeSlotAdapter(this, timeslots, true);
+		listView.setAdapter(adapter);
 		addTimeSlot = getView(R.id.ac_fill_personal_info_btn_add_timeslot);
 		addTimeSlot.setOnClickListener(this);
 	}
@@ -185,6 +224,9 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				areaLinearLayout.addView(areaItemLayout);
 			}
 		}
+		if (null != timeslots) {
+			adapter.refresh(timeslots);
+		}
 	}
 
 	@Override
@@ -192,7 +234,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		switch (v.getId()) {
 			case R.id.ac_fill_personal_info_btn_submit:
 				// 提交按鈕
-				if (!isUploadAvatar) {
+				if (TextUtils.isEmpty(avatar)) {
 					toast(R.string.toast_avatar_isEmpty);
 					return;
 				}
@@ -222,36 +264,178 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				}
 				// 课程列表
 				ArrayList<Course> choiceCourses = getChoiceCourses();
+				if (!isHaveCourse) {
+					toast(R.string.toast_not_select_cours);
+					return;
+				}
 				// 地区列表
 				ArrayList<Area> choiceAreas = getChoiceAreas();
+				if (!isHaveArea) {
+					toast(R.string.toast_not_select_area);
+					return;
+				}
 				// 时间列表
 				if (null == timeslots || 0 == timeslots.size()) {
 					toast(R.string.toast_no_timeslot);
-					// TODO 弹出选择框
-					
+					// 弹出选择框
+					timeSlotDialog.show();
 					return;
+				}
+				if (Constants.General.ROLE_TUTOR == role) {
+					TeacherProfile profile = getTeacherProfile();
+					profile.setHKIDNumber(hkid);
+					profile.setNickName(name);
+					profile.setUserName(name);
+					profile.setPhone(phone);
+					profile.setCourses(choiceCourses);
+					profile.setAreas(choiceAreas);
+					profile.setTimeslots(timeslots);
+					new TutorProfileTask(profile).execute();
+				} else {
+					StudentProfile profile = getStudentProfile();
+					profile.setNickName(name);
+					profile.setUserName(name);
+					profile.setPhone(phone);
+					profile.setCourses(choiceCourses);
+					profile.setAreas(choiceAreas);
+					profile.setTimeslots(timeslots);
+					new StudentProfileTask(profile).execute();
 				}
 				break;
 			case R.id.ac_fill_personal_info_iv_avatar:
 				// 上傳頭像
-				if (null == dialog) {
-					dialog = new ChangeAvatarDialog(this);
+				if (null == avatarDialog) {
+					avatarDialog = new ChangeAvatarDialog(this);
 				}
 				// 初始化uri
 				String fileName = DateTimeUtil.getSystemDateTime(DateTimeUtil.FORMART_YMDHMS) + Constants.General.IMAGE_END;
 				imageUri = Uri.fromFile(new File(Constants.SDCard.getImageDir(), fileName));
-				dialog.setUri(imageUri);
-				dialog.show();
+				avatarDialog.setUri(imageUri);
+				avatarDialog.show();
+				break;
+			case R.id.ac_fill_personal_info_btn_add_timeslot:
+				timeSlotDialog.show();
 				break;
 		}
 	}
 
-	private ArrayList<Area> getChoiceAreas() {
-		return null;
+	private StudentProfile getStudentProfile() {
+		StudentProfile profile = new StudentProfile();
+		profile.setId(account.getMemberId());
+		profile.setEmail(account.getEmail());
+		profile.setPassword(account.getPswd());
+		profile.setFBOpenID(account.getFacebookId());
+		profile.setIMID(account.getImAccount());
+		profile.setStatus(account.getRole());
+		profile.setCreatedTime(account.getCreatedTime());
+		profile.setToken(account.getToken());
+		profile.setAvatar(avatar);
+		profile.setAccountType(role);
+		profile.setBirth(DateTimeUtil.str2Date(birth, DateTimeUtil.FORMART_YMD));
+		;
+		profile.setGender(sex);
+		return profile;
 	}
 
+	@SuppressWarnings("deprecation")
+	private TeacherProfile getTeacherProfile() {
+		TeacherProfile profile = new TeacherProfile();
+		profile.setExprience(1);
+		profile.setRatingGrade(5.0d);
+		profile.setBookmarkedCount(0);
+		profile.setStudentCount(0);
+		profile.setEducationDegree(eb);
+		profile.setId(account.getMemberId());
+		profile.setEmail(account.getEmail());
+		profile.setPassword(account.getPswd());
+		profile.setFBOpenID(account.getFacebookId());
+		profile.setIMID(account.getImAccount());
+		profile.setStatus(account.getRole());
+		profile.setCreatedTime(account.getCreatedTime());
+		profile.setToken(account.getToken());
+		profile.setAvatar(avatar);
+		profile.setAccountType(role);
+		profile.setBirth(new Date(birth));
+		profile.setGender(sex);
+		return profile;
+	}
+
+	@Override
+	public void onAddTimeSlot(Timeslot timeslot) {
+		if (null == timeslots) {
+			timeslots = new ArrayList<Timeslot>();
+		}
+		timeslots.add(timeslot);
+		adapter.refresh(timeslots);
+	}
+
+	private boolean isHaveArea = false;
+
+	/**
+	 * 获取选中的地区
+	 * 
+	 * @return
+	 */
+	private ArrayList<Area> getChoiceAreas() {
+		ArrayList<Area> areas = new ArrayList<Area>(this.areas);
+		for (int i = 0; i < areas.size(); i++) {
+			boolean b = false;
+			ArrayList<Area1> area1s = areas.get(i).getResult();
+			for (int j = 0; j < area1s.size(); j++) {
+				if (area1s.get(j).getSelected()) {
+					b = true;
+					isHaveArea = true;
+					continue;
+				}
+				area1s.remove(j);
+				j--;
+			}
+			if (!b) {
+				areas.remove(i);
+				i--;
+			}
+		}
+		LogUtils.d(areas.toString());
+		return areas;
+	}
+
+	private boolean isHaveCourse = false;
+
+	/**
+	 * 获取选中的课程
+	 * 
+	 * @return
+	 */
 	private ArrayList<Course> getChoiceCourses() {
-		return null;
+		ArrayList<Course> courses = new ArrayList<Course>(this.courses);
+		for (int i = 0; i < courses.size(); i++) {
+			boolean b = false;
+			ArrayList<CourseItem1> item1s = courses.get(i).getResult();
+			for (int j = 0; j < item1s.size(); j++) {
+				boolean a = false;
+				ArrayList<CourseItem2> item2s = item1s.get(j).getResult();
+				for (int k = 0; k < item2s.size(); k++) {
+					if (item2s.get(k).getSelected()) {
+						a = true;
+						b = true;
+						isHaveCourse = true;
+						continue;
+					}
+					item2s.remove(k);
+					k--;
+				}
+				if (!a) {
+					item1s.remove(j);
+					j--;
+				}
+			}
+			if (!b) {
+				courses.remove(i);
+				i--;
+			}
+		}
+		LogUtils.d(courses.toString());
+		return courses;
 	}
 
 	@Override
@@ -362,15 +546,9 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 			if (null != areaListResult) {
 				areas = areaListResult.getResult();
 			}
-			Account account;
-			try {
-				account = TutorApplication.dbUtils.findFirst(Account.class);
-				TimeSlotListResult timeSlotListResult = TutorService.getService().getTimeSlotList(account.getMemberId(), 0, 5);
-				if (null != timeSlotListResult) {
-					timeslots = timeSlotListResult.getResult();
-				}
-			} catch (DbException e) {
-				e.printStackTrace();
+			TimeSlotListResult timeSlotListResult = TutorService.getService().getTimeSlotList(account.getMemberId(), 0, 5);
+			if (null != timeSlotListResult) {
+				timeslots = timeSlotListResult.getResult();
 			}
 			return true;
 		}
@@ -420,10 +598,92 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 			super.onPostExecute(result);
 			dismissDialog();
 			if (result != null) {
-				isUploadAvatar = true;
+				avatar = ApiUrl.GET_OTHER_AVATAR + account.getMemberId();
 				avatarImageView.setImageBitmap(result);
 			} else {
 				toast(R.string.toast_avatar_upload_fail);
+			}
+		}
+	}
+
+	/**
+	 * 提交老师信息任务
+	 * 
+	 * @author bruce.chen
+	 * 
+	 */
+	private class TutorProfileTask extends AsyncTask<Void, Void, EditProfileResult> {
+
+		private TeacherProfile profile;
+
+		public TutorProfileTask(TeacherProfile profile) {
+			this.profile = profile;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			showDialogRes(R.string.loading);
+		}
+
+		@Override
+		protected EditProfileResult doInBackground(Void... params) {
+			return TutorService.getService().submitTutorProfile(profile);
+		}
+
+		@Override
+		protected void onPostExecute(EditProfileResult result) {
+			super.onPostExecute(result);
+			dismissDialog();
+			if (null != result) {
+				if (200 == result.getStatusCode()) {
+					go2Main();
+				} else {
+					toast(result.getMessage());
+				}
+			} else {
+				toast(R.string.toast_server_error);
+			}
+		}
+	}
+
+	/**
+	 * 提交学生信息任务
+	 * 
+	 * @author bruce.chen
+	 * 
+	 */
+	private class StudentProfileTask extends AsyncTask<Void, Void, EditProfileResult> {
+
+		private StudentProfile profile;
+
+		public StudentProfileTask(StudentProfile profile) {
+			this.profile = profile;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			showDialogRes(R.string.loading);
+		}
+
+		@Override
+		protected EditProfileResult doInBackground(Void... params) {
+			return TutorService.getService().submitStudentProfile(profile);
+		}
+
+		@Override
+		protected void onPostExecute(EditProfileResult result) {
+			super.onPostExecute(result);
+			dismissDialog();
+			if (null != result) {
+				if (200 == result.getStatusCode() && result.getResult()) {
+					go2Main();
+				} else {
+					toast(result.getMessage());
+				}
+			} else {
+				toast(R.string.toast_server_error);
 			}
 		}
 	}

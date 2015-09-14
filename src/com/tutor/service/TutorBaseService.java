@@ -58,6 +58,24 @@ public class TutorBaseService extends BaseService {
 	}
 
 	/**
+	 * put請求
+	 * 
+	 * @param url
+	 * @param params
+	 * @return
+	 * @throws HttpException
+	 * @throws IOException
+	 */
+	protected String executePut(String url, RequestParams params) throws HttpException, IOException {
+		if (!HttpUtils.isNetworkConnected(TutorApplication.instance)) {
+			return null;
+		}
+		String result = super.execute(HttpMethod.PUT, ApiUrl.DOMAIN, url, params);
+		LogUtils.d(result);
+		return result;
+	}
+
+	/**
 	 * get請求
 	 * 
 	 * @param url
@@ -94,6 +112,28 @@ public class TutorBaseService extends BaseService {
 			return null;
 		}
 		String content = executePost(url, params);
+		if (!TextUtils.isEmpty(content)) {
+			T result = JsonHelper.convert(content, type);
+			return result;
+		}
+		return null;
+	}
+
+	/**
+	 * put請求
+	 * 
+	 * @param url
+	 * @param params
+	 * @param t
+	 * @return
+	 * @throws HttpException
+	 * @throws IOException
+	 */
+	protected <T> T executeEntityPut(String url, RequestParams params, Class<T> type) throws HttpException, IOException {
+		if (!HttpUtils.isNetworkConnected(TutorApplication.instance)) {
+			return null;
+		}
+		String content = executePut(url, params);
 		if (!TextUtils.isEmpty(content)) {
 			T result = JsonHelper.convert(content, type);
 			return result;

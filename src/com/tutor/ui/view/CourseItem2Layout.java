@@ -3,13 +3,6 @@ package com.tutor.ui.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.tutor.R;
-import com.tutor.adapter.TutorBaseAdapter;
-import com.tutor.adapter.ViewHolder;
-import com.tutor.model.CourseItem1;
-import com.tutor.model.CourseItem2;
-import com.tutor.util.ViewHelper;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -17,6 +10,13 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.tutor.R;
+import com.tutor.adapter.TutorBaseAdapter;
+import com.tutor.adapter.ViewHolder;
+import com.tutor.model.CourseItem1;
+import com.tutor.model.CourseItem2;
+import com.tutor.util.ViewHelper;
 
 /**
  * @author bruce.chen
@@ -64,10 +64,22 @@ public class CourseItem2Layout extends LinearLayout {
 		}
 
 		@Override
-		protected void convert(ViewHolder holder, CourseItem2 t, int position) {
+		protected void convert(ViewHolder holder, final CourseItem2 t, int position) {
 			holder.setText(R.id.course_item_gv_item_name, t.getCourseName());
 			CheckBox box = holder.getView(R.id.course_item_gv_item_checkbox);
 			box.setChecked(t.getSelected());
+			box.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View arg0) {
+					if (t.getSelected()) {
+						t.setSelected(false);
+					} else {
+						t.setSelected(true);
+					}
+					notifyDataSetChanged();
+				}
+			});
 		}
 	}
 }

@@ -29,4 +29,9 @@ public class Area implements Serializable {
 	public void setResult(ArrayList<Area1> result) {
 		this.result = result;
 	}
+
+	@Override
+	public String toString() {
+		return "Area [name=" + name + ", result=" + result + "]";
+	}
 }

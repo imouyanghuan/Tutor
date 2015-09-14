@@ -20,6 +20,7 @@ public class StudentProfile implements Serializable {
 	private String Password;
 	private String FBOpenID;
 	private String IMID;
+	private String Avatar;
 	private Date Birth;
 	private String Gender;
 	private String Introduction;
@@ -38,6 +39,14 @@ public class StudentProfile implements Serializable {
 	private ArrayList<Course> Courses;
 	private ArrayList<Area> Areas;
 	private ArrayList<Timeslot> Timeslots;
+
+	public String getAvatar() {
+		return Avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		Avatar = avatar;
+	}
 
 	public int getId() {
 		return Id;

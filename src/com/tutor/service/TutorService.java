@@ -1,14 +1,21 @@
 package com.tutor.service;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+import org.apache.http.entity.StringEntity;
 
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
+import com.mssky.mobile.core.JsonHelper;
 import com.tutor.TutorApplication;
 import com.tutor.model.AreaListResult;
 import com.tutor.model.CourseListResult;
+import com.tutor.model.EditProfileResult;
 import com.tutor.model.MatchStudentListResult;
 import com.tutor.model.NotificationListResult;
+import com.tutor.model.StudentProfile;
+import com.tutor.model.TeacherProfile;
 import com.tutor.model.TimeSlotListResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
@@ -198,6 +205,56 @@ public class TutorService extends TutorBaseService {
 			if (Constants.General.UNAUTHORIZED.equals(e.getMessage())) {
 				CheckTokenUtils.reLogin();
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
+	 * 提交老师信息
+	 * 
+	 * @param profile
+	 * @return
+	 */
+	public EditProfileResult submitTutorProfile(TeacherProfile profile) {
+		EditProfileResult result = null;
+		RequestParams params = TutorApplication.getDefaultGetParams();
+		params.addHeader("Content-Type", "application/json");
+		String json = JsonHelper.tojson(profile);
+		try {
+			StringEntity entity = new StringEntity(json);
+			params.setBodyEntity(entity);
+			result = executeEntityPut(ApiUrl.TUTORPROFILE, params, EditProfileResult.class);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (HttpException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	/**
+	 * 提交学生信息
+	 * 
+	 * @param profile
+	 * @return
+	 */
+	public EditProfileResult submitStudentProfile(StudentProfile profile) {
+		EditProfileResult result = null;
+		RequestParams params = TutorApplication.getDefaultGetParams();
+		params.addHeader("Content-Type", "application/json");
+		String json = JsonHelper.tojson(profile);
+		try {
+			StringEntity entity = new StringEntity(json);
+			params.setBodyEntity(entity);
+			result = executeEntityPut(ApiUrl.STUDENTPROFILE, params, EditProfileResult.class);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (HttpException e) {
+			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

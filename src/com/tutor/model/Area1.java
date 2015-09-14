@@ -46,4 +46,9 @@ public class Area1 implements Serializable {
 	public void setAddress(String address) {
 		this.address = address;
 	}
+
+	@Override
+	public String toString() {
+		return "Area1 [id=" + id + ", district=" + district + ", selected=" + selected + ", address=" + address + "]";
+	}
 }

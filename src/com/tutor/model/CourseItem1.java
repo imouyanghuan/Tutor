@@ -29,4 +29,9 @@ public class CourseItem1 implements Serializable {
 	public void setResult(ArrayList<CourseItem2> result) {
 		this.result = result;
 	}
+
+	@Override
+	public String toString() {
+		return "CourseItem1 [name=" + name + ", result=" + result + "]";
+	}
 }

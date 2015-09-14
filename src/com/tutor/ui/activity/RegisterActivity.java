@@ -23,6 +23,7 @@ import com.tutor.model.RegisterLoginModel;
 import com.tutor.params.Constants;
 import com.tutor.service.UserService;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.DateTimeUtil;
 import com.tutor.util.UUIDUtils;
 
 /**
@@ -62,6 +63,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 		registerButton = getView(R.id.ac_register_btn_register);
 		tipTextView = getView(R.id.ac_register_tv_tip);
 		checkBox = getView(R.id.ac_register_cb);
+		getView(R.id.ac_register_tv_team).setOnClickListener(this);
 		registerButton.setOnClickListener(this);
 		checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -81,7 +83,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		if (v == registerButton) {
+		if (v.getId() == R.id.ac_register_btn_register) {
 			// 註冊
 			String email = emailEditText.getEditableText().toString().trim();
 			if (TextUtils.isEmpty(email)) {
@@ -114,6 +116,9 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 			String im = email.replace("@", "").replace(".", "");
 			model.setIMID(im);
 			new RegisterTask(model).execute();
+		} else if (R.id.ac_register_tv_team == v.getId()) {
+			Intent intent = new Intent(this, TeamConditionsActivity.class);
+			startActivity(intent);
 		}
 	}
 
@@ -168,16 +173,13 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 							account.set_id(UUIDUtils.getID(6));
 							account.setMemberId(result.getResult().getId());
 							account.setStatus(result.getResult().getStatus());
-							account.setCreatedTime(result.getResult().getCreatedTime());
+							account.setCreatedTime(DateTimeUtil.str2Date(result.getResult().getCreatedTime(), DateTimeUtil.FORMART_2));
 							account.setRole(role);
 							account.setEmail(model.getEmail());
 							account.setPswd(model.getPassword());
 							account.setImAccount(model.getIMID());
 							account.setImPswd(model.getIMID());
 							String token = result.getResult().getToken();
-							if (TextUtils.isEmpty(token)) {
-								token = "XV9hg8WahQGsVvAAHi1FILfgw4FT+wY2tMXazzKDNACA9UhjV4MTAAocdq2JI4VBCdqJTg";
-							}
 							account.setToken(token);
 							try {
 								TutorApplication.dbUtils.deleteAll(Account.class);
@@ -185,9 +187,9 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 							} catch (DbException e) {
 								e.printStackTrace();
 							}
-							// 進入隱私聲明
+							// 進入完善资料
 							Intent intent = new Intent();
-							intent.setClass(RegisterActivity.this, TeamConditionsActivity.class);
+							intent.setClass(RegisterActivity.this, FillPersonalInfoActivity.class);
 							intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, role);
 							startActivity(intent);
 							finishNoAnim();

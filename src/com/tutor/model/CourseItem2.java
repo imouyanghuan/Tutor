@@ -64,4 +64,9 @@ public class CourseItem2 implements Serializable {
 	public void setSelected(boolean selected) {
 		this.selected = selected;
 	}
+
+	@Override
+	public String toString() {
+		return "CourseItem2 [id=" + id + ", type=" + type + ", subType=" + subType + ", courseName=" + courseName + ", description=" + description + ", selected=" + selected + "]";
+	}
 }
