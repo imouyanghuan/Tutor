@@ -78,6 +78,16 @@
             android:name="com.tutor.ui.activity.BookmarkActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <!-- 老師個人信息 -->
+        <activity
+            android:name="com.tutor.ui.activity.PersonInfoActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 聊天頁面 -->
+        <activity
+            android:name="com.tutor.ui.activity.ChatActivity"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <!-- IM服务 -->
         <service android:name="com.tutor.service.IMService" >

@@ -26,7 +26,7 @@ public class DateTimeUtil {
 	public static final String FORMART_YMDHMS = "yyyyMMddHHmmss";
 	/** 精确到秒 */
 	public static final String FORMART_2 = "yyyy-MM-dd HH:mm:ss";
-	/** 精确到秒 */
+	/** 年月日 */
 	public static final String FORMART_YMD = "yyyy-MM-dd";
 
 	/**
@@ -113,7 +113,8 @@ public class DateTimeUtil {
 		}
 		Date date = null;
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat(format);
+			SimpleDateFormat sdf = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
+			sdf.applyPattern(format);
 			date = sdf.parse(str);
 		} catch (Exception e) {
 			e.printStackTrace();

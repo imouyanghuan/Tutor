@@ -16,7 +16,6 @@
             android:background="@color/transparent"
             android:contentDescription="@string/app_name"
             android:padding="@dimen/dp_5"
-            android:scaleType="fitXY"
             android:src="@drawable/back_selector" />
 
         <TextView
@@ -55,7 +54,8 @@
             android:layout_width="@dimen/dp_50"
             android:layout_height="match_parent"
             android:background="@color/transparent"
-            android:contentDescription="@string/app_name" />
+            android:contentDescription="@string/app_name"
+            android:padding="@dimen/dp_5" />
 
         <TextView
             android:id="@id/title_bar_tv_right"

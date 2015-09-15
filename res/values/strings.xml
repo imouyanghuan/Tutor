@@ -129,5 +129,9 @@
     <string name="pick_seattle_place">Pick a Seattle Place</string>
     <string name="exception">Exception: %1$s</string>
     <!-- 使用Facebook登录或共享，还添加FacebookActivity的清单 -->
+    <string name="label_demo_title_name">Abby Chan</string>
+    <string name="label_chat_with_tutor">Chat With Tutor</string>
+    <string name="label_to_be_my_tutor">To Be My Tutor</string>
+    <string name="label_rete_tutor">Rate Tutor</string>
 
 </resources>

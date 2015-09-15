@@ -26,21 +26,21 @@ public class IMMessageManager {
 
 	private static IMMessageManager imMessageManager;
 	private DbUtils dbUtils;
-	private String currentIMAccount = null;
+//	private String currentIMAccount = null;
 
 	private IMMessageManager() {
 		dbUtils = TutorApplication.dbUtils;
-		try {
-			Account account = dbUtils.findFirst(Account.class);
-			if (null != account) {
-				currentIMAccount = account.getImAccount() + "@" + XMPPConnectionManager.getManager().getServiceName();
-			}
-		} catch (DbException e) {
-			e.printStackTrace();
-		}
-		if (null == currentIMAccount) {
-			throw new IllegalArgumentException("not login");
-		}
+//		try {
+//			Account account = dbUtils.findFirst(Account.class);
+//			if (null != account) {
+//				currentIMAccount = account.getImAccount() + "@" + XMPPConnectionManager.getManager().getServiceName();
+//			}
+//		} catch (DbException e) {
+//			e.printStackTrace();
+//		}
+//		if (null == currentIMAccount) {
+//			throw new IllegalArgumentException("not login");
+//		}
 	}
 
 	public static IMMessageManager getManager() {
@@ -117,7 +117,7 @@ public class IMMessageManager {
 			} else if (offset < 0 && currentSize >= size) {
 				return null;
 			}
-			List<IMMessage> list = dbUtils.findAll(Selector.from(IMMessage.class).where("fromSubJid", "=", fromSubJid).and("toJid", "=", currentIMAccount)
+			List<IMMessage> list = dbUtils.findAll(Selector.from(IMMessage.class).where("fromSubJid", "=", fromSubJid)/*.and("toJid", "=", currentIMAccount)*/
 					.and("noticeType", "=", IMMessage.MESSAGE_TYPE_CHAT_MSG + "").limit(pageSize).offset(offset));
 			System.out.println(list.size());
 			return list;
@@ -135,7 +135,7 @@ public class IMMessageManager {
 	 */
 	public long getMsgCountWithSomeBody(String fromSubJid) {
 		try {
-			long count = dbUtils.count(Selector.from(IMMessage.class).where("fromSubJid", "=", fromSubJid).and("toJid", "=", currentIMAccount));
+			long count = dbUtils.count(Selector.from(IMMessage.class).where("fromSubJid", "=", fromSubJid)/*.and("toJid", "=", currentIMAccount)*/);
 			LogUtils.e("count == " + count);
 			return count;
 		} catch (DbException e) {
@@ -152,7 +152,7 @@ public class IMMessageManager {
 	 */
 	public boolean deleteMsgWhereJid(String fromSubJid) {
 		try {
-			dbUtils.delete(IMMessage.class, WhereBuilder.b("fromSubJid", "=", fromSubJid).and("toJid", "=", currentIMAccount));
+			dbUtils.delete(IMMessage.class, WhereBuilder.b("fromSubJid", "=", fromSubJid)/*.and("toJid", "=", currentIMAccount)*/);
 			return true;
 		} catch (DbException e) {
 			e.printStackTrace();
@@ -168,7 +168,7 @@ public class IMMessageManager {
 	 */
 	public boolean deleteMsgWhereType(Integer type) {
 		try {
-			dbUtils.delete(IMMessage.class, WhereBuilder.b("noticeType", "=", "" + type).and("toJid", "=", currentIMAccount));
+			dbUtils.delete(IMMessage.class, WhereBuilder.b("noticeType", "=", "" + type)/*.and("toJid", "=", currentIMAccount)*/);
 			return true;
 		} catch (DbException e) {
 			e.printStackTrace();
@@ -191,21 +191,21 @@ public class IMMessageManager {
 		sqlBuffer.append(" from ");
 		sqlBuffer.append(TableUtils.getTableName(IMMessage.class)).append(" m ");
 		sqlBuffer.append(" where ");
-		sqlBuffer.append(" m.noticeType = ").append(IMMessage.MESSAGE_TYPE_CHAT_MSG).append(" and m.toJid = " + currentIMAccount).append(" group by m.fromSubJid ");
+		sqlBuffer.append(" m.noticeType = ").append(IMMessage.MESSAGE_TYPE_CHAT_MSG)/*.append(" and m.toJid = " + currentIMAccount)*/.append(" group by m.fromSubJid ");
 		sqlBuffer.append(" union ");
 		sqlBuffer.append(" select ");
 		sqlBuffer.append(" m._id,m.content,m.title,m.time,m.fromSubJid,m.noticeType ");
 		sqlBuffer.append(" from ");
 		sqlBuffer.append(TableUtils.getTableName(IMMessage.class)).append(" m ");
 		sqlBuffer.append(" where ");
-		sqlBuffer.append(" m.noticeType = ").append(IMMessage.MESSAGE_TYPE_ADD_FRIEND).append(" and m.toJid = " + currentIMAccount).append(" group by m.noticeType ");
+		sqlBuffer.append(" m.noticeType = ").append(IMMessage.MESSAGE_TYPE_ADD_FRIEND)/*.append(" and m.toJid = " + currentIMAccount)*/.append(" group by m.noticeType ");
 		sqlBuffer.append(" union ");
 		sqlBuffer.append(" select ");
 		sqlBuffer.append(" m._id,m.content,m.title,m.time,m.fromSubJid,m.noticeType ");
 		sqlBuffer.append(" from ");
 		sqlBuffer.append(TableUtils.getTableName(IMMessage.class)).append(" m ");
 		sqlBuffer.append(" where ");
-		sqlBuffer.append(" m.noticeType = ").append(IMMessage.MESSAGE_TYPE_SYS_MSG).append(" and m.toJid = " + currentIMAccount).append(" group by m.noticeType ");
+		sqlBuffer.append(" m.noticeType = ").append(IMMessage.MESSAGE_TYPE_SYS_MSG)/*.append(" and m.toJid = " + currentIMAccount)*/.append(" group by m.noticeType ");
 		sqlBuffer.append(" ) t order by t.time desc ");
 		System.out.println(sqlBuffer.toString());
 		Cursor cursor = dbUtils.execQuery(sqlBuffer.toString());
@@ -238,7 +238,7 @@ public class IMMessageManager {
 	 */
 	public List<IMMessage> getUnreadNotices() {
 		try {
-			List<IMMessage> list = dbUtils.findAll(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD).and("toJid", "=", currentIMAccount));
+			List<IMMessage> list = dbUtils.findAll(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD)/*.and("toJid", "=", currentIMAccount)*/);
 			return list;
 		} catch (DbException e) {
 			e.printStackTrace();
@@ -271,7 +271,7 @@ public class IMMessageManager {
 	 */
 	public Long getUnReadNoticeCount() {
 		try {
-			return dbUtils.count(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD).and("toJid", "=", currentIMAccount));
+			return dbUtils.count(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD)/*.and("toJid", "=", currentIMAccount)*/);
 		} catch (DbException e) {
 			e.printStackTrace();
 			return 0l;
@@ -301,7 +301,7 @@ public class IMMessageManager {
 	 */
 	public List<IMMessage> getUnReadNoticeListByType(int type) {
 		try {
-			return dbUtils.findAll(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD).and("noticeType", "=", "" + type).and("toJid", "=", currentIMAccount));
+			return dbUtils.findAll(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD).and("noticeType", "=", "" + type)/*.and("toJid", "=", currentIMAccount)*/);
 		} catch (DbException e) {
 			e.printStackTrace();
 			return null;
@@ -316,7 +316,7 @@ public class IMMessageManager {
 	 */
 	public List<IMMessage> getAllMessageListByType(int type) {
 		try {
-			return dbUtils.findAll(Selector.from(IMMessage.class).where("noticeType", "=", "" + type).and("toJid", "=", currentIMAccount));
+			return dbUtils.findAll(Selector.from(IMMessage.class).where("noticeType", "=", "" + type)/*.and("toJid", "=", currentIMAccount)*/);
 		} catch (DbException e) {
 			e.printStackTrace();
 			return null;
@@ -331,7 +331,7 @@ public class IMMessageManager {
 	 */
 	public List<IMMessage> getAllSysOrAddFriendMessageList() {
 		try {
-			return dbUtils.findAll(Selector.from(IMMessage.class).where("toJid", "=", currentIMAccount).and("noticeType", "=", "" + IMMessage.MESSAGE_TYPE_ADD_FRIEND)
+			return dbUtils.findAll(Selector.from(IMMessage.class).where/*("toJid", "=", currentIMAccount).and*/("noticeType", "=", "" + IMMessage.MESSAGE_TYPE_ADD_FRIEND)
 					.or("noticeType", "=", "" + IMMessage.MESSAGE_TYPE_SYS_MSG));
 		} catch (DbException e) {
 			e.printStackTrace();
@@ -347,7 +347,7 @@ public class IMMessageManager {
 	 */
 	public long getUnReadNoticeCountByType(int type) {
 		try {
-			return dbUtils.count(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD).and("noticeType", "=", "" + type).and("toJid", "=", currentIMAccount));
+			return dbUtils.count(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD).and("noticeType", "=", "" + type)/*.and("toJid", "=", currentIMAccount)*/);
 		} catch (DbException e) {
 			e.printStackTrace();
 			return 0l;
@@ -363,7 +363,7 @@ public class IMMessageManager {
 	public long getUnReadNoticeCountByTypeAndFrom(int type, String fromSubJid) {
 		try {
 			return dbUtils.count(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD).and("noticeType", "=", "" + type).and("fromSubJid", "=", fromSubJid)
-					.and("toJid", "=", currentIMAccount));
+					/*.and("toJid", "=", currentIMAccount)*/);
 		} catch (DbException e) {
 			e.printStackTrace();
 			return 0l;
@@ -378,7 +378,7 @@ public class IMMessageManager {
 	 */
 	public void updateStatusByFrom(String fromSubJid, Integer status) {
 		try {
-			List<IMMessage> list = dbUtils.findAll(Selector.from(IMMessage.class).where("fromSubJid", "=", fromSubJid).and("toJid", "=", currentIMAccount));
+			List<IMMessage> list = dbUtils.findAll(Selector.from(IMMessage.class).where("fromSubJid", "=", fromSubJid)/*.and("toJid", "=", currentIMAccount)*/);
 			if (list != null && list.size() > 0) {
 				for (IMMessage notice : list) {
 					notice.setReadStatus(status);

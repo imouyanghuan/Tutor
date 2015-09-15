@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,9 +17,10 @@ import com.tutor.model.Area;
 import com.tutor.model.Area1;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
+import com.tutor.params.Constants;
+import com.tutor.ui.activity.PersonInfoActivity;
 import com.tutor.util.ImageUtils;
 import com.tutor.util.ImageUtils.CallBack;
-import com.tutor.util.ToastUtil;
 
 /**
  * 匹配學生列表適配器
@@ -83,11 +85,14 @@ public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 		}
 		holder.setText(R.id.student_list_item_form, t.getGender());
 		holder.setText(R.id.student_list_item_time, t.getCreatedTime().substring(0, 11));
+		// 學生item點擊事件
 		holder.getView(R.id.student_list_item_layout).setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
-				ToastUtil.showToastShort(mContext, "click " + t.getEmail());
+				Intent intent = new Intent(mContext, PersonInfoActivity.class);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, t);
+				mContext.startActivity(intent);
 			}
 		});
 	}

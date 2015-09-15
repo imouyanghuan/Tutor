@@ -34,4 +34,11 @@
         <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
     </style>
 
+    <style name="ratingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:gravity">center</item>
+        <item name="android:progressDrawable">@drawable/ratingbar_drawable</item>
+        <item name="android:height">20dip</item>
+        <item name="android:width">20dip</item>
+    </style>
+
 </resources>

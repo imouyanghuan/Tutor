@@ -1,5 +1,10 @@
 package com.tutor.model;
 
+import java.util.Date;
+
+import com.tutor.params.Constants;
+import com.tutor.util.DateTimeUtil;
+
 /**
  * 即時通訊消息model
  * 
@@ -7,7 +12,7 @@ package com.tutor.model;
  * 
  *         2015-8-28
  */
-public class IMMessage extends BaseModel {
+public class IMMessage extends BaseModel implements Comparable<IMMessage> {
 
 	private static final long serialVersionUID = 1L;
 	// 消息是否读取状态
@@ -167,5 +172,35 @@ public class IMMessage extends BaseModel {
 	public String toString() {
 		return "IMMessage [sendStatus=" + sendStatus + ", title=" + title + ", content=" + content + ", time=" + time + ", fromSubJid=" + fromSubJid + ", toJid=" + toJid + ", readStatus="
 				+ readStatus + ", noticeTime=" + noticeTime + ", noticeSum=" + noticeSum + ", noticeType=" + noticeType + ", msgType=" + msgType + "]";
+	}
+
+	/**
+	 * 按时间排序
+	 */
+	@Override
+	public int compareTo(IMMessage otherMessage) {
+		if (null == otherMessage || null == this.getTime() || null == otherMessage.getTime()) {
+			return 0;
+		}
+		String format = null;
+		String time1 = "";
+		String time2 = "";
+		if (this.getTime().length() == otherMessage.getTime().length() && this.getTime().length() == 23) {
+			time1 = this.getTime();
+			time2 = otherMessage.getTime();
+			format = Constants.Xmpp.MS_FORMART;
+		} else {
+			time1 = this.getTime().substring(0, 19);
+			time2 = otherMessage.getTime().substring(0, 19);
+		}
+		Date da1 = DateTimeUtil.str2Date(time1, format);
+		Date da2 = DateTimeUtil.str2Date(time2, format);
+		if (da1.before(da2)) {
+			return -1;
+		}
+		if (da2.before(da1)) {
+			return 1;
+		}
+		return 0;
 	}
 }

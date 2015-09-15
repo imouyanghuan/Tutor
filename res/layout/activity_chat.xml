@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <include layout="@layout/title_bar" />
+
+    <com.mssky.mobile.ui.view.PullToRefreshListView
+        android:id="@+id/pullToRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/chat_bg"
+        android:cacheColorHint="@color/transparent"
+        android:divider="@null"
+        android:fadingEdge="none"
+        android:listSelector="@color/transparent"
+        android:overScrollMode="never"
+        android:smoothScrollbar="true"
+        android:stackFromBottom="false"
+        android:transcriptMode="alwaysScroll" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/black_2" />
+
+    <include layout="@layout/editchat_layout" />
+
+</LinearLayout>

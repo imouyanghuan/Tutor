@@ -2,7 +2,6 @@ package com.tutor.ui.activity;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -337,7 +336,6 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		return profile;
 	}
 
-	@SuppressWarnings("deprecation")
 	private TeacherProfile getTeacherProfile() {
 		TeacherProfile profile = new TeacherProfile();
 		profile.setExprience(1);
@@ -355,7 +353,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		profile.setToken(account.getToken());
 		profile.setAvatar(avatar);
 		profile.setAccountType(role);
-		profile.setBirth(new Date(birth));
+		profile.setBirth(DateTimeUtil.str2Date(birth, DateTimeUtil.FORMART_YMD));
 		profile.setGender(sex);
 		return profile;
 	}
@@ -377,26 +375,58 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	 * @return
 	 */
 	private ArrayList<Area> getChoiceAreas() {
-		ArrayList<Area> areas = new ArrayList<Area>(this.areas);
-		for (int i = 0; i < areas.size(); i++) {
-			boolean b = false;
-			ArrayList<Area1> area1s = areas.get(i).getResult();
-			for (int j = 0; j < area1s.size(); j++) {
-				if (area1s.get(j).getSelected()) {
-					b = true;
-					isHaveArea = true;
-					continue;
+		ArrayList<Area1> selectAreas = new ArrayList<Area1>();
+		for (Area area : areas) {
+			ArrayList<Area1> area1s = area.getResult();
+			for (Area1 area1 : area1s) {
+				if (area1.getSelected()) {
+					selectAreas.add(area1);
 				}
-				area1s.remove(j);
-				j--;
-			}
-			if (!b) {
-				areas.remove(i);
-				i--;
 			}
 		}
-		LogUtils.d(areas.toString());
-		return areas;
+		// 还原结构
+		if (0 < selectAreas.size()) {
+			ArrayList<Area> result = new ArrayList<Area>();
+			isHaveArea = true;
+			for (Area1 area1 : selectAreas) {
+				if (result.size() == 0) {
+					Area area = new Area();
+					area.setName(area1.getDistrict());
+					ArrayList<Area1> a = new ArrayList<Area1>();
+					a.add(area1);
+					area.setResult(a);
+					result.add(area);
+				} else {
+					// 已有数据
+					int size = result.size();
+					Area area = null;
+					for (int i = 0; i < size; i++) {
+						area = result.get(i);
+						if (area.getName().equals(area1.getDistrict())) {
+							break;
+						} else {
+							area = null;
+						}
+					}
+					if (null != area) {
+						// 添加选择的地区
+						area.getResult().add(area1);
+					} else {
+						// 添加新的
+						area = new Area();
+						area.setName(area1.getDistrict());
+						ArrayList<Area1> a = new ArrayList<Area1>();
+						a.add(area1);
+						area.setResult(a);
+						result.add(area);
+					}
+				}
+			}
+			LogUtils.d(result.toString());
+			LogUtils.d(areas.toString());
+			return result;
+		}
+		return null;
 	}
 
 	private boolean isHaveCourse = false;
@@ -407,35 +437,113 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	 * @return
 	 */
 	private ArrayList<Course> getChoiceCourses() {
-		ArrayList<Course> courses = new ArrayList<Course>(this.courses);
-		for (int i = 0; i < courses.size(); i++) {
-			boolean b = false;
-			ArrayList<CourseItem1> item1s = courses.get(i).getResult();
-			for (int j = 0; j < item1s.size(); j++) {
-				boolean a = false;
-				ArrayList<CourseItem2> item2s = item1s.get(j).getResult();
-				for (int k = 0; k < item2s.size(); k++) {
-					if (item2s.get(k).getSelected()) {
-						a = true;
-						b = true;
-						isHaveCourse = true;
-						continue;
+		if (null == courses) {
+			return null;
+		}
+		// 选中的课程集合
+		ArrayList<CourseItem2> selectCourses = new ArrayList<CourseItem2>();
+		for (Course course : courses) {
+			ArrayList<CourseItem1> item1s = course.getResult();
+			for (CourseItem1 item1 : item1s) {
+				ArrayList<CourseItem2> item2s = item1.getResult();
+				for (CourseItem2 item2 : item2s) {
+					if (item2.getSelected()) {
+						selectCourses.add(item2);
 					}
-					item2s.remove(k);
-					k--;
 				}
-				if (!a) {
-					item1s.remove(j);
-					j--;
-				}
-			}
-			if (!b) {
-				courses.remove(i);
-				i--;
 			}
 		}
-		LogUtils.d(courses.toString());
-		return courses;
+		// 将选中的课程整理成原来的结构
+		int selectSize = selectCourses.size();
+		if (selectSize > 0) {
+			isHaveCourse = true;
+			ArrayList<Course> result = new ArrayList<Course>();
+			for (CourseItem2 item2 : selectCourses) {
+				// 首次添加
+				if (result.size() == 0) {
+					// 1
+					Course course = new Course();
+					course.setName(item2.getType());
+					ArrayList<CourseItem1> item1s = new ArrayList<CourseItem1>();
+					// 2
+					CourseItem1 item1 = new CourseItem1();
+					item1.setName(item2.getSubType());
+					// 3
+					ArrayList<CourseItem2> item2s = new ArrayList<CourseItem2>();
+					item2s.add(item2);
+					// 2
+					item1.setResult(item2s);
+					item1s.add(item1);
+					// 1
+					course.setResult(item1s);
+					result.add(course);
+				} else {
+					// 列表已经有数据了
+					int size = result.size();
+					Course course = null;
+					for (int i = 0; i < size; i++) {
+						course = result.get(i);
+						if (course.getName().equals(item2.getType())) {
+							break;
+						} else {
+							course = null;
+						}
+					}
+					// 已存在该分类
+					if (null != course) {
+						// 取出子list
+						ArrayList<CourseItem1> item1s = course.getResult();
+						int size1 = item1s.size();
+						// 取出CourseItem1
+						CourseItem1 item1 = null;
+						for (int i = 0; i < size1; i++) {
+							item1 = item1s.get(i);
+							if (item1.getName().equals(item2.getSubType())) {
+								break;
+							} else {
+								item1 = null;
+							}
+						}
+						if (null != item1) {
+							// 存在,把item2加入item1的result集合里
+							item1.getResult().add(item2);
+						} else {
+							// 不存在,添加一个
+							CourseItem1 newitem1 = new CourseItem1();
+							newitem1.setName(item2.getSubType());
+							// 3
+							ArrayList<CourseItem2> item2s = new ArrayList<CourseItem2>();
+							item2s.add(item2);
+							// 2
+							newitem1.setResult(item2s);
+							item1s.add(newitem1);
+						}
+					} else {
+						// 不存在该分类的时候,添加
+						// 1
+						course = new Course();
+						course.setName(item2.getType());
+						ArrayList<CourseItem1> item1s = new ArrayList<CourseItem1>();
+						// 2
+						CourseItem1 item1 = new CourseItem1();
+						item1.setName(item2.getSubType());
+						// 3
+						ArrayList<CourseItem2> item2s = new ArrayList<CourseItem2>();
+						item2s.add(item2);
+						// 2
+						item1.setResult(item2s);
+						item1s.add(item1);
+						// 1
+						course.setResult(item1s);
+						result.add(course);
+					}
+				}
+			}
+			LogUtils.d(result.toString());
+			LogUtils.d(courses.toString());
+			return result;
+		}
+		return null;
 	}
 
 	@Override

@@ -135,11 +135,17 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 		public RegisterTask(RegisterLoginModel model) {
 			this.model = model;
 		}
+		
+		@Override
+		protected void onProgressUpdate(Void... values) {
+			// TODO Auto-generated method stub
+			super.onProgressUpdate(values);
+		}
 
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			showDialogRes(R.string.registering);
+			//showDialogRes(R.string.registering);
 		}
 
 		@Override

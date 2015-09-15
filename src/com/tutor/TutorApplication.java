@@ -14,6 +14,7 @@ import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.tutor.im.XMPPConnectionManager;
 import com.tutor.model.Account;
 import com.tutor.model.IMMessage;
 import com.tutor.params.Constants;
@@ -32,7 +33,8 @@ public class TutorApplication extends Application {
 	public static DbUtils dbUtils;
 	public static TutorApplication instance;
 	public static boolean isTokenInvalid = false;
-
+	/** xmpp连接管理对象 */
+	public static XMPPConnectionManager connectionManager;
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -41,6 +43,7 @@ public class TutorApplication extends Application {
 		DEBUG = true;
 		// 配置工具類
 		settingManager = SettingManager.getInstance(this, Constants.SharedPreferences.NAME);
+		connectionManager = XMPPConnectionManager.getManager();
 		// 配置db工具
 		initDbUtils();
 		initImageLoader(this);

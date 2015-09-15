@@ -40,10 +40,10 @@ public class TitleBar extends LinearLayout {
 		rightTextView = ViewHelper.get(this, R.id.title_bar_tv_right);
 		title = ViewHelper.get(this, R.id.title_bar_tv_title);
 		try {
-			left.setVisibility(View.GONE);
-			right.setVisibility(View.GONE);
-			lefTextView.setVisibility(View.GONE);
-			rightTextView.setVisibility(View.GONE);
+			left.setVisibility(View.INVISIBLE);
+			right.setVisibility(View.INVISIBLE);
+			lefTextView.setVisibility(View.INVISIBLE);
+			rightTextView.setVisibility(View.INVISIBLE);
 		} catch (Exception e) {}
 	}
 
@@ -81,7 +81,7 @@ public class TitleBar extends LinearLayout {
 
 	public void setLeftButton(int resId, OnClickListener clickListener) {
 		if (null != lefTextView) {
-			lefTextView.setVisibility(View.GONE);
+			lefTextView.setVisibility(View.INVISIBLE);
 		}
 		if (left != null) {
 			left.setVisibility(View.VISIBLE);
@@ -92,7 +92,7 @@ public class TitleBar extends LinearLayout {
 
 	public void setLeftText(int resId, OnClickListener clickListener) {
 		if (null != left) {
-			left.setVisibility(View.GONE);
+			left.setVisibility(View.INVISIBLE);
 		}
 		if (lefTextView != null) {
 			lefTextView.setVisibility(View.VISIBLE);
@@ -103,7 +103,7 @@ public class TitleBar extends LinearLayout {
 
 	public void setLeftText(String text, OnClickListener clickListener) {
 		if (null != left) {
-			left.setVisibility(View.GONE);
+			left.setVisibility(View.INVISIBLE);
 		}
 		if (lefTextView != null) {
 			lefTextView.setVisibility(View.VISIBLE);
@@ -114,7 +114,7 @@ public class TitleBar extends LinearLayout {
 
 	public void setRightButton(int resId, OnClickListener clickListener) {
 		if (null != rightTextView) {
-			rightTextView.setVisibility(View.GONE);
+			rightTextView.setVisibility(View.INVISIBLE);
 		}
 		if (right != null) {
 			right.setVisibility(View.VISIBLE);
@@ -125,7 +125,7 @@ public class TitleBar extends LinearLayout {
 
 	public void setRightText(int resId, OnClickListener clickListener) {
 		if (null != right) {
-			right.setVisibility(View.GONE);
+			right.setVisibility(View.INVISIBLE);
 		}
 		if (rightTextView != null) {
 			rightTextView.setVisibility(View.VISIBLE);
@@ -136,7 +136,7 @@ public class TitleBar extends LinearLayout {
 
 	public void setRightText(String text, OnClickListener clickListener) {
 		if (null != right) {
-			right.setVisibility(View.GONE);
+			right.setVisibility(View.INVISIBLE);
 		}
 		if (rightTextView != null) {
 			rightTextView.setVisibility(View.VISIBLE);

@@ -40,7 +40,9 @@ public final class Constants {
 		/** api请求授权错误message */
 		public static final String UNAUTHORIZED = "Unauthorized";
 		/** Token过期状态码 */
-		public static final int TOKEN_INVALID = 403;
+		public static final int TOKEN_INVALID = 401;
+		/** 精确到毫秒 */
+		public static final String MS_FORMART = "yyyy-MM-dd HH:mm:ss SSS";
 	}
 
 	/**
@@ -109,6 +111,9 @@ public final class Constants {
 		public static final String INTENT_EXTRA_ROSTER_ADDED = "roster.added.key";
 		/** 好友分组 */
 		public static final String INTENT_EXTRA_GROUP = "group.key";
+		/** 用戶信息 */
+		public static final String INTENT_EXTRA_USER_INFO = "userInfo";
+		
 	}
 
 	/**

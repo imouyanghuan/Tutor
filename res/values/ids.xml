@@ -108,4 +108,5 @@
     <!-- timeslot item -->
     <item name="timeslot_item_tv" type="id"></item>
     <item name="timeslot_item_btn_delete" type="id"></item>
-</resources>
+
+</resources>

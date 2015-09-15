@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/edit_chat_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/gray"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_5" >
+
+        <ImageButton
+            android:id="@+id/edit_chat_btn_emoji"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
+            android:layout_margin="@dimen/dp_2"
+            android:background="@color/transparent"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/chat_face_selector" />
+
+        <ImageButton
+            android:id="@+id/edit_chat_btn_more"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
+            android:layout_marginBottom="@dimen/dp_2"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_2"
+            android:background="@color/transparent"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/chat_more_selector" />
+
+        <EditText
+            android:id="@+id/edit_chat_et"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_weight="1"
+            android:background="@drawable/chat_et_bg"
+            android:inputType="none"
+            android:padding="@dimen/dp_3"
+            android:singleLine="true"
+            android:textSize="@dimen/sp_16" />
+
+        <Button
+            android:id="@+id/edit_chat_btn_send"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/dp_3"
+            android:background="@drawable/btn_bg_selector"
+            android:gravity="center"
+            android:text="发送"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_14" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@color/black_2" />
+
+    <LinearLayout
+        android:id="@+id/edit_chat_ll_more"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <Button
+            android:id="@+id/edit_chat_more_btn_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dp_20"
+            android:text="图片"
+            android:textSize="@dimen/sp_20" />
+
+        <Button
+            android:id="@+id/edit_chat_more_btn_file"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:padding="@dimen/dp_20"
+            android:text="文件"
+            android:textSize="@dimen/sp_20" />
+    </LinearLayout>
+
+</LinearLayout>
