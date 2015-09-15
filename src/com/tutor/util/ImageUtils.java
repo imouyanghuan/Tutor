@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tutor.R;
+import com.tutor.TutorApplication;
 import com.tutor.service.UserService;
 
 /**
@@ -57,6 +58,22 @@ public class ImageUtils {
 		try {
 			imageLoader.displayImage(photourl, imageView, options);
 		} catch (OutOfMemoryError e) {
+			imageView.setBackgroundResource(R.drawable.avatar);
+		}
+	}
+
+	/**
+	 * 加载网络图片
+	 * 
+	 * @param imageView
+	 * @param photourl
+	 */
+	public static void loadImageSync(ImageView imageView, String photourl) {
+		try {
+			TutorApplication.bitmapUtils.display(imageView, photourl);
+		} catch (OutOfMemoryError e) {
+			imageView.setBackgroundResource(R.drawable.avatar);
+		} catch (Exception exception) {
 			imageView.setBackgroundResource(R.drawable.avatar);
 		}
 	}
@@ -361,6 +378,9 @@ public class ImageUtils {
 	 */
 	@SuppressLint("HandlerLeak")
 	public Bitmap loadImage(final String key, final CallBack callBack) {
+		if (TextUtils.isEmpty(key)) {
+			return null;
+		}
 		Bitmap bitmap = getBitmapFromMemCache(key);
 		if (null == bitmap) {
 			final Handler handler = new Handler() {

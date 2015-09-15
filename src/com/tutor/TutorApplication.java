@@ -5,6 +5,7 @@ import org.apache.http.protocol.HTTP;
 import android.app.Application;
 import android.content.Context;
 
+import com.lidroid.xutils.BitmapUtils;
 import com.lidroid.xutils.DbUtils;
 import com.lidroid.xutils.DbUtils.DaoConfig;
 import com.lidroid.xutils.exception.DbException;
@@ -31,10 +32,12 @@ public class TutorApplication extends Application {
 	public static boolean DEBUG = false;
 	public static SettingManager settingManager;
 	public static DbUtils dbUtils;
+	public static BitmapUtils bitmapUtils;
 	public static TutorApplication instance;
 	public static boolean isTokenInvalid = false;
 	/** xmpp连接管理对象 */
 	public static XMPPConnectionManager connectionManager;
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -55,6 +58,7 @@ public class TutorApplication extends Application {
 	 * @param applicationContext
 	 */
 	private void initImageLoader(Context applicationContext) {
+		bitmapUtils = CoreUtils.getBitmapUtils(applicationContext);
 		// This configuration tuning is custom. You can tune every option, you
 		// may tune some of them,
 		// or you can create default configuration by

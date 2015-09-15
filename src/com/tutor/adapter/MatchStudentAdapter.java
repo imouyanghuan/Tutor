@@ -6,7 +6,6 @@ import java.util.List;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -46,26 +45,23 @@ public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 	@Override
 	protected void convert(ViewHolder holder, final UserInfo t, int position) {
 		ImageView avatar = holder.getView(R.id.student_list_item_avatar);
-		if (TextUtils.isEmpty(t.getAvatar())) {
-			avatar.setImageResource(R.drawable.avatar);
-		} else {
-			String path = ApiUrl.DOMAIN + t.getAvatar();
-			avatar.setTag(path);
-			Bitmap bitmap = ImageUtils.getUtils().loadImage(path, new CallBack() {
+		// ImageUtils.loadImageSync(avatar, ApiUrl.DOMAIN + t.getAvatar());
+		String path = ApiUrl.DOMAIN + t.getAvatar();
+		avatar.setTag(path);
+		Bitmap bitmap = ImageUtils.getUtils().loadImage(path, new CallBack() {
 
-				@Override
-				public void onSuccess(Bitmap bitmap, String path) {
-					ImageView imageView = (ImageView) listView.findViewWithTag(path);
-					if (null != imageView) {
-						imageView.setImageBitmap(bitmap);
-					}
+			@Override
+			public void onSuccess(Bitmap bitmap, String path) {
+				ImageView imageView = (ImageView) listView.findViewWithTag(path);
+				if (null != imageView) {
+					imageView.setImageBitmap(bitmap);
 				}
-			});
-			if (null != bitmap) {
-				avatar.setImageBitmap(bitmap);
-			} else {
-				avatar.setImageResource(R.drawable.avatar);
 			}
+		});
+		if (null != bitmap) {
+			avatar.setImageBitmap(bitmap);
+		} else {
+			avatar.setImageResource(R.drawable.avatar);
 		}
 		holder.setText(R.id.student_list_item_nick, t.getEmail().substring(0, t.getEmail().indexOf("@")));
 		ArrayList<Area> areas = t.getAreas();
