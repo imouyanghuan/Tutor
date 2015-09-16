@@ -37,8 +37,6 @@ public final class Constants {
 		public static final String FEMALE = "female";
 		/** 圖片結尾 */
 		public static final String IMAGE_END = ".jpg";
-		/** api请求授权错误message */
-		public static final String UNAUTHORIZED = "Unauthorized";
 		/** Token过期状态码 */
 		public static final int TOKEN_INVALID = 401;
 		/** 精确到毫秒 */
@@ -113,7 +111,6 @@ public final class Constants {
 		public static final String INTENT_EXTRA_GROUP = "group.key";
 		/** 用戶信息 */
 		public static final String INTENT_EXTRA_USER_INFO = "userInfo";
-		
 	}
 
 	/**

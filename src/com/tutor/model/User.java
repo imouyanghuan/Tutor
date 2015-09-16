@@ -1,10 +1,13 @@
 package com.tutor.model;
 
+import java.io.Serializable;
+
 import org.jivesoftware.smack.packet.RosterPacket;
 
-public class User extends BaseModel {
+public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	private String _id;
 	private String JID; // 用户的ID
 	private String name; // 名字
 	private static RosterPacket.ItemType type;
@@ -20,6 +23,14 @@ public class User extends BaseModel {
 	 */
 	private int size;
 	private boolean available;
+
+	public String get_id() {
+		return _id;
+	}
+
+	public void set_id(String _id) {
+		this._id = _id;
+	}
 
 	public String getJID() {
 		return JID;

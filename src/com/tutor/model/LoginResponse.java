@@ -9,15 +9,15 @@ package com.tutor.model;
  */
 public class LoginResponse {
 
-	private int memberId;// 會員id
+	private int id;// 會員id
 	private String token;
 
-	public int getMemberId() {
-		return memberId;
+	public int getId() {
+		return id;
 	}
 
-	public void setMemberId(int memberId) {
-		this.memberId = memberId;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getToken() {

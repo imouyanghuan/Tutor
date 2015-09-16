@@ -1,5 +1,10 @@
 package com.tutor.ui.activity;
 
+import java.io.UnsupportedEncodingException;
+
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -14,20 +19,23 @@ import android.widget.EditText;
 import com.facebook.utils.FBUser;
 import com.facebook.utils.LogInStateListener;
 import com.facebook.utils.LoginManager;
-import com.lidroid.xutils.exception.DbException;
+import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.helper.ValidatorHelper;
 import com.tutor.R;
 import com.tutor.TutorApplication;
+import com.tutor.im.XmppManager;
 import com.tutor.model.Account;
 import com.tutor.model.CheckExistResult;
 import com.tutor.model.LoginResponseResult;
 import com.tutor.model.RegisterInfoResult;
 import com.tutor.model.RegisterLoginModel;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
-import com.tutor.service.UserService;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.HttpHelper;
+import com.tutor.util.JsonUtil;
 import com.tutor.util.LogUtils;
-import com.tutor.util.UUIDUtils;
+import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
  * 登錄,老師學生公用
@@ -138,7 +146,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		model.setFBOpenID("");
 		String im = emailString.replace("@", "").replace(".", "");
 		model.setIMID(im);
-		new LoginTask(model).execute();
+		login(model);
 	}
 
 	@Override
@@ -148,85 +156,72 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 	}
 
 	/**
-	 * 登錄異步任務
+	 * 登录
 	 * 
-	 * @author bruce.chen
-	 * 
+	 * @param model
 	 */
-	class LoginTask extends AsyncTask<Void, Void, LoginResponseResult> {
+	private void login(final RegisterLoginModel model) {
+		showDialogRes(R.string.logining);
+		String content = JsonUtil.parseObject2Str(model);
+		try {
+			StringEntity entity = new StringEntity(content, HTTP.UTF_8);
+			HttpHelper.post(this, ApiUrl.LOGIN, null, entity, new ObjectHttpResponseHandler<LoginResponseResult>(LoginResponseResult.class) {
 
-		private RegisterLoginModel model;
+				@Override
+				public void onFailure(int status, String message) {
+					dismissDialog();
+					toast(R.string.toast_login_failed);
+				}
 
-		public LoginTask(RegisterLoginModel model) {
-			this.model = model;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			showDialogRes(R.string.logining);
-		}
-
-		@Override
-		protected LoginResponseResult doInBackground(Void... params) {
-			LoginResponseResult result = UserService.getService().login(model);
-			return result;
-		}
-
-		@Override
-		protected void onPostExecute(LoginResponseResult result) {
-			super.onPostExecute(result);
-			dismissDialog();
-			if (null == result) {
-				toast(R.string.toast_server_error);
-				return;
-			}
-			switch (result.getStatusCode()) {
-				case 200:
-					if (null == result.getResult()) {
-						toast(R.string.toast_server_error);
-						return;
+				@Override
+				public void onSuccess(LoginResponseResult result) {
+					dismissDialog();
+					switch (result.getStatusCode()) {
+						case 200:
+							if (null == result.getResult()) {
+								toast(R.string.toast_server_error);
+								return;
+							}
+							Intent intent = new Intent();
+							if (Constants.General.ROLE_TUTOR == role) {
+								intent.setClass(LoginActivity.this, TeacherMainActivity.class);
+							} else {
+								intent.setClass(LoginActivity.this, StudentMainActivity.class);
+							}
+							// 保存信息
+							TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, true);
+							TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ROLE, role);
+							// 保存賬號資料
+							Account account = new Account();
+							account.setId("1");
+							account.setMemberId(result.getResult().getId());
+							account.setStatus(0);
+							account.setCreatedTime(null);
+							account.setRole(role);
+							account.setEmail(model.getEmail());
+							account.setPswd(model.getPassword());
+							account.setFacebookId(model.getFBOpenID());
+							account.setImAccount(model.getIMID());
+							account.setImPswd(model.getIMID());
+							account.setToken(result.getResult().getToken());
+							TutorApplication.getAccountDao().insertOrReplace(account);
+							// 進入主界面
+							startActivity(intent);
+							TutorApplication.isTokenInvalid = false;
+							// 發廣播結束前面的activity
+							Intent finish = new Intent();
+							finish.setAction(Constants.Action.FINISH_LOGINACTIVITY);
+							sendBroadcast(finish);
+							break;
+						default:
+							toast(result.getMessage());
+							break;
 					}
-					Intent intent = new Intent();
-					if (Constants.General.ROLE_TUTOR == role) {
-						intent.setClass(LoginActivity.this, TeacherMainActivity.class);
-					} else {
-						intent.setClass(LoginActivity.this, StudentMainActivity.class);
-					}
-					// 保存信息
-					TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, true);
-					TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ROLE, role);
-					// 保存賬號資料
-					Account account = new Account();
-					account.set_id(UUIDUtils.getID(6));
-					account.setMemberId(result.getResult().getMemberId());
-					account.setStatus(0);
-					account.setCreatedTime(null);
-					account.setRole(role);
-					account.setEmail(model.getEmail());
-					account.setPswd(model.getPassword());
-					account.setFacebookId(model.getFBOpenID());
-					account.setImAccount(model.getIMID());
-					account.setImPswd(model.getIMID());
-					account.setToken(result.getResult().getToken());
-					try {
-						TutorApplication.dbUtils.deleteAll(Account.class);
-						TutorApplication.dbUtils.save(account);
-					} catch (DbException e) {
-						e.printStackTrace();
-					}
-					// 進入主界面
-					startActivity(intent);
-					TutorApplication.isTokenInvalid = false;
-					// 發廣播結束前面的activity
-					Intent finish = new Intent();
-					finish.setAction(Constants.Action.FINISH_LOGINACTIVITY);
-					sendBroadcast(finish);
-					break;
-				default:
-					toast(result.getMessage());
-					break;
-			}
+				}
+			});
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			toast(R.string.toast_login_failed);
 		}
 	}
 
@@ -235,7 +230,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		if (null != user) {
 			LogUtils.e(user.toString());
 			// 先檢查該賬號是否註冊過,已經註冊就直接登錄,否則註冊
-			new CheckAccountExistTask(user.getId()).execute();
+			checkAccountExist(user.getId());
 		} else {
 			toast(R.string.toast_login_failed);
 		}
@@ -248,78 +243,105 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 	}
 
 	/**
-	 * 驗證Facebook登錄的賬戶是否存在
+	 * 检查Facebook账户是否存在
 	 * 
-	 * @author bruce.chen
-	 * 
+	 * @param id
 	 */
-	private class CheckAccountExistTask extends AsyncTask<Void, Void, Boolean> {
+	private void checkAccountExist(final String id) {
+		showDialogRes(R.string.logining);
+		RequestParams params = new RequestParams();
+		params.put("accountType", role + "");
+		params.put("email", "");
+		params.put("FBOpenID", id);
+		HttpHelper.get(this, ApiUrl.ACCOUNT_EXIST, null, params, new ObjectHttpResponseHandler<CheckExistResult>(CheckExistResult.class) {
 
-		private String id;
-
-		public CheckAccountExistTask(String id) {
-			this.id = id;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			showDialogRes(R.string.logining);
-		}
-
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			CheckExistResult result = UserService.getService().exist(id, role);
-			if (null != result && null != result.getResult()) {
-				return result.getResult();
+			@Override
+			public void onFailure(int status, String message) {
+				dismissDialog();
+				toast(R.string.toast_server_error);
 			}
-			return false;
-		}
 
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
-			RegisterLoginModel model = new RegisterLoginModel();
-			model.setEmail("");
-			model.setPassword("");
-			model.setAccountType(role);
-			model.setFBOpenID(id);
-			String im = getString(R.string.app_name) + id;
-			model.setIMID(im);
-			dismissDialog();
-			if (result) {
-				// 存在,直接登錄
-				new LoginTask(model).execute();
-			} else {
-				// 不存在,需要註冊
-				new RegisterTask(model).execute();
+			@Override
+			public void onSuccess(CheckExistResult result) {
+				dismissDialog();
+				if (null != result && null != result.getResult()) {
+					RegisterLoginModel model = new RegisterLoginModel();
+					model.setEmail("");
+					model.setPassword("");
+					model.setAccountType(role);
+					model.setFBOpenID(id);
+					String im = getString(R.string.app_name) + id;
+					model.setIMID(im);
+					if (result.getResult()) {
+						// 存在,直接登錄
+						login(model);
+					} else {
+						// 不存在,需要註冊
+						register(model);
+					}
+				}
 			}
+		});
+	}
+
+	/**
+	 * 注册
+	 * 
+	 * @param model
+	 */
+	private void register(final RegisterLoginModel model) {
+		showDialogRes(R.string.logining);
+		String content = JsonUtil.parseObject2Str(model);
+		try {
+			StringEntity entity = new StringEntity(content, HTTP.UTF_8);
+			HttpHelper.post(this, ApiUrl.REGISTER, null, entity, new ObjectHttpResponseHandler<RegisterInfoResult>(RegisterInfoResult.class) {
+
+				@Override
+				public void onFailure(int status, String message) {
+					dismissDialog();
+					toast(R.string.toast_login_failed);
+				}
+
+				@Override
+				public void onSuccess(RegisterInfoResult t) {
+					if (200 == t.getStatusCode()) {
+						new RegisterImTask(model, t).execute();
+					} else {
+						dismissDialog();
+						toast(R.string.toast_login_failed);
+					}
+				}
+			});
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			toast(R.string.toast_login_failed);
 		}
 	}
 
 	/**
-	 * 註冊異步任務
+	 * 註冊IM異步任務
 	 * 
 	 * @author bruce.chen
 	 * 
 	 */
-	class RegisterTask extends AsyncTask<Void, Void, RegisterInfoResult> {
+	class RegisterImTask extends AsyncTask<Void, Void, RegisterInfoResult> {
 
-		private RegisterLoginModel model;
+		RegisterLoginModel model;
+		RegisterInfoResult result;
 
-		public RegisterTask(RegisterLoginModel model) {
+		public RegisterImTask(RegisterLoginModel model, RegisterInfoResult result) {
 			this.model = model;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			showDialogRes(R.string.logining);
+			this.result = result;
 		}
 
 		@Override
 		protected RegisterInfoResult doInBackground(Void... params) {
-			RegisterInfoResult result = UserService.getService().register(model);
+			// 註冊IM
+			String imAccount = model.getIMID();
+			int status = XmppManager.getInstance().register(imAccount, imAccount);
+			if (null != result.getResult()) {
+				result.getResult().setStatus(status);
+			}
 			return result;
 		}
 
@@ -339,13 +361,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 					}
 					switch (result.getResult().getStatus()) {
 						case Constants.Xmpp.REGISTER_SUCCESS:
+						case Constants.Xmpp.REGISTER_ACCOUNT_EXIST:
 							// 發廣播結束登錄界面
 							Intent finishLogin = new Intent();
 							finishLogin.setAction(Constants.Action.FINISH_LOGINACTIVITY);
 							sendBroadcast(finishLogin);
 							// 保存賬號資料
 							Account account = new Account();
-							account.set_id(UUIDUtils.getID(6));
+							account.setId("1");
 							account.setMemberId(result.getResult().getId());
 							account.setRole(role);
 							account.setEmail(model.getEmail());
@@ -353,16 +376,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 							account.setImAccount(model.getIMID());
 							account.setImPswd(model.getIMID());
 							String token = result.getResult().getToken();
-							if (null == token || "".equals(token)) {
-								token = "XV9hg8WahQGsVvAAHi1FILfgw4FT+wY2tMXazzKDNACA9UhjV4MTAAocdq2JI4VBCdqJTg";
-							}
 							account.setToken(token);
-							try {
-								TutorApplication.dbUtils.deleteAll(Account.class);
-								TutorApplication.dbUtils.save(account);
-							} catch (DbException e) {
-								e.printStackTrace();
-							}
+							TutorApplication.getAccountDao().insertOrReplace(account);
 							// 進入隱私聲明
 							Intent intent = new Intent();
 							intent.setClass(LoginActivity.this, TeamConditionsActivity.class);
@@ -370,11 +385,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 							startActivity(intent);
 							finishNoAnim();
 							break;
-						case Constants.Xmpp.REGISTER_ACCOUNT_EXIST:
-							toast(R.string.toast_register_exist);
-							break;
 						case Constants.Xmpp.REGISTER_ERROR:
-							toast(R.string.toast_register_fail);
+							toast(R.string.toast_login_failed);
 							break;
 					}
 					break;

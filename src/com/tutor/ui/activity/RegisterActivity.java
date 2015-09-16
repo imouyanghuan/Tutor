@@ -1,5 +1,10 @@
 package com.tutor.ui.activity;
 
+import java.io.UnsupportedEncodingException;
+
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
+
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,18 +18,20 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.lidroid.xutils.exception.DbException;
 import com.mssky.mobile.helper.ValidatorHelper;
 import com.tutor.R;
 import com.tutor.TutorApplication;
+import com.tutor.im.XmppManager;
 import com.tutor.model.Account;
 import com.tutor.model.RegisterInfoResult;
 import com.tutor.model.RegisterLoginModel;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
-import com.tutor.service.UserService;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.DateTimeUtil;
-import com.tutor.util.UUIDUtils;
+import com.tutor.util.HttpHelper;
+import com.tutor.util.JsonUtil;
+import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
  * 註冊界面
@@ -115,7 +122,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 			model.setFBOpenID("");
 			String im = email.replace("@", "").replace(".", "");
 			model.setIMID(im);
-			new RegisterTask(model).execute();
+			register(model);
 		} else if (R.id.ac_register_tv_team == v.getId()) {
 			Intent intent = new Intent(this, TeamConditionsActivity.class);
 			startActivity(intent);
@@ -123,34 +130,63 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 	}
 
 	/**
-	 * 註冊異步任務
+	 * 注册
+	 * 
+	 * @param model
+	 */
+	private void register(final RegisterLoginModel model) {
+		showDialogRes(R.string.registering);
+		String content = JsonUtil.parseObject2Str(model);
+		try {
+			StringEntity entity = new StringEntity(content, HTTP.UTF_8);
+			HttpHelper.post(this, ApiUrl.REGISTER, null, entity, new ObjectHttpResponseHandler<RegisterInfoResult>(RegisterInfoResult.class) {
+
+				@Override
+				public void onFailure(int status, String message) {
+					dismissDialog();
+					toast(R.string.toast_register_fail);
+				}
+
+				@Override
+				public void onSuccess(RegisterInfoResult t) {
+					if (200 == t.getStatusCode()) {
+						new RegisterImTask(model, t).execute();
+					} else {
+						dismissDialog();
+						toast(R.string.toast_register_fail);
+					}
+				}
+			});
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			toast(R.string.toast_register_fail);
+		}
+	}
+
+	/**
+	 * 註冊IM異步任務
 	 * 
 	 * @author bruce.chen
 	 * 
 	 */
-	class RegisterTask extends AsyncTask<Void, Void, RegisterInfoResult> {
+	class RegisterImTask extends AsyncTask<Void, Void, RegisterInfoResult> {
 
-		private RegisterLoginModel model;
+		RegisterLoginModel model;
+		RegisterInfoResult result;
 
-		public RegisterTask(RegisterLoginModel model) {
+		public RegisterImTask(RegisterLoginModel model, RegisterInfoResult result) {
 			this.model = model;
-		}
-		
-		@Override
-		protected void onProgressUpdate(Void... values) {
-			// TODO Auto-generated method stub
-			super.onProgressUpdate(values);
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			//showDialogRes(R.string.registering);
+			this.result = result;
 		}
 
 		@Override
 		protected RegisterInfoResult doInBackground(Void... params) {
-			RegisterInfoResult result = UserService.getService().register(model);
+			// 註冊IM
+			String imAccount = model.getIMID();
+			int status = XmppManager.getInstance().register(imAccount, imAccount);
+			if (null != result.getResult()) {
+				result.getResult().setStatus(status);
+			}
 			return result;
 		}
 
@@ -176,7 +212,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 							sendBroadcast(finishLogin);
 							// 保存賬號資料
 							Account account = new Account();
-							account.set_id(UUIDUtils.getID(6));
+							account.setId("1");
 							account.setMemberId(result.getResult().getId());
 							account.setStatus(result.getResult().getStatus());
 							account.setCreatedTime(DateTimeUtil.str2Date(result.getResult().getCreatedTime(), DateTimeUtil.FORMART_2));
@@ -187,12 +223,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 							account.setImPswd(model.getIMID());
 							String token = result.getResult().getToken();
 							account.setToken(token);
-							try {
-								TutorApplication.dbUtils.deleteAll(Account.class);
-								TutorApplication.dbUtils.save(account);
-							} catch (DbException e) {
-								e.printStackTrace();
-							}
+							TutorApplication.getAccountDao().insertOrReplace(account);
 							// 進入完善资料
 							Intent intent = new Intent();
 							intent.setClass(RegisterActivity.this, FillPersonalInfoActivity.class);

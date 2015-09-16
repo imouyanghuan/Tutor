@@ -48,7 +48,7 @@ public class FindTeacherFragment extends BaseFragment {
 		listView.getRefreshableView().addHeaderView(headerView);
 		// 設置可上拉加載和下拉刷新
 		listView.setMode(Mode.BOTH);
-		adapter = new MatchStudentAdapter(getActivity(), users, listView.getRefreshableView());
+		adapter = new MatchStudentAdapter(getActivity(), users);
 		listView.setAdapter(adapter);
 	}
 }

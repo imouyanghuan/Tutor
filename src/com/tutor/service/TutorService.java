@@ -3,11 +3,10 @@ package com.tutor.service;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import org.apache.http.HttpException;
 import org.apache.http.entity.StringEntity;
 
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.RequestParams;
-import com.mssky.mobile.core.JsonHelper;
+import com.loopj.android.http.RequestParams;
 import com.tutor.TutorApplication;
 import com.tutor.model.AreaListResult;
 import com.tutor.model.CourseListResult;
@@ -26,18 +25,7 @@ import com.tutor.util.CheckTokenUtils;
  * 
  *         2015-9-1
  */
-public class TutorService extends TutorBaseService {
-
-	private static TutorService service;
-
-	private TutorService() {}
-
-	public static TutorService getService() {
-		if (null == service) {
-			service = new TutorService();
-		}
-		return service;
-	}
+public class TutorService {
 
 	/**
 	 * 獲取課程列表
@@ -46,14 +34,11 @@ public class TutorService extends TutorBaseService {
 	 */
 	public CourseListResult getCourseList() {
 		try {
-			CourseListResult result = executeEntityGet(ApiUrl.COURSELIST, TutorApplication.getDefaultGetParams(), CourseListResult.class);
+			CourseListResult result = executeEntityGet(ApiUrl.COURSELIST, new RequestParams();, CourseListResult.class);
 			CheckTokenUtils.checkToken(result);
 			return result;
 		} catch (HttpException e) {
 			e.printStackTrace();
-			if (Constants.General.UNAUTHORIZED.equals(e.getMessage())) {
-				CheckTokenUtils.reLogin();
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -67,14 +52,11 @@ public class TutorService extends TutorBaseService {
 	 */
 	public AreaListResult getAreaList() {
 		try {
-			AreaListResult result = executeEntityGet(ApiUrl.AREALIST, TutorApplication.getDefaultGetParams(), AreaListResult.class);
+			AreaListResult result = executeEntityGet(ApiUrl.AREALIST, new RequestParams(), AreaListResult.class);
 			CheckTokenUtils.checkToken(result);
 			return result;
 		} catch (HttpException e) {
 			e.printStackTrace();
-			if (Constants.General.UNAUTHORIZED.equals(e.getMessage())) {
-				CheckTokenUtils.reLogin();
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -88,18 +70,15 @@ public class TutorService extends TutorBaseService {
 	 */
 	public TimeSlotListResult getTimeSlotList(int memberId, int pageIndex, int pageSize) {
 		try {
-			RequestParams params = TutorApplication.getDefaultGetParams();
-			params.addQueryStringParameter("memberId", "" + memberId);
-			params.addQueryStringParameter("pageIndex", "" + pageIndex);
-			params.addQueryStringParameter("pageSize", "" + pageSize);
+			RequestParams params = new RequestParams();
+			params.put("memberId", "" + memberId);
+			params.put("pageIndex", "" + pageIndex);
+			params.put("pageSize", "" + pageSize);
 			TimeSlotListResult result = executeEntityGet(ApiUrl.TIMESLOTLIST, params, TimeSlotListResult.class);
 			CheckTokenUtils.checkToken(result);
 			return result;
 		} catch (HttpException e) {
 			e.printStackTrace();
-			if (Constants.General.UNAUTHORIZED.equals(e.getMessage())) {
-				CheckTokenUtils.reLogin();
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -112,19 +91,16 @@ public class TutorService extends TutorBaseService {
 	 * @return
 	 */
 	public NotificationListResult getNotificationCount() {
-		RequestParams params = TutorApplication.getDefaultGetParams();
-		params.addQueryStringParameter("status", "1");
-		params.addQueryStringParameter("pageIndex", "0");
-		params.addQueryStringParameter("pageSize", "1");
+		RequestParams params = new RequestParams();
+		params.put("status", "1");
+		params.put("pageIndex", "0");
+		params.put("pageSize", "1");
 		try {
 			NotificationListResult result = executeEntityGet(ApiUrl.NOTIFICATIONLIST, params, NotificationListResult.class);
 			CheckTokenUtils.checkToken(result);
 			return result;
 		} catch (HttpException e) {
 			e.printStackTrace();
-			if (Constants.General.UNAUTHORIZED.equals(e.getMessage())) {
-				CheckTokenUtils.reLogin();
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -139,18 +115,15 @@ public class TutorService extends TutorBaseService {
 	 * @return
 	 */
 	public MatchStudentListResult getMatchStudentList(String pageIndex, String pageSize) {
-		RequestParams params = TutorApplication.getDefaultGetParams();
-		params.addQueryStringParameter("pageIndex", pageIndex);
-		params.addQueryStringParameter("pageSize", pageSize);
+		RequestParams params = new RequestParams();
+		params.put("pageIndex", pageIndex);
+		params.put("pageSize", pageSize);
 		try {
 			MatchStudentListResult result = executeEntityGet(ApiUrl.STUDENTMATCH, params, MatchStudentListResult.class);
 			CheckTokenUtils.checkToken(result);
 			return result;
 		} catch (HttpException e) {
 			e.printStackTrace();
-			if (Constants.General.UNAUTHORIZED.equals(e.getMessage())) {
-				CheckTokenUtils.reLogin();
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -167,18 +140,15 @@ public class TutorService extends TutorBaseService {
 	 */
 	public MatchStudentListResult geSearchStudentList(String keyWord, String pageIndex, String pageSize) {
 		MatchStudentListResult result = null;
-		RequestParams params = TutorApplication.getDefaultGetParams();
-		params.addQueryStringParameter("keywords", keyWord);
-		params.addQueryStringParameter("pageIndex", pageIndex);
-		params.addQueryStringParameter("pageSize", pageSize);
+		RequestParams params = new RequestParams();
+		params.put("keywords", keyWord);
+		params.put("pageIndex", pageIndex);
+		params.put("pageSize", pageSize);
 		try {
 			result = executeEntityGet(ApiUrl.SEARCHSTUDENT, params, MatchStudentListResult.class);
 			CheckTokenUtils.checkToken(result);
 		} catch (HttpException e) {
 			e.printStackTrace();
-			if (Constants.General.UNAUTHORIZED.equals(e.getMessage())) {
-				CheckTokenUtils.reLogin();
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -194,17 +164,14 @@ public class TutorService extends TutorBaseService {
 	 */
 	public MatchStudentListResult getMyStudentList(String pageIndex, String pageSize) {
 		MatchStudentListResult result = null;
-		RequestParams params = TutorApplication.getDefaultGetParams();
-		params.addQueryStringParameter("pageIndex", pageIndex);
-		params.addQueryStringParameter("pageSize", pageSize);
+		RequestParams params = new RequestParams();
+		params.put("pageIndex", pageIndex);
+		params.put("pageSize", pageSize);
 		try {
 			result = executeEntityGet(ApiUrl.MYSTUDENTLIST, params, MatchStudentListResult.class);
 			CheckTokenUtils.checkToken(result);
 		} catch (HttpException e) {
 			e.printStackTrace();
-			if (Constants.General.UNAUTHORIZED.equals(e.getMessage())) {
-				CheckTokenUtils.reLogin();
-			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -219,7 +186,7 @@ public class TutorService extends TutorBaseService {
 	 */
 	public EditProfileResult submitTutorProfile(TeacherProfile profile) {
 		EditProfileResult result = null;
-		RequestParams params = TutorApplication.getDefaultGetParams();
+		RequestParams params = new RequestParams();
 		params.addHeader("Content-Type", "application/json");
 		String json = JsonHelper.tojson(profile);
 		try {
@@ -244,7 +211,7 @@ public class TutorService extends TutorBaseService {
 	 */
 	public EditProfileResult submitStudentProfile(StudentProfile profile) {
 		EditProfileResult result = null;
-		RequestParams params = TutorApplication.getDefaultGetParams();
+		RequestParams params = new RequestParams();
 		params.addHeader("Content-Type", "application/json");
 		String json = JsonHelper.tojson(profile);
 		try {

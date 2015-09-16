@@ -5,11 +5,10 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 import com.tutor.R;
 import com.tutor.model.Area;
@@ -19,7 +18,6 @@ import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.activity.PersonInfoActivity;
 import com.tutor.util.ImageUtils;
-import com.tutor.util.ImageUtils.CallBack;
 
 /**
  * 匹配學生列表適配器
@@ -30,11 +28,8 @@ import com.tutor.util.ImageUtils.CallBack;
  */
 public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 
-	private ListView listView;
-
-	public MatchStudentAdapter(Context mContext, List<UserInfo> mData, ListView listView) {
+	public MatchStudentAdapter(Context mContext, List<UserInfo> mData) {
 		super(mContext, mData, R.layout.student_list_item);
-		this.listView = listView;
 	}
 
 	public void refresh(List<UserInfo> mData) {
@@ -45,25 +40,13 @@ public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 	@Override
 	protected void convert(ViewHolder holder, final UserInfo t, int position) {
 		ImageView avatar = holder.getView(R.id.student_list_item_avatar);
-		// ImageUtils.loadImageSync(avatar, ApiUrl.DOMAIN + t.getAvatar());
-		String path = ApiUrl.DOMAIN + t.getAvatar();
-		avatar.setTag(path);
-		Bitmap bitmap = ImageUtils.getUtils().loadImage(path, new CallBack() {
-
-			@Override
-			public void onSuccess(Bitmap bitmap, String path) {
-				ImageView imageView = (ImageView) listView.findViewWithTag(path);
-				if (null != imageView) {
-					imageView.setImageBitmap(bitmap);
-				}
-			}
-		});
-		if (null != bitmap) {
-			avatar.setImageBitmap(bitmap);
+		if (TextUtils.isEmpty(t.getAvatar())) {
+			ImageUtils.loadImage(avatar, "drawable://" + R.drawable.avatar);
 		} else {
-			avatar.setImageResource(R.drawable.avatar);
+			String path = ApiUrl.DOMAIN + t.getAvatar();
+			ImageUtils.loadImage(avatar, path);
 		}
-		holder.setText(R.id.student_list_item_nick, t.getEmail().substring(0, t.getEmail().indexOf("@")));
+		holder.setText(R.id.student_list_item_nick, t.getUserName());
 		ArrayList<Area> areas = t.getAreas();
 		if (null != areas && 0 != areas.size()) {
 			StringBuffer sb = new StringBuffer();

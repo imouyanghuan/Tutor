@@ -82,7 +82,7 @@ public abstract class BaseChatActivity extends BaseActivity {
 					receiveNewMessage(message);
 					refreshMessage(imMessages);
 					// 更新为已读状态
-					IMMessageManager.getManager().updateStatus(message.get_id(), IMMessage.READ_STATUS_READ);
+					IMMessageManager.getManager().updateStatus(message.getId(), IMMessage.READ_STATUS_READ);
 				}
 			}
 		}
@@ -117,7 +117,7 @@ public abstract class BaseChatActivity extends BaseActivity {
 		IMMessage imMessage = new IMMessage();
 		try {
 			chat.sendMessage(message);
-			imMessage.set_id(id);
+			imMessage.setId(id);
 			imMessage.setContent(msg);
 			imMessage.setMsgType(IMMessage.CHAT_MESSAGE_TYPE_SEND);
 			imMessage.setNoticeSum(0);

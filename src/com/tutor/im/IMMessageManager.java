@@ -3,18 +3,18 @@ package com.tutor.im;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.database.Cursor;
-
-import com.lidroid.xutils.DbUtils;
-import com.lidroid.xutils.db.sqlite.Selector;
-import com.lidroid.xutils.db.sqlite.WhereBuilder;
-import com.lidroid.xutils.db.table.TableUtils;
-import com.lidroid.xutils.exception.DbException;
 import com.tutor.TutorApplication;
-import com.tutor.model.Account;
 import com.tutor.model.IMMessage;
+import com.tutor.model.IMMessageDao;
+import com.tutor.model.IMMessageDao.Properties;
 import com.tutor.util.LogUtils;
 import com.tutor.util.StringUtils;
+
+import android.database.Cursor;
+
+import de.greenrobot.dao.query.DeleteQuery;
+import de.greenrobot.dao.query.QueryBuilder;
+import de.greenrobot.dao.query.WhereCondition;
 
 /**
  * 消息管理
@@ -24,23 +24,20 @@ import com.tutor.util.StringUtils;
  */
 public class IMMessageManager {
 
+	// 1、public QueryBuilder<T> where(WhereCondition cond, WhereCondition...
+	// condMore)：使用and连接多个查询条件。
+	// 2、public QueryBuilder<T> whereOr(WhereCondition cond1, WhereCondition
+	// cond2, WhereCondition... condMore)：使用or连接多个查询条件。
+	// 3、public QueryBuilder<T> orderDesc(Property... properties)：排序
+	// 4、public WhereCondition or(WhereCondition cond1, WhereCondition cond2,
+	// WhereCondition... condMore)：使用or构成查询条件
+	// 5、public WhereCondition or(WhereCondition cond1, WhereCondition cond2,
+	// WhereCondition... condMore)：使用and构成查询条件
 	private static IMMessageManager imMessageManager;
-	private DbUtils dbUtils;
-//	private String currentIMAccount = null;
+	private IMMessageDao imMessageDao;
 
 	private IMMessageManager() {
-		dbUtils = TutorApplication.dbUtils;
-//		try {
-//			Account account = dbUtils.findFirst(Account.class);
-//			if (null != account) {
-//				currentIMAccount = account.getImAccount() + "@" + XMPPConnectionManager.getManager().getServiceName();
-//			}
-//		} catch (DbException e) {
-//			e.printStackTrace();
-//		}
-//		if (null == currentIMAccount) {
-//			throw new IllegalArgumentException("not login");
-//		}
+		imMessageDao = TutorApplication.getImMessageDao();
 	}
 
 	public static IMMessageManager getManager() {
@@ -59,18 +56,15 @@ public class IMMessageManager {
 		if (null == message) {
 			return -1;
 		}
-		try {
-			if (IMMessage.MESSAGE_TYPE_ADD_FRIEND == message.getNoticeType()) {
-				dbUtils.delete(IMMessage.class, WhereBuilder.b("fromSubJid", "=", message.getFromSubJid()).and("noticeType", "=", "" + IMMessage.MESSAGE_TYPE_ADD_FRIEND));
-				dbUtils.save(message);
-			} else {
-				dbUtils.save(message);
+		if (IMMessage.MESSAGE_TYPE_ADD_FRIEND == message.getNoticeType()) {
+			QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
+			WhereCondition condition = qb.and(Properties.FromSubJid.eq(message.getFromSubJid()), Properties.NoticeType.eq("" + IMMessage.MESSAGE_TYPE_ADD_FRIEND));
+			DeleteQuery<IMMessage> db = qb.where(condition).buildDelete();
+			if (null != db) {
+				db.executeDeleteWithoutDetachingEntities();
 			}
-			return 0;
-		} catch (DbException e) {
-			e.printStackTrace();
-			return -1;
 		}
+		return imMessageDao.insert(message);
 	}
 
 	/**
@@ -83,14 +77,10 @@ public class IMMessageManager {
 		if (StringUtils.empty(id)) {
 			return;
 		}
-		try {
-			IMMessage message = dbUtils.findById(IMMessage.class, id);
-			message.setReadStatus(status);
-			message.setNoticeSum(0);
-			dbUtils.saveOrUpdate(message);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		IMMessage message = imMessageDao.load(id);
+		message.setReadStatus(status);
+		message.setNoticeSum(0);
+		imMessageDao.update(message);
 	}
 
 	/**
@@ -105,26 +95,21 @@ public class IMMessageManager {
 	 * @return
 	 */
 	public List<IMMessage> searchChatMessages(String fromSubJid, int currentSize, int pageSize) {
-		try {
-			LogUtils.e("currentSize == " + fromSubJid);
-			LogUtils.e("currentSize == " + currentSize);
-			int size = (int) getMsgCountWithSomeBody(fromSubJid);
-			int offset = size - (currentSize + pageSize);
-			LogUtils.e("offset == " + offset);
-			if (offset < 0 && currentSize < size) {
-				offset = 0;
-				pageSize = size - currentSize;
-			} else if (offset < 0 && currentSize >= size) {
-				return null;
-			}
-			List<IMMessage> list = dbUtils.findAll(Selector.from(IMMessage.class).where("fromSubJid", "=", fromSubJid)/*.and("toJid", "=", currentIMAccount)*/
-					.and("noticeType", "=", IMMessage.MESSAGE_TYPE_CHAT_MSG + "").limit(pageSize).offset(offset));
-			System.out.println(list.size());
-			return list;
-		} catch (DbException e) {
-			e.printStackTrace();
+		LogUtils.e("currentSize == " + fromSubJid);
+		LogUtils.e("currentSize == " + currentSize);
+		int size = (int) getMsgCountWithSomeBody(fromSubJid);
+		int offset = size - (currentSize + pageSize);
+		LogUtils.e("offset == " + offset);
+		if (offset < 0 && currentSize < size) {
+			offset = 0;
+			pageSize = size - currentSize;
+		} else if (offset < 0 && currentSize >= size) {
+			return null;
 		}
-		return null;
+		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
+		WhereCondition condition = qb.and(Properties.FromSubJid.eq(fromSubJid), Properties.NoticeType.eq("" + IMMessage.MESSAGE_TYPE_CHAT_MSG));
+		List<IMMessage> list = qb.where(condition).limit(pageSize).offset(offset).list();
+		return list;
 	}
 
 	/**
@@ -134,14 +119,11 @@ public class IMMessageManager {
 	 * @return
 	 */
 	public long getMsgCountWithSomeBody(String fromSubJid) {
-		try {
-			long count = dbUtils.count(Selector.from(IMMessage.class).where("fromSubJid", "=", fromSubJid)/*.and("toJid", "=", currentIMAccount)*/);
-			LogUtils.e("count == " + count);
-			return count;
-		} catch (DbException e) {
-			e.printStackTrace();
-		}
-		return 0;
+		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
+		WhereCondition condition = qb.and(Properties.FromSubJid.eq(fromSubJid), Properties.NoticeType.eq("" + IMMessage.MESSAGE_TYPE_CHAT_MSG));
+		qb.where(condition);
+		long count = qb.count();
+		return count;
 	}
 
 	/**
@@ -151,13 +133,13 @@ public class IMMessageManager {
 	 * @return
 	 */
 	public boolean deleteMsgWhereJid(String fromSubJid) {
-		try {
-			dbUtils.delete(IMMessage.class, WhereBuilder.b("fromSubJid", "=", fromSubJid)/*.and("toJid", "=", currentIMAccount)*/);
+		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
+		DeleteQuery<IMMessage> db = qb.where(Properties.FromSubJid.eq(fromSubJid)).buildDelete();
+		if (null != db) {
+			db.executeDeleteWithoutDetachingEntities();
 			return true;
-		} catch (DbException e) {
-			e.printStackTrace();
-			return false;
 		}
+		return false;
 	}
 
 	/**
@@ -167,13 +149,13 @@ public class IMMessageManager {
 	 * @return
 	 */
 	public boolean deleteMsgWhereType(Integer type) {
-		try {
-			dbUtils.delete(IMMessage.class, WhereBuilder.b("noticeType", "=", "" + type)/*.and("toJid", "=", currentIMAccount)*/);
+		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
+		DeleteQuery<IMMessage> db = qb.where(Properties.NoticeType.eq(type)).buildDelete();
+		if (null != db) {
+			db.executeDeleteWithoutDetachingEntities();
 			return true;
-		} catch (DbException e) {
-			e.printStackTrace();
-			return false;
 		}
+		return false;
 	}
 
 	/**
@@ -182,43 +164,43 @@ public class IMMessageManager {
 	 * @return
 	 * @throws DbException
 	 */
-	public List<IMMessage> getRecentContactsWithLastMsg() throws DbException {
+	public List<IMMessage> getRecentContactsWithLastMsg() {
 		List<IMMessage> list = null;
 		StringBuffer sqlBuffer = new StringBuffer();
 		sqlBuffer.append(" select * from ( ");
 		sqlBuffer.append(" select ");
-		sqlBuffer.append(" m._id,m.content,m.title,m.time,m.fromSubJid,m.noticeType ");
+		sqlBuffer.append(" m.ID,m.CONTENT,m.TITLE,m.TIME,m.FROM_SUB_JID,m.NOTICE_TYPE ");
 		sqlBuffer.append(" from ");
-		sqlBuffer.append(TableUtils.getTableName(IMMessage.class)).append(" m ");
+		sqlBuffer.append(IMMessageDao.TABLENAME).append(" m ");
 		sqlBuffer.append(" where ");
-		sqlBuffer.append(" m.noticeType = ").append(IMMessage.MESSAGE_TYPE_CHAT_MSG)/*.append(" and m.toJid = " + currentIMAccount)*/.append(" group by m.fromSubJid ");
+		sqlBuffer.append(" m.NOTICE_TYPE = ").append(IMMessage.MESSAGE_TYPE_CHAT_MSG).append(" group by m.FROM_SUB_JID ");
 		sqlBuffer.append(" union ");
 		sqlBuffer.append(" select ");
-		sqlBuffer.append(" m._id,m.content,m.title,m.time,m.fromSubJid,m.noticeType ");
+		sqlBuffer.append(" m.ID,m.CONTENT,m.TITLE,m.TIME,m.FROM_SUB_JID,m.NOTICE_TYPE ");
 		sqlBuffer.append(" from ");
-		sqlBuffer.append(TableUtils.getTableName(IMMessage.class)).append(" m ");
+		sqlBuffer.append(IMMessageDao.TABLENAME).append(" m ");
 		sqlBuffer.append(" where ");
-		sqlBuffer.append(" m.noticeType = ").append(IMMessage.MESSAGE_TYPE_ADD_FRIEND)/*.append(" and m.toJid = " + currentIMAccount)*/.append(" group by m.noticeType ");
+		sqlBuffer.append(" m.NOTICE_TYPE = ").append(IMMessage.MESSAGE_TYPE_ADD_FRIEND).append(" group by m.NOTICE_TYPE ");
 		sqlBuffer.append(" union ");
 		sqlBuffer.append(" select ");
-		sqlBuffer.append(" m._id,m.content,m.title,m.time,m.fromSubJid,m.noticeType ");
+		sqlBuffer.append(" m.ID,m.CONTENT,m.TITLE,m.TIME,m.FROM_SUB_JID,m.NOTICE_TYPE ");
 		sqlBuffer.append(" from ");
-		sqlBuffer.append(TableUtils.getTableName(IMMessage.class)).append(" m ");
+		sqlBuffer.append(IMMessageDao.TABLENAME).append(" m ");
 		sqlBuffer.append(" where ");
-		sqlBuffer.append(" m.noticeType = ").append(IMMessage.MESSAGE_TYPE_SYS_MSG)/*.append(" and m.toJid = " + currentIMAccount)*/.append(" group by m.noticeType ");
+		sqlBuffer.append(" m.NOTICE_TYPE = ").append(IMMessage.MESSAGE_TYPE_SYS_MSG).append(" group by m.NOTICE_TYPE ");
 		sqlBuffer.append(" ) t order by t.time desc ");
 		System.out.println(sqlBuffer.toString());
-		Cursor cursor = dbUtils.execQuery(sqlBuffer.toString());
+		Cursor cursor = TutorApplication.getDatabase().rawQuery(sqlBuffer.toString(), null);
 		if (cursor != null) {
 			list = new ArrayList<IMMessage>();
 			while (cursor.moveToNext()) {
 				IMMessage message = new IMMessage();
-				message.set_id(cursor.getString(cursor.getColumnIndex("_id")));
-				message.setContent(cursor.getString(cursor.getColumnIndex("content")));
-				message.setTitle(cursor.getString(cursor.getColumnIndex("title")));
-				message.setTime(cursor.getString(cursor.getColumnIndex("time")));
-				message.setFromSubJid(cursor.getString(cursor.getColumnIndex("fromSubJid")));
-				message.setNoticeType(cursor.getInt(cursor.getColumnIndex("noticeType")));
+				message.setId(cursor.getString(cursor.getColumnIndex("ID")));
+				message.setContent(cursor.getString(cursor.getColumnIndex("CONTENT")));
+				message.setTitle(cursor.getString(cursor.getColumnIndex("TITLE")));
+				message.setTime(cursor.getString(cursor.getColumnIndex("TIME")));
+				message.setFromSubJid(cursor.getString(cursor.getColumnIndex("FROM_SUB_JID")));
+				message.setNoticeType(cursor.getInt(cursor.getColumnIndex("NOTICE_TYPE")));
 				list.add(message);
 			}
 		}
@@ -237,13 +219,9 @@ public class IMMessageManager {
 	 * @return
 	 */
 	public List<IMMessage> getUnreadNotices() {
-		try {
-			List<IMMessage> list = dbUtils.findAll(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD)/*.and("toJid", "=", currentIMAccount)*/);
-			return list;
-		} catch (DbException e) {
-			e.printStackTrace();
-			return null;
-		}
+		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
+		List<IMMessage> list = qb.where(Properties.ReadStatus.eq("" + IMMessage.READ_STATUS_UNREAD)).list();
+		return list;
 	}
 
 	/**
@@ -254,14 +232,10 @@ public class IMMessageManager {
 	 * @param content
 	 */
 	public void updateAddFriendStatus(String id, Integer status, String content) {
-		try {
-			IMMessage notice = dbUtils.findById(IMMessage.class, id);
-			notice.setReadStatus(status);
-			notice.setContent(content);
-			dbUtils.saveOrUpdate(notice);
-		} catch (DbException e) {
-			e.printStackTrace();
-		}
+		IMMessage notice = imMessageDao.load(id);
+		notice.setReadStatus(status);
+		notice.setContent(content);
+		imMessageDao.update(notice);
 	}
 
 	/**
@@ -270,12 +244,8 @@ public class IMMessageManager {
 	 * @return
 	 */
 	public Long getUnReadNoticeCount() {
-		try {
-			return dbUtils.count(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD)/*.and("toJid", "=", currentIMAccount)*/);
-		} catch (DbException e) {
-			e.printStackTrace();
-			return 0l;
-		}
+		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
+		return qb.where(Properties.ReadStatus.eq("" + IMMessage.READ_STATUS_UNREAD)).count();
 	}
 
 	/**
@@ -285,12 +255,7 @@ public class IMMessageManager {
 	 * @return
 	 */
 	public IMMessage getNoticeById(String id) {
-		try {
-			return dbUtils.findById(IMMessage.class, id);
-		} catch (DbException e) {
-			e.printStackTrace();
-			return null;
-		}
+		return imMessageDao.load(id);
 	}
 
 	/**
@@ -300,12 +265,10 @@ public class IMMessageManager {
 	 * @return
 	 */
 	public List<IMMessage> getUnReadNoticeListByType(int type) {
-		try {
-			return dbUtils.findAll(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD).and("noticeType", "=", "" + type)/*.and("toJid", "=", currentIMAccount)*/);
-		} catch (DbException e) {
-			e.printStackTrace();
-			return null;
-		}
+		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
+		WhereCondition condition = qb.and(Properties.ReadStatus.eq("" + IMMessage.READ_STATUS_UNREAD), Properties.NoticeType.eq("" + type));
+		qb.where(condition);
+		return qb.list();
 	}
 
 	/**
@@ -315,12 +278,9 @@ public class IMMessageManager {
 	 * @return
 	 */
 	public List<IMMessage> getAllMessageListByType(int type) {
-		try {
-			return dbUtils.findAll(Selector.from(IMMessage.class).where("noticeType", "=", "" + type)/*.and("toJid", "=", currentIMAccount)*/);
-		} catch (DbException e) {
-			e.printStackTrace();
-			return null;
-		}
+		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
+		qb.where(Properties.NoticeType.eq("" + type));
+		return qb.list();
 	}
 
 	/**
@@ -330,28 +290,10 @@ public class IMMessageManager {
 	 * @return
 	 */
 	public List<IMMessage> getAllSysOrAddFriendMessageList() {
-		try {
-			return dbUtils.findAll(Selector.from(IMMessage.class).where/*("toJid", "=", currentIMAccount).and*/("noticeType", "=", "" + IMMessage.MESSAGE_TYPE_ADD_FRIEND)
-					.or("noticeType", "=", "" + IMMessage.MESSAGE_TYPE_SYS_MSG));
-		} catch (DbException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	/**
-	 * 根据分类获取未读消息的条数
-	 * 
-	 * @param type
-	 * @return
-	 */
-	public long getUnReadNoticeCountByType(int type) {
-		try {
-			return dbUtils.count(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD).and("noticeType", "=", "" + type)/*.and("toJid", "=", currentIMAccount)*/);
-		} catch (DbException e) {
-			e.printStackTrace();
-			return 0l;
-		}
+		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
+		WhereCondition condition = qb.or(Properties.NoticeType.eq("" + IMMessage.MESSAGE_TYPE_ADD_FRIEND), Properties.NoticeType.eq("" + IMMessage.MESSAGE_TYPE_SYS_MSG));
+		qb.where(condition);
+		return qb.list();
 	}
 
 	/**
@@ -361,13 +303,10 @@ public class IMMessageManager {
 	 * @return
 	 */
 	public long getUnReadNoticeCountByTypeAndFrom(int type, String fromSubJid) {
-		try {
-			return dbUtils.count(Selector.from(IMMessage.class).where("readStatus", "=", "" + IMMessage.READ_STATUS_UNREAD).and("noticeType", "=", "" + type).and("fromSubJid", "=", fromSubJid)
-					/*.and("toJid", "=", currentIMAccount)*/);
-		} catch (DbException e) {
-			e.printStackTrace();
-			return 0l;
-		}
+		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
+		WhereCondition condition = qb.and(Properties.ReadStatus.eq("" + IMMessage.READ_STATUS_UNREAD), Properties.NoticeType.eq("" + type), Properties.FromSubJid.eq(fromSubJid));
+		qb.where(condition);
+		return qb.count();
 	}
 
 	/**
@@ -377,17 +316,15 @@ public class IMMessageManager {
 	 * @param status
 	 */
 	public void updateStatusByFrom(String fromSubJid, Integer status) {
-		try {
-			List<IMMessage> list = dbUtils.findAll(Selector.from(IMMessage.class).where("fromSubJid", "=", fromSubJid)/*.and("toJid", "=", currentIMAccount)*/);
-			if (list != null && list.size() > 0) {
-				for (IMMessage notice : list) {
-					notice.setReadStatus(status);
-					notice.setNoticeSum(0);
-				}
-				dbUtils.saveOrUpdateAll(list);
+		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
+		qb.where(Properties.FromSubJid.eq(fromSubJid));
+		List<IMMessage> list = qb.list();
+		if (list != null && list.size() > 0) {
+			for (IMMessage notice : list) {
+				notice.setReadStatus(status);
+				notice.setNoticeSum(0);
 			}
-		} catch (DbException e) {
-			e.printStackTrace();
+			imMessageDao.updateInTx(list);
 		}
 	}
 
@@ -397,11 +334,7 @@ public class IMMessageManager {
 	 * @param noticeId
 	 */
 	public void delById(String noticeId) {
-		try {
-			dbUtils.deleteById(IMMessage.class, noticeId);
-		} catch (DbException e) {
-			e.printStackTrace();
-		}
+		imMessageDao.deleteByKey(noticeId);
 	}
 
 	/**
@@ -411,10 +344,6 @@ public class IMMessageManager {
 	 * @update 2013-4-15 下午6:33:19
 	 */
 	public void delAll() {
-		try {
-			dbUtils.deleteAll(IMMessage.class);
-		} catch (DbException e) {
-			e.printStackTrace();
-		}
+		imMessageDao.deleteAll();
 	}
 }

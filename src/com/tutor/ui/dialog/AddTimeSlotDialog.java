@@ -17,12 +17,10 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.TimePicker.OnTimeChangedListener;
 
-import com.lidroid.xutils.exception.DbException;
 import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.TutorBaseAdapter;
 import com.tutor.adapter.ViewHolder;
-import com.tutor.model.Account;
 import com.tutor.model.Timeslot;
 import com.tutor.util.ScreenUtil;
 import com.tutor.util.ViewHelper;
@@ -104,15 +102,10 @@ public class AddTimeSlotDialog extends Dialog implements android.view.View.OnCli
 		switch (v.getId()) {
 			case R.id.add_timeslot_dialog_btn_ok:
 				if (null != callBack) {
-					try {
-						Account account = TutorApplication.dbUtils.findFirst(Account.class);
-						if (null != account) {
-							timeslot.setMemberId(account.getMemberId());
-							callBack.onAddTimeSlot(timeslot);
-							dismiss();
-						}
-					} catch (DbException e) {
-						e.printStackTrace();
+					if (-1 != TutorApplication.getMemberId()) {
+						timeslot.setMemberId(TutorApplication.getMemberId());
+						callBack.onAddTimeSlot(timeslot);
+						dismiss();
 					}
 				}
 				break;

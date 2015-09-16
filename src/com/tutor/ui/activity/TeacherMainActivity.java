@@ -2,12 +2,9 @@ package com.tutor.ui.activity;
 
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,7 +12,7 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
-import com.lidroid.xutils.exception.DbException;
+import com.loopj.android.http.RequestParams;
 import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.im.IMMessageManager;
@@ -23,15 +20,17 @@ import com.tutor.im.XMPPConnectionManager;
 import com.tutor.im.XmppManager;
 import com.tutor.model.Account;
 import com.tutor.model.NotificationListResult;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.service.IMService;
-import com.tutor.service.TutorService;
 import com.tutor.ui.fragment.BaseFragment;
 import com.tutor.ui.fragment.teacher.FindStudentFragment;
 import com.tutor.ui.fragment.teacher.MyFragment;
 import com.tutor.ui.fragment.teacher.MyStudentFragment;
 import com.tutor.ui.fragment.teacher.OverseasEducationFragment;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.HttpHelper;
+import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
  * 教師主界面,管理fragment
@@ -60,11 +59,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 	// 顯示未讀消息
 	private TextView msgCount;
 	private long count = 0;
-	// 是否需要登錄
-	private boolean isLogin;
 	private boolean isGetdata;
-	// 通過handler更新
-	private MyHandler handler = new MyHandler();
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -76,7 +71,6 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		// 初始化fragment
 		initFragment();
 		mMenuDrawer.peekDrawer();
-		isLogin = true;
 		isGetdata = false;
 	}
 
@@ -202,7 +196,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		}
 		if (!isGetdata) {
 			isGetdata = true;
-			new GetNotificationCountTask().execute();
+			getNotificationCount();
 		}
 	}
 
@@ -269,67 +263,67 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		}
 	}
 
-	@SuppressLint("HandlerLeak")
-	private class MyHandler extends Handler {
+	/**
+	 * 获取消息数量
+	 */
+	private void getNotificationCount() {
+		RequestParams params = new RequestParams();
+		params.put("status", "1");
+		params.put("pageIndex", "0");
+		params.put("pageSize", "1");
+		HttpHelper.get(this, ApiUrl.NOTIFICATIONLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<NotificationListResult>(NotificationListResult.class) {
 
-		@Override
-		public void handleMessage(Message msg) {
-			super.handleMessage(msg);
-			int what = msg.what;
-			if (what == Constants.Xmpp.LOGIN_SECCESS) {
-				// 登錄成功,開啟服務
-				isLogin = false;
-				Intent intent = new Intent(TeacherMainActivity.this, IMService.class);
-				startService(intent);
-			} else {
-				isLogin = true;
-				if (!TutorApplication.isTokenInvalid) {
-					toast(R.string.toast_login_im_fail);
+			@Override
+			public void onFailure(int status, String message) {
+				isGetdata = false;
+			}
+
+			@Override
+			public void onSuccess(NotificationListResult result) {
+				isGetdata = false;
+				if (null != result && 200 == result.getStatusCode()) {
+					count += result.getPage().getTotalCount();
+					if (0 < count) {
+						msgCount.setText("" + count);
+						msgCount.setVisibility(View.VISIBLE);
+					} else {
+						msgCount.setText("");
+						msgCount.setVisibility(View.GONE);
+					}
 				}
 			}
-		}
+		});
 	}
 
 	/**
-	 * 獲取未讀邀請消息數量
+	 * 登录IM
 	 * 
-	 * @author bruce.chen
 	 * 
 	 */
-	private class GetNotificationCountTask extends AsyncTask<Void, Void, NotificationListResult> {
+	private class LoginImTask extends AsyncTask<Void, Void, Integer> {
 
 		@Override
-		protected NotificationListResult doInBackground(Void... params) {
+		protected Integer doInBackground(Void... params) {
 			// 執行登錄IM
-			if (isLogin) {
-				isLogin = false;
-				try {
-					Account account = TutorApplication.dbUtils.findFirst(Account.class);
-					if (null != account) {
-						String accountsString = account.getImAccount();
-						String pswd = account.getImPswd();
-						int status = XmppManager.getInstance().login(accountsString, pswd);
-						handler.sendEmptyMessage(status);
-					}
-				} catch (DbException e) {
-					e.printStackTrace();
-				}
+			Account account = TutorApplication.getAccountDao().load("1");
+			if (null != account) {
+				String accountsString = account.getImAccount();
+				String pswd = account.getImPswd();
+				return XmppManager.getInstance().login(accountsString, pswd);
 			}
-			return TutorService.getService().getNotificationCount();
+			return 0;
 		}
 
 		@Override
-		protected void onPostExecute(NotificationListResult result) {
+		protected void onPostExecute(Integer result) {
 			super.onPostExecute(result);
-			isGetdata = false;
-			if (null != result && 200 == result.getStatusCode()) {
-				count += result.getPage().getTotalCount();
-				if (0 < count) {
-					msgCount.setText("" + count);
-					msgCount.setVisibility(View.VISIBLE);
-				} else {
-					msgCount.setText("");
-					msgCount.setVisibility(View.GONE);
+			if (result == Constants.Xmpp.LOGIN_SECCESS) {
+				// 登錄成功,開啟服務
+				Intent intent = new Intent(TeacherMainActivity.this, IMService.class);
+				startService(intent);
+			} else {
+				if (!TutorApplication.isTokenInvalid) {
+					toast(R.string.toast_login_im_fail);
 				}
 			}
 		}

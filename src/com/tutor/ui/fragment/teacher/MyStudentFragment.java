@@ -62,7 +62,7 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 		listView.setMode(Mode.BOTH);
 		listView.setOnRefreshListener(this);
 		listView.setOnItemClickListener(this);
-		adapter = new MatchStudentAdapter(getActivity(), users, listView.getRefreshableView());
+		adapter = new MatchStudentAdapter(getActivity(), users);
 		listView.setAdapter(adapter);
 		new GetStudentListTask(pageIndex, pageSize).execute();
 	}

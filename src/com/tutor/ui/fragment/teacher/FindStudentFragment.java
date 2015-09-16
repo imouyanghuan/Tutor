@@ -73,7 +73,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		// 設置可上拉加載和下拉刷新
 		listView.setMode(Mode.BOTH);
 		listView.setOnRefreshListener(this);
-		adapter = new MatchStudentAdapter(getActivity(), users, listView.getRefreshableView());
+		adapter = new MatchStudentAdapter(getActivity(), users);
 		listView.setAdapter(adapter);
 		// 加載匹配學生列表
 		new GetStudentListTask(pageIndex, pageSize).execute();

@@ -1,8 +1,12 @@
 package com.tutor.ui.activity;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -13,6 +17,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -21,7 +26,7 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
-import com.lidroid.xutils.exception.DbException;
+import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.ui.view.CustomListView;
 import com.tutor.R;
 import com.tutor.TutorApplication;
@@ -39,19 +44,22 @@ import com.tutor.model.StudentProfile;
 import com.tutor.model.TeacherProfile;
 import com.tutor.model.TimeSlotListResult;
 import com.tutor.model.Timeslot;
+import com.tutor.model.UploadAvatarResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.service.TutorService;
-import com.tutor.service.UserService;
 import com.tutor.ui.dialog.AddTimeSlotDialog;
 import com.tutor.ui.dialog.AddTimeSlotDialog.CallBack;
 import com.tutor.ui.dialog.ChangeAvatarDialog;
 import com.tutor.ui.view.AreaItemLayout;
 import com.tutor.ui.view.CourseLayout;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.DateTimeUtil;
+import com.tutor.util.HttpHelper;
 import com.tutor.util.ImageUtils;
 import com.tutor.util.LogUtils;
+import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
  * 完善資料界面
@@ -60,7 +68,7 @@ import com.tutor.util.LogUtils;
  * 
  *         2015-8-24
  */
-public class FillPersonalInfoActivity extends BaseActivity implements OnClickListener, CallBack {
+public class FillPersonalInfoActivity extends BaseActivity implements OnClickListener, CallBack, OnDateSetListener {
 
 	private int role;
 	private Account account;
@@ -95,6 +103,8 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	private ChangeAvatarDialog avatarDialog;
 	// 添加时间对话框
 	private AddTimeSlotDialog timeSlotDialog;
+	// 选择生日对话框
+	private DatePickerDialog datePickerDialog;
 	// 保存拍照圖片uri
 	private Uri imageUri, zoomUri;
 
@@ -105,11 +115,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		if (-1 == role) {
 			throw new IllegalArgumentException("role is -1");
 		}
-		try {
-			account = TutorApplication.dbUtils.findFirst(Account.class);
-		} catch (DbException e) {
-			e.printStackTrace();
-		}
+		account = TutorApplication.getAccountDao().load("1");
 		if (null == account) {
 			throw new IllegalArgumentException("account is null");
 		}
@@ -315,7 +321,19 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 			case R.id.ac_fill_personal_info_btn_add_timeslot:
 				timeSlotDialog.show();
 				break;
+			case R.id.ac_fill_personal_info_tv_birth:
+				if (null == datePickerDialog) {
+					datePickerDialog = new DatePickerDialog(this, this, 1990, 0, 1);
+				}
+				datePickerDialog.show();
+				break;
 		}
+	}
+
+	@Override
+	public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+		birth = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+		brithTextView.setText(birth);
 	}
 
 	private StudentProfile getStudentProfile() {
@@ -576,7 +594,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 						File file = new File(path);
 						if (null != file && file.exists()) {
 							file = null;
-							new UpLoadAvatarTask(path).execute();
+							upLoadAvatar(path);
 						}
 					}
 				}
@@ -669,46 +687,37 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		}
 	}
 
-	/**
-	 * 上傳照片任務
-	 * 
-	 * @author bruce.chen
-	 * 
-	 */
-	private class UpLoadAvatarTask extends AsyncTask<Void, Void, Bitmap> {
+	private void upLoadAvatar(String path) {
+		// 先壓縮圖片
+		String newPath = Constants.SDCard.getCacheDir() + DateTimeUtil.getSystemDateTime(DateTimeUtil.FORMART_YMDHMS) + Constants.General.IMAGE_END;
+		if (ImageUtils.yaSuoImage(path, newPath, 400, 400)) {
+			File file = new File(newPath);
+			RequestParams params = new RequestParams();
+			try {
+				params.put("file", file, "form-data");
+				showDialogRes(R.string.uploading_avatar);
+				HttpHelper.post(this, ApiUrl.UPLOAD_AVATAR, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UploadAvatarResult>(UploadAvatarResult.class) {
 
-		String path;
+					@Override
+					public void onFailure(int status, String message) {
+						dismissDialog();
+						toast(R.string.toast_avatar_upload_fail);
+					}
 
-		public UpLoadAvatarTask(String path) {
-			this.path = path;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			showDialogRes(R.string.uploading_avatar);
-		}
-
-		@Override
-		protected Bitmap doInBackground(Void... params) {
-			// 先壓縮圖片
-			String newPath = Constants.SDCard.getCacheDir() + DateTimeUtil.getSystemDateTime(DateTimeUtil.FORMART_YMDHMS) + Constants.General.IMAGE_END;
-			if (ImageUtils.yaSuoImage(path, newPath, 400, 400)) {
-				File file = new File(newPath);
-				Bitmap result = UserService.getService().uploadAvatar(file);
-				return result;
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Bitmap result) {
-			super.onPostExecute(result);
-			dismissDialog();
-			if (result != null) {
-				avatar = ApiUrl.GET_OTHER_AVATAR + account.getMemberId();
-				avatarImageView.setImageBitmap(result);
-			} else {
+					@Override
+					public void onSuccess(UploadAvatarResult t) {
+						dismissDialog();
+						CheckTokenUtils.checkToken(t);
+						if (HttpURLConnection.HTTP_OK == t.getStatusCode()) {
+							avatar = t.getResult();
+							ImageUtils.loadImage(avatarImageView, ApiUrl.DOMAIN + avatar);
+						} else {
+							toast(R.string.toast_avatar_upload_fail);
+						}
+					}
+				});
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
 				toast(R.string.toast_avatar_upload_fail);
 			}
 		}

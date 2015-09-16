@@ -1,23 +1,22 @@
 package com.tutor;
 
-import org.apache.http.protocol.HTTP;
+import java.util.HashMap;
 
 import android.app.Application;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 
-import com.lidroid.xutils.BitmapUtils;
-import com.lidroid.xutils.DbUtils;
-import com.lidroid.xutils.DbUtils.DaoConfig;
-import com.lidroid.xutils.exception.DbException;
-import com.lidroid.xutils.http.RequestParams;
-import com.mssky.mobile.core.CoreUtils;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.tutor.im.XMPPConnectionManager;
 import com.tutor.model.Account;
-import com.tutor.model.IMMessage;
+import com.tutor.model.AccountDao;
+import com.tutor.model.DaoMaster;
+import com.tutor.model.DaoMaster.OpenHelper;
+import com.tutor.model.DaoSession;
+import com.tutor.model.IMMessageDao;
 import com.tutor.params.Constants;
 import com.tutor.util.SettingManager;
 
@@ -31,8 +30,11 @@ public class TutorApplication extends Application {
 
 	public static boolean DEBUG = false;
 	public static SettingManager settingManager;
-	public static DbUtils dbUtils;
-	public static BitmapUtils bitmapUtils;
+	// 数据库相关
+	private static AccountDao accountDao;
+	private static IMMessageDao imMessageDao;
+	private static SQLiteDatabase db;
+	//
 	public static TutorApplication instance;
 	public static boolean isTokenInvalid = false;
 	/** xmpp连接管理对象 */
@@ -47,9 +49,17 @@ public class TutorApplication extends Application {
 		// 配置工具類
 		settingManager = SettingManager.getInstance(this, Constants.SharedPreferences.NAME);
 		connectionManager = XMPPConnectionManager.getManager();
-		// 配置db工具
-		initDbUtils();
+		initDao();
 		initImageLoader(this);
+	}
+
+	private void initDao() {
+		OpenHelper helper = new DaoMaster.DevOpenHelper(this, Constants.General.DBNAME, null);
+		db = helper.getWritableDatabase();
+		DaoMaster daoMaster = new DaoMaster(db);
+		DaoSession daoSession = daoMaster.newSession();
+		accountDao = daoSession.getAccountDao();
+		imMessageDao = daoSession.getIMMessageDao();
 	}
 
 	/**
@@ -58,7 +68,6 @@ public class TutorApplication extends Application {
 	 * @param applicationContext
 	 */
 	private void initImageLoader(Context applicationContext) {
-		bitmapUtils = CoreUtils.getBitmapUtils(applicationContext);
 		// This configuration tuning is custom. You can tune every option, you
 		// may tune some of them,
 		// or you can create default configuration by
@@ -70,55 +79,16 @@ public class TutorApplication extends Application {
 		ImageLoader.getInstance().init(config);
 	}
 
-	private void initDbUtils() {
-		if (null == dbUtils) {
-			DaoConfig config = new DaoConfig(this);
-			config.setDbName(Constants.General.DBNAME);
-			config.setDbVersion(Constants.General.DBVERSION);
-			dbUtils = CoreUtils.getDbUtils(config);
-			// TODO 發佈時關閉
-			dbUtils.configDebug(true);
-			// 創建表
-			try {
-				dbUtils.createTableIfNotExist(IMMessage.class);
-				dbUtils.createTableIfNotExist(Account.class);
-			} catch (DbException e) {
-				e.printStackTrace();
-			}
-		}
+	public static AccountDao getAccountDao() {
+		return accountDao;
 	}
 
-	/**
-	 * 返回一個帶Content-Type header的requestparams
-	 * 
-	 * @return
-	 */
-	public static RequestParams getDefaultPostParams() {
-		RequestParams params = new RequestParams(HTTP.UTF_8);
-		params.addHeader("Content-Type", "application/json");
-		return params;
+	public static IMMessageDao getImMessageDao() {
+		return imMessageDao;
 	}
 
-	/**
-	 * 返回一個帶token和lang header的requestparams
-	 * 
-	 * @return
-	 */
-	public static RequestParams getDefaultGetParams() {
-		try {
-			Account account = dbUtils.findFirst(Account.class);
-			RequestParams params = new RequestParams(HTTP.UTF_8);
-			String token = "";
-			if (null != account) {
-				token = account.getToken();
-			}
-			params.addHeader("token", token);
-			params.addHeader("lang", "en_US");
-			return params;
-		} catch (DbException e) {
-			e.printStackTrace();
-		}
-		return null;
+	public static SQLiteDatabase getDatabase() {
+		return db;
 	}
 
 	/**
@@ -127,15 +97,44 @@ public class TutorApplication extends Application {
 	 * @return
 	 */
 	public static String getToken() {
-		String token = null;
-		try {
-			Account account = dbUtils.findFirst(Account.class);
-			if (null != account) {
-				token = account.getToken();
-			}
-		} catch (DbException e) {
-			e.printStackTrace();
+		String token = "";
+		Account account = accountDao.load("1");
+		if (null != account) {
+			token = account.getToken();
 		}
 		return token;
+	}
+
+	/**
+	 * 获取自己的id
+	 * 
+	 * @return
+	 */
+	public static int getMemberId() {
+		Account account = accountDao.load("1");
+		if (null != account) {
+			return account.getMemberId();
+		}
+		return -1;
+	}
+
+	/**
+	 * 获取自己的角色
+	 * 
+	 * @return
+	 */
+	public static int getRole() {
+		Account account = accountDao.load("1");
+		if (null != account) {
+			return account.getRole();
+		}
+		return -1;
+	}
+
+	public static HashMap<String, String> getHeaders() {
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("token", getToken());
+		map.put("lang", "en_US");
+		return map;
 	}
 }

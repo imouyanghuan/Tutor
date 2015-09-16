@@ -8,7 +8,7 @@ import android.os.Handler;
 import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.params.Constants;
-import com.tutor.util.HttpUtils;
+import com.tutor.util.HttpHelper;
 import com.tutor.util.ToastUtil;
 
 /**
@@ -24,7 +24,7 @@ public class WelcomeActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_welcome);
 		handler.sendEmptyMessageDelayed(0, Constants.General.WELCOME_DELAY);
-		if (!HttpUtils.isNetworkConnected(TutorApplication.instance)) {
+		if (!HttpHelper.isNetworkConnected(TutorApplication.instance)) {
 			ToastUtil.showToastShort(this, R.string.toast_netwrok_disconnected);
 		}
 	}

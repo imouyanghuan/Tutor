@@ -50,7 +50,7 @@
     <string name="label_select_area">Preferred Teaching Area</string>
     <string name="label_education_background">Education Background</string>
     <string name="label_teaching_couress">Teaching Couress</string>
-    <string name="label_date">1990&#8211;01&#8211;01</string>
+    <string name="label_date">1990&#8211;1&#8211;1</string>
     <string name="label_teach_time_slot">Preferred Teaching Time Slot</string>
     <string name="label_none_area">None area</string>
     <string name="label_from">From</string>

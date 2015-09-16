@@ -133,7 +133,7 @@ public class IMService extends Service {
 				// 發送給誰
 				String to = message.getTo();
 				String title = getString(R.string.system_message);
-				imMessage.set_id(id);
+				imMessage.setId(id);
 				imMessage.setTitle(title);
 				imMessage.setContent(content);
 				imMessage.setTime(time);
@@ -187,7 +187,7 @@ public class IMService extends Service {
 				// 發送給誰
 				String to = message.getTo();
 				String title = getString(R.string.new_message);
-				imMessage.set_id(id);
+				imMessage.setId(id);
 				imMessage.setTitle(title);
 				imMessage.setContent(content);
 				imMessage.setTime(time);
@@ -257,7 +257,7 @@ public class IMService extends Service {
 					// 發送給誰
 					String to = message.getTo();
 					String title = getString(R.string.add_friend_request);
-					imMessage.set_id(id);
+					imMessage.setId(id);
 					imMessage.setTitle(title);
 					imMessage.setContent(content);
 					imMessage.setTime(time);

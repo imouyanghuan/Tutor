@@ -1,11 +1,12 @@
 package com.tutor.ui.fragment.teacher;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.HttpURLConnection;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -15,18 +16,20 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.lidroid.xutils.exception.DbException;
+import com.loopj.android.http.RequestParams;
 import com.tutor.R;
 import com.tutor.TutorApplication;
-import com.tutor.model.Account;
+import com.tutor.model.UploadAvatarResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
-import com.tutor.service.UserService;
 import com.tutor.ui.activity.BaseActivity;
 import com.tutor.ui.dialog.ChangeAvatarDialog;
 import com.tutor.ui.fragment.BaseFragment;
+import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.DateTimeUtil;
+import com.tutor.util.HttpHelper;
 import com.tutor.util.ImageUtils;
+import com.tutor.util.ObjectHttpResponseHandler;
 import com.tutor.util.ViewHelper;
 
 /**
@@ -41,7 +44,6 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	// 頭像對話框
 	private ChangeAvatarDialog dialog;
 	private ImageView avatar;
-	private Bitmap avatarbBitmap;
 	// 保存拍照圖片uri
 	private Uri imageUri, zoomUri;
 
@@ -59,13 +61,13 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	private void initView(View view) {
 		avatar = ViewHelper.get(view, R.id.fragment_my_iv_avatar);
 		avatar.setOnClickListener(this);
+		// 加载头像
+		ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + ApiUrl.GET_OTHER_AVATAR + TutorApplication.getMemberId());
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		// 獲取頭像
-		new GetAvatarTask().execute();
 	}
 
 	@Override
@@ -117,7 +119,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 						File file = new File(path);
 						if (null != file && file.exists()) {
 							file = null;
-							new UpLoadAvatarTask(path).execute();
+							upLoadAvatar(path);
 						}
 					}
 				}
@@ -153,86 +155,37 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 		startActivityForResult(intent, Constants.RequestResultCode.ZOOM);
 	}
 
-	/**
-	 * 上傳照片任務
-	 * 
-	 * @author bruce.chen
-	 * 
-	 */
-	private class UpLoadAvatarTask extends AsyncTask<Void, Void, Bitmap> {
-
-		String path;
-
-		public UpLoadAvatarTask(String path) {
-			this.path = path;
-		}
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			showDialogRes(R.string.uploading_avatar);
-		}
-
-		@Override
-		protected Bitmap doInBackground(Void... params) {
-			// 壓縮后的圖片路徑
-			String newPath = Constants.SDCard.getCacheDir() + DateTimeUtil.getSystemDateTime(DateTimeUtil.FORMART_YMDHMS) + Constants.General.IMAGE_END;
-			if (ImageUtils.yaSuoImage(path, newPath, 400, 400)) {
-				File file = new File(newPath);
-				Bitmap result = UserService.getService().uploadAvatar(file);
-				return result;
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Bitmap result) {
-			super.onPostExecute(result);
-			dismissDialog();
-			if (result != null) {
-				if (null != avatarbBitmap) {
-					avatarbBitmap.recycle();
-					avatarbBitmap = null;
-				}
-				avatarbBitmap = result;
-				avatar.setImageBitmap(avatarbBitmap);
-			} else {
-				toast(R.string.toast_avatar_upload_fail);
-			}
-		}
-	}
-
-	/**
-	 * 獲取頭像任務
-	 * 
-	 * @author bruce.chen
-	 * 
-	 */
-	private class GetAvatarTask extends AsyncTask<Void, Void, Bitmap> {
-
-		@Override
-		protected Bitmap doInBackground(Void... params) {
+	private void upLoadAvatar(String path) {
+		// 先壓縮圖片
+		String newPath = Constants.SDCard.getCacheDir() + DateTimeUtil.getSystemDateTime(DateTimeUtil.FORMART_YMDHMS) + Constants.General.IMAGE_END;
+		if (ImageUtils.yaSuoImage(path, newPath, 400, 400)) {
+			File file = new File(newPath);
+			RequestParams params = new RequestParams();
 			try {
-				Account account = TutorApplication.dbUtils.findFirst(Account.class);
-				if (null != account) {
-					return UserService.getService().getAvatar(ApiUrl.DOMAIN + ApiUrl.GET_OTHER_AVATAR + account.getMemberId());
-				}
-			} catch (DbException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
+				params.put("file", file, "form-data");
+				showDialogRes(R.string.uploading_avatar);
+				HttpHelper.post(getActivity(), ApiUrl.UPLOAD_AVATAR, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UploadAvatarResult>(UploadAvatarResult.class) {
 
-		@Override
-		protected void onPostExecute(Bitmap result) {
-			super.onPostExecute(result);
-			if (result != null) {
-				if (null != avatarbBitmap) {
-					avatarbBitmap.recycle();
-					avatarbBitmap = null;
-				}
-				avatarbBitmap = result;
-				avatar.setImageBitmap(avatarbBitmap);
+					@Override
+					public void onFailure(int status, String message) {
+						dismissDialog();
+						toast(R.string.toast_avatar_upload_fail);
+					}
+
+					@Override
+					public void onSuccess(UploadAvatarResult t) {
+						dismissDialog();
+						CheckTokenUtils.checkToken(t);
+						if (HttpURLConnection.HTTP_OK == t.getStatusCode()) {
+							ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + t.getResult());
+						} else {
+							toast(R.string.toast_avatar_upload_fail);
+						}
+					}
+				});
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				toast(R.string.toast_avatar_upload_fail);
 			}
 		}
 	}

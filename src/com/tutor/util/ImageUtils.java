@@ -19,8 +19,6 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.util.LruCache;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -29,8 +27,6 @@ import android.widget.ImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.tutor.R;
-import com.tutor.TutorApplication;
-import com.tutor.service.UserService;
 
 /**
  * @author bruce.chen
@@ -58,22 +54,6 @@ public class ImageUtils {
 		try {
 			imageLoader.displayImage(photourl, imageView, options);
 		} catch (OutOfMemoryError e) {
-			imageView.setBackgroundResource(R.drawable.avatar);
-		}
-	}
-
-	/**
-	 * 加载网络图片
-	 * 
-	 * @param imageView
-	 * @param photourl
-	 */
-	public static void loadImageSync(ImageView imageView, String photourl) {
-		try {
-			TutorApplication.bitmapUtils.display(imageView, photourl);
-		} catch (OutOfMemoryError e) {
-			imageView.setBackgroundResource(R.drawable.avatar);
-		} catch (Exception exception) {
 			imageView.setBackgroundResource(R.drawable.avatar);
 		}
 	}
@@ -383,27 +363,22 @@ public class ImageUtils {
 		}
 		Bitmap bitmap = getBitmapFromMemCache(key);
 		if (null == bitmap) {
-			final Handler handler = new Handler() {
-
-				@Override
-				public void handleMessage(Message msg) {
-					super.handleMessage(msg);
-					if (null != callBack) {
-						callBack.onSuccess((Bitmap) msg.obj, key);
-					}
-				}
-			};
+//			final Handler handler = new Handler() {
+//
+//				@Override
+//				public void handleMessage(Message msg) {
+//					super.handleMessage(msg);
+//					if (null != callBack) {
+//						callBack.onSuccess((Bitmap) msg.obj, key);
+//					}
+//				}
+//			};
 			// 若该Bitmap不在内存缓存中，则启用线程去加载图片，并将Bitmap加入到mMemoryCache中
 			service.execute(new Runnable() {
 
 				@Override
 				public void run() {
-					Bitmap bitmap = UserService.getService().getAvatar(key);
-					if (null != bitmap) {
-						Message message = handler.obtainMessage();
-						message.obj = bitmap;
-						handler.sendMessage(message);
-					}
+					 
 				}
 			});
 		}
