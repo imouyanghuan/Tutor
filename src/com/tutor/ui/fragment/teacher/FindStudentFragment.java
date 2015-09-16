@@ -3,7 +3,6 @@ package com.tutor.ui.fragment.teacher;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -15,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.ui.view.PullToRefreshBase;
 import com.mssky.mobile.ui.view.PullToRefreshBase.Mode;
 import com.mssky.mobile.ui.view.PullToRefreshBase.OnRefreshListener2;
@@ -25,8 +25,11 @@ import com.tutor.adapter.MatchStudentAdapter;
 import com.tutor.model.MatchStudentListResult;
 import com.tutor.model.Page;
 import com.tutor.model.UserInfo;
-import com.tutor.service.TutorService;
+import com.tutor.params.ApiUrl;
 import com.tutor.ui.fragment.BaseFragment;
+import com.tutor.util.CheckTokenUtils;
+import com.tutor.util.HttpHelper;
+import com.tutor.util.ObjectHttpResponseHandler;
 import com.tutor.util.ViewHelper;
 
 /**
@@ -76,8 +79,8 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		adapter = new MatchStudentAdapter(getActivity(), users);
 		listView.setAdapter(adapter);
 		// 加載匹配學生列表
-		new GetStudentListTask(pageIndex, pageSize).execute();
 		showDialogRes(R.string.loading);
+		getStudentList(pageIndex, pageSize);
 	}
 
 	/**
@@ -91,10 +94,10 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		pageIndex = 0;
 		if (isSearchStatus) {
 			// 加載搜索學生列表
-			new GetSearchStudentListTask(keyWords, pageIndex, pageSize).execute();
+			getSearchStudent(keyWords, pageIndex, pageSize);
 		} else {
 			// 加載匹配學生列表
-			new GetStudentListTask(pageIndex, pageSize).execute();
+			getStudentList(pageIndex, pageSize);
 		}
 	}
 
@@ -109,10 +112,10 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 				pageIndex += 1;
 				if (isSearchStatus) {
 					// 加載搜索學生列表
-					new GetSearchStudentListTask(keyWords, pageIndex, pageSize).execute();
+					getSearchStudent(keyWords, pageIndex, pageSize);
 				} else {
 					// 加載匹配學生列表
-					new GetStudentListTask(pageIndex, pageSize).execute();
+					getStudentList(pageIndex, pageSize);
 				}
 			} else {
 				new Handler().post(new Runnable() {
@@ -150,14 +153,14 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 						isSearchStatus = false;
 						// 獲取匹配學生列表
 						pageIndex = 0;
-						new GetStudentListTask(pageIndex, pageSize).execute();
+						getStudentList(pageIndex, pageSize);
 						return;
 					}
 				}
 				isSearchStatus = true;
 				// 獲取搜索的學生列表
 				pageIndex = 0;
-				new GetSearchStudentListTask(keyWords, pageIndex, pageSize).execute();
+				getSearchStudent(keyWords, pageIndex, pageSize);
 				break;
 			default:
 				break;
@@ -167,106 +170,84 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 	/**
 	 * 獲取匹配學生列表
 	 * 
-	 * @author bruce.chen
-	 * 
 	 */
-	private class GetStudentListTask extends AsyncTask<Void, Void, MatchStudentListResult> {
-
-		int pageIndex, pageSize;
-
-		public GetStudentListTask(int pageIndex, int pageSize) {
-			this.pageIndex = pageIndex;
-			this.pageSize = pageSize;
+	private void getStudentList(final int pageIndex, int pageSize) {
+		if (!HttpHelper.isNetworkConnected(getActivity())) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
 		}
+		RequestParams params = new RequestParams();
+		params.put("pageIndex", pageIndex);
+		params.put("pageSize", pageSize);
+		HttpHelper.get(getActivity(), ApiUrl.STUDENTMATCH, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<MatchStudentListResult>(MatchStudentListResult.class) {
 
-		@Override
-		protected MatchStudentListResult doInBackground(Void... params) {
-			return TutorService.getService().getMatchStudentList(pageIndex + "", pageSize + "");
-		}
-
-		@Override
-		protected void onPostExecute(MatchStudentListResult result) {
-			super.onPostExecute(result);
-			dismissDialog();
-			listView.onRefreshComplete();
-			if (null != result) {
-				if (200 == result.getStatusCode()) {
-					listResult = result;
-					if (null != result.getResult()) {
-						if (0 == pageIndex) {
-							// 首次加載或下拉刷新的時候清空數據
-							users.clear();
-							users.addAll(result.getResult());
-						} else {
-							// 加載更多
-							users.addAll(result.getResult());
-						}
-						if (null != adapter) {
-							adapter.refresh(users);
-						}
-					}
-				} else {
-					toast(result.getMessage());
-				}
-			} else {
-				if (!TutorApplication.isTokenInvalid)
-					toast(R.string.toast_server_error);
+			@Override
+			public void onFailure(int status, String message) {
+				dismissDialog();
 			}
-		}
+
+			@Override
+			public void onSuccess(MatchStudentListResult result) {
+				dismissDialog();
+				CheckTokenUtils.checkToken(result);
+				setData(result);
+			}
+		});
 	}
 
 	/**
 	 * 獲取搜索學生列表
 	 * 
-	 * @author bruce.chen
-	 * 
 	 */
-	private class GetSearchStudentListTask extends AsyncTask<Void, Void, MatchStudentListResult> {
-
-		String keyWord;
-		int pageIndex, pageSize;
-
-		public GetSearchStudentListTask(String keyWord, int pageIndex, int pageSize) {
-			this.keyWord = keyWord;
-			this.pageIndex = pageIndex;
-			this.pageSize = pageSize;
+	private void getSearchStudent(String keyWord, int pageIndex, int pageSize) {
+		if (!HttpHelper.isNetworkConnected(getActivity())) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
 		}
+		RequestParams params = new RequestParams();
+		params.put("keywords", keyWord);
+		params.put("pageIndex", pageIndex);
+		params.put("pageSize", pageSize);
+		HttpHelper.get(getActivity(), ApiUrl.SEARCHSTUDENT, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<MatchStudentListResult>(MatchStudentListResult.class) {
 
-		@Override
-		protected MatchStudentListResult doInBackground(Void... params) {
-			return TutorService.getService().geSearchStudentList(keyWord, pageIndex + "", pageSize + "");
-		}
+			@Override
+			public void onFailure(int status, String message) {}
 
-		@Override
-		protected void onPostExecute(MatchStudentListResult result) {
-			super.onPostExecute(result);
-			listView.onRefreshComplete();
-			if (null != result) {
-				if (200 == result.getStatusCode()) {
-					listResult = result;
-					if (null != result.getResult()) {
-						if (0 == pageIndex) {
-							// 首次加載或下拉刷新的時候清空數據
-							users.clear();
-							users.addAll(result.getResult());
-							if (0 == users.size()) {
-								toast(R.string.toast_no_match_student);
-							}
-						} else {
-							// 加載更多
-							users.addAll(result.getResult());
+			@Override
+			public void onSuccess(MatchStudentListResult t) {
+				CheckTokenUtils.checkToken(t);
+				setData(t);
+			}
+		});
+	}
+
+	private void setData(MatchStudentListResult result) {
+		listView.onRefreshComplete();
+		if (null != result) {
+			if (200 == result.getStatusCode()) {
+				listResult = result;
+				if (null != result.getResult()) {
+					if (0 == pageIndex) {
+						// 首次加載或下拉刷新的時候清空數據
+						users.clear();
+						users.addAll(result.getResult());
+						if (0 == users.size()) {
+							toast(R.string.toast_no_match_student);
 						}
-						if (null != adapter) {
-							adapter.refresh(users);
-						}
+					} else {
+						// 加載更多
+						users.addAll(result.getResult());
 					}
-				} else {
-					toast(result.getMessage());
+					if (null != adapter) {
+						adapter.refresh(users);
+					}
 				}
 			} else {
-				if (!TutorApplication.isTokenInvalid) {
-					toast(R.string.toast_server_error);
-				}
+				toast(result.getMessage());
+			}
+		} else {
+			if (!TutorApplication.isTokenInvalid) {
+				toast(R.string.toast_server_error);
 			}
 		}
 	}

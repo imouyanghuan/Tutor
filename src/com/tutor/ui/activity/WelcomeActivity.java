@@ -9,7 +9,6 @@ import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.params.Constants;
 import com.tutor.util.HttpHelper;
-import com.tutor.util.ToastUtil;
 
 /**
  * 歡迎界面
@@ -24,8 +23,8 @@ public class WelcomeActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_welcome);
 		handler.sendEmptyMessageDelayed(0, Constants.General.WELCOME_DELAY);
-		if (!HttpHelper.isNetworkConnected(TutorApplication.instance)) {
-			ToastUtil.showToastShort(this, R.string.toast_netwrok_disconnected);
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
 		}
 	}
 

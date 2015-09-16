@@ -2,15 +2,18 @@ package com.tutor.ui.activity;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
 
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
@@ -47,7 +50,6 @@ import com.tutor.model.Timeslot;
 import com.tutor.model.UploadAvatarResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
-import com.tutor.service.TutorService;
 import com.tutor.ui.dialog.AddTimeSlotDialog;
 import com.tutor.ui.dialog.AddTimeSlotDialog.CallBack;
 import com.tutor.ui.dialog.ChangeAvatarDialog;
@@ -58,6 +60,7 @@ import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.DateTimeUtil;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.ImageUtils;
+import com.tutor.util.JsonUtil;
 import com.tutor.util.LogUtils;
 import com.tutor.util.ObjectHttpResponseHandler;
 
@@ -124,7 +127,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		birth = getString(R.string.label_date);
 		eb = getString(R.string.eb_1);
 		timeSlotDialog = new AddTimeSlotDialog(this, this);
-		new GetDataTask().execute();
+		getdata();
 	}
 
 	@Override
@@ -215,25 +218,6 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		addTimeSlot.setOnClickListener(this);
 	}
 
-	/**
-	 * 顯示獲取到的數據
-	 */
-	private void showData() {
-		if (null != courses && 0 != courses.size()) {
-			CourseLayout courseLayout = new CourseLayout(this, courses);
-			couressLinearLayout.addView(courseLayout);
-		}
-		if (null != areas && 0 != areas.size()) {
-			for (Area area : areas) {
-				AreaItemLayout areaItemLayout = new AreaItemLayout(this, area);
-				areaLinearLayout.addView(areaItemLayout);
-			}
-		}
-		if (null != timeslots) {
-			adapter.refresh(timeslots);
-		}
-	}
-
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -295,7 +279,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 					profile.setCourses(choiceCourses);
 					profile.setAreas(choiceAreas);
 					profile.setTimeslots(timeslots);
-					new TutorProfileTask(profile).execute();
+					submitTutorProfile(profile);
 				} else {
 					StudentProfile profile = getStudentProfile();
 					profile.setNickName(name);
@@ -304,7 +288,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 					profile.setCourses(choiceCourses);
 					profile.setAreas(choiceAreas);
 					profile.setTimeslots(timeslots);
-					new StudentProfileTask(profile).execute();
+					submitStudentProfile(profile);
 				}
 				break;
 			case R.id.ac_fill_personal_info_iv_avatar:
@@ -651,43 +635,93 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	/**
 	 * 獲取課程,地區等信息
 	 * 
-	 * @author bruce.chen
-	 * 
 	 */
-	private class GetDataTask extends AsyncTask<Void, Void, Boolean> {
-
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			showDialogRes(R.string.loading);
+	private void getdata() {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
 		}
-
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			CourseListResult courseListResult = TutorService.getService().getCourseList();
-			if (null != courseListResult) {
-				courses = courseListResult.getResult();
-			}
-			AreaListResult areaListResult = TutorService.getService().getAreaList();
-			if (null != areaListResult) {
-				areas = areaListResult.getResult();
-			}
-			TimeSlotListResult timeSlotListResult = TutorService.getService().getTimeSlotList(account.getMemberId(), 0, 5);
-			if (null != timeSlotListResult) {
-				timeslots = timeSlotListResult.getResult();
-			}
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(Boolean result) {
-			super.onPostExecute(result);
-			dismissDialog();
-			showData();
-		}
+		showDialogRes(R.string.loading);
+		getCourse();
+		getAreas();
+		getTimeSlot();
 	}
 
+	private void getCourse() {
+		HttpHelper.get(this, ApiUrl.COURSELIST, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<CourseListResult>(CourseListResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				dismissDialog();
+			}
+
+			@Override
+			public void onSuccess(CourseListResult t) {
+				dismissDialog();
+				if (null != t) {
+					courses = t.getResult();
+				}
+				if (null != courses && 0 != courses.size()) {
+					CourseLayout courseLayout = new CourseLayout(FillPersonalInfoActivity.this, courses);
+					couressLinearLayout.addView(courseLayout);
+				}
+			}
+		});
+	}
+
+	private void getAreas() {
+		HttpHelper.get(this, ApiUrl.AREALIST, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<AreaListResult>(AreaListResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {}
+
+			@Override
+			public void onSuccess(AreaListResult t) {
+				if (null != t) {
+					areas = t.getResult();
+				}
+				if (null != areas && 0 != areas.size()) {
+					for (Area area : areas) {
+						AreaItemLayout areaItemLayout = new AreaItemLayout(FillPersonalInfoActivity.this, area);
+						areaLinearLayout.addView(areaItemLayout);
+					}
+				}
+			}
+		});
+	}
+
+	private void getTimeSlot() {
+		RequestParams params = new RequestParams();
+		params.put("memberId", "" + account.getMemberId());
+		params.put("pageIndex", "" + 0);
+		params.put("pageSize", "" + 5);
+		HttpHelper.get(this, ApiUrl.TIMESLOTLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<TimeSlotListResult>(TimeSlotListResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {}
+
+			@Override
+			public void onSuccess(TimeSlotListResult t) {
+				if (null != t) {
+					timeslots = t.getResult();
+				}
+				if (null != timeslots) {
+					adapter.refresh(timeslots);
+				}
+			}
+		});
+	}
+
+	/**
+	 * 上传头像
+	 * 
+	 * @param path
+	 */
 	private void upLoadAvatar(String path) {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
 		// 先壓縮圖片
 		String newPath = Constants.SDCard.getCacheDir() + DateTimeUtil.getSystemDateTime(DateTimeUtil.FORMART_YMDHMS) + Constants.General.IMAGE_END;
 		if (ImageUtils.yaSuoImage(path, newPath, 400, 400)) {
@@ -726,82 +760,82 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	/**
 	 * 提交老师信息任务
 	 * 
-	 * @author bruce.chen
-	 * 
 	 */
-	private class TutorProfileTask extends AsyncTask<Void, Void, EditProfileResult> {
-
-		private TeacherProfile profile;
-
-		public TutorProfileTask(TeacherProfile profile) {
-			this.profile = profile;
+	private void submitTutorProfile(TeacherProfile profile) {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
 		}
+		showDialogRes(R.string.loading);
+		String json = JsonUtil.parseObject2Str(profile);
+		try {
+			StringEntity entity = new StringEntity(json, HTTP.UTF_8);
+			HttpHelper.put(this, ApiUrl.TUTORPROFILE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			showDialogRes(R.string.loading);
-		}
-
-		@Override
-		protected EditProfileResult doInBackground(Void... params) {
-			return TutorService.getService().submitTutorProfile(profile);
-		}
-
-		@Override
-		protected void onPostExecute(EditProfileResult result) {
-			super.onPostExecute(result);
-			dismissDialog();
-			if (null != result) {
-				if (200 == result.getStatusCode()) {
-					go2Main();
-				} else {
-					toast(result.getMessage());
+				@Override
+				public void onFailure(int status, String message) {
+					dismissDialog();
+					toast(R.string.toast_server_error);
 				}
-			} else {
-				toast(R.string.toast_server_error);
-			}
+
+				@Override
+				public void onSuccess(EditProfileResult result) {
+					dismissDialog();
+					if (null != result) {
+						if (200 == result.getStatusCode() && result.getResult()) {
+							go2Main();
+						} else {
+							toast(result.getMessage());
+						}
+					} else {
+						toast(R.string.toast_server_error);
+					}
+				}
+			});
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			dismissDialog();
 		}
 	}
 
 	/**
 	 * 提交学生信息任务
 	 * 
-	 * @author bruce.chen
-	 * 
 	 */
-	private class StudentProfileTask extends AsyncTask<Void, Void, EditProfileResult> {
-
-		private StudentProfile profile;
-
-		public StudentProfileTask(StudentProfile profile) {
-			this.profile = profile;
+	private void submitStudentProfile(StudentProfile profile) {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
 		}
+		showDialogRes(R.string.loading);
+		String json = JsonUtil.parseObject2Str(profile);
+		try {
+			StringEntity entity = new StringEntity(json, HTTP.UTF_8);
+			HttpHelper.put(this, ApiUrl.STUDENTPROFILE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			showDialogRes(R.string.loading);
-		}
-
-		@Override
-		protected EditProfileResult doInBackground(Void... params) {
-			return TutorService.getService().submitStudentProfile(profile);
-		}
-
-		@Override
-		protected void onPostExecute(EditProfileResult result) {
-			super.onPostExecute(result);
-			dismissDialog();
-			if (null != result) {
-				if (200 == result.getStatusCode() && result.getResult()) {
-					go2Main();
-				} else {
-					toast(result.getMessage());
+				@Override
+				public void onFailure(int status, String message) {
+					dismissDialog();
+					toast(R.string.toast_server_error);
 				}
-			} else {
-				toast(R.string.toast_server_error);
-			}
+
+				@Override
+				public void onSuccess(EditProfileResult result) {
+					dismissDialog();
+					if (null != result) {
+						if (200 == result.getStatusCode() && result.getResult()) {
+							go2Main();
+						} else {
+							toast(result.getMessage());
+						}
+					} else {
+						toast(R.string.toast_server_error);
+					}
+				}
+			});
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			dismissDialog();
 		}
 	}
 }

@@ -156,6 +156,10 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	}
 
 	private void upLoadAvatar(String path) {
+		if (!HttpHelper.isNetworkConnected(getActivity())) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
 		// 先壓縮圖片
 		String newPath = Constants.SDCard.getCacheDir() + DateTimeUtil.getSystemDateTime(DateTimeUtil.FORMART_YMDHMS) + Constants.General.IMAGE_END;
 		if (ImageUtils.yaSuoImage(path, newPath, 400, 400)) {

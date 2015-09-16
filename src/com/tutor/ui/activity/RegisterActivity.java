@@ -135,6 +135,10 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 	 * @param model
 	 */
 	private void register(final RegisterLoginModel model) {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
 		showDialogRes(R.string.registering);
 		String content = JsonUtil.parseObject2Str(model);
 		try {

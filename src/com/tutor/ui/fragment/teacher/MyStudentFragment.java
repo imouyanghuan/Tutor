@@ -2,7 +2,6 @@ package com.tutor.ui.fragment.teacher;
 
 import java.util.ArrayList;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.format.DateUtils;
@@ -13,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.ui.view.PullToRefreshBase;
 import com.mssky.mobile.ui.view.PullToRefreshBase.Mode;
 import com.mssky.mobile.ui.view.PullToRefreshBase.OnRefreshListener2;
@@ -23,8 +23,11 @@ import com.tutor.adapter.MatchStudentAdapter;
 import com.tutor.model.MatchStudentListResult;
 import com.tutor.model.Page;
 import com.tutor.model.UserInfo;
-import com.tutor.service.TutorService;
+import com.tutor.params.ApiUrl;
 import com.tutor.ui.fragment.BaseFragment;
+import com.tutor.util.CheckTokenUtils;
+import com.tutor.util.HttpHelper;
+import com.tutor.util.ObjectHttpResponseHandler;
 import com.tutor.util.ViewHelper;
 
 /**
@@ -64,7 +67,7 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 		listView.setOnItemClickListener(this);
 		adapter = new MatchStudentAdapter(getActivity(), users);
 		listView.setAdapter(adapter);
-		new GetStudentListTask(pageIndex, pageSize).execute();
+		getStudentList(pageIndex, pageSize);
 	}
 
 	@Override
@@ -78,7 +81,7 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 		// Update the LastUpdatedLabel
 		refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
 		pageIndex = 0;
-		new GetStudentListTask(pageIndex, pageSize).execute();
+		getStudentList(pageIndex, pageSize);
 	}
 
 	@Override
@@ -88,7 +91,7 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 			if (null != page && page.isHasNextPage()) {
 				pageIndex += 1;
 				// 加載我的學生列表
-				new GetStudentListTask(pageIndex, pageSize).execute();
+				getStudentList(pageIndex, pageSize);
 			} else {
 				new Handler().post(new Runnable() {
 
@@ -114,53 +117,53 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 	/**
 	 * 獲取我的學生列表
 	 * 
-	 * @author bruce.chen
-	 * 
 	 */
-	private class GetStudentListTask extends AsyncTask<Void, Void, MatchStudentListResult> {
-
-		int pageIndex, pageSize;
-
-		public GetStudentListTask(int pageIndex, int pageSize) {
-			this.pageIndex = pageIndex;
-			this.pageSize = pageSize;
+	private void getStudentList(final int pageIndex, int pageSize) {
+		if (!HttpHelper.isNetworkConnected(getActivity())) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
 		}
+		RequestParams params = new RequestParams();
+		params.put("pageIndex", pageIndex);
+		params.put("pageSize", pageSize);
+		HttpHelper.get(getActivity(), ApiUrl.MYSTUDENTLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<MatchStudentListResult>(MatchStudentListResult.class) {
 
-		@Override
-		protected MatchStudentListResult doInBackground(Void... arg0) {
-			return TutorService.getService().getMyStudentList(pageIndex + "", pageSize + "");
-		}
+			@Override
+			public void onFailure(int status, String message) {
+				toast(R.string.toast_server_error);
+			}
 
-		@Override
-		protected void onPostExecute(MatchStudentListResult result) {
-			super.onPostExecute(result);
-			listView.onRefreshComplete();
-			if (null != result) {
-				if (200 == result.getStatusCode()) {
-					listResult = result;
-					if (null != result.getResult()) {
-						if (0 == pageIndex) {
-							// 首次加載或下拉刷新的時候清空數據
-							users.clear();
-							users.addAll(result.getResult());
-						} else {
-							// 加載更多
-							users.addAll(result.getResult());
+			@Override
+			public void onSuccess(MatchStudentListResult result) {
+				listView.onRefreshComplete();
+				CheckTokenUtils.checkToken(result);
+				if (null != result) {
+					if (200 == result.getStatusCode()) {
+						listResult = result;
+						if (null != result.getResult()) {
+							if (0 == pageIndex) {
+								// 首次加載或下拉刷新的時候清空數據
+								users.clear();
+								users.addAll(result.getResult());
+							} else {
+								// 加載更多
+								users.addAll(result.getResult());
+							}
+							if (null != adapter) {
+								adapter.refresh(users);
+							}
+							if (0 == users.size()) {
+								toast(R.string.toast_without_mystudent);
+							}
 						}
-						if (null != adapter) {
-							adapter.refresh(users);
-						}
-						if (0 == users.size()) {
-							toast(R.string.toast_without_mystudent);
-						}
+					} else {
+						toast(result.getMessage());
 					}
 				} else {
-					toast(result.getMessage());
+					if (!TutorApplication.isTokenInvalid)
+						toast(R.string.toast_server_error);
 				}
-			} else {
-				if (!TutorApplication.isTokenInvalid)
-					toast(R.string.toast_server_error);
 			}
-		}
+		});
 	}
 }

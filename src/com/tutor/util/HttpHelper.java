@@ -10,7 +10,6 @@ import android.net.NetworkInfo;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
-import com.tutor.R;
 import com.tutor.params.ApiUrl;
 
 /**
@@ -40,10 +39,6 @@ public class HttpHelper {
 	 *            响应监听
 	 */
 	public static <T> void post(Context context, String url, HashMap<String, String> headers, RequestParams params, ObjectHttpResponseHandler<T> responseHandler) {
-		if (!isNetworkConnected(context)) {
-			ToastUtil.showToastShort(context, R.string.toast_netwrok_disconnected);
-			return;
-		}
 		addHeader(headers);
 		client.post(ApiUrl.DOMAIN + url, params, responseHandler);
 	}
@@ -58,10 +53,6 @@ public class HttpHelper {
 	 * @param responseHandler
 	 */
 	public static <T> void post(Context context, String url, HashMap<String, String> headers, HttpEntity entity, ObjectHttpResponseHandler<T> responseHandler) {
-		if (!isNetworkConnected(context)) {
-			ToastUtil.showToastShort(context, R.string.toast_netwrok_disconnected);
-			return;
-		}
 		addHeader(headers);
 		client.post(context, ApiUrl.DOMAIN + url, null, entity, "application/json", responseHandler);
 	}
@@ -77,12 +68,8 @@ public class HttpHelper {
 	 *            响应监听
 	 */
 	public static <T> void get(Context context, String url, HashMap<String, String> headers, RequestParams params, ObjectHttpResponseHandler<T> responseHandler) {
-		if (!isNetworkConnected(context)) {
-			ToastUtil.showToastShort(context, R.string.toast_netwrok_disconnected);
-			return;
-		}
 		addHeader(headers);
-		client.post(ApiUrl.DOMAIN + url, params, responseHandler);
+		client.get(context, ApiUrl.DOMAIN + url, params, responseHandler);
 	}
 
 	/**
@@ -96,12 +83,23 @@ public class HttpHelper {
 	 *            响应监听
 	 */
 	public static <T> void put(Context context, String url, HashMap<String, String> headers, RequestParams params, ObjectHttpResponseHandler<T> responseHandler) {
-		if (!isNetworkConnected(context)) {
-			ToastUtil.showToastShort(context, R.string.toast_netwrok_disconnected);
-			return;
-		}
 		addHeader(headers);
-		client.post(ApiUrl.DOMAIN + url, params, responseHandler);
+		client.put(context, ApiUrl.DOMAIN + url, params, responseHandler);
+	}
+
+	/**
+	 * put请求
+	 * 
+	 * @param url
+	 *            访问URL
+	 * @param params
+	 *            请求参数
+	 * @param responseHandler
+	 *            响应监听
+	 */
+	public static <T> void put(Context context, String url, HashMap<String, String> headers, HttpEntity entity, ObjectHttpResponseHandler<T> responseHandler) {
+		addHeader(headers);
+		client.put(context, ApiUrl.DOMAIN + url, null, entity, "application/json", responseHandler);
 	}
 
 	/**

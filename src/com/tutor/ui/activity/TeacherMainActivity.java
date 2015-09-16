@@ -29,6 +29,7 @@ import com.tutor.ui.fragment.teacher.MyFragment;
 import com.tutor.ui.fragment.teacher.MyStudentFragment;
 import com.tutor.ui.fragment.teacher.OverseasEducationFragment;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.ObjectHttpResponseHandler;
 
@@ -72,6 +73,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		initFragment();
 		mMenuDrawer.peekDrawer();
 		isGetdata = false;
+		new LoginImTask().execute();
 	}
 
 	@Override
@@ -264,9 +266,13 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 	}
 
 	/**
-	 * 获取消息数量
+	 * 获取消息数量 Sent 0 Accept 1 Reject 2 Acknowle 3 All 4
 	 */
 	private void getNotificationCount() {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
 		RequestParams params = new RequestParams();
 		params.put("status", "1");
 		params.put("pageIndex", "0");
@@ -281,6 +287,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 			@Override
 			public void onSuccess(NotificationListResult result) {
 				isGetdata = false;
+				CheckTokenUtils.checkToken(result);
 				if (null != result && 200 == result.getStatusCode()) {
 					count += result.getPage().getTotalCount();
 					if (0 < count) {
@@ -325,6 +332,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 				if (!TutorApplication.isTokenInvalid) {
 					toast(R.string.toast_login_im_fail);
 				}
+				new LoginImTask().execute();
 			}
 		}
 	}

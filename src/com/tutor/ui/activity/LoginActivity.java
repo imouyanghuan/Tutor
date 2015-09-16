@@ -161,6 +161,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 	 * @param model
 	 */
 	private void login(final RegisterLoginModel model) {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
 		showDialogRes(R.string.logining);
 		String content = JsonUtil.parseObject2Str(model);
 		try {
@@ -248,6 +252,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 	 * @param id
 	 */
 	private void checkAccountExist(final String id) {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
 		showDialogRes(R.string.logining);
 		RequestParams params = new RequestParams();
 		params.put("accountType", role + "");
@@ -290,6 +298,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 	 * @param model
 	 */
 	private void register(final RegisterLoginModel model) {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
 		showDialogRes(R.string.logining);
 		String content = JsonUtil.parseObject2Str(model);
 		try {
