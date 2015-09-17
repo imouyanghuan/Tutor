@@ -11,6 +11,7 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
 import com.tutor.R;
+import com.tutor.TutorApplication;
 import com.tutor.params.Constants;
 import com.tutor.ui.fragment.BaseFragment;
 import com.tutor.ui.fragment.student.FindTeacherFragment;
@@ -18,6 +19,7 @@ import com.tutor.ui.fragment.student.MyFragment;
 import com.tutor.ui.fragment.student.MyTeacherFragment;
 import com.tutor.ui.fragment.student.OverseasEducationFragment;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.ScreenUtil;
 
 /**
  * 學生首頁,管理fragment
@@ -50,10 +52,10 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 		mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.Type.BEHIND, Position.LEFT, MenuDrawer.MENU_DRAG_WINDOW);
 		mMenuDrawer.setContentView(R.layout.activity_student_main);
 		mMenuDrawer.setMenuView(R.layout.menu_layout);
+		mMenuDrawer.setMenuSize(ScreenUtil.getSW(this) * 3 / 10);
 		initView();
 		// 初始化fragment
 		initFragment();
-		mMenuDrawer.peekDrawer();
 	}
 
 	@Override
@@ -82,6 +84,7 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 							ft.show(findTeacherFragment);
 							ft.commit();
 							bar.setTitle(R.string.findteacher);
+							bar.setRightTextVisibility(false);
 							currentFragment = findTeacherFragment;
 						}
 						break;
@@ -95,7 +98,8 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 							ft.hide(currentFragment);
 							ft.show(overseasEducationFragment);
 							ft.commit();
-							bar.setTitle(R.string.overseas_education);
+							bar.setTitle(R.string.study_abroad);
+							bar.setRightTextVisibility(false);
 							currentFragment = overseasEducationFragment;
 						}
 						break;
@@ -110,6 +114,7 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 							ft.show(teacherFragment);
 							ft.commit();
 							bar.setTitle(R.string.myteachers);
+							bar.setRightTextVisibility(false);
 							currentFragment = teacherFragment;
 						}
 						break;
@@ -124,6 +129,16 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 							ft.show(myFragment);
 							ft.commit();
 							bar.setTitle(R.string.my);
+							bar.setRightText(R.string.log_out, new OnClickListener() {
+
+								@Override
+								public void onClick(View arg0) {
+									TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
+									Intent intent = new Intent(StudentMainActivity.this, ChoiceRoleActivity.class);
+									startActivity(intent);
+									finishNoAnim();
+								}
+							});
 							currentFragment = myFragment;
 						}
 						break;

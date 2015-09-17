@@ -3,8 +3,8 @@ package com.tutor.ui.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tutor.R;
@@ -17,7 +17,7 @@ import com.tutor.util.ViewHelper;
  * @author bruce.chen
  * 
  */
-public class TitleBar extends LinearLayout {
+public class TitleBar extends FrameLayout {
 
 	private ImageButton left, right;
 	private TextView title;
@@ -142,6 +142,22 @@ public class TitleBar extends LinearLayout {
 			rightTextView.setVisibility(View.VISIBLE);
 			rightTextView.setText(text);
 			rightTextView.setOnClickListener(clickListener);
+		}
+	}
+
+	public void setLeftTextVisibility(boolean b) {
+		if (b) {
+			lefTextView.setVisibility(View.VISIBLE);
+		} else {
+			lefTextView.setVisibility(View.INVISIBLE);
+		}
+	}
+
+	public void setRightTextVisibility(boolean b) {
+		if (b) {
+			rightTextView.setVisibility(View.VISIBLE);
+		} else {
+			rightTextView.setVisibility(View.INVISIBLE);
 		}
 	}
 }

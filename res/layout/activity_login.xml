@@ -11,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/title_bar"
+        android:layout_marginTop="@dimen/dp_30"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_50" >
+        android:paddingLeft="@dimen/dp_15"
+        android:paddingRight="@dimen/dp_15" >
 
         <LinearLayout
             android:id="@id/ac_login_btn_facebook"
@@ -24,7 +24,7 @@
             android:background="@drawable/login_btn_facebook_bg"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="@dimen/dp_5" >
+            android:padding="@dimen/dp_8" >
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -42,6 +42,12 @@
                 android:textSize="@dimen/sp_18" />
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_height"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="30dp"
+            android:background="@color/gray_line" />
         <!-- 郵箱 -->
 
         <EditText
@@ -53,7 +59,8 @@
             android:ems="20"
             android:hint="@string/hint_email"
             android:inputType="textEmailAddress"
-            android:maxLength="30" >
+            android:maxLength="30"
+            android:textColorHint="@color/gray_light_text" >
 
             <requestFocus />
         </EditText>
@@ -68,7 +75,8 @@
             android:ems="20"
             android:hint="@string/hint_password"
             android:inputType="textPassword"
-            android:maxLength="20" />
+            android:maxLength="20"
+            android:textColorHint="@color/gray_light_text" />
         <!-- 登錄按鈕 -->
 
         <Button

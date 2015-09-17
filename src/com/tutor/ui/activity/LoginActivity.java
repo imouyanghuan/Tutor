@@ -174,6 +174,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 				@Override
 				public void onFailure(int status, String message) {
 					dismissDialog();
+					LogUtils.e(message);
 					toast(R.string.toast_login_failed);
 				}
 

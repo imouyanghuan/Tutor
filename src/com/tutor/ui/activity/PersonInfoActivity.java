@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.tutor.R;
+import com.tutor.im.ContactManager;
 import com.tutor.im.XMPPConnectionManager;
 import com.tutor.model.UserInfo;
 import com.tutor.params.Constants;
@@ -49,6 +50,9 @@ public class PersonInfoActivity extends BaseActivity implements OnClickListener 
 	protected void initView() {
 		TitleBar bar = getView(R.id.title_bar);
 		String titleName = userInfo.getNickName();
+		if (TextUtils.isEmpty(titleName)) {
+			titleName = "PersonInfo";
+		}
 		bar.setTitle(titleName);
 		bar.initBack(this);
 		bar.setRightButton(R.drawable.selector_like, new OnClickListener() {
@@ -59,6 +63,7 @@ public class PersonInfoActivity extends BaseActivity implements OnClickListener 
 			}
 		});
 		getView(R.id.btn_chat_with_tutor).setOnClickListener(this);
+		getView(R.id.btn_to_be_my_tutor).setOnClickListener(this);
 		getView(R.id.tv_user_name);
 		getView(R.id.tv_gender);
 		getView(R.id.tv_major);
@@ -71,8 +76,16 @@ public class PersonInfoActivity extends BaseActivity implements OnClickListener 
 		// chat with tutor
 			case R.id.btn_chat_with_tutor:
 				if (!TextUtils.isEmpty(imId)) {
+					ContactManager.getManager().addFriend(imId, imId);
 					Intent intent = new Intent(PersonInfoActivity.this, ChatActivity.class);
 					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId + "@" + XMPPConnectionManager.getManager().getServiceName());
+					startActivity(intent);
+				}
+				break;
+			// to be my tutor
+			case R.id.btn_to_be_my_tutor:
+				if (!TextUtils.isEmpty(imId)) {
+					Intent intent = new Intent(PersonInfoActivity.this, ToBeMyStudentActivity.class);
 					startActivity(intent);
 				}
 				break;

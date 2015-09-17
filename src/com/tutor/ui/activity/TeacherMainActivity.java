@@ -32,6 +32,7 @@ import com.tutor.ui.view.TitleBar;
 import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.ObjectHttpResponseHandler;
+import com.tutor.util.ScreenUtil;
 
 /**
  * 教師主界面,管理fragment
@@ -68,10 +69,10 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.Type.BEHIND, Position.LEFT, MenuDrawer.MENU_DRAG_WINDOW);
 		mMenuDrawer.setContentView(R.layout.activity_teacher_main);
 		mMenuDrawer.setMenuView(R.layout.menu_layout);
+		mMenuDrawer.setMenuSize(ScreenUtil.getSW(this) * 3 / 10);
 		initView();
 		// 初始化fragment
 		initFragment();
-		mMenuDrawer.peekDrawer();
 		isGetdata = false;
 		new LoginImTask().execute();
 	}
@@ -102,6 +103,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 							ft.show(findStudentFragment);
 							ft.commit();
 							bar.setTitle(R.string.findstudents);
+							bar.setRightTextVisibility(false);
 							currentFragment = findStudentFragment;
 						}
 						break;
@@ -115,7 +117,8 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 							ft.hide(currentFragment);
 							ft.show(overseasEducationFragment);
 							ft.commit();
-							bar.setTitle(R.string.overseas_education);
+							bar.setTitle(R.string.study_abroad);
+							bar.setRightTextVisibility(false);
 							currentFragment = overseasEducationFragment;
 						}
 						break;
@@ -130,6 +133,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 							ft.show(studentFragment);
 							ft.commit();
 							bar.setTitle(R.string.mystudents);
+							bar.setRightTextVisibility(false);
 							currentFragment = studentFragment;
 						}
 						break;
@@ -144,6 +148,16 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 							ft.show(myFragment);
 							ft.commit();
 							bar.setTitle(R.string.my);
+							bar.setRightText(R.string.log_out, new OnClickListener() {
+
+								@Override
+								public void onClick(View arg0) {
+									TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
+									Intent intent = new Intent(TeacherMainActivity.this, ChoiceRoleActivity.class);
+									startActivity(intent);
+									finishNoAnim();
+								}
+							});
 							currentFragment = myFragment;
 						}
 						break;

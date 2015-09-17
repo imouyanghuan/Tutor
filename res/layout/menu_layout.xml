@@ -29,8 +29,8 @@
                 android:orientation="vertical" >
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/dp_25"
+                    android:layout_height="@dimen/dp_25"
                     android:contentDescription="@string/app_name"
                     android:src="@drawable/menu_icon_notification" />
 
@@ -40,20 +40,20 @@
                     android:layout_marginTop="@dimen/dp_3"
                     android:text="@string/notification"
                     android:textColor="@color/menu_txt_color"
-                    android:textSize="@dimen/sp_16" />
+                    android:textSize="@dimen/sp_12" />
             </LinearLayout>
 
             <TextView
                 android:id="@id/menu_item_tv_msgCount"
-                android:layout_width="@dimen/dp_20"
-                android:layout_height="@dimen/dp_20"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 android:layout_gravity="end"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_2"
                 android:background="@drawable/menu_msg_count_bg"
                 android:gravity="center"
                 android:padding="@dimen/dp_2"
                 android:textColor="@color/red"
-                android:textSize="@dimen/sp_12"
+                android:textSize="@dimen/sp_10"
                 android:visibility="gone" />
         </FrameLayout>
     </LinearLayout>
@@ -68,8 +68,8 @@
         android:padding="@dimen/dp_10" >
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
             android:contentDescription="@string/app_name"
             android:src="@drawable/menu_icon_bookmark" />
 
@@ -79,7 +79,7 @@
             android:layout_marginTop="@dimen/dp_3"
             android:text="@string/bookmark"
             android:textColor="@color/menu_txt_color"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_12" />
     </LinearLayout>
 
 </LinearLayout>

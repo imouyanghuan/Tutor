@@ -42,7 +42,7 @@
                 android:id="@id/ac_main_rb2"
                 style="@style/main_tab"
                 android:drawableTop="@drawable/tab_oe_selector"
-                android:text="@string/overseas_education" />
+                android:text="@string/study_abroad" />
 
             <RadioButton
                 android:id="@id/ac_main_rb3"

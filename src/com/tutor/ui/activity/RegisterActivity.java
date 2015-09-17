@@ -1,6 +1,7 @@
 package com.tutor.ui.activity;
 
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
@@ -79,6 +80,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 				registerButton.setEnabled(isChecked);
 			}
 		});
+		checkBox.setChecked(false);
 		if (Constants.General.ROLE_TUTOR == role) {
 			registerButton.setText(R.string.btn_register_as_tutor);
 			tipTextView.setText(R.string.register_tip_tutor);
@@ -153,11 +155,11 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 
 				@Override
 				public void onSuccess(RegisterInfoResult t) {
-					if (200 == t.getStatusCode()) {
+					if (HttpURLConnection.HTTP_OK == t.getStatusCode()) {
 						new RegisterImTask(model, t).execute();
 					} else {
 						dismissDialog();
-						toast(R.string.toast_register_fail);
+						toast(t.getMessage());
 					}
 				}
 			});

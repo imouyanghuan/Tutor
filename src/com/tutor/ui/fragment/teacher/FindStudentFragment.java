@@ -72,6 +72,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		editText = ViewHelper.get(serchView, R.id.fragment_find_student_et);
 		ViewHelper.get(serchView, R.id.fragment_find_student_btn).setOnClickListener(this);
 		listView = ViewHelper.get(view, R.id.fragment_find_student_lv);
+		listView.setShowIndicator(false);
 		listView.getRefreshableView().addHeaderView(serchView);
 		// 設置可上拉加載和下拉刷新
 		listView.setMode(Mode.BOTH);

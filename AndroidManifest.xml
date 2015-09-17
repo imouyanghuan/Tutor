@@ -20,10 +20,13 @@
         android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+        <!-- 啟動頁 -->
         <activity
             android:name="com.tutor.ui.activity.WelcomeActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme.FullscreenTransparent" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,7 +36,8 @@
         <!-- 選擇身份 -->
         <activity
             android:name="com.tutor.ui.activity.ChoiceRoleActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" >
         </activity>
         <!-- 教師主頁 -->
         <activity
@@ -86,6 +90,11 @@
         <!-- 聊天頁面 -->
         <activity
             android:name="com.tutor.ui.activity.ChatActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 成為我的學生 -->
+        <activity
+            android:name="com.tutor.ui.activity.ToBeMyStudentActivity"
             android:screenOrientation="portrait" >
         </activity>
 

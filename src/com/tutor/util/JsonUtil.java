@@ -17,7 +17,7 @@ public class JsonUtil {
 		}
 		T bean = null;
 		try {
-			LogUtils.e(jstr);
+			LogUtils.d(jstr);
 			bean = gson.fromJson(jstr, clazz);
 		} catch (Exception e) {
 			e.printStackTrace();

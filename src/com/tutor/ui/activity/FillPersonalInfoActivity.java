@@ -775,6 +775,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				@Override
 				public void onFailure(int status, String message) {
 					dismissDialog();
+					LogUtils.e(message);
 					toast(R.string.toast_server_error);
 				}
 
@@ -816,6 +817,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				@Override
 				public void onFailure(int status, String message) {
 					dismissDialog();
+					LogUtils.e(message);
 					toast(R.string.toast_server_error);
 				}
 

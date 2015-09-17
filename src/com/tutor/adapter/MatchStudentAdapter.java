@@ -46,7 +46,15 @@ public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 			String path = ApiUrl.DOMAIN + t.getAvatar();
 			ImageUtils.loadImage(avatar, path);
 		}
-		holder.setText(R.id.student_list_item_nick, t.getUserName());
+		if (TextUtils.isEmpty(t.getEmail())) {
+			holder.setText(R.id.student_list_item_nick, "Student");
+		} else {
+			if (t.getEmail().contains("@")) {
+				holder.setText(R.id.student_list_item_nick, t.getEmail().substring(0, t.getEmail().lastIndexOf("@")));
+			} else {
+				holder.setText(R.id.student_list_item_nick, t.getEmail());
+			}
+		}
 		ArrayList<Area> areas = t.getAreas();
 		if (null != areas && 0 != areas.size()) {
 			StringBuffer sb = new StringBuffer();

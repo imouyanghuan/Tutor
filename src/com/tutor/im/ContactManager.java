@@ -13,6 +13,7 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
 
+import com.tutor.TutorApplication;
 import com.tutor.model.User;
 import com.tutor.util.StringUtils;
 
@@ -316,5 +317,19 @@ public class ContactManager {
 		user.setAvailable(presence.isAvailable());
 		user.setType(entry.getType());
 		return user;
+	}
+	
+	/**
+	 * 添加好友
+	 * @param imId
+	 * @param nickName
+	 */
+	public void addFriend(String imId,String nickName){
+		try {
+			TutorApplication.connectionManager.getConnection().getRoster().createEntry(imId, nickName, null);
+		} catch (XMPPException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

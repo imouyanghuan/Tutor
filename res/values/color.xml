@@ -16,13 +16,15 @@
     <color name="tab_txt_color">#b7bbc2</color>
     <color name="tab_txt_color_checked">#39a8e7</color>
     <color name="menu_bg">#1a2830</color>
-    <color name="menu_txt_color">#b7bbc2</color>
+    <color name="menu_txt_color">#989c99</color>
     <color name="menu_bg_press">#233b4a</color>
-
     <color name="gray_text">#696969</color>
     <color name="gray_text_2">#8a8c8f</color>
     <color name="gray_light">#f7faff</color>
+    <color name="gray_light_text">#b6bbc2</color>
     <color name="yellow_normal">#f6aa00</color>
     <color name="yellow_press">#d39407</color>
     <color name="black_2">#8f41484e</color>
+    <color name="gray_line">#edf0f5</color>
+
 </resources>

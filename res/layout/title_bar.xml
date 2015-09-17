@@ -29,30 +29,31 @@
             android:paddingRight="@dimen/dp_10"
             android:paddingStart="@dimen/dp_10"
             android:textColor="@color/title_txt_color_selector"
-            android:textSize="@dimen/sp_20" />
+            android:textSize="@dimen/sp_16" />
     </FrameLayout>
 
     <TextView
         android:id="@id/title_bar_tv_title"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp_5"
-        android:layout_marginRight="@dimen/dp_5"
-        android:layout_weight="1"
+        android:layout_gravity="center"
+        android:layout_marginLeft="@dimen/dp_55"
+        android:layout_marginRight="@dimen/dp_55"
         android:gravity="center"
         android:singleLine="true"
         android:textColor="@color/white"
-        android:textSize="@dimen/sp_25" />
+        android:textSize="@dimen/sp_20" />
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="0" >
+        android:layout_gravity="end" >
 
         <ImageButton
             android:id="@id/title_bar_ib_right"
             android:layout_width="@dimen/dp_50"
             android:layout_height="match_parent"
+            android:layout_gravity="end"
             android:background="@color/transparent"
             android:contentDescription="@string/app_name"
             android:padding="@dimen/dp_5" />
@@ -68,7 +69,7 @@
             android:paddingRight="@dimen/dp_10"
             android:paddingStart="@dimen/dp_10"
             android:textColor="@color/title_txt_color_selector"
-            android:textSize="@dimen/sp_20" />
+            android:textSize="@dimen/sp_16" />
     </FrameLayout>
 
 </com.tutor.ui.view.TitleBar>
