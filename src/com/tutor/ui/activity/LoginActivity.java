@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 
 import com.facebook.utils.FBUser;
 import com.facebook.utils.LogInStateListener;
@@ -36,6 +37,7 @@ import com.tutor.util.HttpHelper;
 import com.tutor.util.JsonUtil;
 import com.tutor.util.LogUtils;
 import com.tutor.util.ObjectHttpResponseHandler;
+import com.tutor.util.ScreenUtil;
 
 /**
  * 登錄,老師學生公用
@@ -88,6 +90,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		TitleBar bar = getView(R.id.title_bar);
 		bar.initBack(this);
 		bar.setTitle(R.string.login);
+		FrameLayout layout = getView(R.id.ac_login_ll);
+		int vh = ScreenUtil.getSH(this) - ScreenUtil.dip2Px(this, 80);
+		layout.setMinimumHeight(vh);
+		layout.setPadding(0, vh / 10, 0, 0);
 		email = getView(R.id.ac_login_et_email);
 		pswd = getView(R.id.ac_login_et_pswd);
 		getView(R.id.ac_login_btn_facebook).setOnClickListener(this);

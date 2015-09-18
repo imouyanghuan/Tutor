@@ -2,6 +2,8 @@ package com.tutor.ui.activity;
 
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -19,6 +21,7 @@ import com.tutor.ui.fragment.student.MyFragment;
 import com.tutor.ui.fragment.student.MyTeacherFragment;
 import com.tutor.ui.fragment.student.OverseasEducationFragment;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.ImageUtils;
 import com.tutor.util.ScreenUtil;
 
 /**
@@ -133,10 +136,7 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 
 								@Override
 								public void onClick(View arg0) {
-									TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
-									Intent intent = new Intent(StudentMainActivity.this, ChoiceRoleActivity.class);
-									startActivity(intent);
-									finishNoAnim();
+									loginOut();
 								}
 							});
 							currentFragment = myFragment;
@@ -148,6 +148,25 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 		// 菜單項
 		getView(R.id.menu_item_notification).setOnClickListener(this);
 		getView(R.id.menu_item_bookmark).setOnClickListener(this);
+	}
+
+	private void loginOut() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.log_out);
+		builder.setMessage(R.string.lable_log_out);
+		builder.setPositiveButton(R.string.cancel, null);
+		builder.setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
+				Intent intent = new Intent(StudentMainActivity.this, ChoiceRoleActivity.class);
+				startActivity(intent);
+				finishNoAnim();
+			}
+		});
+		AlertDialog dialog = builder.create();
+		dialog.show();
 	}
 
 	private void initFragment() {
@@ -169,6 +188,13 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 	protected void onPause() {
 		super.onPause();
 		Constants.Xmpp.isChatNotification = true;
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		// 清空缓存的图片
+		ImageUtils.clearChache();
 	}
 
 	private static long lastTime = 0;

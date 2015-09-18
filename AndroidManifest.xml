@@ -53,13 +53,13 @@
         <activity
             android:name="com.tutor.ui.activity.RegisterActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden" >
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <!-- 登錄 -->
         <activity
             android:name="com.tutor.ui.activity.LoginActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden" >
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <!-- 協議界面 -->
         <activity
@@ -90,7 +90,8 @@
         <!-- 聊天頁面 -->
         <activity
             android:name="com.tutor.ui.activity.ChatActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>
         <!-- 成為我的學生 -->
         <activity

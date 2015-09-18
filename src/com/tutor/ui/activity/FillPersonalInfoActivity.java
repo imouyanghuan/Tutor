@@ -1,9 +1,6 @@
 package com.tutor.ui.activity;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import org.apache.http.entity.StringEntity;
@@ -12,10 +9,7 @@ import org.apache.http.protocol.HTTP;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,7 +17,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -47,19 +40,15 @@ import com.tutor.model.StudentProfile;
 import com.tutor.model.TeacherProfile;
 import com.tutor.model.TimeSlotListResult;
 import com.tutor.model.Timeslot;
-import com.tutor.model.UploadAvatarResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.dialog.AddTimeSlotDialog;
 import com.tutor.ui.dialog.AddTimeSlotDialog.CallBack;
-import com.tutor.ui.dialog.ChangeAvatarDialog;
 import com.tutor.ui.view.AreaItemLayout;
 import com.tutor.ui.view.CourseLayout;
 import com.tutor.ui.view.TitleBar;
-import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.DateTimeUtil;
 import com.tutor.util.HttpHelper;
-import com.tutor.util.ImageUtils;
 import com.tutor.util.JsonUtil;
 import com.tutor.util.LogUtils;
 import com.tutor.util.ObjectHttpResponseHandler;
@@ -76,8 +65,6 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	private int role;
 	private Account account;
 	// views
-	/** 頭像 */
-	private ImageView avatarImageView;
 	/** 姓名,證件號,電話號碼 */
 	private EditText nameEditText, hKidEditText, phoneEditText;
 	/** 證件佈局,課程佈局 */
@@ -102,14 +89,10 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	private String birth;
 	/** 教育背景 */
 	private String eb;
-	// 頭像對話框
-	private ChangeAvatarDialog avatarDialog;
 	// 添加时间对话框
 	private AddTimeSlotDialog timeSlotDialog;
 	// 选择生日对话框
 	private DatePickerDialog datePickerDialog;
-	// 保存拍照圖片uri
-	private Uri imageUri, zoomUri;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -143,8 +126,6 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		} else {
 			submit.setText(R.string.btn_fill_info_student);
 		}
-		avatarImageView = getView(R.id.ac_fill_personal_info_iv_avatar);
-		avatarImageView.setOnClickListener(this);
 		nameEditText = getView(R.id.ac_fill_personal_info_et_name);
 		hKidEditText = getView(R.id.ac_fill_personal_info_et_hkid);
 		phoneEditText = getView(R.id.ac_fill_personal_info_et_phone);
@@ -290,17 +271,6 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 					profile.setTimeslots(timeslots);
 					submitStudentProfile(profile);
 				}
-				break;
-			case R.id.ac_fill_personal_info_iv_avatar:
-				// 上傳頭像
-				if (null == avatarDialog) {
-					avatarDialog = new ChangeAvatarDialog(this);
-				}
-				// 初始化uri
-				String fileName = DateTimeUtil.getSystemDateTime(DateTimeUtil.FORMART_YMDHMS) + Constants.General.IMAGE_END;
-				imageUri = Uri.fromFile(new File(Constants.SDCard.getImageDir(), fileName));
-				avatarDialog.setUri(imageUri);
-				avatarDialog.show();
 				break;
 			case R.id.ac_fill_personal_info_btn_add_timeslot:
 				timeSlotDialog.show();
@@ -548,72 +518,6 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		return null;
 	}
 
-	@Override
-	protected void onActivityResult(int arg0, int arg1, Intent data) {
-		super.onActivityResult(arg0, arg1, data);
-		switch (arg0) {
-			case Constants.RequestResultCode.TAKE_PHOTO:
-				// 拍照回來
-				if (RESULT_OK == arg1 && null != imageUri) {
-					// 更新圖庫
-					ImageUtils.updateGrally(this, imageUri);
-					// 啟動裁剪
-					startZoom(imageUri);
-				}
-				break;
-			case Constants.RequestResultCode.GALLERY:
-				// 圖庫選擇
-				if (RESULT_OK == arg1 && null != data && null != data.getData()) {
-					// 啟動裁剪
-					startZoom(data.getData());
-				}
-				break;
-			case Constants.RequestResultCode.ZOOM:
-				// 裁剪完成
-				// 圖庫選擇
-				if (RESULT_OK == arg1 && null != zoomUri) {
-					// 上傳頭像
-					String path = zoomUri.getPath();
-					if (!TextUtils.isEmpty(path)) {
-						File file = new File(path);
-						if (null != file && file.exists()) {
-							file = null;
-							upLoadAvatar(path);
-						}
-					}
-				}
-				break;
-		}
-	}
-
-	/**
-	 * 裁剪照片
-	 * 
-	 * @param data
-	 */
-	private void startZoom(Uri data) {
-		Intent intent = new Intent("com.android.camera.action.CROP");
-		intent.setDataAndType(data, "image/*");
-		// crop为true是设置在开启的intent中设置显示的view可以剪裁
-		intent.putExtra("crop", "true");
-		// aspectX aspectY 是宽高的比例
-		intent.putExtra("aspectX", 1);
-		intent.putExtra("aspectY", 1);
-		// outputX,outputY 是剪裁图片的宽高
-		intent.putExtra("outputX", 400);
-		intent.putExtra("outputY", 400);
-		// 保持缩放
-		intent.putExtra("scale", true);
-		String path = data.getPath();
-		String fileName = path.substring(path.lastIndexOf(File.separatorChar) + 1);
-		zoomUri = Uri.fromFile(new File(Constants.SDCard.getCacheDir(), fileName + Constants.General.IMAGE_END));
-		intent.putExtra(MediaStore.EXTRA_OUTPUT, zoomUri);
-		intent.putExtra("return-data", false);
-		intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
-		intent.putExtra("noFaceDetection", true);
-		startActivityForResult(intent, Constants.RequestResultCode.ZOOM);
-	}
-
 	/**
 	 * 進入主界面
 	 */
@@ -710,51 +614,6 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				}
 			}
 		});
-	}
-
-	/**
-	 * 上传头像
-	 * 
-	 * @param path
-	 */
-	private void upLoadAvatar(String path) {
-		if (!HttpHelper.isNetworkConnected(this)) {
-			toast(R.string.toast_netwrok_disconnected);
-			return;
-		}
-		// 先壓縮圖片
-		String newPath = Constants.SDCard.getCacheDir() + DateTimeUtil.getSystemDateTime(DateTimeUtil.FORMART_YMDHMS) + Constants.General.IMAGE_END;
-		if (ImageUtils.yaSuoImage(path, newPath, 400, 400)) {
-			File file = new File(newPath);
-			RequestParams params = new RequestParams();
-			try {
-				params.put("file", file, "form-data");
-				showDialogRes(R.string.uploading_avatar);
-				HttpHelper.post(this, ApiUrl.UPLOAD_AVATAR, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UploadAvatarResult>(UploadAvatarResult.class) {
-
-					@Override
-					public void onFailure(int status, String message) {
-						dismissDialog();
-						toast(R.string.toast_avatar_upload_fail);
-					}
-
-					@Override
-					public void onSuccess(UploadAvatarResult t) {
-						dismissDialog();
-						CheckTokenUtils.checkToken(t);
-						if (HttpURLConnection.HTTP_OK == t.getStatusCode()) {
-							avatar = t.getResult();
-							ImageUtils.loadImage(avatarImageView, ApiUrl.DOMAIN + avatar);
-						} else {
-							toast(R.string.toast_avatar_upload_fail);
-						}
-					}
-				});
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				toast(R.string.toast_avatar_upload_fail);
-			}
-		}
 	}
 
 	/**

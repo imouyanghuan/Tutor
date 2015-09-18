@@ -2,6 +2,8 @@ package com.tutor.ui.activity;
 
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,6 +33,7 @@ import com.tutor.ui.fragment.teacher.OverseasEducationFragment;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.HttpHelper;
+import com.tutor.util.ImageUtils;
 import com.tutor.util.ObjectHttpResponseHandler;
 import com.tutor.util.ScreenUtil;
 
@@ -152,10 +155,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 
 								@Override
 								public void onClick(View arg0) {
-									TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
-									Intent intent = new Intent(TeacherMainActivity.this, ChoiceRoleActivity.class);
-									startActivity(intent);
-									finishNoAnim();
+									loginOut();
 								}
 							});
 							currentFragment = myFragment;
@@ -168,6 +168,25 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		getView(R.id.menu_item_notification).setOnClickListener(this);
 		getView(R.id.menu_item_bookmark).setOnClickListener(this);
 		msgCount = getView(R.id.menu_item_tv_msgCount);
+	}
+
+	private void loginOut() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.log_out);
+		builder.setMessage(R.string.lable_log_out);
+		builder.setPositiveButton(R.string.cancel, null);
+		builder.setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
+				Intent intent = new Intent(TeacherMainActivity.this, ChoiceRoleActivity.class);
+				startActivity(intent);
+				finishNoAnim();
+			}
+		});
+		AlertDialog dialog = builder.create();
+		dialog.show();
 	}
 
 	/**
@@ -230,6 +249,8 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		// 停止服務
 		Intent intent = new Intent(this, IMService.class);
 		stopService(intent);
+		// 清空缓存的图片
+		ImageUtils.clearChache();
 		super.onDestroy();
 	}
 
@@ -266,6 +287,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
+			// notification
 			case R.id.menu_item_notification:
 				Intent notification = new Intent(this, NotificationActivity.class);
 				startActivity(notification);

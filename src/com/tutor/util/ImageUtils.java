@@ -60,6 +60,7 @@ public class ImageUtils {
 
 	public static void clearChache() {
 		imageLoader.clearMemoryCache();
+		imageLoader.clearDiscCache();
 	}
 
 	/**
@@ -363,23 +364,21 @@ public class ImageUtils {
 		}
 		Bitmap bitmap = getBitmapFromMemCache(key);
 		if (null == bitmap) {
-//			final Handler handler = new Handler() {
-//
-//				@Override
-//				public void handleMessage(Message msg) {
-//					super.handleMessage(msg);
-//					if (null != callBack) {
-//						callBack.onSuccess((Bitmap) msg.obj, key);
-//					}
-//				}
-//			};
+			// final Handler handler = new Handler() {
+			//
+			// @Override
+			// public void handleMessage(Message msg) {
+			// super.handleMessage(msg);
+			// if (null != callBack) {
+			// callBack.onSuccess((Bitmap) msg.obj, key);
+			// }
+			// }
+			// };
 			// 若该Bitmap不在内存缓存中，则启用线程去加载图片，并将Bitmap加入到mMemoryCache中
 			service.execute(new Runnable() {
 
 				@Override
-				public void run() {
-					 
-				}
+				public void run() {}
 			});
 		}
 		return bitmap;

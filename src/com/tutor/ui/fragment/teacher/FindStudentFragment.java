@@ -72,6 +72,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		editText = ViewHelper.get(serchView, R.id.fragment_find_student_et);
 		ViewHelper.get(serchView, R.id.fragment_find_student_btn).setOnClickListener(this);
 		listView = ViewHelper.get(view, R.id.fragment_find_student_lv);
+		listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
 		listView.setShowIndicator(false);
 		listView.getRefreshableView().addHeaderView(serchView);
 		// 設置可上拉加載和下拉刷新
@@ -212,7 +213,9 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		HttpHelper.get(getActivity(), ApiUrl.SEARCHSTUDENT, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<MatchStudentListResult>(MatchStudentListResult.class) {
 
 			@Override
-			public void onFailure(int status, String message) {}
+			public void onFailure(int status, String message) {
+				listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
+			}
 
 			@Override
 			public void onSuccess(MatchStudentListResult t) {
@@ -234,10 +237,14 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 						users.addAll(result.getResult());
 						if (0 == users.size()) {
 							toast(R.string.toast_no_match_student);
+							listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
+						} else {
+							listView.setBackgroundColor(getResources().getColor(R.color.transparent));
 						}
 					} else {
 						// 加載更多
 						users.addAll(result.getResult());
+						listView.setBackgroundColor(getResources().getColor(R.color.transparent));
 					}
 					if (null != adapter) {
 						adapter.refresh(users);

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -119,10 +120,10 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 			if (null != user.getStatus()) {
 				title = title + "(" + user.getStatus() + ")";
 			} else {
-				title = StringUtils.getUserNameByJid(chatWithJid) + "(离线)";
+				title = StringUtils.getUserNameByJid(chatWithJid) + "(離線)";
 			}
 		} else {
-			title = StringUtils.getUserNameByJid(chatWithJid) + "(离线)";
+			title = StringUtils.getUserNameByJid(chatWithJid) + "(離線)";
 		}
 		bar.setTitle(title);
 	}
@@ -173,9 +174,13 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 		switch (v.getId()) {
 			case R.id.edit_chat_btn_send:
 				String msg = etMessage.getText().toString().trim();
-				// 發送聊天內容
-				sendMessage(msg);
-				etMessage.setText("");
+				if (!TextUtils.isEmpty(msg)) {
+					// 發送聊天內容
+					sendMessage(msg);
+					etMessage.setText("");
+				} else {
+					toast(R.string.toast_msg_cant_empty);
+				}
 				break;
 			default:
 				break;

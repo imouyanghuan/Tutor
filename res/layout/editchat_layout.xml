@@ -21,7 +21,8 @@
             android:layout_margin="@dimen/dp_2"
             android:background="@color/transparent"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/chat_face_selector" />
+            android:src="@drawable/chat_face_selector"
+            android:visibility="gone" />
 
         <ImageButton
             android:id="@+id/edit_chat_btn_more"
@@ -32,7 +33,8 @@
             android:layout_marginTop="@dimen/dp_2"
             android:background="@color/transparent"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/chat_more_selector" />
+            android:src="@drawable/chat_more_selector"
+            android:visibility="gone" />
 
         <EditText
             android:id="@+id/edit_chat_et"
@@ -51,9 +53,10 @@
             android:layout_width="@dimen/dp_50"
             android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/dp_3"
+            android:layout_marginRight="@dimen/dp_5"
             android:background="@drawable/btn_bg_selector"
             android:gravity="center"
-            android:text="发送"
+            android:text="@string/label_send"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_14" />
     </LinearLayout>

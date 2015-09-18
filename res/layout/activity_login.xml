@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/default_bg_color"
@@ -7,100 +7,111 @@
 
     <include layout="@layout/title_bar" />
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title_bar"
-        android:layout_marginTop="@dimen/dp_30"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/dp_15"
-        android:paddingRight="@dimen/dp_15" >
+        android:layout_height="match_parent"
+        android:fadingEdge="none"
+        android:overScrollMode="never" >
 
-        <LinearLayout
-            android:id="@id/ac_login_btn_facebook"
+        <FrameLayout
+            android:id="@id/ac_login_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_20"
-            android:background="@drawable/login_btn_facebook_bg"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="@dimen/dp_8" >
+            android:orientation="vertical" >
 
-            <ImageView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_5"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/login_ic_facebook" />
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_15" >
+
+                <LinearLayout
+                    android:id="@id/ac_login_btn_facebook"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_20"
+                    android:background="@drawable/login_btn_facebook_bg"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dp_8" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_5"
+                        android:contentDescription="@string/app_name"
+                        android:src="@drawable/login_ic_facebook" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/btn_login_facebook"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_18" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/line_height"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@color/gray_line" />
+                <!-- 郵箱 -->
+
+                <EditText
+                    android:id="@id/ac_login_et_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_2"
+                    android:background="@drawable/editview_bg"
+                    android:ems="20"
+                    android:hint="@string/hint_email"
+                    android:inputType="textEmailAddress"
+                    android:maxLength="30"
+                    android:textColorHint="@color/gray_light_text" >
+
+                    <requestFocus />
+                </EditText>
+                <!-- 密碼 -->
+
+                <EditText
+                    android:id="@id/ac_login_et_pswd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:background="@drawable/editview_bg"
+                    android:ems="20"
+                    android:hint="@string/hint_password"
+                    android:inputType="textPassword"
+                    android:maxLength="20"
+                    android:textColorHint="@color/gray_light_text" />
+                <!-- 登錄按鈕 -->
+
+                <Button
+                    android:id="@id/ac_login_btn_login"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dp_20"
+                    android:background="@drawable/choice_role_tutor_btn_bg"
+                    android:gravity="center"
+                    android:text="@string/btn_login_email"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_18" />
+            </LinearLayout>
 
             <TextView
+                android:id="@id/ac_login_btn_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="@dimen/dp_20"
                 android:gravity="center"
-                android:text="@string/btn_login_facebook"
-                android:textColor="@color/white"
+                android:text="@string/label_register"
+                android:textColor="@color/login_register_txt_color"
                 android:textSize="@dimen/sp_18" />
-        </LinearLayout>
+        </FrameLayout>
+    </ScrollView>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/line_height"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="30dp"
-            android:background="@color/gray_line" />
-        <!-- 郵箱 -->
-
-        <EditText
-            android:id="@id/ac_login_et_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
-            android:background="@drawable/editview_bg"
-            android:ems="20"
-            android:hint="@string/hint_email"
-            android:inputType="textEmailAddress"
-            android:maxLength="30"
-            android:textColorHint="@color/gray_light_text" >
-
-            <requestFocus />
-        </EditText>
-        <!-- 密碼 -->
-
-        <EditText
-            android:id="@id/ac_login_et_pswd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:background="@drawable/editview_bg"
-            android:ems="20"
-            android:hint="@string/hint_password"
-            android:inputType="textPassword"
-            android:maxLength="20"
-            android:textColorHint="@color/gray_light_text" />
-        <!-- 登錄按鈕 -->
-
-        <Button
-            android:id="@id/ac_login_btn_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_20"
-            android:background="@drawable/choice_role_tutor_btn_bg"
-            android:gravity="center"
-            android:text="@string/btn_login_email"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_18" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@id/ac_login_btn_register"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/dp_20"
-        android:gravity="center"
-        android:text="@string/label_register"
-        android:textColor="@color/login_register_txt_color"
-        android:textSize="@dimen/sp_18" />
-
-</RelativeLayout>
+</LinearLayout>

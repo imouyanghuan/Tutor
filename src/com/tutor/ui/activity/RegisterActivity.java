@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ import com.tutor.util.DateTimeUtil;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.JsonUtil;
 import com.tutor.util.ObjectHttpResponseHandler;
+import com.tutor.util.ScreenUtil;
 
 /**
  * 註冊界面
@@ -65,6 +67,10 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 		TitleBar bar = getView(R.id.title_bar);
 		bar.setTitle(R.string.register);
 		bar.initBack(this);
+		FrameLayout layout = getView(R.id.ac_login_ll);
+		int vh = ScreenUtil.getSH(this) - ScreenUtil.dip2Px(this, 80);
+		layout.setMinimumHeight(vh);
+		layout.setPadding(0, vh / 10, 0, 0);
 		emailEditText = getView(R.id.ac_register_et_email);
 		pswdEditText = getView(R.id.ac_register_et_pswd);
 		repeatPswdEditText = getView(R.id.ac_register_et_repeatpswd);

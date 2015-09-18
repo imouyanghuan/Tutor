@@ -14,6 +14,7 @@
     <color name="transparent">#00000000</color>
     <color name="gray">#b7bbc2</color>
     <color name="tab_txt_color">#b7bbc2</color>
+    <color name="tab_bg">#f6f6f7</color>
     <color name="tab_txt_color_checked">#39a8e7</color>
     <color name="menu_bg">#1a2830</color>
     <color name="menu_txt_color">#989c99</color>

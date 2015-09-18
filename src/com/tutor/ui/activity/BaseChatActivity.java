@@ -11,6 +11,7 @@ import org.jivesoftware.smack.packet.Message;
 
 import com.tutor.TutorApplication;
 import com.tutor.im.IMMessageManager;
+import com.tutor.im.XMPPConnectionManager;
 import com.tutor.model.IMMessage;
 import com.tutor.params.Constants;
 import com.tutor.util.DateTimeUtil;
@@ -127,7 +128,7 @@ public abstract class BaseChatActivity extends BaseActivity {
 			imMessage.setTitle("");
 			imMessage.setFromSubJid(chatWithJid);
 			//
-			imMessage.setToJid(chatWithJid);
+			imMessage.setToJid(TutorApplication.getAccountDao().load("1").getImAccount() +"@"+ XMPPConnectionManager.getManager().getServiceName());
 			imMessage.setNoticeType(IMMessage.MESSAGE_TYPE_CHAT_MSG);
 			imMessage.setSendStatus(IMMessage.SEND_STATUS_SUCCESS);
 		} catch (XMPPException e) {

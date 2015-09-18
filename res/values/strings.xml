@@ -56,6 +56,7 @@
     <string name="label_none_area">None area</string>
     <string name="label_from">From</string>
     <string name="label_to">&#160;&#160;&#160;&#160;&#160;To</string>
+    <string name="lable_log_out">Are you sure login out?</string>
     <!-- button -->
     <string name="btn_role_student">Find tutors</string>
     <string name="btn_role_tutor">Join 2utor</string>
@@ -139,5 +140,7 @@
     <string name="label_frequency_of_lessons">Frequency Of Lessons</string>
     <string name="label_price_per_hour">Price Per Hour</string>
     <string name="label_service_location">Service Location</string>
+    <string name="toast_msg_cant_empty">發送內容不能為空</string>
+    <string name="label_send">發送</string>
 
 </resources>

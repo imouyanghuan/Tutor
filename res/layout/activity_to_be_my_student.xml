@@ -15,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_20"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dp_20" >
 
             <TextView
                 android:layout_width="match_parent"
@@ -33,9 +34,8 @@
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_marginRight="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_10"
-                android:background="@drawable/selector_edittext_border"
+                android:background="@drawable/editview_bg"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dp_15"
                 android:text="Abby Chan" />
 
             <TextView
@@ -54,9 +54,8 @@
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_marginRight="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_10"
-                android:background="@drawable/selector_edittext_border"
+                android:background="@drawable/editview_bg"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dp_15"
                 android:text="ESE English" />
 
             <TextView
@@ -75,9 +74,8 @@
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_marginRight="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_10"
-                android:background="@drawable/selector_edittext_border"
+                android:background="@drawable/editview_bg"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dp_15"
                 android:text="Twice a Weak" />
 
             <TextView
@@ -96,9 +94,8 @@
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_marginRight="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_10"
-                android:background="@drawable/selector_edittext_border"
+                android:background="@drawable/editview_bg"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dp_15"
                 android:text="200 HK Dollars" />
 
             <TextView
@@ -117,9 +114,8 @@
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_marginRight="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_10"
-                android:background="@drawable/selector_edittext_border"
+                android:background="@drawable/editview_bg"
                 android:gravity="center_vertical"
-                android:paddingLeft="@dimen/dp_15"
                 android:text="Central,Hong Kong" />
         </LinearLayout>
     </ScrollView>

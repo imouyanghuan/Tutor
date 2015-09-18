@@ -3,14 +3,15 @@ package com.tutor.im;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.database.Cursor;
+
 import com.tutor.TutorApplication;
+import com.tutor.model.Account;
 import com.tutor.model.IMMessage;
 import com.tutor.model.IMMessageDao;
 import com.tutor.model.IMMessageDao.Properties;
 import com.tutor.util.LogUtils;
 import com.tutor.util.StringUtils;
-
-import android.database.Cursor;
 
 import de.greenrobot.dao.query.DeleteQuery;
 import de.greenrobot.dao.query.QueryBuilder;
@@ -35,9 +36,14 @@ public class IMMessageManager {
 	// WhereCondition... condMore)：使用and构成查询条件
 	private static IMMessageManager imMessageManager;
 	private IMMessageDao imMessageDao;
+	private String currentIMAccount = null;
 
 	private IMMessageManager() {
 		imMessageDao = TutorApplication.getImMessageDao();
+		Account account = TutorApplication.getAccountDao().load("1");
+		if (null != account) {
+			currentIMAccount = account.getImAccount()+"@"+ XMPPConnectionManager.getManager().getServiceName();
+		}
 	}
 
 	public static IMMessageManager getManager() {
@@ -107,7 +113,7 @@ public class IMMessageManager {
 			return null;
 		}
 		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
-		WhereCondition condition = qb.and(Properties.FromSubJid.eq(fromSubJid), Properties.NoticeType.eq("" + IMMessage.MESSAGE_TYPE_CHAT_MSG));
+		WhereCondition condition = qb.and(Properties.FromSubJid.eq(fromSubJid), Properties.NoticeType.eq("" + IMMessage.MESSAGE_TYPE_CHAT_MSG), Properties.ToJid.eq(currentIMAccount));
 		List<IMMessage> list = qb.where(condition).limit(pageSize).offset(offset).list();
 		return list;
 	}
@@ -120,7 +126,7 @@ public class IMMessageManager {
 	 */
 	public long getMsgCountWithSomeBody(String fromSubJid) {
 		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
-		WhereCondition condition = qb.and(Properties.FromSubJid.eq(fromSubJid), Properties.NoticeType.eq("" + IMMessage.MESSAGE_TYPE_CHAT_MSG));
+		WhereCondition condition = qb.and(Properties.FromSubJid.eq(fromSubJid), Properties.NoticeType.eq("" + IMMessage.MESSAGE_TYPE_CHAT_MSG), Properties.ToJid.eq(currentIMAccount));
 		qb.where(condition);
 		long count = qb.count();
 		return count;
@@ -134,7 +140,8 @@ public class IMMessageManager {
 	 */
 	public boolean deleteMsgWhereJid(String fromSubJid) {
 		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
-		DeleteQuery<IMMessage> db = qb.where(Properties.FromSubJid.eq(fromSubJid)).buildDelete();
+		WhereCondition condition = qb.and(Properties.FromSubJid.eq(fromSubJid), Properties.ToJid.eq(currentIMAccount));
+		DeleteQuery<IMMessage> db = qb.where(condition).buildDelete();
 		if (null != db) {
 			db.executeDeleteWithoutDetachingEntities();
 			return true;
@@ -169,25 +176,11 @@ public class IMMessageManager {
 		StringBuffer sqlBuffer = new StringBuffer();
 		sqlBuffer.append(" select * from ( ");
 		sqlBuffer.append(" select ");
-		sqlBuffer.append(" m.ID,m.CONTENT,m.TITLE,m.TIME,m.FROM_SUB_JID,m.NOTICE_TYPE ");
+		sqlBuffer.append(" m.ID,m.CONTENT,m.TITLE,m.TIME,m.FROM_SUB_JID,m.NOTICE_TYPE,m.TO_JID ");
 		sqlBuffer.append(" from ");
 		sqlBuffer.append(IMMessageDao.TABLENAME).append(" m ");
 		sqlBuffer.append(" where ");
-		sqlBuffer.append(" m.NOTICE_TYPE = ").append(IMMessage.MESSAGE_TYPE_CHAT_MSG).append(" group by m.FROM_SUB_JID ");
-		sqlBuffer.append(" union ");
-		sqlBuffer.append(" select ");
-		sqlBuffer.append(" m.ID,m.CONTENT,m.TITLE,m.TIME,m.FROM_SUB_JID,m.NOTICE_TYPE ");
-		sqlBuffer.append(" from ");
-		sqlBuffer.append(IMMessageDao.TABLENAME).append(" m ");
-		sqlBuffer.append(" where ");
-		sqlBuffer.append(" m.NOTICE_TYPE = ").append(IMMessage.MESSAGE_TYPE_ADD_FRIEND).append(" group by m.NOTICE_TYPE ");
-		sqlBuffer.append(" union ");
-		sqlBuffer.append(" select ");
-		sqlBuffer.append(" m.ID,m.CONTENT,m.TITLE,m.TIME,m.FROM_SUB_JID,m.NOTICE_TYPE ");
-		sqlBuffer.append(" from ");
-		sqlBuffer.append(IMMessageDao.TABLENAME).append(" m ");
-		sqlBuffer.append(" where ");
-		sqlBuffer.append(" m.NOTICE_TYPE = ").append(IMMessage.MESSAGE_TYPE_SYS_MSG).append(" group by m.NOTICE_TYPE ");
+		sqlBuffer.append(" m.NOTICE_TYPE = ").append(IMMessage.MESSAGE_TYPE_CHAT_MSG).append(" and m.TO_JID = ").append("\'").append(currentIMAccount).append("\'").append(" group by m.FROM_SUB_JID ");
 		sqlBuffer.append(" ) t order by t.time desc ");
 		System.out.println(sqlBuffer.toString());
 		Cursor cursor = TutorApplication.getDatabase().rawQuery(sqlBuffer.toString(), null);
@@ -304,7 +297,8 @@ public class IMMessageManager {
 	 */
 	public long getUnReadNoticeCountByTypeAndFrom(int type, String fromSubJid) {
 		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
-		WhereCondition condition = qb.and(Properties.ReadStatus.eq("" + IMMessage.READ_STATUS_UNREAD), Properties.NoticeType.eq("" + type), Properties.FromSubJid.eq(fromSubJid));
+		WhereCondition condition = qb.and(Properties.ReadStatus.eq("" + IMMessage.READ_STATUS_UNREAD), Properties.NoticeType.eq("" + type), Properties.FromSubJid.eq(fromSubJid),
+				Properties.ToJid.eq(currentIMAccount));
 		qb.where(condition);
 		return qb.count();
 	}
@@ -317,7 +311,7 @@ public class IMMessageManager {
 	 */
 	public void updateStatusByFrom(String fromSubJid, Integer status) {
 		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
-		qb.where(Properties.FromSubJid.eq(fromSubJid));
+		qb.where(Properties.FromSubJid.eq(fromSubJid), Properties.ToJid.eq(currentIMAccount));
 		List<IMMessage> list = qb.list();
 		if (list != null && list.size() > 0) {
 			for (IMMessage notice : list) {

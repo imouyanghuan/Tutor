@@ -24,6 +24,7 @@ public abstract class ObjectHttpResponseHandler<T> extends TextHttpResponseHandl
 
 	@Override
 	public void onFailure(int arg0, Header[] arg1, String arg2, Throwable arg3) {
+		LogUtils.e(arg0 + "--" + arg2);
 		onFailure(arg0, arg2);
 	}
 
@@ -41,6 +42,7 @@ public abstract class ObjectHttpResponseHandler<T> extends TextHttpResponseHandl
 			}
 			onFailure(arg0, arg2);
 		} else {
+			LogUtils.e(arg0 + "--" + arg2);
 			onFailure(arg0, arg2);
 		}
 	}
