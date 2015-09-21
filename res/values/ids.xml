@@ -57,6 +57,12 @@
     <item name="ac_fill_personal_info_rb_eb3" type="id"></item>
     <item name="ac_fill_personal_info_rb_eb4" type="id"></item>
     <item name="ac_fill_personal_info_timeslot_lv" type="id"></item>
+    <item name="ac_fill_personal_time_tv_week" type="id"></item>
+    <item name="ac_fill_personal_time_tv_start" type="id"></item>
+    <item name="ac_fill_personal_time_tv_end" type="id"></item>
+    <item name="ac_fill_personal_time_np_week" type="id"></item>
+    <item name="ac_fill_personal_time_np_hour" type="id"></item>
+    <item name="ac_fill_personal_time_np_minute" type="id"></item>
     <!-- 菜單 -->
     <item name="menu_item_notification" type="id"></item>
     <item name="menu_item_bookmark" type="id"></item>

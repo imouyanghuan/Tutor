@@ -28,8 +28,8 @@ import com.tutor.model.TeacherProfile;
 import com.tutor.model.Timeslot;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
-import com.tutor.ui.dialog.AddTimeSlotDialog;
-import com.tutor.ui.dialog.AddTimeSlotDialog.CallBack;
+import com.tutor.ui.dialog.TimeSlotDialog;
+import com.tutor.ui.dialog.TimeSlotDialog.CallBack;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.JsonUtil;
@@ -55,7 +55,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements CallBack, On
 	private CustomListView listView;
 	private TimeSlotAdapter adapter;
 	// 添加时间对话框
-	private AddTimeSlotDialog timeSlotDialog;
+	private TimeSlotDialog timeSlotDialog;
 	/** 保存時間 */
 	private Button saveTime;
 	/** 教育背景 */
@@ -88,7 +88,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements CallBack, On
 		} else {
 			eb = 0;
 		}
-		timeSlotDialog = new AddTimeSlotDialog(this, this);
+		timeSlotDialog = new TimeSlotDialog(this, this);
 	}
 
 	@Override
@@ -149,6 +149,9 @@ public class SelectTimeSlotActivity extends BaseActivity implements CallBack, On
 		} else {
 			ebFrameLayout.setVisibility(View.GONE);
 		}
+		getView(R.id.ac_fill_personal_time_tv_week).setOnClickListener(this);
+		getView(R.id.ac_fill_personal_time_tv_start).setOnClickListener(this);
+		getView(R.id.ac_fill_personal_time_tv_end).setOnClickListener(this);
 		saveTime = getView(R.id.ac_fill_personal_info_btn_save_timeslot);
 		saveTime.setOnClickListener(this);
 		// 时间段列表
@@ -168,6 +171,15 @@ public class SelectTimeSlotActivity extends BaseActivity implements CallBack, On
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.ac_fill_personal_info_btn_save_timeslot:
+				// TODO
+				break;
+			case R.id.ac_fill_personal_time_tv_week:
+				// TODO
+				break;
+			case R.id.ac_fill_personal_time_tv_start:
+				// TODO
+				break;
+			case R.id.ac_fill_personal_time_tv_end:
 				// TODO
 				break;
 			default:

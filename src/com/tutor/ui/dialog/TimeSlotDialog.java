@@ -30,22 +30,15 @@ import com.tutor.util.ViewHelper;
  * 
  *         2015-9-11
  */
-public class AddTimeSlotDialog extends Dialog implements android.view.View.OnClickListener, OnItemSelectedListener, OnTimeChangedListener {
+public class TimeSlotDialog extends Dialog implements android.view.View.OnClickListener, OnItemSelectedListener, OnTimeChangedListener {
 
-	private Spinner mSpinner;
 	private TimePicker fromTimePicker, toTimePicker;
 	private CallBack callBack;
-	/** 星期 */
-	private String[] weeks;
-	// private String selectWeek;
-	//
 	Timeslot timeslot = new Timeslot();
 
-	public AddTimeSlotDialog(Context context, CallBack callBack) {
+	public TimeSlotDialog(Context context, CallBack callBack) {
 		this(context, R.style.dialog);
 		this.callBack = callBack;
-		weeks = getContext().getResources().getStringArray(R.array.weeks);
-		// selectWeek = weeks[0];
 		timeslot.setDayOfWeek(0);
 		timeslot.setStarHour(8);
 		timeslot.setStartMinute(30);
@@ -53,11 +46,11 @@ public class AddTimeSlotDialog extends Dialog implements android.view.View.OnCli
 		timeslot.setEndMinute(30);
 	}
 
-	public AddTimeSlotDialog(Context context, int theme) {
+	public TimeSlotDialog(Context context, int theme) {
 		super(context, theme);
 	}
 
-	public AddTimeSlotDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
+	public TimeSlotDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
 		super(context, cancelable, cancelListener);
 	}
 
@@ -65,7 +58,7 @@ public class AddTimeSlotDialog extends Dialog implements android.view.View.OnCli
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		View rootView = LayoutInflater.from(getContext()).inflate(R.layout.add_timeslot_dialog_layout, null, false);
+		View rootView = LayoutInflater.from(getContext()).inflate(R.layout.timeslot_dialog_layout, null, false);
 		setContentView(rootView);
 		initView(rootView);
 		// set LayoutParams
@@ -79,15 +72,11 @@ public class AddTimeSlotDialog extends Dialog implements android.view.View.OnCli
 	private void initView(View rootView) {
 		ViewHelper.get(rootView, R.id.add_timeslot_dialog_btn_ok).setOnClickListener(this);
 		ViewHelper.get(rootView, R.id.add_timeslot_dialog_btn_cancle).setOnClickListener(this);
-		mSpinner = ViewHelper.get(rootView, R.id.add_timeslot_dialog_spinner);
-		mSpinner.setOnItemSelectedListener(this);
 		fromTimePicker = ViewHelper.get(rootView, R.id.add_timeslot_dialog_date1);
 		fromTimePicker.setOnTimeChangedListener(this);
 		toTimePicker = ViewHelper.get(rootView, R.id.add_timeslot_dialog_date2);
 		toTimePicker.setOnTimeChangedListener(this);
 		//
-		WeekAdapter adapter = new WeekAdapter(getContext(), Arrays.asList(weeks));
-		mSpinner.setAdapter(adapter);
 		// 设置时间格式:24小时
 		fromTimePicker.setIs24HourView(true);
 		toTimePicker.setIs24HourView(true);
