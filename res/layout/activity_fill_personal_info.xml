@@ -128,183 +128,19 @@
                 </RadioGroup>
             </FrameLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_20"
-                android:gravity="center_vertical"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_birth"
-                    android:textSize="@dimen/sp_18" />
-
-                <TextView
-                    android:id="@id/ac_fill_personal_info_tv_birth"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center|end"
-                    android:padding="@dimen/dp_5"
-                    android:text="@string/label_date"
-                    android:textSize="@dimen/sp_18" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@id/ac_fill_personal_info_tv_couress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_20"
-                android:text="@string/label_select_couress"
-                android:textSize="@dimen/sp_18" />
-
-            <LinearLayout
-                android:id="@id/ac_fill_personal_info_ll_couress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_5"
-                android:orientation="vertical" >
-            </LinearLayout>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_20"
-                android:text="@string/label_education_background"
+                android:text="@string/label_birth"
                 android:textSize="@dimen/sp_18" />
 
-            <FrameLayout
-                android:id="@id/ac_fill_personal_info_fl_eb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_5" >
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical" >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@string/eb_1"
-                        android:textSize="@dimen/sp_20" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@string/eb_2"
-                        android:textSize="@dimen/sp_20" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@string/eb_3"
-                        android:textSize="@dimen/sp_20" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="@string/eb_4"
-                        android:textSize="@dimen/sp_20" />
-                </LinearLayout>
-
-                <RadioGroup
-                    android:id="@id/ac_fill_personal_info_rg_eb"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:orientation="vertical" >
-
-                    <RadioButton
-                        android:id="@id/ac_fill_personal_info_rb_eb1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:checked="true" />
-
-                    <RadioButton
-                        android:id="@id/ac_fill_personal_info_rb_eb2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <RadioButton
-                        android:id="@id/ac_fill_personal_info_rb_eb3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <RadioButton
-                        android:id="@id/ac_fill_personal_info_rb_eb4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-                </RadioGroup>
-            </FrameLayout>
-
-            <TextView
+            <DatePicker
+                android:id="@id/ac_fill_personal_info_datePicker"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_20"
-                android:text="@string/label_select_area"
-                android:textSize="@dimen/sp_18" />
-
-            <LinearLayout
-                android:id="@id/ac_fill_personal_info_ll_area"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_5"
-                android:orientation="vertical" >
-            </LinearLayout>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_20"
-                android:text="@string/label_teach_time_slot"
-                android:textSize="@dimen/sp_18" />
-
-            <com.mssky.mobile.ui.view.CustomListView
-                android:id="@id/ac_fill_personal_info_timeslot_lv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_3"
-                android:divider="@null"
-                android:listSelector="@color/transparent" >
-            </com.mssky.mobile.ui.view.CustomListView>
-
-            <Button
-                android:id="@id/ac_fill_personal_info_btn_add_timeslot"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_30"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/dp_5"
-                android:background="@drawable/team_btn_forward_bg"
-                android:paddingLeft="@dimen/dp_5"
-                android:paddingRight="@dimen/dp_5"
-                android:text="@string/add_timeslot"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
-
-            <Button
-                android:id="@id/ac_fill_personal_info_btn_submit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/dp_20"
-                android:background="@drawable/team_btn_forward_bg"
-                android:textColor="@color/white" />
+                android:layout_gravity="end"
+                android:calendarViewShown="false" />
         </LinearLayout>
     </ScrollView>
 

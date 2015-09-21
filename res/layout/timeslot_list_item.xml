@@ -14,13 +14,13 @@
 
     <Button
         android:id="@id/timeslot_item_btn_delete"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
-        android:layout_gravity="end"
-        android:background="@drawable/timeslot_delete_btn_bg"
-        android:text="@string/btn_delete"
-        android:textColor="@color/white"
-        android:textSize="@dimen/sp_12"
-        android:visibility="gone" />
+        android:layout_gravity="end|center"
+        android:background="@drawable/delete_timeslot_btn_bg"
+        android:gravity="center"
+        android:text="@string/btn_x"
+        android:textColor="@color/delete_timeslot_btntxt_color"        android:textSize="@dimen/sp_16"
+        android:visibility="visible" />
 
 </FrameLayout>

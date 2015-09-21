@@ -22,7 +22,7 @@ public class StudentProfile implements Serializable {
 	private String IMID;
 	private String Avatar;
 	private Date Birth;
-	private String Gender;
+	private int Gender;
 	private String Introduction;
 	// 个人简介视频地址
 	private String IntroductionVideo;
@@ -120,11 +120,11 @@ public class StudentProfile implements Serializable {
 		Birth = birth;
 	}
 
-	public String getGender() {
+	public int getGender() {
 		return Gender;
 	}
 
-	public void setGender(String gender) {
+	public void setGender(int gender) {
 		Gender = gender;
 	}
 

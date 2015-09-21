@@ -32,9 +32,9 @@ public final class Constants {
 		/** 老師 */
 		public static final int ROLE_TUTOR = 0X1;
 		/** 男 */
-		public static final String MALE = "male";
+		public static final int MALE = 0;
 		/** 女 */
-		public static final String FEMALE = "female";
+		public static final int FEMALE = 1;
 		/** 圖片結尾 */
 		public static final String IMAGE_END = ".jpg";
 		/** Token过期状态码 */
@@ -111,6 +111,12 @@ public final class Constants {
 		public static final String INTENT_EXTRA_GROUP = "group.key";
 		/** 用戶信息 */
 		public static final String INTENT_EXTRA_USER_INFO = "userInfo";
+		/** 是否编辑资料状态 */
+		public static final String INTENT_EXTRA_ISEDIT = "is.edit";
+		/** 教师资料 */
+		public static final String INTENT_EXTRA_TUTORPRIFILE = "tutor.prifile";
+		/** 学生资料 */
+		public static final String INTENT_EXTRA_STUDENTPROFILE = "student.prifile";
 	}
 
 	/**

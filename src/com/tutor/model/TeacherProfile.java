@@ -24,7 +24,7 @@ public class TeacherProfile implements Serializable {
 	// 学生数
 	private int StudentCount;
 	// 文凭
-	private String EducationDegree;
+	private int EducationDegree;
 	// 毕业学校
 	private String GraduateSchool;
 	// 主修专业
@@ -39,7 +39,7 @@ public class TeacherProfile implements Serializable {
 	private String IMID;
 	private String Avatar;
 	private Date Birth;
-	private String Gender;
+	private int Gender;
 	private String Introduction;
 	// 个人简介视频地址
 	private String IntroductionVideo;
@@ -112,11 +112,11 @@ public class TeacherProfile implements Serializable {
 		StudentCount = studentCount;
 	}
 
-	public String getEducationDegree() {
+	public int getEducationDegree() {
 		return EducationDegree;
 	}
 
-	public void setEducationDegree(String educationDegree) {
+	public void setEducationDegree(int educationDegree) {
 		EducationDegree = educationDegree;
 	}
 
@@ -200,11 +200,11 @@ public class TeacherProfile implements Serializable {
 		Birth = birth;
 	}
 
-	public String getGender() {
+	public int getGender() {
 		return Gender;
 	}
 
-	public void setGender(String gender) {
+	public void setGender(int gender) {
 		Gender = gender;
 	}
 

@@ -287,7 +287,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-			// notification
+		// notification
 			case R.id.menu_item_notification:
 				Intent notification = new Intent(this, NotificationActivity.class);
 				startActivity(notification);

@@ -1,6 +1,31 @@
 package com.tutor.ui.activity;
 
+import java.util.ArrayList;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.LinearLayout;
+
+import com.loopj.android.http.RequestParams;
+import com.tutor.R;
+import com.tutor.TutorApplication;
+import com.tutor.model.Area;
+import com.tutor.model.Area1;
+import com.tutor.model.AreaListResult;
+import com.tutor.model.StudentProfile;
+import com.tutor.model.TeacherProfile;
+import com.tutor.params.ApiUrl;
+import com.tutor.params.Constants;
+import com.tutor.ui.view.AreaItemLayout;
+import com.tutor.ui.view.TitleBar;
+import com.tutor.util.HttpHelper;
+import com.tutor.util.LogUtils;
+import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
  * 选择地区
@@ -11,12 +36,234 @@ import android.os.Bundle;
  */
 public class SelectAreaActivity extends BaseActivity {
 
+	/** 是否是编辑资料模式 */
+	private boolean isEdit;
+	private int role;
+	private TeacherProfile teacherProfile;
+	private StudentProfile studentProfile;
+	private ArrayList<Area> areas;
+	private LinearLayout linearLayout;
+
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
+		isEdit = getIntent().getBooleanExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, false);
+		teacherProfile = (TeacherProfile) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_TUTORPRIFILE);
+		studentProfile = (StudentProfile) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_STUDENTPROFILE);
+		if (null != teacherProfile) {
+			role = teacherProfile.getAccountType();
+		} else {
+			role = studentProfile.getAccountType();
+		}
+		if (role == -1) {
+			throw new IllegalArgumentException("role is -1");
+		}
+		setContentView(R.layout.activity_select_area);
 		initView();
+		getAreas();
 	}
 
 	@Override
-	protected void initView() {}
+	protected void initView() {
+		TitleBar bar = getView(R.id.title_bar);
+		bar.initBack(this);
+		if (isEdit) {
+			bar.setTitle(R.string.label_edit_area);
+		} else {
+			if (Constants.General.ROLE_TUTOR == role) {
+				bar.setTitle(R.string.label_select_area);
+			} else {
+				bar.setTitle(R.string.label_select_area_title);
+			}
+		}
+		bar.setRightText(R.string.next, new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				// 区域列表
+				ArrayList<Area> choiceAreas = getChoiceAreas();
+				if (!isHaveArea) {
+					toast(R.string.toast_not_select_area);
+					return;
+				}
+				Intent intent = new Intent(SelectAreaActivity.this, SelectTimeSlotActivity.class);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, isEdit);
+				if (Constants.General.ROLE_TUTOR == role) {
+					teacherProfile.setAreas(choiceAreas);
+					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TUTORPRIFILE, teacherProfile);
+				} else {
+					studentProfile.setAreas(choiceAreas);
+					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_STUDENTPROFILE, studentProfile);
+				}
+				startActivity(intent);
+			}
+		});
+		linearLayout = getView(R.id.ac_fill_personal_info_ll_areas);
+	}
+
+	@Override
+	protected void onStart() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Constants.Action.FINISH_LOGINACTIVITY);
+		registerReceiver(receiver, filter);
+		super.onStart();
+	}
+
+	@Override
+	protected void onDestroy() {
+		unregisterReceiver(receiver);
+		super.onDestroy();
+	}
+
+	private BroadcastReceiver receiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (Constants.Action.FINISH_LOGINACTIVITY.equals(intent.getAction())) {
+				finishNoAnim();
+			}
+		}
+	};
+
+	private void getAreas() {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		showDialogRes(R.string.loading);
+		HttpHelper.get(this, ApiUrl.AREALIST, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<AreaListResult>(AreaListResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				if (0 == status) {
+					getAreas();
+					return;
+				}
+				dismissDialog();
+				toast(R.string.toast_server_error);
+			}
+
+			@Override
+			public void onSuccess(AreaListResult t) {
+				dismissDialog();
+				if (null != t) {
+					areas = t.getResult();
+					setData(areas);
+				} else {
+					toast(R.string.toast_server_error);
+				}
+			}
+		});
+	}
+
+	private void setData(ArrayList<Area> areas) {
+		if (null != areas && 0 != areas.size()) {
+			// 如果是编辑状态,需要检查是否选中
+			if (isEdit) {
+				ArrayList<Area> ownAreas = null;
+				if (null != teacherProfile) {
+					ownAreas = teacherProfile.getAreas();
+				} else {
+					ownAreas = studentProfile.getAreas();
+				}
+				if (null != ownAreas && ownAreas.size() > 0) {
+					ArrayList<Area1> area1s = new ArrayList<Area1>();
+					for (Area area : ownAreas) {
+						area1s.addAll(area.getResult());
+					}
+					Change(area1s, areas);
+				}
+			}
+			for (Area area : areas) {
+				AreaItemLayout areaItemLayout = new AreaItemLayout(SelectAreaActivity.this, area);
+				linearLayout.addView(areaItemLayout);
+			}
+		}
+	}
+
+	private void Change(ArrayList<Area1> area1s, ArrayList<Area> areas2) {
+		if (null == area1s || area1s.size() == 0) {
+			return;
+		}
+		for (Area1 area1 : area1s) {
+			for (Area area : areas2) {
+				if (change(area1, area)) {
+					break;
+				}
+			}
+		}
+	}
+
+	private boolean change(Area1 area1, Area area) {
+		ArrayList<Area1> area1s = area.getResult();
+		for (Area1 area12 : area1s) {
+			if (area1.getId() == area12.getId()) {
+				area12.setSelected(true);
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isHaveArea = false;
+
+	/**
+	 * 获取选中的地区
+	 * 
+	 * @return
+	 */
+	private ArrayList<Area> getChoiceAreas() {
+		ArrayList<Area1> selectAreas = new ArrayList<Area1>();
+		for (Area area : areas) {
+			ArrayList<Area1> area1s = area.getResult();
+			for (Area1 area1 : area1s) {
+				if (area1.getSelected()) {
+					selectAreas.add(area1);
+				}
+			}
+		}
+		// 还原结构
+		if (0 < selectAreas.size()) {
+			ArrayList<Area> result = new ArrayList<Area>();
+			isHaveArea = true;
+			for (Area1 area1 : selectAreas) {
+				if (result.size() == 0) {
+					Area area = new Area();
+					area.setName(area1.getDistrict());
+					ArrayList<Area1> a = new ArrayList<Area1>();
+					a.add(area1);
+					area.setResult(a);
+					result.add(area);
+				} else {
+					// 已有数据
+					int size = result.size();
+					Area area = null;
+					for (int i = 0; i < size; i++) {
+						area = result.get(i);
+						if (area.getName().equals(area1.getDistrict())) {
+							break;
+						} else {
+							area = null;
+						}
+					}
+					if (null != area) {
+						// 添加选择的地区
+						area.getResult().add(area1);
+					} else {
+						// 添加新的
+						area = new Area();
+						area.setName(area1.getDistrict());
+						ArrayList<Area1> a = new ArrayList<Area1>();
+						a.add(area1);
+						area.setResult(a);
+						result.add(area);
+					}
+				}
+			}
+			LogUtils.d(result.toString());
+			LogUtils.d(areas.toString());
+			return result;
+		}
+		return null;
+	}
 }

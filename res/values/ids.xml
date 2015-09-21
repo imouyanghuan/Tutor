@@ -43,16 +43,14 @@
     <item name="ac_fill_personal_info_et_hkid" type="id"></item>
     <item name="ac_fill_personal_info_et_phone" type="id"></item>
     <item name="ac_fill_personal_info_ll_hkid" type="id"></item>
+    <item name="ac_fill_personal_info_ll_areas" type="id"></item>
     <item name="ac_fill_personal_info_rg" type="id"></item>
+    <item name="ac_fill_personal_info_datePicker" type="id"></item>
+    <item name="ac_fill_personal_course_scrollview" type="id"></item>
     <item name="ac_fill_personal_info_rb_male" type="id"></item>
     <item name="ac_fill_personal_info_rb_female" type="id"></item>
-    <item name="ac_fill_personal_info_tv_birth" type="id"></item>
-    <item name="ac_fill_personal_info_tv_couress" type="id"></item>
-    <item name="ac_fill_personal_info_ll_couress" type="id"></item>
-    <item name="ac_fill_personal_info_ll_area" type="id"></item>
-    <item name="ac_fill_personal_info_fl_eb" type="id"></item>
-    <item name="ac_fill_personal_info_btn_add_timeslot" type="id"></item>
-    <item name="ac_fill_personal_info_btn_submit" type="id"></item>
+    <item name="ac_fill_personal_info_ll_eb" type="id"></item>
+    <item name="ac_fill_personal_info_btn_save_timeslot" type="id"></item>
     <item name="ac_fill_personal_info_rg_eb" type="id"></item>
     <item name="ac_fill_personal_info_rb_eb1" type="id"></item>
     <item name="ac_fill_personal_info_rb_eb2" type="id"></item>

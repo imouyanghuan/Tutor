@@ -14,7 +14,6 @@ public class CourseItem2 implements Serializable {
 	private String type;
 	private String subType;
 	private String courseName;
-	private String description;
 	private boolean selected;
 
 	public int getId() {
@@ -49,14 +48,6 @@ public class CourseItem2 implements Serializable {
 		this.courseName = courseName;
 	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public boolean getSelected() {
 		return selected;
 	}
@@ -67,6 +58,6 @@ public class CourseItem2 implements Serializable {
 
 	@Override
 	public String toString() {
-		return "CourseItem2 [id=" + id + ", type=" + type + ", subType=" + subType + ", courseName=" + courseName + ", description=" + description + ", selected=" + selected + "]";
+		return "CourseItem2 [id=" + id + ", type=" + type + ", subType=" + subType + ", courseName=" + courseName + ", selected=" + selected + "]";
 	}
 }

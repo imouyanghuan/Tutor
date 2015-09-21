@@ -10,19 +10,19 @@ public class LogUtils {
 
 	public static void e(String s) {
 		if (TutorApplication.DEBUG) {
-			Log.e(TAG, s);
+			Log.e(TAG, ""+s);
 		}
 	}
 
 	public static void d(String s) {
 		if (TutorApplication.DEBUG) {
-			Log.d(TAG, s);
+			Log.d(TAG, ""+s);
 		}
 	}
 
 	public static void i(String s) {
 		if (TutorApplication.DEBUG) {
-			Log.i(TAG, s);
+			Log.i(TAG, ""+s);
 		}
 	}
 }

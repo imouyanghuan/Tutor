@@ -186,6 +186,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 			@Override
 			public void onFailure(int status, String message) {
 				dismissDialog();
+				setData(null);
 			}
 
 			@Override
@@ -214,6 +215,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 
 			@Override
 			public void onFailure(int status, String message) {
+				setData(null);
 				listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
 			}
 
