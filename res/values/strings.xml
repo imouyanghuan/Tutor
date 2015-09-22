@@ -19,6 +19,9 @@
     <string name="log_out">Log Out</string>
     <string name="loading">Loading</string>
     <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
+    <string name="hour">hour</string>
+    <string name="minute">minute</string>
     <string name="logining">Logining&#8230;</string>
     <string name="register">Register</string>
     <string name="registering">Registering</string>
@@ -58,12 +61,11 @@
     <string name="label_edit_timeslot">Edit Timeslot</string>
     <string name="label_education_background">Education Background</string>
     <string name="label_teaching_couress">Teaching Couress</string>
-    <string name="label_date">1990&#8211;1&#8211;1</string>
     <string name="label_teach_time_slot">Preferred Teaching Time Slot</string>
     <string name="label_study_time_slot">Preferred Study Time Slot</string>
     <string name="label_none_area">None area</string>
-    <string name="label_start">Start</string>
-    <string name="label_end">End</string>
+    <string name="label_start">Start Time</string>
+    <string name="label_end">End Time</string>
     <string name="label_week">Week</string>
     <string name="lable_log_out">Are you sure login out?</string>
     <!-- button -->
@@ -81,8 +83,7 @@
     <string name="btn_gallery">Gallery</string>
     <string name="btn_take_photo">Take Photo</string>
     <string name="btn_save">Save</string>
-    <string name="btn_x">×</string>
-    <string name="btn_v">\√</string>
+    <string name="btn_submit">Submit</string>
     <!-- hint -->
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -118,6 +119,9 @@
     <string name="toast_no_match_student">No match student</string>
     <string name="toast_not_select_cours">Please choice a Course at least</string>
     <string name="toast_not_select_area">Please choice an Area at least</string>
+    <string name="toast_endtime_behind_starttime">End time must be behind the start time</string>
+    <string name="toast_starttime_front_endtime">Start time must be in front of the end of time</string>
+
     <!-- xmpp聊天相關 -->
     <string name="new_message">New short message received</string>
     <string name="system_message">System message</string>
@@ -152,5 +156,6 @@
     <string name="label_service_location">Service Location</string>
     <string name="toast_msg_cant_empty">發送內容不能為空</string>
     <string name="label_send">發送</string>
+    <string name="toast_add_to_bookmark_success">收藏成功</string>
 
 </resources>

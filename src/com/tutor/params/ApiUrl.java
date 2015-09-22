@@ -56,4 +56,10 @@ public class ApiUrl {
 	public static final String MYSTUDENTLIST = "api/v1/notification/me/students";
 	/** 获取消息列表 */
 	public static final String NOTIFICATIONLIST = "api/v1/notification/list";
+	/** 增加学生到收藏夹 */
+	public static final String BOOTMARK_ADD_STUDENT = "api/v1/bookmark/student/%s/add";
+	/** 获取收藏的学生列表 */
+	public static final String BOOTMARK_GET_STUDENT_LIST = "api/v1/bookmark/student/list";
+	/** 从收藏夹移除学生 */
+	public static final String BOOTMARK_REMOVE_STUDENT = "api/v1/bookmark/student/remove/%s";
 }

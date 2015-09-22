@@ -1,17 +1,25 @@
 package com.tutor.ui.activity;
 
+import java.net.HttpURLConnection;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.loopj.android.http.RequestParams;
 import com.tutor.R;
+import com.tutor.TutorApplication;
 import com.tutor.im.ContactManager;
 import com.tutor.im.XMPPConnectionManager;
+import com.tutor.model.AddBookmarkResult;
 import com.tutor.model.UserInfo;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.HttpHelper;
+import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
  * 教師或學生詳情界面
@@ -59,7 +67,10 @@ public class PersonInfoActivity extends BaseActivity implements OnClickListener 
 
 			@Override
 			public void onClick(View v) {
-				toast("like");
+				if (userInfo != null) {
+					int userId = userInfo.getId();
+					addToBookmark(userId);
+				}
 			}
 		});
 		getView(R.id.btn_chat_with_tutor).setOnClickListener(this);
@@ -68,6 +79,33 @@ public class PersonInfoActivity extends BaseActivity implements OnClickListener 
 		getView(R.id.tv_gender);
 		getView(R.id.tv_major);
 		getView(R.id.tv_student_count);
+	}
+
+	/**
+	 * 添加到Bookmark
+	 * 
+	 */
+	private void addToBookmark(int userId) {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		RequestParams params = new RequestParams();
+		String url = String.format(ApiUrl.BOOTMARK_ADD_STUDENT, String.valueOf(userId));
+		HttpHelper.get(this, url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AddBookmarkResult>(AddBookmarkResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				toast(R.string.toast_server_error);
+			}
+
+			@Override
+			public void onSuccess(AddBookmarkResult result) {
+				if (result.getStatusCode() == HttpURLConnection.HTTP_OK) {
+					toast(R.string.toast_add_to_bookmark_success);
+				}
+			}
+		});
 	}
 
 	@Override

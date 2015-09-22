@@ -25,7 +25,7 @@ public class DateTimeUtil {
 	/** 無間隔符號 */
 	public static final String FORMART_YMDHMS = "yyyyMMddHHmmss";
 	/** 精确到秒 */
-	public static final String FORMART_2 = "yyyy-MM-dd HH:mm:ss";
+	public static final String FORMART_2 = "yyyy-MM-dd hh:mm:ss";
 	/** 年月日 */
 	public static final String FORMART_YMD = "yyyy-MM-dd";
 

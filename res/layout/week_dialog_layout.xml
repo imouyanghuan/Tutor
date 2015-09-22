@@ -2,7 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/default_bg_color"
     android:orientation="vertical" >
+
+    <include layout="@layout/dialog_title" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"
+        android:background="@color/black" />
 
     <NumberPicker
         android:id="@id/ac_fill_personal_time_np_week"

@@ -6,135 +6,128 @@ package com.tutor.model;
  */
 public class Account {
 
-	/** Not-null value. */
-	private String id;
-	private Integer memberId;
-	private Integer role;
-	private Integer status;
-	private String email;
-	private String pswd;
-	private String facebookId;
-	private String imAccount;
-	private String imPswd;
-	private String token;
-	private java.util.Date createdTime;
+    /** Not-null value. */
+    private String id;
+    private Integer memberId;
+    private Integer role;
+    private Integer status;
+    private String email;
+    private String pswd;
+    private String facebookId;
+    private String imAccount;
+    private String imPswd;
+    private String token;
+    private String createdTime;
 
-	public Account() {}
+    public Account() {
+    }
 
-	public Account(String id) {
-		this.id = id;
-	}
+    public Account(String id) {
+        this.id = id;
+    }
 
-	public Account(String id, Integer memberId, Integer role, Integer status, String email, String pswd, String facebookId, String imAccount, String imPswd, String token, java.util.Date createdTime) {
-		this.id = id;
-		this.memberId = memberId;
-		this.role = role;
-		this.status = status;
-		this.email = email;
-		this.pswd = pswd;
-		this.facebookId = facebookId;
-		this.imAccount = imAccount;
-		this.imPswd = imPswd;
-		this.token = token;
-		this.createdTime = createdTime;
-	}
+    public Account(String id, Integer memberId, Integer role, Integer status, String email, String pswd, String facebookId, String imAccount, String imPswd, String token, String createdTime) {
+        this.id = id;
+        this.memberId = memberId;
+        this.role = role;
+        this.status = status;
+        this.email = email;
+        this.pswd = pswd;
+        this.facebookId = facebookId;
+        this.imAccount = imAccount;
+        this.imPswd = imPswd;
+        this.token = token;
+        this.createdTime = createdTime;
+    }
 
-	/** Not-null value. */
-	public String getId() {
-		return id;
-	}
+    /** Not-null value. */
+    public String getId() {
+        return id;
+    }
 
-	/**
-	 * Not-null value; ensure this value is available before it is saved to the
-	 * database.
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public Integer getMemberId() {
-		return memberId;
-	}
+    public Integer getMemberId() {
+        return memberId;
+    }
 
-	public void setMemberId(Integer memberId) {
-		this.memberId = memberId;
-	}
+    public void setMemberId(Integer memberId) {
+        this.memberId = memberId;
+    }
 
-	public Integer getRole() {
-		return role;
-	}
+    public Integer getRole() {
+        return role;
+    }
 
-	public void setRole(Integer role) {
-		this.role = role;
-	}
+    public void setRole(Integer role) {
+        this.role = role;
+    }
 
-	public Integer getStatus() {
-		return status;
-	}
+    public Integer getStatus() {
+        return status;
+    }
 
-	public void setStatus(Integer status) {
-		this.status = status;
-	}
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getPswd() {
-		return pswd;
-	}
+    public String getPswd() {
+        return pswd;
+    }
 
-	public void setPswd(String pswd) {
-		this.pswd = pswd;
-	}
+    public void setPswd(String pswd) {
+        this.pswd = pswd;
+    }
 
-	public String getFacebookId() {
-		return facebookId;
-	}
+    public String getFacebookId() {
+        return facebookId;
+    }
 
-	public void setFacebookId(String facebookId) {
-		this.facebookId = facebookId;
-	}
+    public void setFacebookId(String facebookId) {
+        this.facebookId = facebookId;
+    }
 
-	public String getImAccount() {
-		return imAccount;
-	}
+    public String getImAccount() {
+        return imAccount;
+    }
 
-	public void setImAccount(String imAccount) {
-		this.imAccount = imAccount;
-	}
+    public void setImAccount(String imAccount) {
+        this.imAccount = imAccount;
+    }
 
-	public String getImPswd() {
-		return imPswd;
-	}
+    public String getImPswd() {
+        return imPswd;
+    }
 
-	public void setImPswd(String imPswd) {
-		this.imPswd = imPswd;
-	}
+    public void setImPswd(String imPswd) {
+        this.imPswd = imPswd;
+    }
 
-	public String getToken() {
-		return token;
-	}
+    public String getToken() {
+        return token;
+    }
 
-	public void setToken(String token) {
-		this.token = token;
-	}
+    public void setToken(String token) {
+        this.token = token;
+    }
 
-	public java.util.Date getCreatedTime() {
-		return createdTime;
-	}
+    public String getCreatedTime() {
+        return createdTime;
+    }
 
-	public void setCreatedTime(java.util.Date createdTime) {
-		this.createdTime = createdTime;
-	}
+    public void setCreatedTime(String createdTime) {
+        this.createdTime = createdTime;
+    }
 
-	@Override
-	public String toString() {
-		return "Account [id=" + id + ", memberId=" + memberId + ", role=" + role + ", status=" + status + ", email=" + email + ", pswd=" + pswd + ", facebookId=" + facebookId + ", imAccount="
-				+ imAccount + ", imPswd=" + imPswd + ", token=" + token + ", createdTime=" + createdTime + "]";
-	}
 }

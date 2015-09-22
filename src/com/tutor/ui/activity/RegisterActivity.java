@@ -15,9 +15,9 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.mssky.mobile.helper.ValidatorHelper;
@@ -30,7 +30,6 @@ import com.tutor.model.RegisterLoginModel;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
-import com.tutor.util.DateTimeUtil;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.JsonUtil;
 import com.tutor.util.ObjectHttpResponseHandler;
@@ -227,7 +226,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 							account.setId("1");
 							account.setMemberId(result.getResult().getId());
 							account.setStatus(result.getResult().getStatus());
-							account.setCreatedTime(DateTimeUtil.str2Date(result.getResult().getCreatedTime(), DateTimeUtil.FORMART_2));
+							account.setCreatedTime(result.getResult().getCreatedTime());
 							account.setRole(role);
 							account.setEmail(model.getEmail());
 							account.setPswd(model.getPassword());

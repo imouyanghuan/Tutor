@@ -2,7 +2,6 @@ package com.tutor.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * @author bruce.chen
@@ -21,20 +20,20 @@ public class StudentProfile implements Serializable {
 	private String FBOpenID;
 	private String IMID;
 	private String Avatar;
-	private Date Birth;
+	private String Birth;
 	private int Gender;
 	private String Introduction;
 	// 个人简介视频地址
 	private String IntroductionVideo;
 	private String Token;
-	private Date ExpirationTime;
+	private String ExpirationTime;
 	private int Status;
 	/**
 	 * Student 0 Tutor 1 Both 2
 	 **/
 	private int AccountType;
 	// 注册时间
-	private Date CreatedTime;
+	private String CreatedTime;
 	private String Grade;
 	private ArrayList<Course> Courses;
 	private ArrayList<Area> Areas;
@@ -112,11 +111,11 @@ public class StudentProfile implements Serializable {
 		IMID = iMID;
 	}
 
-	public Date getBirth() {
+	public String getBirth() {
 		return Birth;
 	}
 
-	public void setBirth(Date birth) {
+	public void setBirth(String birth) {
 		Birth = birth;
 	}
 
@@ -152,11 +151,11 @@ public class StudentProfile implements Serializable {
 		Token = token;
 	}
 
-	public Date getExpirationTime() {
+	public String getExpirationTime() {
 		return ExpirationTime;
 	}
 
-	public void setExpirationTime(Date expirationTime) {
+	public void setExpirationTime(String expirationTime) {
 		ExpirationTime = expirationTime;
 	}
 
@@ -176,11 +175,11 @@ public class StudentProfile implements Serializable {
 		AccountType = accountType;
 	}
 
-	public Date getCreatedTime() {
+	public String getCreatedTime() {
 		return CreatedTime;
 	}
 
-	public void setCreatedTime(Date createdTime) {
+	public void setCreatedTime(String createdTime) {
 		CreatedTime = createdTime;
 	}
 

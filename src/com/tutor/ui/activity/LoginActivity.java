@@ -266,13 +266,16 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		showDialogRes(R.string.logining);
 		RequestParams params = new RequestParams();
 		params.put("accountType", role + "");
-		params.put("email", "");
 		params.put("FBOpenID", id);
 		HttpHelper.get(this, ApiUrl.ACCOUNT_EXIST, null, params, new ObjectHttpResponseHandler<CheckExistResult>(CheckExistResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
 				dismissDialog();
+				if (status == 0) {
+					checkAccountExist(id);
+					return;
+				}
 				toast(R.string.toast_server_error);
 			}
 

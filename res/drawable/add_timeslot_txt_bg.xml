@@ -4,7 +4,7 @@
     <item android:state_pressed="true"><shape>
             <corners android:radius="@dimen/dp_3" />
 
-            <stroke android:width="@dimen/sp_1" android:color="@color/gray" />
+            <stroke android:width="@dimen/sp_1" android:color="@color/btn_normal" />
 
             <padding android:bottom="@dimen/dp_10" android:left="@dimen/dp_10" android:right="@dimen/dp_10" android:top="@dimen/dp_10" />
 
@@ -13,7 +13,7 @@
     <item><shape>
             <corners android:radius="@dimen/dp_3" />
 
-            <stroke android:width="@dimen/sp_1" android:color="@color/btn_normal" />
+            <stroke android:width="@dimen/sp_1" android:color="@color/gray" />
 
             <padding android:bottom="@dimen/dp_10" android:left="@dimen/dp_10" android:right="@dimen/dp_10" android:top="@dimen/dp_10" />
 

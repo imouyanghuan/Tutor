@@ -71,7 +71,7 @@ public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 			holder.setText(R.id.student_list_item_area, R.string.label_none_area);
 		}
 		holder.setText(R.id.student_list_item_form, t.getGender());
-		holder.setText(R.id.student_list_item_time, t.getCreatedTime().substring(0, 11));
+		holder.setText(R.id.student_list_item_time, t.getCreatedTime().toString().substring(0, 11));
 		// 學生item點擊事件
 		holder.getView(R.id.student_list_item_layout).setOnClickListener(new OnClickListener() {
 

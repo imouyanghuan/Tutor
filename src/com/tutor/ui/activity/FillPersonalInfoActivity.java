@@ -2,7 +2,6 @@ package com.tutor.ui.activity;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,6 +25,7 @@ import com.tutor.model.StudentProfile;
 import com.tutor.model.TeacherProfile;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.DateTimeUtil;
 import com.tutor.util.LogUtils;
 
 /**
@@ -54,7 +54,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnDateChan
 	/** 性别 */
 	private int sex = 0;
 	/** 出生日期 */
-	private Date birth;
+	private String birth;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -67,7 +67,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnDateChan
 				throw new IllegalArgumentException("account is null");
 			}
 			role = getIntent().getIntExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, -1);
-			birth = new GregorianCalendar(1990, 0, 1).getTime();
+			birth = "1990-01-01 00:00:00";
 		} else {
 			teacherProfile = (TeacherProfile) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_TUTORPRIFILE);
 			studentProfile = (StudentProfile) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_STUDENTPROFILE);
@@ -144,7 +144,8 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnDateChan
 		// 初始化生日选择组件
 		datePicker = getView(R.id.ac_fill_personal_info_datePicker);
 		Calendar calendar = Calendar.getInstance();
-		calendar.setTime(birth);
+		Date date = DateTimeUtil.str2Date(birth, DateTimeUtil.FORMART_2);
+		calendar.setTime(date);
 		datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH), this);
 	}
 
@@ -174,8 +175,8 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnDateChan
 
 	@Override
 	public void onDateChanged(DatePicker view, int y, int m, int d) {
-		birth = new GregorianCalendar(y, m, d).getTime();
-		LogUtils.d(birth.toString());
+		birth = y + "-" + (m + 1) + "-" + d + " 00:00:00";
+		LogUtils.d(birth);
 	}
 
 	private void onsend() {

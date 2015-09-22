@@ -9,7 +9,8 @@
         android:id="@id/area_item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_18" />
+        android:textColor="@color/btn_press"
+        android:textSize="@dimen/sp_20" />
 
     <com.tutor.ui.view.CustomGridView
         android:id="@id/area_item_gv"

@@ -98,6 +98,21 @@
             android:name="com.tutor.ui.activity.ToBeMyStudentActivity"
             android:screenOrientation="portrait" >
         </activity>
+        <!-- 选择地區页面 -->
+        <activity
+            android:name="com.tutor.ui.activity.SelectAreaActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 选择课程页面 -->
+        <activity
+            android:name="com.tutor.ui.activity.SelectCourseActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 选择時間段页面 -->
+        <activity
+            android:name="com.tutor.ui.activity.SelectTimeSlotActivity"
+            android:screenOrientation="portrait" >
+        </activity>
 
         <!-- IM服务 -->
         <service android:name="com.tutor.service.IMService" >

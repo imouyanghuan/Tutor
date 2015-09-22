@@ -102,15 +102,11 @@
     <item name="fragment_my_iv_avatar" type="id"></item>
     <item name="fragment_my_tv_username" type="id"></item>
     <item name="fragment_my_iv_nickname" type="id"></item>
-    <!-- add timeslot dialog -->
-    <item name="add_timeslot_dialog_spinner" type="id"></item>
-    <item name="add_timeslot_dialog_date1" type="id"></item>
-    <item name="add_timeslot_dialog_date2" type="id"></item>
-    <item name="add_timeslot_dialog_btn_ok" type="id"></item>
-    <item name="add_timeslot_dialog_spinner_item" type="id"></item>
-    <item name="add_timeslot_dialog_btn_cancle" type="id"></item>
     <!-- timeslot item -->
     <item name="timeslot_item_tv" type="id"></item>
     <item name="timeslot_item_btn_delete" type="id"></item>
+    <!-- dialog -->
+    <item name="dialog_title_tv_left" type="id"></item>
+    <item name="dialog_title_tv_right" type="id"></item>
 
 </resources>

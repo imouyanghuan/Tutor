@@ -11,12 +11,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
 
 import com.mssky.mobile.ui.view.CustomListView;
 import com.tutor.R;
@@ -29,7 +31,9 @@ import com.tutor.model.Timeslot;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.dialog.TimeSlotDialog;
-import com.tutor.ui.dialog.TimeSlotDialog.CallBack;
+import com.tutor.ui.dialog.TimeSlotDialog.onTimeSelectedCallBack;
+import com.tutor.ui.dialog.WeekDialog;
+import com.tutor.ui.dialog.WeekDialog.OnWeekSelectedCallback;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.JsonUtil;
@@ -43,7 +47,7 @@ import com.tutor.util.ObjectHttpResponseHandler;
  * 
  *         2015-9-18
  */
-public class SelectTimeSlotActivity extends BaseActivity implements CallBack, OnClickListener {
+public class SelectTimeSlotActivity extends BaseActivity implements OnClickListener, onTimeSelectedCallBack, OnWeekSelectedCallback {
 
 	/** 是否是编辑资料模式 */
 	private boolean isEdit;
@@ -56,6 +60,10 @@ public class SelectTimeSlotActivity extends BaseActivity implements CallBack, On
 	private TimeSlotAdapter adapter;
 	// 添加时间对话框
 	private TimeSlotDialog timeSlotDialog;
+	// 星期对话框
+	private WeekDialog weekDialog;
+	//
+	private TextView weekTextView, startTimeTextView, endTimeTextView;
 	/** 保存時間 */
 	private Button saveTime;
 	/** 教育背景 */
@@ -89,6 +97,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements CallBack, On
 			eb = 0;
 		}
 		timeSlotDialog = new TimeSlotDialog(this, this);
+		weekDialog = new WeekDialog(this, this);
 	}
 
 	@Override
@@ -100,7 +109,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements CallBack, On
 		} else {
 			bar.setTitle(R.string.label_add_timeslot);
 		}
-		bar.setRightText(R.string.btn_save, new OnClickListener() {
+		bar.setRightText(R.string.btn_submit, new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
@@ -149,9 +158,12 @@ public class SelectTimeSlotActivity extends BaseActivity implements CallBack, On
 		} else {
 			ebFrameLayout.setVisibility(View.GONE);
 		}
-		getView(R.id.ac_fill_personal_time_tv_week).setOnClickListener(this);
-		getView(R.id.ac_fill_personal_time_tv_start).setOnClickListener(this);
-		getView(R.id.ac_fill_personal_time_tv_end).setOnClickListener(this);
+		weekTextView = getView(R.id.ac_fill_personal_time_tv_week);
+		weekTextView.setOnClickListener(this);
+		startTimeTextView = getView(R.id.ac_fill_personal_time_tv_start);
+		startTimeTextView.setOnClickListener(this);
+		endTimeTextView = getView(R.id.ac_fill_personal_time_tv_end);
+		endTimeTextView.setOnClickListener(this);
 		saveTime = getView(R.id.ac_fill_personal_info_btn_save_timeslot);
 		saveTime.setOnClickListener(this);
 		// 时间段列表
@@ -171,20 +183,141 @@ public class SelectTimeSlotActivity extends BaseActivity implements CallBack, On
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.ac_fill_personal_info_btn_save_timeslot:
-				// TODO
+				if (null != timeslot) {
+					if (null == timeslots) {
+						timeslots = new ArrayList<Timeslot>();
+					}
+					if (null != teacherProfile) {
+						timeslot.setMemberId(teacherProfile.getId());
+					} else {
+						timeslot.setMemberId(studentProfile.getId());
+					}
+					timeslots.add(timeslot);
+					adapter.refresh(timeslots);
+					saveTime.setEnabled(false);
+					weekTextView.setText("");
+					startTimeTextView.setText("");
+					endTimeTextView.setText("");
+					timeslot = null;
+				}
 				break;
 			case R.id.ac_fill_personal_time_tv_week:
-				// TODO
+				weekDialog.show();
+				if (null != timeslot) {
+					weekDialog.setSelectIndex(timeslot.getDayOfWeek());
+				}
 				break;
 			case R.id.ac_fill_personal_time_tv_start:
-				// TODO
+				isStrat = true;
+				timeSlotDialog.show();
+				if (null != timeslot) {
+					timeSlotDialog.setParams(timeslot.getEndHour(), timeslot.getEndMinute());
+				}
 				break;
 			case R.id.ac_fill_personal_time_tv_end:
-				// TODO
+				isStrat = false;
+				timeSlotDialog.show();
+				if (null != timeslot) {
+					timeSlotDialog.setParams(timeslot.getStarHour(), timeslot.getStartMinute());
+				}
 				break;
 			default:
 				break;
 		}
+	}
+
+	// 是否编辑开始时间
+	private boolean isStrat;
+	private Timeslot timeslot = null;
+
+	@Override
+	public int onTimeSelected(String time, int hour, int minute) {
+		if (null == timeslot) {
+			timeslot = new Timeslot();
+		}
+		if (isStrat) {
+			// 在编辑开始时间的时候已经编辑好了结束时间,需要检查开始时间是否在结束时间之前
+			if (0 != timeslot.getEndHour() || 0 != timeslot.getEndMinute()) {
+				if (0 != timeslot.getEndHour() && hour < timeslot.getEndHour()) {
+					timeslot.setStarHour(hour);
+					timeslot.setStartMinute(minute);
+					startTimeTextView.setText(time);
+					check();
+					return 0;
+				} else if (hour == timeslot.getEndHour() && minute < timeslot.getEndMinute()) {
+					timeslot.setStarHour(hour);
+					timeslot.setStartMinute(minute);
+					startTimeTextView.setText(time);
+					check();
+					return 0;
+				} else if (0 == timeslot.getEndHour()) {
+					if (hour > 0 || hour == 0 && minute < timeslot.getEndMinute()) {
+						timeslot.setStarHour(hour);
+						timeslot.setStartMinute(minute);
+						startTimeTextView.setText(time);
+						check();
+						return 0;
+					}
+				}
+				return R.string.toast_starttime_front_endtime;
+			} else {
+				// 没有编辑结束时间,直接设值
+				timeslot.setStarHour(hour);
+				timeslot.setStartMinute(minute);
+				startTimeTextView.setText(time);
+				check();
+			}
+		} else {
+			// 结束时间
+			if (0 != timeslot.getStarHour() || 0 != timeslot.getStartMinute()) {
+				if (0 != timeslot.getStarHour() && hour > timeslot.getStarHour()) {
+					timeslot.setEndHour(hour);
+					timeslot.setEndMinute(minute);
+					endTimeTextView.setText(time);
+					check();
+					return 0;
+				} else if (hour == timeslot.getStarHour() && timeslot.getStartMinute() < minute) {
+					timeslot.setEndHour(hour);
+					timeslot.setEndMinute(minute);
+					endTimeTextView.setText(time);
+					check();
+					return 0;
+				} else if (0 == timeslot.getStarHour()) {
+					if (hour > 0 || minute > timeslot.getStartMinute()) {
+						timeslot.setEndHour(hour);
+						timeslot.setEndMinute(minute);
+						endTimeTextView.setText(time);
+						check();
+						return 0;
+					}
+				}
+				return R.string.toast_endtime_behind_starttime;
+			} else {
+				// 没有编辑开始时间,直接设值
+				timeslot.setEndHour(hour);
+				timeslot.setEndMinute(minute);
+				endTimeTextView.setText(time);
+				check();
+			}
+		}
+		check();
+		return 0;
+	}
+
+	private void check() {
+		if (!TextUtils.isEmpty(weekTextView.getText()) && !TextUtils.isEmpty(startTimeTextView.getText()) && !TextUtils.isEmpty(endTimeTextView.getText())) {
+			saveTime.setEnabled(true);
+		}
+	}
+
+	@Override
+	public void onWeekSelected(int index, String value) {
+		if (null == timeslot) {
+			timeslot = new Timeslot();
+		}
+		timeslot.setDayOfWeek(index);
+		weekTextView.setText(value);
+		check();
 	}
 
 	@Override
@@ -210,11 +343,6 @@ public class SelectTimeSlotActivity extends BaseActivity implements CallBack, On
 			}
 		}
 	};
-
-	@Override
-	public void onAddTimeSlot(Timeslot timeslot) {
-		// TODO
-	}
 
 	/**
 	 * 進入主界面
@@ -250,6 +378,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements CallBack, On
 		}
 		showDialogRes(R.string.loading);
 		String json = JsonUtil.parseObject2Str(profile);
+		LogUtils.d(json);
 		try {
 			StringEntity entity = new StringEntity(json, HTTP.UTF_8);
 			HttpHelper.put(this, ApiUrl.TUTORPROFILE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
@@ -296,6 +425,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements CallBack, On
 		}
 		showDialogRes(R.string.loading);
 		String json = JsonUtil.parseObject2Str(profile);
+		LogUtils.d(json);
 		try {
 			StringEntity entity = new StringEntity(json, HTTP.UTF_8);
 			HttpHelper.put(this, ApiUrl.STUDENTPROFILE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {

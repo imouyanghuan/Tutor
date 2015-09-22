@@ -179,10 +179,7 @@
                     android:background="@drawable/add_timeslot_btn_bg"
                     android:enabled="false"
                     android:paddingLeft="@dimen/dp_5"
-                    android:paddingRight="@dimen/dp_5"
-                    android:text="@string/btn_v"
-                    android:textColor="@color/save_timeslot_btntxt_color"
-                    android:textSize="@dimen/sp_18" />
+                    android:paddingRight="@dimen/dp_5" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

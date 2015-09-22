@@ -7,4 +7,15 @@
 
     <include layout="@layout/title_bar" />
 
+    <com.mssky.mobile.ui.view.PullToRefreshListView
+        android:id="@+id/lv_bookmark"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@color/transparent"
+        android:divider="@null"
+        android:fadingEdge="none"
+        android:listSelector="@color/transparent"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
+
 </LinearLayout>

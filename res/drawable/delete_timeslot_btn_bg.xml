@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:state_pressed="true"><shape>
-            <corners android:radius="@dimen/dp_10" />
-
-            <stroke android:width="@dimen/dp_2" android:color="#b42525" />
-
-            <solid android:color="@color/white" />
-        </shape></item>
-    <item><shape>
-            <corners android:radius="@dimen/dp_10" />
-
-            <stroke android:width="@dimen/dp_2" android:color="#ef2e2e" />
-
-            <solid android:color="@color/white" />
-        </shape></item>
+    <item android:drawable="@drawable/del_p" android:state_pressed="true"></item>
+    <item android:drawable="@drawable/del"></item>
 
 </selector>
