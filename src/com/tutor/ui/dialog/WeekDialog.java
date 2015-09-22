@@ -70,8 +70,8 @@ public class WeekDialog extends Dialog implements android.view.View.OnClickListe
 				break;
 			case R.id.dialog_title_tv_right:
 				if (null != callback) {
-					cancel();
 					callback.onWeekSelected(selectIndex, weeks[selectIndex]);
+					cancel();
 				}
 				break;
 			default:

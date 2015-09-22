@@ -17,8 +17,8 @@
 
             <ImageView
                 android:id="@id/fragment_my_iv_avatar"
-                android:layout_width="@dimen/dp_80"
-                android:layout_height="@dimen/dp_80"
+                android:layout_width="@dimen/dp_140"
+                android:layout_height="@dimen/dp_140"
                 android:contentDescription="@string/app_name"
                 android:scaleType="fitXY"
                 android:src="@drawable/avatar" />

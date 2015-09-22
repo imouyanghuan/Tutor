@@ -96,8 +96,6 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 		} else {
 			eb = 0;
 		}
-		timeSlotDialog = new TimeSlotDialog(this, this);
-		weekDialog = new WeekDialog(this, this);
 	}
 
 	@Override
@@ -202,6 +200,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 				}
 				break;
 			case R.id.ac_fill_personal_time_tv_week:
+				weekDialog = new WeekDialog(this, this);
 				weekDialog.show();
 				if (null != timeslot) {
 					weekDialog.setSelectIndex(timeslot.getDayOfWeek());
@@ -209,6 +208,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 				break;
 			case R.id.ac_fill_personal_time_tv_start:
 				isStrat = true;
+				timeSlotDialog = new TimeSlotDialog(this, this);
 				timeSlotDialog.show();
 				if (null != timeslot) {
 					timeSlotDialog.setParams(timeslot.getEndHour(), timeslot.getEndMinute());
@@ -216,6 +216,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 				break;
 			case R.id.ac_fill_personal_time_tv_end:
 				isStrat = false;
+				timeSlotDialog = new TimeSlotDialog(this, this);
 				timeSlotDialog.show();
 				if (null != timeslot) {
 					timeSlotDialog.setParams(timeslot.getStarHour(), timeslot.getStartMinute());

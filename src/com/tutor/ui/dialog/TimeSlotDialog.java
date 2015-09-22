@@ -110,9 +110,18 @@ public class TimeSlotDialog extends Dialog implements android.view.View.OnClickL
 	}
 
 	public void setParams(int hour, int minute) {
+		if (hour == 0 && minute == 0) {
+			hourPicker.setValue(7);
+			minutePicker.setValue(3);
+			return;
+		}
 		hourIndex = hour;
 		hourPicker.setValue(hourIndex);
 		// 分
+		String minuteString = minute + "";
+		if (minute == 0) {
+			minuteString = 0 + minuteString;
+		}
 		for (int i = 0; i < minutes.length; i++) {
 			if (minutes[i].equals(minute + "")) {
 				minuteIndex = i;
