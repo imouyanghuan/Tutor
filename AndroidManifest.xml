@@ -42,12 +42,14 @@
         <!-- 教師主頁 -->
         <activity
             android:name="com.tutor.ui.activity.TeacherMainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
         <!-- 學生主頁 -->
         <activity
             android:name="com.tutor.ui.activity.StudentMainActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" >
         </activity>
         <!-- 註冊 -->
         <activity
@@ -111,6 +113,11 @@
         <!-- 选择時間段页面 -->
         <activity
             android:name="com.tutor.ui.activity.SelectTimeSlotActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 搜索条件页面 -->
+        <activity
+            android:name="com.tutor.ui.activity.SearchConditionsActivity"
             android:screenOrientation="portrait" >
         </activity>
 

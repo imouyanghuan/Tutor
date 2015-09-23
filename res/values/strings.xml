@@ -68,6 +68,13 @@
     <string name="label_end">End Time</string>
     <string name="label_week">Week</string>
     <string name="lable_log_out">Are you sure login out?</string>
+    <string name="label_nickname">Preferred Name:</string>
+    <string name="label_school">School or University:</string>
+    <string name="label_major">Major:</string>
+    <string name="label_tutor_experience">Tutor Experience:</string>
+    <string name="label_experience_year">Year(s)</string>
+    <string name="label_self_introduction">Self Introduction(Optional):</string>
+    <string name="label_self_introduction_video">Self Introduction Video(Optional):</string>
     <!-- button -->
     <string name="btn_role_student">Find tutors</string>
     <string name="btn_role_tutor">Join 2utor</string>
@@ -87,6 +94,12 @@
     <!-- hint -->
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
+    <string name="hint_enter_nickname">Enter NickName</string>
+    <string name="hint_enter_school">Enter Degree or School</string>
+    <string name="hint_enter_major">Enter Major</string>
+    <string name="hint_enter_introduction">Enter Self Introduction&#8230;</string>
+    <string name="hint_enter_video_path">Enter Self Introduction Video Link</string>
+    <string name="hint_0">0</string>
     <string name="hint_search_student_keywords">Search Student By Keywords</string>
     <!-- toast -->
     <string name="toast_email_empty">Email Is Empty</string>
@@ -121,6 +134,9 @@
     <string name="toast_not_select_area">Please choice an Area at least</string>
     <string name="toast_endtime_behind_starttime">End time must be behind the start time</string>
     <string name="toast_starttime_front_endtime">Start time must be in front of the end of time</string>
+    <string name="toast_video_unplay">Video link or video format errors</string>
+    <string name="toast_video_link_empety">Video link is empty</string>
+     <string name="toast_token_invalid">Token expired, please login again</string>
 
     <!-- xmpp聊天相關 -->
     <string name="new_message">New short message received</string>
@@ -154,8 +170,10 @@
     <string name="label_frequency_of_lessons">Frequency Of Lessons</string>
     <string name="label_price_per_hour">Price Per Hour</string>
     <string name="label_service_location">Service Location</string>
-    <string name="toast_msg_cant_empty">發送內容不能為空</string>
-    <string name="label_send">發送</string>
-    <string name="toast_add_to_bookmark_success">收藏成功</string>
+    <string name="toast_msg_cant_empty">Please input content</string>
+    <string name="label_send">Send</string>
+    <string name="toast_add_to_bookmark_success">Add to Bookmark success</string>
+    <string name="label_search_conditions">Search Conditions</string>
+    <string name="label_course">Course</string>
 
 </resources>

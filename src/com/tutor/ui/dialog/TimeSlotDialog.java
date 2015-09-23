@@ -30,10 +30,27 @@ public class TimeSlotDialog extends Dialog implements android.view.View.OnClickL
 	private String hour;
 	private String minutes[];
 
-	public TimeSlotDialog(Context context, onTimeSelectedCallBack callBack) {
+	public TimeSlotDialog(Context context, int hour, int minute, onTimeSelectedCallBack callBack) {
 		this(context, R.style.dialog);
 		this.callBack = callBack;
 		minutes = getContext().getResources().getStringArray(R.array.minutes);
+		if (hour == 0 && minute == 0) {
+			hourIndex = 7;
+			minutePicker.setValue(3);
+			return;
+		}
+		hourIndex = hour;
+		// 分
+		String minuteString = minute + "";
+		if (minute == 0) {
+			minuteString = 0 + minuteString;
+		}
+		for (int i = 0; i < minutes.length; i++) {
+			if (minutes[i].equals(minute + "")) {
+				minuteIndex = i;
+				break;
+			}
+		}
 	}
 
 	public TimeSlotDialog(Context context, int theme) {
@@ -80,12 +97,12 @@ public class TimeSlotDialog extends Dialog implements android.view.View.OnClickL
 		});
 		hourPicker.setMaxValue(23);
 		hourPicker.setMinValue(0);
-		hourPicker.setValue(7);
+		hourPicker.setValue(hourIndex);
 		// 分
 		minutePicker.setDisplayedValues(minutes);
 		minutePicker.setMinValue(0);
 		minutePicker.setMaxValue(minutes.length - 1);
-		minutePicker.setValue(3);
+		minutePicker.setValue(minuteIndex);
 	}
 
 	@Override
@@ -106,28 +123,6 @@ public class TimeSlotDialog extends Dialog implements android.view.View.OnClickL
 				break;
 			default:
 				break;
-		}
-	}
-
-	public void setParams(int hour, int minute) {
-		if (hour == 0 && minute == 0) {
-			hourPicker.setValue(7);
-			minutePicker.setValue(3);
-			return;
-		}
-		hourIndex = hour;
-		hourPicker.setValue(hourIndex);
-		// 分
-		String minuteString = minute + "";
-		if (minute == 0) {
-			minuteString = 0 + minuteString;
-		}
-		for (int i = 0; i < minutes.length; i++) {
-			if (minutes[i].equals(minute + "")) {
-				minuteIndex = i;
-				minutePicker.setValue(minuteIndex);
-				break;
-			}
 		}
 	}
 
@@ -158,31 +153,5 @@ public class TimeSlotDialog extends Dialog implements android.view.View.OnClickL
 	public interface onTimeSelectedCallBack {
 
 		public int onTimeSelected(String time, int hour, int minute);
-	}
-
-	public onTimeSelectedCallBack getCallBack() {
-		return callBack;
-	}
-
-	public void setCallBack(onTimeSelectedCallBack callBack) {
-		this.callBack = callBack;
-	}
-
-	public int getHourIndex() {
-		return hourIndex;
-	}
-
-	public void setHourIndex(int hourIndex) {
-		this.hourIndex = hourIndex;
-		hourPicker.setValue(hourIndex);
-	}
-
-	public int getMinuteIndex() {
-		return minuteIndex;
-	}
-
-	public void setMinuteIndex(int minuteIndex) {
-		this.minuteIndex = minuteIndex;
-		minutePicker.setValue(minuteIndex);
 	}
 }

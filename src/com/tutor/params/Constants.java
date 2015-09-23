@@ -75,6 +75,8 @@ public final class Constants {
 		public static final int GALLERY = 0x2;
 		/** 裁剪 */
 		public static final int ZOOM = 0x3;
+		/** 搜索条件 */
+		public static final int SEARCH_CONDITIONS = 0x4;
 	}
 
 	/**
@@ -117,6 +119,8 @@ public final class Constants {
 		public static final String INTENT_EXTRA_TUTORPRIFILE = "tutor.prifile";
 		/** 学生资料 */
 		public static final String INTENT_EXTRA_STUDENTPROFILE = "student.prifile";
+		/** token 过期 */
+		public static final String INTENT_EXTRA_TOKENINVALID = "token.invalid";
 	}
 
 	/**

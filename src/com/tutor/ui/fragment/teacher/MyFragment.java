@@ -14,15 +14,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.loopj.android.http.RequestParams;
 import com.tutor.R;
 import com.tutor.TutorApplication;
+import com.tutor.model.TeacherInfoResult;
+import com.tutor.model.TeacherProfile;
 import com.tutor.model.UploadAvatarResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.activity.BaseActivity;
+import com.tutor.ui.activity.FillPersonalInfoActivity;
 import com.tutor.ui.dialog.ChangeAvatarDialog;
 import com.tutor.ui.fragment.BaseFragment;
 import com.tutor.util.CheckTokenUtils;
@@ -43,14 +50,21 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 
 	// 頭像對話框
 	private ChangeAvatarDialog dialog;
+	// 头像
 	private ImageView avatar;
 	// 保存拍照圖片uri
 	private Uri imageUri, zoomUri;
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
+	// 用户名,性别,修改资料
+	private TextView userName, gender, editInfo;
+	// 昵称,大学,专业,年限,自我介绍,视频地址
+	private EditText nickName, school, major, year, introduction, videoLink;
+	// 播放视频
+	private ImageButton play;
+	// 保存
+	private Button save;
+	/** 个人信息 */
+	private TeacherProfile teacherProfile;
+	private boolean isUpdate = false;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_teacher_my, container, false);
@@ -63,11 +77,51 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 		avatar.setOnClickListener(this);
 		// 加载头像
 		ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + ApiUrl.GET_OTHER_AVATAR + TutorApplication.getMemberId());
+		//
+		userName = ViewHelper.get(view, R.id.fragment_my_tv_username);
+		gender = ViewHelper.get(view, R.id.fragment_my_tv_gender);
+		editInfo = ViewHelper.get(view, R.id.fragment_my_tv_edit);
+		//
+		nickName = ViewHelper.get(view, R.id.fragment_my_et_nickname);
+		school = ViewHelper.get(view, R.id.fragment_my_et_school);
+		major = ViewHelper.get(view, R.id.fragment_my_et_major);
+		year = ViewHelper.get(view, R.id.fragment_my_et_year);
+		introduction = ViewHelper.get(view, R.id.fragment_my_et_introduction);
+		videoLink = ViewHelper.get(view, R.id.fragment_my_et_video_path);
+		//
+		play = ViewHelper.get(view, R.id.fragment_my_ib_play);
+		save = ViewHelper.get(view, R.id.fragment_my_btn_save);
+		editInfo.setOnClickListener(this);
+		play.setOnClickListener(this);
+		save.setOnClickListener(this);
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		videoLink.setText("http://xzmp41.mtvxz.cc:8027/%E6%AE%B5%E5%AE%9B%E5%BD%A4-%E4%B8%80%E7%94%9F%E4%B8%80%E4%B8%96-%E5%9B%BD%E8%AF%AD%5Bwww.mtvxz.cn%5D.mp4");
+		// 获取数据
+		getTutorProfile();
+	}
+
+	/**
+	 * 设置数据
+	 * 
+	 * @param profile
+	 */
+	private void setData(TeacherProfile profile) {
+		teacherProfile = profile;
+		System.out.println(profile);
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (isUpdate) {
+			// 更新数据
+			getTutorProfile();
+			isUpdate = false;
+		}
 	}
 
 	@Override
@@ -84,8 +138,50 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 				dialog.setUri(imageUri);
 				dialog.show();
 				break;
+			case R.id.fragment_my_ib_play:
+				// 播放视频
+				String link = videoLink.getEditableText().toString().trim();
+				if (TextUtils.isEmpty(link)) {
+					toast(R.string.toast_video_link_empety);
+					return;
+				}
+				try {
+					Intent it = new Intent(Intent.ACTION_VIEW);
+					Uri uri = Uri.parse(link);
+					it.setDataAndType(uri, "video/*");
+					startActivity(it);
+				} catch (Exception e) {
+					e.printStackTrace();
+					toast(R.string.toast_video_unplay);
+				}
+				break;
+			case R.id.fragment_my_btn_save:
+				save();
+				break;
+			case R.id.fragment_my_tv_edit:
+				if (null == teacherProfile) {
+					toast(R.string.loading);
+					return;
+				}
+				Intent intent = new Intent();
+				intent.setClass(getActivity(), FillPersonalInfoActivity.class);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, true);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TUTORPRIFILE, teacherProfile);
+				startActivity(intent);
+				isUpdate = true;
+				break;
 			default:
 				break;
+		}
+	}
+
+	/**
+	 * 提交老师修改资料
+	 */
+	private void save() {
+		if (null == teacherProfile) {
+			toast(R.string.loading);
+			return;
 		}
 	}
 
@@ -155,6 +251,11 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 		startActivityForResult(intent, Constants.RequestResultCode.ZOOM);
 	}
 
+	/**
+	 * 上传头像
+	 * 
+	 * @param path
+	 */
 	private void upLoadAvatar(String path) {
 		if (!HttpHelper.isNetworkConnected(getActivity())) {
 			toast(R.string.toast_netwrok_disconnected);
@@ -192,5 +293,34 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 				toast(R.string.toast_avatar_upload_fail);
 			}
 		}
+	}
+
+	/**
+	 * 获取资料
+	 */
+	private void getTutorProfile() {
+		RequestParams params = new RequestParams();
+		params.put("memberId", TutorApplication.getMemberId());
+		HttpHelper.get(getActivity(), ApiUrl.TUTORINFO, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<TeacherInfoResult>(TeacherInfoResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				if (0 == status) {
+					getTutorProfile();
+					return;
+				}
+				CheckTokenUtils.checkToken(status);
+				toast(R.string.toast_server_error);
+			}
+
+			@Override
+			public void onSuccess(TeacherInfoResult t) {
+				if (null != t.getResult()) {
+					setData(t.getResult());
+				} else {
+					toast(R.string.toast_server_error);
+				}
+			}
+		});
 	}
 }

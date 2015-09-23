@@ -3,6 +3,7 @@ package com.tutor.ui.fragment.teacher;
 import java.util.ArrayList;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -26,6 +27,8 @@ import com.tutor.model.MatchStudentListResult;
 import com.tutor.model.Page;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
+import com.tutor.params.Constants;
+import com.tutor.ui.activity.SearchConditionsActivity;
 import com.tutor.ui.fragment.BaseFragment;
 import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.HttpHelper;
@@ -69,6 +72,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 	@SuppressLint("InflateParams")
 	private void initView(LayoutInflater inflater, View view) {
 		View serchView = inflater.inflate(R.layout.find_student_search_layout, null);
+		ViewHelper.get(serchView, R.id.btn_search_conditions).setOnClickListener(this);
 		editText = ViewHelper.get(serchView, R.id.fragment_find_student_et);
 		ViewHelper.get(serchView, R.id.fragment_find_student_btn).setOnClickListener(this);
 		listView = ViewHelper.get(view, R.id.fragment_find_student_lv);
@@ -164,6 +168,10 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 				pageIndex = 0;
 				getSearchStudent(keyWords, pageIndex, pageSize);
 				break;
+			case R.id.btn_search_conditions:
+				Intent intent = new Intent(getActivity(), SearchConditionsActivity.class);
+				startActivityForResult(intent, Constants.RequestResultCode.SEARCH_CONDITIONS);
+				break;
 			default:
 				break;
 		}
@@ -186,6 +194,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 			@Override
 			public void onFailure(int status, String message) {
 				dismissDialog();
+				CheckTokenUtils.checkToken(status);
 				setData(null);
 			}
 
@@ -216,6 +225,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 			@Override
 			public void onFailure(int status, String message) {
 				setData(null);
+				CheckTokenUtils.checkToken(status);
 				listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
 			}
 

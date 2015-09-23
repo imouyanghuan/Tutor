@@ -118,7 +118,7 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 	 * 獲取我的學生列表
 	 * 
 	 */
-	private void getStudentList(final int pageIndex, int pageSize) {
+	private void getStudentList(final int pageIndex, final int pageSize) {
 		if (!HttpHelper.isNetworkConnected(getActivity())) {
 			toast(R.string.toast_netwrok_disconnected);
 			return;
@@ -130,6 +130,11 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 
 			@Override
 			public void onFailure(int status, String message) {
+				if (0 == status) {
+					getStudentList(pageIndex, pageSize);
+					return;
+				}
+				CheckTokenUtils.checkToken(status);
 				toast(R.string.toast_server_error);
 			}
 

@@ -286,4 +286,13 @@ public class TeacherProfile implements Serializable {
 	public void setTimeslots(ArrayList<Timeslot> timeslots) {
 		Timeslots = timeslots;
 	}
+
+	@Override
+	public String toString() {
+		return "TeacherProfile [Id=" + Id + ", HKIDNumber=" + HKIDNumber + ", Exprience=" + Exprience + ", RatingGrade=" + RatingGrade + ", BookmarkedCount=" + BookmarkedCount + ", StudentCount="
+				+ StudentCount + ", EducationDegree=" + EducationDegree + ", GraduateSchool=" + GraduateSchool + ", Major=" + Major + ", NickName=" + NickName + ", UserName=" + UserName + ", Phone="
+				+ Phone + ", Email=" + Email + ", Password=" + Password + ", FBOpenID=" + FBOpenID + ", IMID=" + IMID + ", Avatar=" + Avatar + ", Birth=" + Birth + ", Gender=" + Gender
+				+ ", Introduction=" + Introduction + ", IntroductionVideo=" + IntroductionVideo + ", Token=" + Token + ", ExpirationTime=" + ExpirationTime + ", Status=" + Status + ", AccountType="
+				+ AccountType + ", CreatedTime=" + CreatedTime + ", Courses=" + Courses + ", Areas=" + Areas + ", Timeslots=" + Timeslots + "]";
+	}
 }

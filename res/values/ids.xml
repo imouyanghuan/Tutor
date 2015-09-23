@@ -100,8 +100,17 @@
     <item name="student_list_item_time" type="id"></item>
     <!-- my fragment -->
     <item name="fragment_my_iv_avatar" type="id"></item>
+    <item name="fragment_my_ib_play" type="id"></item>
+    <item name="fragment_my_btn_save" type="id"></item>
     <item name="fragment_my_tv_username" type="id"></item>
-    <item name="fragment_my_iv_nickname" type="id"></item>
+    <item name="fragment_my_tv_gender" type="id"></item>
+    <item name="fragment_my_tv_edit" type="id"></item>
+    <item name="fragment_my_et_nickname" type="id"></item>
+    <item name="fragment_my_et_school" type="id"></item>
+    <item name="fragment_my_et_major" type="id"></item>
+    <item name="fragment_my_et_year" type="id"></item>
+    <item name="fragment_my_et_introduction" type="id"></item>
+    <item name="fragment_my_et_video_path" type="id"></item>
     <!-- timeslot item -->
     <item name="timeslot_item_tv" type="id"></item>
     <item name="timeslot_item_btn_delete" type="id"></item>

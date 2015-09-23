@@ -13,8 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
 import android.widget.NumberPicker;
+import android.widget.NumberPicker.OnValueChangeListener;
 
-public class WeekDialog extends Dialog implements android.view.View.OnClickListener {
+public class WeekDialog extends Dialog implements android.view.View.OnClickListener, OnValueChangeListener {
 
 	private NumberPicker mNumberPicker;
 	/** 星期 */
@@ -22,10 +23,11 @@ public class WeekDialog extends Dialog implements android.view.View.OnClickListe
 	private int selectIndex;
 	private OnWeekSelectedCallback callback;
 
-	public WeekDialog(Context context, OnWeekSelectedCallback callback) {
+	public WeekDialog(Context context, int index, OnWeekSelectedCallback callback) {
 		this(context, R.style.dialog);
 		weeks = getContext().getResources().getStringArray(R.array.weeks);
 		this.callback = callback;
+		selectIndex = index;
 	}
 
 	public WeekDialog(Context context, int theme) {
@@ -55,10 +57,10 @@ public class WeekDialog extends Dialog implements android.view.View.OnClickListe
 		mNumberPicker = ViewHelper.get(view, R.id.ac_fill_personal_time_np_week);
 		ViewHelper.get(view, R.id.dialog_title_tv_left).setOnClickListener(this);
 		ViewHelper.get(view, R.id.dialog_title_tv_right).setOnClickListener(this);
+		mNumberPicker.setOnValueChangedListener(this);
 		mNumberPicker.setDisplayedValues(weeks);
 		mNumberPicker.setMinValue(0);
 		mNumberPicker.setMaxValue(weeks.length - 1);
-		selectIndex = 0;
 		mNumberPicker.setValue(selectIndex);
 	}
 
@@ -79,24 +81,13 @@ public class WeekDialog extends Dialog implements android.view.View.OnClickListe
 		}
 	}
 
-	public int getSelectIndex() {
-		return selectIndex;
-	}
-
-	public void setSelectIndex(int selectIndex) {
-		this.selectIndex = selectIndex;
-	}
-
-	public OnWeekSelectedCallback getCallback() {
-		return callback;
-	}
-
-	public void setCallback(OnWeekSelectedCallback callback) {
-		this.callback = callback;
-	}
-
 	public interface OnWeekSelectedCallback {
 
 		public void onWeekSelected(int index, String value);
+	}
+
+	@Override
+	public void onValueChange(NumberPicker arg0, int arg1, int arg2) {
+		selectIndex = arg2;
 	}
 }

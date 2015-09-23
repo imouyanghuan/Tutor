@@ -58,10 +58,6 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 	/** 时间段列表 */
 	private CustomListView listView;
 	private TimeSlotAdapter adapter;
-	// 添加时间对话框
-	private TimeSlotDialog timeSlotDialog;
-	// 星期对话框
-	private WeekDialog weekDialog;
 	//
 	private TextView weekTextView, startTimeTextView, endTimeTextView;
 	/** 保存時間 */
@@ -200,27 +196,33 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 				}
 				break;
 			case R.id.ac_fill_personal_time_tv_week:
-				weekDialog = new WeekDialog(this, this);
-				weekDialog.show();
+				WeekDialog weekDialog;
 				if (null != timeslot) {
-					weekDialog.setSelectIndex(timeslot.getDayOfWeek());
+					weekDialog = new WeekDialog(this, timeslot.getDayOfWeek(), this);
+				} else {
+					weekDialog = new WeekDialog(this, 0, this);
 				}
+				weekDialog.show();
 				break;
 			case R.id.ac_fill_personal_time_tv_start:
 				isStrat = true;
-				timeSlotDialog = new TimeSlotDialog(this, this);
-				timeSlotDialog.show();
+				TimeSlotDialog timeSlotDialog;
 				if (null != timeslot) {
-					timeSlotDialog.setParams(timeslot.getEndHour(), timeslot.getEndMinute());
+					timeSlotDialog = new TimeSlotDialog(this, timeslot.getEndHour(), timeslot.getEndMinute(), this);
+				} else {
+					timeSlotDialog = new TimeSlotDialog(this, 0, 0, this);
 				}
+				timeSlotDialog.show();
 				break;
 			case R.id.ac_fill_personal_time_tv_end:
 				isStrat = false;
-				timeSlotDialog = new TimeSlotDialog(this, this);
-				timeSlotDialog.show();
+				TimeSlotDialog timeSlotDialog1;
 				if (null != timeslot) {
-					timeSlotDialog.setParams(timeslot.getStarHour(), timeslot.getStartMinute());
+					timeSlotDialog1 = new TimeSlotDialog(this, timeslot.getStarHour(), timeslot.getStartMinute(), this);
+				} else {
+					timeSlotDialog1 = new TimeSlotDialog(this, 0, 0, this);
 				}
+				timeSlotDialog1.show();
 				break;
 			default:
 				break;

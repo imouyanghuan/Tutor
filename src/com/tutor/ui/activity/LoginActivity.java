@@ -60,6 +60,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		if (-1 == role) {
 			throw new IllegalArgumentException("role is error(-1)");
 		}
+		int flag = getIntent().getIntExtra(Constants.IntentExtra.INTENT_EXTRA_TOKENINVALID, -1);
+		if (Constants.General.TOKEN_INVALID == flag) {
+			toastLong(getString(R.string.toast_token_invalid));
+		}
 		setContentView(R.layout.activity_login);
 		initView();
 		initFacebook();
