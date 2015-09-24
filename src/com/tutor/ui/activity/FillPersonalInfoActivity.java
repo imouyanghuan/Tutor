@@ -80,6 +80,9 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnDateChan
 				birth = studentProfile.getBirth();
 				sex = studentProfile.getGender();
 			}
+			if (TextUtils.isEmpty(birth)) {
+				birth = "1990-01-01 00:00:00";
+			}
 		}
 		if (-1 == role) {
 			throw new IllegalArgumentException("role is -1");
@@ -132,7 +135,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnDateChan
 		if (isEdit) {
 			if (null != teacherProfile) {
 				nameEditText.setText(teacherProfile.getNickName());
-				hKidEditText.setText(teacherProfile.getHKIDNumber());
+				hKidEditText.setText(teacherProfile.getHkidNumber());
 				phoneEditText.setText(teacherProfile.getPhone());
 				sexRadioGroup.check(teacherProfile.getGender());
 			} else {
@@ -175,7 +178,15 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnDateChan
 
 	@Override
 	public void onDateChanged(DatePicker view, int y, int m, int d) {
-		birth = y + "-" + (m + 1) + "-" + d + " 00:00:00";
+		String month = (m + 1) + "";
+		if (m < 9) {
+			month = "0" + month;
+		}
+		String day = d + "";
+		if (d < 10) {
+			day = "0" + day;
+		}
+		birth = y + "-" + month + "-" + day + " 00:00:00";
 		LogUtils.d(birth);
 	}
 
@@ -210,7 +221,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnDateChan
 			if (!isEdit) {
 				teacherProfile = getTeacherProfile();
 			}
-			teacherProfile.setHKIDNumber(hkid);
+			teacherProfile.setHkidNumber(hkid);
 			teacherProfile.setNickName(name);
 			teacherProfile.setUserName(name);
 			teacherProfile.setPhone(phone);
@@ -232,8 +243,8 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnDateChan
 		profile.setId(account.getMemberId());
 		profile.setEmail(account.getEmail());
 		profile.setPassword(account.getPswd());
-		profile.setFBOpenID(account.getFacebookId());
-		profile.setIMID(account.getImAccount());
+		profile.setFbOpenID(account.getFacebookId());
+		profile.setImid(account.getImAccount());
 		profile.setStatus(account.getRole());
 		profile.setCreatedTime(account.getCreatedTime());
 		profile.setToken(account.getToken());
@@ -252,8 +263,8 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnDateChan
 		profile.setId(account.getMemberId());
 		profile.setEmail(account.getEmail());
 		profile.setPassword(account.getPswd());
-		profile.setFBOpenID(account.getFacebookId());
-		profile.setIMID(account.getImAccount());
+		profile.setFbOpenID(account.getFacebookId());
+		profile.setImid(account.getImAccount());
 		profile.setStatus(account.getRole());
 		profile.setCreatedTime(account.getCreatedTime());
 		profile.setToken(account.getToken());

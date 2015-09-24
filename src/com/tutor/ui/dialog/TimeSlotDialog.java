@@ -36,7 +36,7 @@ public class TimeSlotDialog extends Dialog implements android.view.View.OnClickL
 		minutes = getContext().getResources().getStringArray(R.array.minutes);
 		if (hour == 0 && minute == 0) {
 			hourIndex = 7;
-			minutePicker.setValue(3);
+			minuteIndex = 3;
 			return;
 		}
 		hourIndex = hour;

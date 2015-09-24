@@ -66,12 +66,9 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 
 			@Override
 			public void onClick(int bookmarkId, int position) {
-				// toast("bookmarkId=" + bookmarkId);
 				deleteBookmark(bookmarkId);
 			}
 		});
-		// 加載匹配學生列表
-		showDialogRes(R.string.loading);
 		getStudentList(pageIndex, pageSize);
 	}
 
@@ -84,6 +81,8 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 			toast(R.string.toast_netwrok_disconnected);
 			return;
 		}
+		// 加載匹配學生列表
+		showDialogRes(R.string.loading);
 		RequestParams params = new RequestParams();
 		params.put("pageIndex", pageIndex);
 		params.put("pageSize", pageSize);

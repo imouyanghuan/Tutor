@@ -11,207 +11,215 @@ import java.util.ArrayList;
 public class StudentProfile implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private int Id;
-	private String NickName;
-	private String UserName;
-	private String Phone;
-	private String Email;
-	private String Password;
-	private String FBOpenID;
-	private String IMID;
-	private String Avatar;
-	private String Birth;
-	private int Gender;
-	private String Introduction;
+	private int id;
+	private String nickName;
+	private String userName;
+	private String phone;
+	private String email;
+	private String password;
+	private String fbOpenID;
+	private String imid;
+	private String avatar;
+	private String birth;
+	private int gender;
+	private String introduction;
 	// 个人简介视频地址
-	private String IntroductionVideo;
-	private String Token;
-	private String ExpirationTime;
-	private int Status;
+	private String introductionVideo;
+	private String token;
+	private String expirationTime;
+	private int status;
 	/**
 	 * Student 0 Tutor 1 Both 2
 	 **/
-	private int AccountType;
+	private int accountType;
 	// 注册时间
-	private String CreatedTime;
-	private String Grade;
-	private ArrayList<Course> Courses;
-	private ArrayList<Area> Areas;
-	private ArrayList<Timeslot> Timeslots;
-
-	public String getAvatar() {
-		return Avatar;
-	}
-
-	public void setAvatar(String avatar) {
-		Avatar = avatar;
-	}
+	private String createdTime;
+	private String grade;
+	private ArrayList<Course> courses;
+	private ArrayList<Area> areas;
+	private ArrayList<Timeslot> timeslots;
 
 	public int getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(int id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String getNickName() {
-		return NickName;
+		return nickName;
 	}
 
 	public void setNickName(String nickName) {
-		NickName = nickName;
+		this.nickName = nickName;
 	}
 
 	public String getUserName() {
-		return UserName;
+		return userName;
 	}
 
 	public void setUserName(String userName) {
-		UserName = userName;
+		this.userName = userName;
 	}
 
 	public String getPhone() {
-		return Phone;
+		return phone;
 	}
 
 	public void setPhone(String phone) {
-		Phone = phone;
+		this.phone = phone;
 	}
 
 	public String getEmail() {
-		return Email;
+		return email;
 	}
 
 	public void setEmail(String email) {
-		Email = email;
+		this.email = email;
 	}
 
 	public String getPassword() {
-		return Password;
+		return password;
 	}
 
 	public void setPassword(String password) {
-		Password = password;
+		this.password = password;
 	}
 
-	public String getFBOpenID() {
-		return FBOpenID;
+	public String getFbOpenID() {
+		return fbOpenID;
 	}
 
-	public void setFBOpenID(String fBOpenID) {
-		FBOpenID = fBOpenID;
+	public void setFbOpenID(String fbOpenID) {
+		this.fbOpenID = fbOpenID;
 	}
 
-	public String getIMID() {
-		return IMID;
+	public String getImid() {
+		return imid;
 	}
 
-	public void setIMID(String iMID) {
-		IMID = iMID;
+	public void setImid(String imid) {
+		this.imid = imid;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 
 	public String getBirth() {
-		return Birth;
+		return birth;
 	}
 
 	public void setBirth(String birth) {
-		Birth = birth;
+		this.birth = birth;
 	}
 
 	public int getGender() {
-		return Gender;
+		return gender;
 	}
 
 	public void setGender(int gender) {
-		Gender = gender;
+		this.gender = gender;
 	}
 
 	public String getIntroduction() {
-		return Introduction;
+		return introduction;
 	}
 
 	public void setIntroduction(String introduction) {
-		Introduction = introduction;
+		this.introduction = introduction;
 	}
 
 	public String getIntroductionVideo() {
-		return IntroductionVideo;
+		return introductionVideo;
 	}
 
 	public void setIntroductionVideo(String introductionVideo) {
-		IntroductionVideo = introductionVideo;
+		this.introductionVideo = introductionVideo;
 	}
 
 	public String getToken() {
-		return Token;
+		return token;
 	}
 
 	public void setToken(String token) {
-		Token = token;
+		this.token = token;
 	}
 
 	public String getExpirationTime() {
-		return ExpirationTime;
+		return expirationTime;
 	}
 
 	public void setExpirationTime(String expirationTime) {
-		ExpirationTime = expirationTime;
+		this.expirationTime = expirationTime;
 	}
 
 	public int getStatus() {
-		return Status;
+		return status;
 	}
 
 	public void setStatus(int status) {
-		Status = status;
+		this.status = status;
 	}
 
 	public int getAccountType() {
-		return AccountType;
+		return accountType;
 	}
 
 	public void setAccountType(int accountType) {
-		AccountType = accountType;
+		this.accountType = accountType;
 	}
 
 	public String getCreatedTime() {
-		return CreatedTime;
+		return createdTime;
 	}
 
 	public void setCreatedTime(String createdTime) {
-		CreatedTime = createdTime;
+		this.createdTime = createdTime;
 	}
 
 	public String getGrade() {
-		return Grade;
+		return grade;
 	}
 
 	public void setGrade(String grade) {
-		Grade = grade;
+		this.grade = grade;
 	}
 
 	public ArrayList<Course> getCourses() {
-		return Courses;
+		return courses;
 	}
 
 	public void setCourses(ArrayList<Course> courses) {
-		Courses = courses;
+		this.courses = courses;
 	}
 
 	public ArrayList<Area> getAreas() {
-		return Areas;
+		return areas;
 	}
 
 	public void setAreas(ArrayList<Area> areas) {
-		Areas = areas;
+		this.areas = areas;
 	}
 
 	public ArrayList<Timeslot> getTimeslots() {
-		return Timeslots;
+		return timeslots;
 	}
 
 	public void setTimeslots(ArrayList<Timeslot> timeslots) {
-		Timeslots = timeslots;
+		this.timeslots = timeslots;
+	}
+
+	@Override
+	public String toString() {
+		return "StudentProfile [id=" + id + ", nickName=" + nickName + ", userName=" + userName + ", phone=" + phone + ", email=" + email + ", password=" + password + ", fbOpenID=" + fbOpenID
+				+ ", imid=" + imid + ", avatar=" + avatar + ", birth=" + birth + ", gender=" + gender + ", introduction=" + introduction + ", introductionVideo=" + introductionVideo + ", token="
+				+ token + ", expirationTime=" + expirationTime + ", status=" + status + ", accountType=" + accountType + ", createdTime=" + createdTime + ", grade=" + grade + ", courses=" + courses
+				+ ", areas=" + areas + ", timeslots=" + timeslots + "]";
 	}
 }

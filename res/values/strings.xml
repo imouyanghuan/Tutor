@@ -136,7 +136,8 @@
     <string name="toast_starttime_front_endtime">Start time must be in front of the end of time</string>
     <string name="toast_video_unplay">Video link or video format errors</string>
     <string name="toast_video_link_empety">Video link is empty</string>
-     <string name="toast_token_invalid">Token expired, please login again</string>
+    <string name="toast_token_invalid">Token expired, please login again</string>
+    <string name="toast_save_successed">Save success!</string>
 
     <!-- xmpp聊天相關 -->
     <string name="new_message">New short message received</string>

@@ -2,7 +2,11 @@ package com.tutor.ui.fragment.teacher;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,6 +27,7 @@ import android.widget.TextView;
 import com.loopj.android.http.RequestParams;
 import com.tutor.R;
 import com.tutor.TutorApplication;
+import com.tutor.model.EditProfileResult;
 import com.tutor.model.TeacherInfoResult;
 import com.tutor.model.TeacherProfile;
 import com.tutor.model.UploadAvatarResult;
@@ -36,6 +41,8 @@ import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.DateTimeUtil;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.ImageUtils;
+import com.tutor.util.JsonUtil;
+import com.tutor.util.LogUtils;
 import com.tutor.util.ObjectHttpResponseHandler;
 import com.tutor.util.ViewHelper;
 
@@ -99,7 +106,6 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		videoLink.setText("http://xzmp41.mtvxz.cc:8027/%E6%AE%B5%E5%AE%9B%E5%BD%A4-%E4%B8%80%E7%94%9F%E4%B8%80%E4%B8%96-%E5%9B%BD%E8%AF%AD%5Bwww.mtvxz.cn%5D.mp4");
 		// 获取数据
 		getTutorProfile();
 	}
@@ -111,7 +117,14 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	 */
 	private void setData(TeacherProfile profile) {
 		teacherProfile = profile;
-		System.out.println(profile);
+		userName.setText(!TextUtils.isEmpty(profile.getUserName()) ? profile.getUserName() : "Tutor" + profile.getId());
+		gender.setText(Constants.General.MALE == profile.getGender() ? R.string.label_male : R.string.label_female);
+		nickName.setText(!TextUtils.isEmpty(profile.getNickName()) ? profile.getNickName() : "");
+		school.setText(!TextUtils.isEmpty(profile.getGraduateSchool()) ? profile.getGraduateSchool() : "");
+		major.setText(!TextUtils.isEmpty(profile.getMajor()) ? profile.getMajor() : "");
+		year.setText(profile.getExprience() + "");
+		introduction.setText(!TextUtils.isEmpty(profile.getIntroduction()) ? profile.getIntroduction() : "");
+		videoLink.setText(!TextUtils.isEmpty(profile.getIntroductionVideo()) ? profile.getIntroductionVideo() : "");
 	}
 
 	@Override
@@ -183,6 +196,57 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 			toast(R.string.loading);
 			return;
 		}
+		if (!HttpHelper.isNetworkConnected(getActivity())) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		showDialogRes(R.string.loading);
+		String json = JsonUtil.parseObject2Str(getTeacherProfile());
+		LogUtils.d(json);
+		try {
+			StringEntity entity = new StringEntity(json, HTTP.UTF_8);
+			HttpHelper.put(getActivity(), ApiUrl.TUTORPROFILE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+
+				@Override
+				public void onFailure(int status, String message) {
+					if (0 == status) {
+						save();
+						return;
+					}
+					dismissDialog();
+					LogUtils.e(message);
+					toast(R.string.toast_server_error);
+				}
+
+				@Override
+				public void onSuccess(EditProfileResult result) {
+					dismissDialog();
+					if (null != result) {
+						if (200 == result.getStatusCode() && result.getResult()) {
+							toast(R.string.toast_save_successed);
+							setData(teacherProfile);
+						} else {
+							toast(result.getMessage());
+						}
+					} else {
+						toast(R.string.toast_server_error);
+					}
+				}
+			});
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			dismissDialog();
+		}
+	}
+
+	private TeacherProfile getTeacherProfile() {
+		teacherProfile.setNickName(nickName.getEditableText().toString().trim());
+		teacherProfile.setGraduateSchool(school.getEditableText().toString().trim());
+		teacherProfile.setMajor(major.getEditableText().toString().trim());
+		teacherProfile.setExprience(Integer.parseInt(year.getEditableText().toString()));
+		teacherProfile.setIntroduction(introduction.getEditableText().toString().trim());
+		teacherProfile.setIntroductionVideo(videoLink.getEditableText().toString().trim());
+		return teacherProfile;
 	}
 
 	@Override
