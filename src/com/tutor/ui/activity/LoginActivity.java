@@ -154,7 +154,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		model.setPassword(password);
 		model.setAccountType(role);
 		model.setFBOpenID("");
-		String im = emailString.replace("@", "").replace(".", "");
+		String im = role + emailString.replace("@", "").replace(".", "");
 		model.setIMID(im);
 		login(model);
 	}
@@ -183,8 +183,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 
 				@Override
 				public void onFailure(int status, String message) {
+					if (0 == status) {
+						login(model);
+						return;
+					}
 					dismissDialog();
-					LogUtils.e(message);
 					toast(R.string.toast_login_failed);
 				}
 
@@ -292,7 +295,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 					model.setPassword("");
 					model.setAccountType(role);
 					model.setFBOpenID(id);
-					String im = getString(R.string.app_name) + id;
+					String im = role + getString(R.string.app_name) + id;
 					model.setIMID(im);
 					if (result.getResult()) {
 						// 存在,直接登錄
@@ -324,6 +327,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 
 				@Override
 				public void onFailure(int status, String message) {
+					if (0 == status) {
+						register(model);
+						return;
+					}
 					dismissDialog();
 					toast(R.string.toast_login_failed);
 				}

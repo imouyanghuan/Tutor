@@ -121,6 +121,8 @@ public final class Constants {
 		public static final String INTENT_EXTRA_STUDENTPROFILE = "student.prifile";
 		/** token 过期 */
 		public static final String INTENT_EXTRA_TOKENINVALID = "token.invalid";
+		/** 搜索条件 */
+		public static final String INTENT_EXTRA_SEARCH_CONDITION = "search.condition";
 	}
 
 	/**

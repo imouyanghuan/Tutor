@@ -12,15 +12,15 @@ public class Area1 implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int id;
 	private String district;
-	private boolean selected;
+	private boolean isChecked;
 	private String address;
 
-	public boolean getSelected() {
-		return selected;
+	public boolean isChecked() {
+		return isChecked;
 	}
 
-	public void setSelected(boolean selected) {
-		this.selected = selected;
+	public void setChecked(boolean isChecked) {
+		this.isChecked = isChecked;
 	}
 
 	public int getId() {
@@ -49,6 +49,6 @@ public class Area1 implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Area1 [id=" + id + ", district=" + district + ", selected=" + selected + ", address=" + address + "]";
+		return "Area1 [id=" + id + ", district=" + district + ", isChecked=" + isChecked + ", address=" + address + "]";
 	}
 }

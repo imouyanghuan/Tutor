@@ -179,6 +179,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
+				// TODO 请求退出登录api
 				TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
 				Intent intent = new Intent(TeacherMainActivity.this, ChoiceRoleActivity.class);
 				startActivity(intent);
@@ -318,6 +319,10 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 
 			@Override
 			public void onFailure(int status, String message) {
+				if (0 == status) {
+					getNotificationCount();
+					return;
+				}
 				isGetdata = false;
 				CheckTokenUtils.checkToken(status);
 			}

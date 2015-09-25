@@ -127,7 +127,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 			model.setPassword(pswd);
 			model.setAccountType(role);
 			model.setFBOpenID("");
-			String im = email.replace("@", "").replace(".", "");
+			String im = role + email.replace("@", "").replace(".", "");
 			model.setIMID(im);
 			register(model);
 		} else if (R.id.ac_register_tv_team == v.getId()) {
@@ -154,6 +154,10 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 
 				@Override
 				public void onFailure(int status, String message) {
+					if (0 == status) {
+						register(model);
+						return;
+					}
 					dismissDialog();
 					toast(R.string.toast_register_fail);
 				}

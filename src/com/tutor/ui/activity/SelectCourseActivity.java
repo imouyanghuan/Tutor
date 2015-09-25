@@ -84,7 +84,7 @@ public class SelectCourseActivity extends BaseActivity {
 			@Override
 			public void onClick(View arg0) {
 				// 课程列表
-				ArrayList<Course> choiceCourses = getChoiceCourses();
+				int[] choiceCourses = getChoiceCourses();
 				if (!isHaveCourse) {
 					toast(R.string.toast_not_select_cours);
 					return;
@@ -92,10 +92,10 @@ public class SelectCourseActivity extends BaseActivity {
 				Intent intent = new Intent(SelectCourseActivity.this, SelectAreaActivity.class);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, isEdit);
 				if (Constants.General.ROLE_TUTOR == role) {
-					teacherProfile.setCourses(choiceCourses);
+					teacherProfile.setCourseIds(choiceCourses);
 					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TUTORPRIFILE, teacherProfile);
 				} else {
-					studentProfile.setCourses(choiceCourses);
+					studentProfile.setCourseIds(choiceCourses);
 					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_STUDENTPROFILE, studentProfile);
 				}
 				startActivity(intent);
@@ -165,54 +165,9 @@ public class SelectCourseActivity extends BaseActivity {
 
 	private void setData(ArrayList<Course> courses) {
 		if (null != courses && 0 != courses.size()) {
-			if (isEdit) {
-				// 对比改变一下数据
-				ArrayList<Course> ownCourses = null;
-				if (null != teacherProfile) {
-					ownCourses = teacherProfile.getCourses();
-				} else {
-					ownCourses = studentProfile.getCourses();
-				}
-				if (null != ownCourses && ownCourses.size() > 0) {
-					ArrayList<CourseItem2> ownitem2s = new ArrayList<CourseItem2>();
-					for (Course course : ownCourses) {
-						ArrayList<CourseItem1> item1s = course.getResult();
-						for (CourseItem1 item1 : item1s) {
-							ownitem2s.addAll(item1.getResult());
-						}
-					}
-					change(courses, ownitem2s);
-				}
-			}
 			CourseLayout courseLayout = new CourseLayout(SelectCourseActivity.this, courses);
 			scrollView.addView(courseLayout);
 		}
-	}
-
-	private void change(ArrayList<Course> courses, ArrayList<CourseItem2> ownitem2s) {
-		if (null != ownitem2s && ownitem2s.size() > 0) {
-			for (CourseItem2 item2 : ownitem2s) {
-				for (Course course : courses) {
-					if (change(item2, course)) {
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	private boolean change(CourseItem2 item2, Course course) {
-		ArrayList<CourseItem1> item1s = course.getResult();
-		for (CourseItem1 item1 : item1s) {
-			ArrayList<CourseItem2> item2s = item1.getResult();
-			for (CourseItem2 item22 : item2s) {
-				if (item22.getId() == item2.getId()) {
-					item22.setSelected(true);
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 
 	private boolean isHaveCourse = false;
@@ -222,7 +177,7 @@ public class SelectCourseActivity extends BaseActivity {
 	 * 
 	 * @return
 	 */
-	private ArrayList<Course> getChoiceCourses() {
+	private int[] getChoiceCourses() {
 		if (null == courses) {
 			return null;
 		}
@@ -233,102 +188,23 @@ public class SelectCourseActivity extends BaseActivity {
 			for (CourseItem1 item1 : item1s) {
 				ArrayList<CourseItem2> item2s = item1.getResult();
 				for (CourseItem2 item2 : item2s) {
-					if (item2.getSelected()) {
+					if (item2.isChecked()) {
 						selectCourses.add(item2);
 					}
 				}
 			}
 		}
-		// 将选中的课程整理成原来的结构
-		int selectSize = selectCourses.size();
-		if (selectSize > 0) {
+		int size = selectCourses.size();
+		if (size > 0) {
 			isHaveCourse = true;
-			ArrayList<Course> result = new ArrayList<Course>();
-			for (CourseItem2 item2 : selectCourses) {
-				// 首次添加
-				if (result.size() == 0) {
-					// 1
-					Course course = new Course();
-					course.setName(item2.getType());
-					ArrayList<CourseItem1> item1s = new ArrayList<CourseItem1>();
-					// 2
-					CourseItem1 item1 = new CourseItem1();
-					item1.setName(item2.getSubType());
-					// 3
-					ArrayList<CourseItem2> item2s = new ArrayList<CourseItem2>();
-					item2s.add(item2);
-					// 2
-					item1.setResult(item2s);
-					item1s.add(item1);
-					// 1
-					course.setResult(item1s);
-					result.add(course);
-				} else {
-					// 列表已经有数据了
-					int size = result.size();
-					Course course = null;
-					for (int i = 0; i < size; i++) {
-						course = result.get(i);
-						if (course.getName().equals(item2.getType())) {
-							break;
-						} else {
-							course = null;
-						}
-					}
-					// 已存在该分类
-					if (null != course) {
-						// 取出子list
-						ArrayList<CourseItem1> item1s = course.getResult();
-						int size1 = item1s.size();
-						// 取出CourseItem1
-						CourseItem1 item1 = null;
-						for (int i = 0; i < size1; i++) {
-							item1 = item1s.get(i);
-							if (item1.getName().equals(item2.getSubType())) {
-								break;
-							} else {
-								item1 = null;
-							}
-						}
-						if (null != item1) {
-							// 存在,把item2加入item1的result集合里
-							item1.getResult().add(item2);
-						} else {
-							// 不存在,添加一个
-							CourseItem1 newitem1 = new CourseItem1();
-							newitem1.setName(item2.getSubType());
-							// 3
-							ArrayList<CourseItem2> item2s = new ArrayList<CourseItem2>();
-							item2s.add(item2);
-							// 2
-							newitem1.setResult(item2s);
-							item1s.add(newitem1);
-						}
-					} else {
-						// 不存在该分类的时候,添加
-						// 1
-						course = new Course();
-						course.setName(item2.getType());
-						ArrayList<CourseItem1> item1s = new ArrayList<CourseItem1>();
-						// 2
-						CourseItem1 item1 = new CourseItem1();
-						item1.setName(item2.getSubType());
-						// 3
-						ArrayList<CourseItem2> item2s = new ArrayList<CourseItem2>();
-						item2s.add(item2);
-						// 2
-						item1.setResult(item2s);
-						item1s.add(item1);
-						// 1
-						course.setResult(item1s);
-						result.add(course);
-					}
-				}
+			int[] result = new int[size];
+			for (int i = 0; i < size; i++) {
+				result[i] = selectCourses.get(i).getId();
 			}
 			LogUtils.d(result.toString());
-			LogUtils.d(courses.toString());
+			LogUtils.d(selectCourses.toString());
 			return result;
 		}
-		return null;
+		return new int[] {};
 	}
 }

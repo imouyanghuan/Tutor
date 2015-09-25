@@ -5,23 +5,36 @@ import net.simonvt.menudrawer.Position;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.TextView;
 
+import com.loopj.android.http.RequestParams;
 import com.tutor.R;
 import com.tutor.TutorApplication;
+import com.tutor.im.IMMessageManager;
+import com.tutor.im.XMPPConnectionManager;
+import com.tutor.im.XmppManager;
+import com.tutor.model.Account;
+import com.tutor.model.NotificationListResult;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
+import com.tutor.service.IMService;
 import com.tutor.ui.fragment.BaseFragment;
 import com.tutor.ui.fragment.student.FindTeacherFragment;
 import com.tutor.ui.fragment.student.MyFragment;
 import com.tutor.ui.fragment.student.MyTeacherFragment;
 import com.tutor.ui.fragment.student.OverseasEducationFragment;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.CheckTokenUtils;
+import com.tutor.util.HttpHelper;
 import com.tutor.util.ImageUtils;
+import com.tutor.util.ObjectHttpResponseHandler;
 import com.tutor.util.ScreenUtil;
 
 /**
@@ -48,6 +61,10 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 	private MyFragment myFragment;
 	/** fragment操作管理對象 */
 	private FragmentTransaction ft;
+	// 显示消息条数
+	private TextView msgCount;
+	private long count = 0;
+	private boolean isGetdata;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -59,6 +76,8 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 		initView();
 		// 初始化fragment
 		initFragment();
+		isGetdata = false;
+		new LoginImTask().execute();
 	}
 
 	@Override
@@ -148,6 +167,7 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 		// 菜單項
 		getView(R.id.menu_item_notification).setOnClickListener(this);
 		getView(R.id.menu_item_bookmark).setOnClickListener(this);
+		msgCount = getView(R.id.menu_item_tv_msgCount);
 	}
 
 	private void loginOut() {
@@ -159,6 +179,7 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
+				// TODO 调用api退出登录
 				TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
 				Intent intent = new Intent(StudentMainActivity.this, ChoiceRoleActivity.class);
 				startActivity(intent);
@@ -182,19 +203,53 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 	protected void onResume() {
 		super.onResume();
 		Constants.Xmpp.isChatNotification = false;
+		initMsgCount();
+		// TODO 註冊廣播接收IM消息
+	}
+
+	/**
+	 * 檢查未讀消息
+	 */
+	private void initMsgCount() {
+		count = IMMessageManager.getManager().getUnReadNoticeCount();
+		if (0 < count) {
+			msgCount.setText("" + count);
+			msgCount.setVisibility(View.VISIBLE);
+		} else {
+			msgCount.setText("");
+			msgCount.setVisibility(View.GONE);
+		}
+		if (!isGetdata) {
+			isGetdata = true;
+			getNotificationCount();
+		}
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		Constants.Xmpp.isChatNotification = true;
+		// TODO 註銷廣播
 	}
 
 	@Override
 	protected void onDestroy() {
-		super.onDestroy();
+		// 斷開IM連接
+		XMPPConnectionManager.getManager().disconnect();
+		// 停止服務
+		Intent intent = new Intent(this, IMService.class);
+		stopService(intent);
 		// 清空缓存的图片
 		ImageUtils.clearChache();
+		super.onDestroy();
+	}
+
+	@Override
+	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+		super.onActivityResult(arg0, arg1, arg2);
+		if (null != myFragment) {
+			myFragment.onActivityResult(arg0, arg1, arg2);
+		}
 	}
 
 	private static long lastTime = 0;
@@ -240,6 +295,83 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 				break;
 			default:
 				break;
+		}
+	}
+
+	/**
+	 * 获取消息数量 Sent 0 Accept 1 Reject 2 Acknowle 3 All 4
+	 */
+	private void getNotificationCount() {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		RequestParams params = new RequestParams();
+		params.put("status", "1");
+		params.put("pageIndex", "0");
+		params.put("pageSize", "1");
+		HttpHelper.get(this, ApiUrl.NOTIFICATIONLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<NotificationListResult>(NotificationListResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				if (0 == status) {
+					getNotificationCount();
+					return;
+				}
+				isGetdata = false;
+				CheckTokenUtils.checkToken(status);
+			}
+
+			@Override
+			public void onSuccess(NotificationListResult result) {
+				isGetdata = false;
+				CheckTokenUtils.checkToken(result);
+				if (null != result && 200 == result.getStatusCode()) {
+					count += result.getPage().getTotalCount();
+					if (0 < count) {
+						msgCount.setText("" + count);
+						msgCount.setVisibility(View.VISIBLE);
+					} else {
+						msgCount.setText("");
+						msgCount.setVisibility(View.GONE);
+					}
+				}
+			}
+		});
+	}
+
+	/**
+	 * 登录IM
+	 * 
+	 * 
+	 */
+	private class LoginImTask extends AsyncTask<Void, Void, Integer> {
+
+		@Override
+		protected Integer doInBackground(Void... params) {
+			// 執行登錄IM
+			Account account = TutorApplication.getAccountDao().load("1");
+			if (null != account) {
+				String accountsString = account.getImAccount();
+				String pswd = account.getImPswd();
+				return XmppManager.getInstance().login(accountsString, pswd);
+			}
+			return 0;
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) {
+			super.onPostExecute(result);
+			if (result == Constants.Xmpp.LOGIN_SECCESS) {
+				// 登錄成功,開啟服務
+				Intent intent = new Intent(StudentMainActivity.this, IMService.class);
+				startService(intent);
+			} else {
+				if (!TutorApplication.isTokenInvalid) {
+					toast(R.string.toast_login_im_fail);
+				}
+				new LoginImTask().execute();
+			}
 		}
 	}
 }

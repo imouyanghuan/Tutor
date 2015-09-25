@@ -147,7 +147,24 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 				}
 			});
 			if (isEdit && null != teacherProfile) {
-				ebRadioGroup.check(teacherProfile.getEducationDegree());
+				int id = R.id.ac_fill_personal_info_rb_eb1;
+				switch (teacherProfile.getEducationDegree()) {
+					case 0:
+						id = R.id.ac_fill_personal_info_rb_eb1;
+						break;
+					case 1:
+						id = R.id.ac_fill_personal_info_rb_eb2;
+						break;
+					case 2:
+						id = R.id.ac_fill_personal_info_rb_eb3;
+						break;
+					case 3:
+						id = R.id.ac_fill_personal_info_rb_eb4;
+						break;
+					default:
+						break;
+				}
+				ebRadioGroup.check(id);
 			}
 		} else {
 			ebFrameLayout.setVisibility(View.GONE);
@@ -218,7 +235,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 				isStrat = false;
 				TimeSlotDialog timeSlotDialog1;
 				if (null != timeslot) {
-					timeSlotDialog1 = new TimeSlotDialog(this, timeslot.getStarHour(), timeslot.getStartMinute(), this);
+					timeSlotDialog1 = new TimeSlotDialog(this, timeslot.getStartHour(), timeslot.getStartMinute(), this);
 				} else {
 					timeSlotDialog1 = new TimeSlotDialog(this, 0, 0, this);
 				}
@@ -242,20 +259,20 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 			// 在编辑开始时间的时候已经编辑好了结束时间,需要检查开始时间是否在结束时间之前
 			if (0 != timeslot.getEndHour() || 0 != timeslot.getEndMinute()) {
 				if (0 != timeslot.getEndHour() && hour < timeslot.getEndHour()) {
-					timeslot.setStarHour(hour);
+					timeslot.setStartHour(hour);
 					timeslot.setStartMinute(minute);
 					startTimeTextView.setText(time);
 					check();
 					return 0;
 				} else if (hour == timeslot.getEndHour() && minute < timeslot.getEndMinute()) {
-					timeslot.setStarHour(hour);
+					timeslot.setStartHour(hour);
 					timeslot.setStartMinute(minute);
 					startTimeTextView.setText(time);
 					check();
 					return 0;
 				} else if (0 == timeslot.getEndHour()) {
 					if (hour > 0 || hour == 0 && minute < timeslot.getEndMinute()) {
-						timeslot.setStarHour(hour);
+						timeslot.setStartHour(hour);
 						timeslot.setStartMinute(minute);
 						startTimeTextView.setText(time);
 						check();
@@ -265,27 +282,27 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 				return R.string.toast_starttime_front_endtime;
 			} else {
 				// 没有编辑结束时间,直接设值
-				timeslot.setStarHour(hour);
+				timeslot.setStartHour(hour);
 				timeslot.setStartMinute(minute);
 				startTimeTextView.setText(time);
 				check();
 			}
 		} else {
 			// 结束时间
-			if (0 != timeslot.getStarHour() || 0 != timeslot.getStartMinute()) {
-				if (0 != timeslot.getStarHour() && hour > timeslot.getStarHour()) {
+			if (0 != timeslot.getStartHour() || 0 != timeslot.getStartMinute()) {
+				if (0 != timeslot.getStartHour() && hour > timeslot.getStartHour()) {
 					timeslot.setEndHour(hour);
 					timeslot.setEndMinute(minute);
 					endTimeTextView.setText(time);
 					check();
 					return 0;
-				} else if (hour == timeslot.getStarHour() && timeslot.getStartMinute() < minute) {
+				} else if (hour == timeslot.getStartHour() && timeslot.getStartMinute() < minute) {
 					timeslot.setEndHour(hour);
 					timeslot.setEndMinute(minute);
 					endTimeTextView.setText(time);
 					check();
 					return 0;
-				} else if (0 == timeslot.getStarHour()) {
+				} else if (0 == timeslot.getStartHour()) {
 					if (hour > 0 || minute > timeslot.getStartMinute()) {
 						timeslot.setEndHour(hour);
 						timeslot.setEndMinute(minute);

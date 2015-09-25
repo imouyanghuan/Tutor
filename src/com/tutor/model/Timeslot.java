@@ -12,7 +12,7 @@ public class Timeslot implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int memberId;
 	private int dayOfWeek;
-	private int starHour;
+	private int startHour;
 	private int startMinute;
 	private int endHour;
 	private int endMinute;
@@ -33,12 +33,12 @@ public class Timeslot implements Serializable {
 		this.dayOfWeek = dayOfWeek;
 	}
 
-	public int getStarHour() {
-		return starHour;
+	public int getStartHour() {
+		return startHour;
 	}
 
-	public void setStarHour(int starHour) {
-		this.starHour = starHour;
+	public void setStartHour(int startHour) {
+		this.startHour = startHour;
 	}
 
 	public int getStartMinute() {
@@ -67,6 +67,6 @@ public class Timeslot implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Timeslot [memberId=" + memberId + ", dayOfWeek=" + dayOfWeek + ", starHour=" + starHour + ", startMinute=" + startMinute + ", endHour=" + endHour + ", endMinute=" + endMinute + "]";
+		return "Timeslot [memberId=" + memberId + ", dayOfWeek=" + dayOfWeek + ", startHour=" + startHour + ", startMinute=" + startMinute + ", endHour=" + endHour + ", endMinute=" + endMinute + "]";
 	}
 }

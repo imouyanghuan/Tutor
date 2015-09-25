@@ -34,6 +34,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/dp_5"
         android:layout_weight="0"
+        android:button="@drawable/checkbox_selector"
         android:text="@string/teamcondition_cbtxt"
         android:textSize="@dimen/sp_12" />
 

@@ -115,16 +115,24 @@
 
                     <RadioButton
                         android:id="@id/ac_fill_personal_info_rb_male"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/dp_60"
                         android:layout_height="wrap_content"
+                        android:background="@drawable/find_teacher_tab_left"
+                        android:button="@null"
                         android:checked="true"
-                        android:text="@string/label_male" />
+                        android:gravity="center"
+                        android:text="@string/label_male"
+                        android:textColor="@color/find_teacher_tab_txt_color" />
 
                     <RadioButton
                         android:id="@id/ac_fill_personal_info_rb_female"
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/dp_60"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_female" />
+                        android:background="@drawable/find_teacher_tab_right"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/label_female"
+                        android:textColor="@color/find_teacher_tab_txt_color" />
                 </RadioGroup>
             </FrameLayout>
 

@@ -1,6 +1,10 @@
 package com.tutor.ui.fragment.teacher;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -25,6 +29,7 @@ import com.tutor.TutorApplication;
 import com.tutor.adapter.MatchStudentAdapter;
 import com.tutor.model.MatchStudentListResult;
 import com.tutor.model.Page;
+import com.tutor.model.SearchCondition;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
@@ -32,6 +37,7 @@ import com.tutor.ui.activity.SearchConditionsActivity;
 import com.tutor.ui.fragment.BaseFragment;
 import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.HttpHelper;
+import com.tutor.util.JsonUtil;
 import com.tutor.util.ObjectHttpResponseHandler;
 import com.tutor.util.ViewHelper;
 
@@ -57,6 +63,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 	private String keyWords;
 	// 是否是搜索狀態
 	private boolean isSearchStatus = false;
+	private SearchCondition condition = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -151,26 +158,45 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 			case R.id.fragment_find_student_btn:
 				// 關鍵字搜索
 				keyWords = editText.getEditableText().toString().trim();
-				if (TextUtils.isEmpty(keyWords)) {
-					if (!isSearchStatus) {
-						toast(R.string.toast_no_keywords);
-						return;
-					} else {
-						isSearchStatus = false;
-						// 獲取匹配學生列表
-						pageIndex = 0;
-						getStudentList(pageIndex, pageSize);
-						return;
-					}
-				}
+				// if (TextUtils.isEmpty(keyWords)) {
+				// if (!isSearchStatus) {
+				// toast(R.string.toast_no_keywords);
+				// return;
+				// } else {
+				// isSearchStatus = false;
+				// // 獲取匹配學生列表
+				// pageIndex = 0;
+				// getStudentList(pageIndex, pageSize);
+				// return;
+				// }
+				// }
 				isSearchStatus = true;
 				// 獲取搜索的學生列表
 				pageIndex = 0;
+				if (!HttpHelper.isNetworkConnected(getActivity())) {
+					toast(R.string.toast_netwrok_disconnected);
+					return;
+				}
+				showDialogRes(R.string.loading);
 				getSearchStudent(keyWords, pageIndex, pageSize);
 				break;
+			// 添加条件搜索
 			case R.id.btn_search_conditions:
 				Intent intent = new Intent(getActivity(), SearchConditionsActivity.class);
 				startActivityForResult(intent, Constants.RequestResultCode.SEARCH_CONDITIONS);
+				break;
+			default:
+				break;
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
+			case Constants.RequestResultCode.SEARCH_CONDITIONS:
+				condition = (SearchCondition) data.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_SEARCH_CONDITION);
 				break;
 			default:
 				break;
@@ -181,7 +207,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 	 * 獲取匹配學生列表
 	 * 
 	 */
-	private void getStudentList(final int pageIndex, int pageSize) {
+	private void getStudentList(final int pageIndex, final int pageSize) {
 		if (!HttpHelper.isNetworkConnected(getActivity())) {
 			toast(R.string.toast_netwrok_disconnected);
 			return;
@@ -193,14 +219,16 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 
 			@Override
 			public void onFailure(int status, String message) {
-				dismissDialog();
+				if (0 == status) {
+					getStudentList(pageIndex, pageSize);
+					return;
+				}
 				CheckTokenUtils.checkToken(status);
 				setData(null);
 			}
 
 			@Override
 			public void onSuccess(MatchStudentListResult result) {
-				dismissDialog();
 				CheckTokenUtils.checkToken(result);
 				setData(result);
 			}
@@ -211,34 +239,56 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 	 * 獲取搜索學生列表
 	 * 
 	 */
-	private void getSearchStudent(String keyWord, int pageIndex, int pageSize) {
+	private void getSearchStudent(final String keyWord, final int pageIndex, final int pageSize) {
 		if (!HttpHelper.isNetworkConnected(getActivity())) {
 			toast(R.string.toast_netwrok_disconnected);
 			return;
 		}
-		RequestParams params = new RequestParams();
-		params.put("keywords", keyWord);
-		params.put("pageIndex", pageIndex);
-		params.put("pageSize", pageSize);
-		HttpHelper.get(getActivity(), ApiUrl.SEARCHSTUDENT, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<MatchStudentListResult>(MatchStudentListResult.class) {
+		StringBuffer sb = new StringBuffer();
+		sb.append(ApiUrl.SEARCHSTUDENT);
+		sb.append("?pageIndex=");
+		sb.append(pageIndex);
+		sb.append("&pageSize=");
+		sb.append(pageSize);
+		// params.put("keywords", keyWord);
+		// params.put("pageIndex", pageIndex);
+		// params.put("pageSize", pageSize);
+		String body;
+		if (condition != null) {
+			body = JsonUtil.parseObject2Str(condition);
+		} else {
+			body = JsonUtil.parseObject2Str(new Object());
+		}
+		try {
+			StringEntity entity = new StringEntity(body, HTTP.UTF_8);
+			HttpHelper.post(getActivity(), sb.toString(), TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<MatchStudentListResult>(MatchStudentListResult.class) {
 
-			@Override
-			public void onFailure(int status, String message) {
-				setData(null);
-				CheckTokenUtils.checkToken(status);
-				listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
-			}
+				@Override
+				public void onFailure(int status, String message) {
+					if (0 == status) {
+						getSearchStudent(keyWord, pageIndex, pageSize);
+						return;
+					}
+					setData(null);
+					CheckTokenUtils.checkToken(status);
+					listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
+				}
 
-			@Override
-			public void onSuccess(MatchStudentListResult t) {
-				CheckTokenUtils.checkToken(t);
-				setData(t);
-			}
-		});
+				@Override
+				public void onSuccess(MatchStudentListResult t) {
+					CheckTokenUtils.checkToken(t);
+					setData(t);
+				}
+			});
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			setData(null);
+		}
 	}
 
 	private void setData(MatchStudentListResult result) {
 		listView.onRefreshComplete();
+		dismissDialog();
 		if (null != result) {
 			if (200 == result.getStatusCode()) {
 				listResult = result;

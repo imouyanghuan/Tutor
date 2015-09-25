@@ -33,7 +33,15 @@ public class TimeSlotAdapter extends TutorBaseAdapter<Timeslot> {
 
 	@Override
 	protected void convert(ViewHolder holder, Timeslot t, final int position) {
-		holder.setText(R.id.timeslot_item_tv, weeks[t.getDayOfWeek()] + ":  " + t.getStarHour() + ":" + t.getStartMinute() + " -- " + t.getEndHour() + ":" + t.getEndMinute());
+		String startMinute = t.getStartMinute() + "";
+		String endMinute = t.getStartMinute() + "";
+		if (0 == t.getStartMinute()) {
+			startMinute = "0" + startMinute;
+		}
+		if (0 == t.getEndMinute()) {
+			endMinute = "0" + endMinute;
+		}
+		holder.setText(R.id.timeslot_item_tv, weeks[t.getDayOfWeek()] + ":  " + t.getStartHour() + ":" + startMinute + " -- " + t.getEndHour() + ":" + endMinute);
 		if (delete) {
 			Button button = holder.getView(R.id.timeslot_item_btn_delete);
 			button.setVisibility(View.VISIBLE);

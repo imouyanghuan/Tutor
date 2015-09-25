@@ -134,14 +134,14 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnDateChan
 		});
 		if (isEdit) {
 			if (null != teacherProfile) {
-				nameEditText.setText(teacherProfile.getNickName());
+				nameEditText.setText(teacherProfile.getUserName());
 				hKidEditText.setText(teacherProfile.getHkidNumber());
 				phoneEditText.setText(teacherProfile.getPhone());
-				sexRadioGroup.check(teacherProfile.getGender());
+				sexRadioGroup.check(Constants.General.MALE == teacherProfile.getGender() ? R.id.ac_fill_personal_info_rb_male : R.id.ac_fill_personal_info_rb_female);
 			} else {
-				nameEditText.setText(studentProfile.getNickName());
+				nameEditText.setText(studentProfile.getUserName());
 				phoneEditText.setText(studentProfile.getPhone());
-				sexRadioGroup.check(studentProfile.getGender());
+				sexRadioGroup.check(Constants.General.MALE == studentProfile.getGender() ? R.id.ac_fill_personal_info_rb_male : R.id.ac_fill_personal_info_rb_female);
 			}
 		}
 		// 初始化生日选择组件
@@ -222,7 +222,6 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnDateChan
 				teacherProfile = getTeacherProfile();
 			}
 			teacherProfile.setHkidNumber(hkid);
-			teacherProfile.setNickName(name);
 			teacherProfile.setUserName(name);
 			teacherProfile.setPhone(phone);
 			intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TUTORPRIFILE, teacherProfile);
@@ -230,7 +229,6 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnDateChan
 			if (!isEdit) {
 				studentProfile = getStudentProfile();
 			}
-			studentProfile.setNickName(name);
 			studentProfile.setUserName(name);
 			studentProfile.setPhone(phone);
 			intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_STUDENTPROFILE, studentProfile);

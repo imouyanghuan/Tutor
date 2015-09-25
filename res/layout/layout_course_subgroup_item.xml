@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tutor.ui.view.CustomExpandableListView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/lv_subGroup"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:paddingLeft="@dimen/dp_30" >
 
-</com.tutor.ui.view.CustomExpandableListView>
+    <LinearLayout
+        android:id="@+id/ll_subGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/tv_subGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_30" />
+    </LinearLayout>
+
+    <com.mssky.mobile.ui.view.CustomListView
+        android:id="@+id/lv_subGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+</LinearLayout>

@@ -81,7 +81,7 @@ public class SelectAreaActivity extends BaseActivity {
 			@Override
 			public void onClick(View arg0) {
 				// 区域列表
-				ArrayList<Area> choiceAreas = getChoiceAreas();
+				int[] choiceAreas = getChoiceAreas();
 				if (!isHaveArea) {
 					toast(R.string.toast_not_select_area);
 					return;
@@ -89,10 +89,10 @@ public class SelectAreaActivity extends BaseActivity {
 				Intent intent = new Intent(SelectAreaActivity.this, SelectTimeSlotActivity.class);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, isEdit);
 				if (Constants.General.ROLE_TUTOR == role) {
-					teacherProfile.setAreas(choiceAreas);
+					teacherProfile.setAreaIds(choiceAreas);
 					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TUTORPRIFILE, teacherProfile);
 				} else {
-					studentProfile.setAreas(choiceAreas);
+					studentProfile.setAreaIds(choiceAreas);
 					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_STUDENTPROFILE, studentProfile);
 				}
 				startActivity(intent);
@@ -158,51 +158,11 @@ public class SelectAreaActivity extends BaseActivity {
 
 	private void setData(ArrayList<Area> areas) {
 		if (null != areas && 0 != areas.size()) {
-			// 如果是编辑状态,需要检查是否选中
-			if (isEdit) {
-				ArrayList<Area> ownAreas = null;
-				if (null != teacherProfile) {
-					ownAreas = teacherProfile.getAreas();
-				} else {
-					ownAreas = studentProfile.getAreas();
-				}
-				if (null != ownAreas && ownAreas.size() > 0) {
-					ArrayList<Area1> area1s = new ArrayList<Area1>();
-					for (Area area : ownAreas) {
-						area1s.addAll(area.getResult());
-					}
-					Change(area1s, areas);
-				}
-			}
 			for (Area area : areas) {
 				AreaItemLayout areaItemLayout = new AreaItemLayout(SelectAreaActivity.this, area);
 				linearLayout.addView(areaItemLayout);
 			}
 		}
-	}
-
-	private void Change(ArrayList<Area1> area1s, ArrayList<Area> areas2) {
-		if (null == area1s || area1s.size() == 0) {
-			return;
-		}
-		for (Area1 area1 : area1s) {
-			for (Area area : areas2) {
-				if (change(area1, area)) {
-					break;
-				}
-			}
-		}
-	}
-
-	private boolean change(Area1 area1, Area area) {
-		ArrayList<Area1> area1s = area.getResult();
-		for (Area1 area12 : area1s) {
-			if (area1.getId() == area12.getId()) {
-				area12.setSelected(true);
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private boolean isHaveArea = false;
@@ -212,58 +172,25 @@ public class SelectAreaActivity extends BaseActivity {
 	 * 
 	 * @return
 	 */
-	private ArrayList<Area> getChoiceAreas() {
+	private int[] getChoiceAreas() {
 		ArrayList<Area1> selectAreas = new ArrayList<Area1>();
 		for (Area area : areas) {
 			ArrayList<Area1> area1s = area.getResult();
 			for (Area1 area1 : area1s) {
-				if (area1.getSelected()) {
+				if (area1.isChecked()) {
 					selectAreas.add(area1);
 				}
 			}
 		}
-		// 还原结构
-		if (0 < selectAreas.size()) {
-			ArrayList<Area> result = new ArrayList<Area>();
-			isHaveArea = true;
-			for (Area1 area1 : selectAreas) {
-				if (result.size() == 0) {
-					Area area = new Area();
-					area.setName(area1.getDistrict());
-					ArrayList<Area1> a = new ArrayList<Area1>();
-					a.add(area1);
-					area.setResult(a);
-					result.add(area);
-				} else {
-					// 已有数据
-					int size = result.size();
-					Area area = null;
-					for (int i = 0; i < size; i++) {
-						area = result.get(i);
-						if (area.getName().equals(area1.getDistrict())) {
-							break;
-						} else {
-							area = null;
-						}
-					}
-					if (null != area) {
-						// 添加选择的地区
-						area.getResult().add(area1);
-					} else {
-						// 添加新的
-						area = new Area();
-						area.setName(area1.getDistrict());
-						ArrayList<Area1> a = new ArrayList<Area1>();
-						a.add(area1);
-						area.setResult(a);
-						result.add(area);
-					}
-				}
+		int size = selectAreas.size();
+		if (size > 0) {
+			int[] result = new int[size];
+			for (int i = 0; i < size; i++) {
+				result[i] = selectAreas.get(i).getId();
 			}
 			LogUtils.d(result.toString());
-			LogUtils.d(areas.toString());
 			return result;
 		}
-		return null;
+		return new int[] {};
 	}
 }

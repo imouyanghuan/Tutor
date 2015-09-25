@@ -176,5 +176,6 @@
     <string name="toast_add_to_bookmark_success">Add to Bookmark success</string>
     <string name="label_search_conditions">Search Conditions</string>
     <string name="label_course">Course</string>
+    <string name="label_area">Area</string>
 
 </resources>

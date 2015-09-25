@@ -4,15 +4,17 @@ import java.util.ArrayList;
 
 import android.content.Context;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.mssky.mobile.ui.view.CustomListView;
 import com.tutor.R;
 import com.tutor.model.Course;
 import com.tutor.model.CourseItem1;
-import com.tutor.ui.view.CustomExpandableListView;
 
 public class SearchConditionsAdapter extends BaseExpandableListAdapter {
 
@@ -83,26 +85,38 @@ public class SearchConditionsAdapter extends BaseExpandableListAdapter {
 		} else {
 			holder.arrow.setImageResource(R.drawable.spinner_right);
 		}
-		//Course course = getGroup(groupPosition);
-		holder.course.setText(getGroup(groupPosition).getName());
+		Course course = getGroup(groupPosition);
+		holder.course.setText(course.getName());
 		return convertView;
 	}
 
 	@Override
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-//		SubGroupHolder holder = null;
-//		if (convertView == null) {
-//			holder = new SubGroupHolder();
+		SubGroupHolder holder = null;
+		if (convertView == null) {
+			holder = new SubGroupHolder();
 			convertView = View.inflate(mContext, R.layout.layout_course_subgroup_item, null);
-			CustomExpandableListView lvGrade = (CustomExpandableListView) convertView.findViewById(R.id.lv_subGroup);
-//			convertView.setTag(holder);
-//		} else {
-//			holder = (SubGroupHolder) convertView.getTag();
-//		}
-		GradeAdapter adapter = new GradeAdapter(mContext, getGroup(groupPosition).getResult());
-		 lvGrade.setAdapter(adapter);
-		// 取消默认箭头
-		 lvGrade.setGroupIndicator(null);
+			holder.lvGrade = (TextView) convertView.findViewById(R.id.tv_subGroup);
+			holder.llSubGroup = (LinearLayout) convertView.findViewById(R.id.ll_subGroup);
+			holder.lvSubGroup = (CustomListView) convertView.findViewById(R.id.lv_subGroup);
+			convertView.setTag(holder);
+		} else {
+			holder = (SubGroupHolder) convertView.getTag();
+		}
+		//GradeAdapter adapter = new GradeAdapter(mContext, getChild(groupPosition, childPosition).getResult());
+		//holder.lvSubGroup.setAdapter(adapter);
+		// // 取消默认箭头
+		// holder.lvGrade.setGroupIndicator(null);
+		holder.lvGrade.setText(getChild(groupPosition, childPosition).getName());
+		holder.llSubGroup.setTag(holder.lvSubGroup);
+		holder.llSubGroup.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				CustomListView lvSubGroup = (CustomListView) v.getTag();
+				lvSubGroup.setVisibility(View.VISIBLE);
+			}
+		});
 		return convertView;
 	}
 
@@ -121,6 +135,8 @@ public class SearchConditionsAdapter extends BaseExpandableListAdapter {
 	class SubGroupHolder {
 
 		ImageView arrow;
-		CustomExpandableListView lvGrade;
+		TextView lvGrade;
+		LinearLayout llSubGroup;
+		CustomListView lvSubGroup;
 	}
 }

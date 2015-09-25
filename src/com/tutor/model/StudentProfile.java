@@ -2,6 +2,7 @@ package com.tutor.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author bruce.chen
@@ -35,7 +36,9 @@ public class StudentProfile implements Serializable {
 	// 注册时间
 	private String createdTime;
 	private String grade;
+	private int[] courseIds;
 	private ArrayList<Course> courses;
+	private int[] areaIds;
 	private ArrayList<Area> areas;
 	private ArrayList<Timeslot> timeslots;
 
@@ -215,11 +218,27 @@ public class StudentProfile implements Serializable {
 		this.timeslots = timeslots;
 	}
 
+	public int[] getCourseIds() {
+		return courseIds;
+	}
+
+	public void setCourseIds(int[] courseIds) {
+		this.courseIds = courseIds;
+	}
+
+	public int[] getAreaIds() {
+		return areaIds;
+	}
+
+	public void setAreaIds(int[] areaIds) {
+		this.areaIds = areaIds;
+	}
+
 	@Override
 	public String toString() {
 		return "StudentProfile [id=" + id + ", nickName=" + nickName + ", userName=" + userName + ", phone=" + phone + ", email=" + email + ", password=" + password + ", fbOpenID=" + fbOpenID
 				+ ", imid=" + imid + ", avatar=" + avatar + ", birth=" + birth + ", gender=" + gender + ", introduction=" + introduction + ", introductionVideo=" + introductionVideo + ", token="
-				+ token + ", expirationTime=" + expirationTime + ", status=" + status + ", accountType=" + accountType + ", createdTime=" + createdTime + ", grade=" + grade + ", courses=" + courses
-				+ ", areas=" + areas + ", timeslots=" + timeslots + "]";
+				+ token + ", expirationTime=" + expirationTime + ", status=" + status + ", accountType=" + accountType + ", createdTime=" + createdTime + ", grade=" + grade + ", courseIds="
+				+ Arrays.toString(courseIds) + ", courses=" + courses + ", areaIds=" + Arrays.toString(areaIds) + ", areas=" + areas + ", timeslots=" + timeslots + "]";
 	}
 }

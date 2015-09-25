@@ -67,15 +67,15 @@ public class AreaItemLayout extends LinearLayout {
 		protected void convert(ViewHolder holder, final Area1 t, int position) {
 			holder.setText(R.id.area_item_gv_item_name, t.getAddress());
 			CheckBox box = holder.getView(R.id.area_item_gv_item_checkbox);
-			box.setChecked(t.getSelected());
+			box.setChecked(t.isChecked());
 			box.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View arg0) {
-					if (t.getSelected()) {
-						t.setSelected(false);
+					if (t.isChecked()) {
+						t.setChecked(false);
 					} else {
-						t.setSelected(true);
+						t.setChecked(true);
 					}
 					notifyDataSetChanged();
 				}

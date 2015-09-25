@@ -90,25 +90,29 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:button="@drawable/checkbox_selector"
                             android:checked="true" />
 
                         <RadioButton
                             android:id="@id/ac_fill_personal_info_rb_eb2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1" />
+                            android:layout_weight="1"
+                            android:button="@drawable/checkbox_selector" />
 
                         <RadioButton
                             android:id="@id/ac_fill_personal_info_rb_eb3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1" />
+                            android:layout_weight="1"
+                            android:button="@drawable/checkbox_selector" />
 
                         <RadioButton
                             android:id="@id/ac_fill_personal_info_rb_eb4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1" />
+                            android:layout_weight="1"
+                            android:button="@drawable/checkbox_selector" />
                     </RadioGroup>
                 </FrameLayout>
             </LinearLayout>

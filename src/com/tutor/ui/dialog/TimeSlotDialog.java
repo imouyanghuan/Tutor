@@ -110,6 +110,10 @@ public class TimeSlotDialog extends Dialog implements android.view.View.OnClickL
 		switch (v.getId()) {
 			case R.id.dialog_title_tv_right:
 				if (null != callBack) {
+					hour = String.valueOf(hourIndex);
+					if (hourIndex < 10) {
+						hour = "0" + hour;
+					}
 					int i = callBack.onTimeSelected(hour + ":" + minutes[minuteIndex], hourIndex, Integer.parseInt(minutes[minuteIndex]));
 					if (0 == i) {
 						cancel();
@@ -131,10 +135,6 @@ public class TimeSlotDialog extends Dialog implements android.view.View.OnClickL
 		switch (arg0.getId()) {
 			case R.id.ac_fill_personal_time_np_hour:
 				hourIndex = arg2;
-				hour = String.valueOf(arg2);
-				if (arg2 < 10) {
-					hour = "0" + hour;
-				}
 				break;
 			case R.id.ac_fill_personal_time_np_minute:
 				minuteIndex = arg2;

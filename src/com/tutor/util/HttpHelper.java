@@ -20,7 +20,7 @@ import com.tutor.params.ApiUrl;
 public class HttpHelper {
 
 	/** 默认请求超时时间 15s */
-	protected static int httpConnectTimeOut = 15 * 1000;
+	protected static int httpConnectTimeOut = 30 * 1000;
 	private static AsyncHttpClient client;
 	static {
 		client = new AsyncHttpClient();

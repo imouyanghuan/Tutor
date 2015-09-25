@@ -14,7 +14,7 @@ public class CourseItem2 implements Serializable {
 	private String type;
 	private String subType;
 	private String courseName;
-	private boolean selected;
+	private boolean isChecked;
 
 	public int getId() {
 		return id;
@@ -48,16 +48,16 @@ public class CourseItem2 implements Serializable {
 		this.courseName = courseName;
 	}
 
-	public boolean getSelected() {
-		return selected;
+	public boolean isChecked() {
+		return isChecked;
 	}
 
-	public void setSelected(boolean selected) {
-		this.selected = selected;
+	public void setChecked(boolean isChecked) {
+		this.isChecked = isChecked;
 	}
 
 	@Override
 	public String toString() {
-		return "CourseItem2 [id=" + id + ", type=" + type + ", subType=" + subType + ", courseName=" + courseName + ", selected=" + selected + "]";
+		return "CourseItem2 [id=" + id + ", type=" + type + ", subType=" + subType + ", courseName=" + courseName + ", isChecked=" + isChecked + "]";
 	}
 }
