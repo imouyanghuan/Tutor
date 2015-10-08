@@ -6,6 +6,8 @@ import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import cn.jpush.android.api.JPushInterface;
+
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -51,6 +53,10 @@ public class TutorApplication extends Application {
 		connectionManager = XMPPConnectionManager.getManager();
 		initDao();
 		initImageLoader(this);
+		// 设置开启日志,发布时请关闭日志
+        JPushInterface.setDebugMode(true);
+        // 初始化 JPush
+        JPushInterface.init(this);     		
 	}
 
 	private void initDao() {

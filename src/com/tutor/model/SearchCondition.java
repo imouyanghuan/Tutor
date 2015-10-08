@@ -17,6 +17,7 @@ public class SearchCondition implements Serializable {
 	private int courseId;
 	private int areaId;
 	private Timeslot timeslot;
+	private int gender;
 
 	public int getCourseId() {
 		return courseId;
@@ -40,5 +41,15 @@ public class SearchCondition implements Serializable {
 
 	public void setTimeslot(Timeslot timeslot) {
 		this.timeslot = timeslot;
+	}
+
+	
+	public int getGender() {
+		return gender;
+	}
+
+	
+	public void setGender(int gender) {
+		this.gender = gender;
 	}
 }

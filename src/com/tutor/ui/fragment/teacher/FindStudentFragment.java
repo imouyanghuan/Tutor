@@ -10,7 +10,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -81,13 +80,15 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		View serchView = inflater.inflate(R.layout.find_student_search_layout, null);
 		ViewHelper.get(serchView, R.id.btn_search_conditions).setOnClickListener(this);
 		editText = ViewHelper.get(serchView, R.id.fragment_find_student_et);
+		editText.setOnClickListener(this);
+		editText.setFocusable(false);
 		ViewHelper.get(serchView, R.id.fragment_find_student_btn).setOnClickListener(this);
 		listView = ViewHelper.get(view, R.id.fragment_find_student_lv);
 		listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
 		listView.setShowIndicator(false);
 		listView.getRefreshableView().addHeaderView(serchView);
 		// 設置可上拉加載和下拉刷新
-		listView.setMode(Mode.BOTH);
+		listView.setMode(Mode.BOTH); 
 		listView.setOnRefreshListener(this);
 		adapter = new MatchStudentAdapter(getActivity(), users);
 		listView.setAdapter(adapter);
@@ -181,7 +182,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 				getSearchStudent(keyWords, pageIndex, pageSize);
 				break;
 			// 添加条件搜索
-			case R.id.btn_search_conditions:
+			case R.id.fragment_find_student_et:
 				Intent intent = new Intent(getActivity(), SearchConditionsActivity.class);
 				startActivityForResult(intent, Constants.RequestResultCode.SEARCH_CONDITIONS);
 				break;
@@ -196,7 +197,9 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
 			case Constants.RequestResultCode.SEARCH_CONDITIONS:
-				condition = (SearchCondition) data.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_SEARCH_CONDITION);
+				if (data != null) {
+					condition = (SearchCondition) data.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_SEARCH_CONDITION);
+				}
 				break;
 			default:
 				break;

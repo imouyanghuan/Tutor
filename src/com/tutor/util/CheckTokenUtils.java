@@ -46,6 +46,8 @@ public class CheckTokenUtils {
 				Intent intent = new Intent();
 				intent.setAction(Constants.Action.ACTION_TOKEN_INVALID);
 				TutorApplication.instance.sendBroadcast(intent);
+				// 更改配置信息
+				TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
 				// 跳转登录界面
 				Intent intent2 = new Intent(TutorApplication.instance, LoginActivity.class);
 				intent2.putExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, TutorApplication.getRole());

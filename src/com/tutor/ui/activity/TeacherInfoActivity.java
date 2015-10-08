@@ -22,13 +22,13 @@ import com.tutor.util.HttpHelper;
 import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
- * 教師或學生詳情界面
+ * 學生詳情界面
  * 
  * @author bruce.chen
  * 
  *         2015-8-24
  */
-public class PersonInfoActivity extends BaseActivity implements OnClickListener {
+public class TeacherInfoActivity extends BaseActivity implements OnClickListener {
 
 	private String imId;
 	private UserInfo userInfo;
@@ -36,7 +36,7 @@ public class PersonInfoActivity extends BaseActivity implements OnClickListener 
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
-		setContentView(R.layout.activity_person_info);
+		setContentView(R.layout.activity_student_info);
 		initData();
 	}
 
@@ -115,7 +115,7 @@ public class PersonInfoActivity extends BaseActivity implements OnClickListener 
 			case R.id.btn_chat_with_tutor:
 				if (!TextUtils.isEmpty(imId)) {
 					ContactManager.getManager().addFriend(imId, imId);
-					Intent intent = new Intent(PersonInfoActivity.this, ChatActivity.class);
+					Intent intent = new Intent(TeacherInfoActivity.this, ChatActivity.class);
 					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId + "@" + XMPPConnectionManager.getManager().getServiceName());
 					startActivity(intent);
 				}
@@ -123,7 +123,7 @@ public class PersonInfoActivity extends BaseActivity implements OnClickListener 
 			// to be my tutor
 			case R.id.btn_to_be_my_tutor:
 				if (!TextUtils.isEmpty(imId)) {
-					Intent intent = new Intent(PersonInfoActivity.this, ToBeMyStudentActivity.class);
+					Intent intent = new Intent(TeacherInfoActivity.this, ToBeMyStudentActivity.class);
 					startActivity(intent);
 				}
 				break;

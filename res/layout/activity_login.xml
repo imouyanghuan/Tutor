@@ -102,6 +102,17 @@
             </LinearLayout>
 
             <TextView
+                android:id="@id/ac_login_btn_forgetPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="@dimen/dp_80"
+                android:gravity="center"
+                android:text="@string/label_forget_password"
+                android:textColor="@color/login_register_txt_color"
+                android:textSize="@dimen/sp_18" />
+
+            <TextView
                 android:id="@id/ac_login_btn_register"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

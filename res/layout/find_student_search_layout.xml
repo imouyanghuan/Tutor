@@ -17,7 +17,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/dp_15"
             android:background="@drawable/forward_bottom"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
         <FrameLayout
             android:layout_width="0dp"
@@ -33,6 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/editview_bg"
+                android:clickable="true"
                 android:ems="35"
                 android:hint="@string/hint_search_student_keywords"
                 android:maxLength="35"

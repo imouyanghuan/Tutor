@@ -11,10 +11,12 @@ public class CourseItem2 implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private int id;
-	private String type;
-	private String subType;
-	private String courseName;
 	private boolean isChecked;
+	private String lang;
+	private String courseName;
+	private String subType;
+	private String type;
+	private int value;
 
 	public int getId() {
 		return id;
@@ -59,5 +61,25 @@ public class CourseItem2 implements Serializable {
 	@Override
 	public String toString() {
 		return "CourseItem2 [id=" + id + ", type=" + type + ", subType=" + subType + ", courseName=" + courseName + ", isChecked=" + isChecked + "]";
+	}
+
+	
+	public String getLang() {
+		return lang;
+	}
+
+	
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
+	
+	public int getValue() {
+		return value;
+	}
+
+	
+	public void setValue(int value) {
+		this.value = value;
 	}
 }

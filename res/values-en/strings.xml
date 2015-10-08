@@ -2,30 +2,30 @@
 <resources>
 
     <!-- 通用 -->
-    <string name="app_name">Tutor</string>
-    <string name="welcome_txt">The Best. We Match. No Fee.</string>
-    <string name="action_settings">設置</string>
-    <string name="mystudents">我的學生</string>
-    <string name="findstudents">找學生</string>
-    <string name="findteacher">找老師</string>
-    <string name="myteachers">我的老師</string>
-    <string name="bookmark">收藏夾</string>
-    <string name="notification">消息</string>
-    <string name="my">我的</string>
-    <string name="login">登錄</string>
-    <string name="register">註冊</string>
-    <string name="next">下一步</string>
-    <string name="log_out">註銷</string>
-    <string name="loading">正在加載中&#8230;</string>
-    <string name="cancel">取消</string>
-    <string name="done">完成</string>
-    <string name="hour">時</string>
-    <string name="minute">分</string>
-    <string name="tips">提示</string>
-    <string name="logining">登錄中&#8230;</string>
-    <string name="forget_password">忘記密碼</string>
-    <string name="registering">註冊中&#8230;</string>
-    <string name="register_cbtxt">註冊即同意隱私聲明</string>
+    <string name="action_settings">Settings</string>
+    <string name="mystudents">My Students</string>
+    <string name="findstudents">Find Students</string>
+    <string name="study_abroad">Study Abroad</string>
+    <string name="overseas_education">Overseas Education</string>
+    <string name="findteacher">Find Tutors</string>
+    <string name="myteachers">My Tutors</string>
+    <string name="bookmark">Bookmark</string>
+    <string name="notification">Notifications</string>
+    <string name="my">My Profile</string>
+    <string name="login">Login</string>
+    <string name="next">Next</string>
+    <string name="log_out">Log Out</string>
+    <string name="loading">Loading</string>
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
+    <string name="hour">hour</string>
+    <string name="minute">minute</string>
+    <string name="tips">Tips</string>
+    <string name="logining">Logining&#8230;</string>
+    <string name="forget_password">Forget password</string>
+    <string name="register">Register</string>
+    <string name="registering">Registering</string>
+    <string name="register_cbtxt">Registration is agreed to the privacy statement</string>
     <string name="register_tip_tutor">Will be Register as Student/Parent when select Student/Parent at first</string>
     <string name="register_tip_student">Will be Register as Tutor when select Tutor at first</string>
     <string name="team_conditions">Team&amp;Conditions</string>
@@ -39,8 +39,9 @@
     <string name="eb_3">University</string>
     <string name="eb_4">Bachelor</string>
     <string name="uploading_avatar">Uploading Avatar</string>
-    <string name="set_pswd">重置密碼</string>
-    <string name="change_pswd">修改密碼</string>
+    <string name="set_pswd">Reset password</string>
+    <string name="change_pswd">Change password</string>
+
     <!-- label -->
     <string name="label_role_student">Students/Parents</string>
     <string name="label_role_tutor">Tutors</string>
@@ -48,7 +49,7 @@
     <string name="label_avatar">Avatar:</string>
     <string name="label_hkid_number">HKID Number:</string>
     <string name="label_phone">Phone Number:</string>
-    <string name="label_gender">Gender</string>
+    <string name="label_gender">Gender:</string>
     <string name="label_birth">Date of Birth:</string>
     <string name="label_male">Male</string>
     <string name="label_register"><u>No account yet?  Register</u></string>
@@ -63,7 +64,6 @@
     <string name="label_edit_timeslot">Edit Timeslot</string>
     <string name="label_education_background">Education Background</string>
     <string name="label_teaching_couress">Teaching Couress</string>
-    <string name="label_studying_couress">Studying Couress</string>
     <string name="label_teach_time_slot">Preferred Teaching Time Slot</string>
     <string name="label_study_time_slot">Preferred Study Time Slot</string>
     <string name="label_none_area">None area</string>
@@ -97,8 +97,6 @@
     <!-- hint -->
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
-    <string name="hint_old_password">Old password</string>
-    <string name="hint_new_password">New password</string>
     <string name="hint_enter_nickname">Enter NickName</string>
     <string name="hint_enter_school">Enter Degree or School</string>
     <string name="hint_enter_major">Enter Major</string>
@@ -144,19 +142,19 @@
     <string name="toast_video_link_empety">Video link is empty</string>
     <string name="toast_token_invalid">Token expired, please login again</string>
     <string name="toast_save_successed">Save success!</string>
-    <string name="toast_forgetpswd_sendemail_success">临时密码已经发送到您的邮箱,请尽快使用临时密码登录后设置新密码!</string>
+    <string name="toast_forgetpswd_sendemail_success">A temporary password has been sent to your mailbox, please use the temporary password to log in as soon as possible after setting a new password!</string>
 
     <!-- xmpp聊天相關 -->
-    <string name="new_message">收到新短消息</string>
-    <string name="system_message">系统消息</string>
-    <string name="add_friend_request">添加好友请求</string>
-    <string name="add_friend_lable">申请加您为好友</string>
+    <string name="new_message">New short message received</string>
+    <string name="system_message">System message</string>
+    <string name="add_friend_request">Add buddy request</string>
+    <string name="add_friend_lable">Apply for add you as a friend</string>
 
     <!-- 使用Facebook登录或共享，还添加FacebookActivity的清单 -->
     <string name="facebook_app_id">508961679269484</string>
     <string name="cancelled">Cancelled</string>
     <string name="permission_not_granted">Unable to perform selected action because permissions were not granted.</string>
-    <string name="ok">確定</string>
+    <string name="ok">OK</string>
     <string name="hello_user">Hello %1$s!</string>
     <string name="success">Success</string>
     <string name="successfully_posted_post">Post ID: %1$s</string>
@@ -168,12 +166,10 @@
     <string name="no_place_selected">&lt;No place selected&gt;</string>
     <string name="pick_seattle_place">Pick a Seattle Place</string>
     <string name="exception">Exception: %1$s</string>
-    <!--  -->
+    <!-- 使用Facebook登录或共享，还添加FacebookActivity的清单 -->
     <string name="label_demo_title_name">Abby Chan</string>
     <string name="label_chat_with_tutor">Chat With Tutor</string>
-    <string name="label_chat_with_student">Chat With Student</string>
     <string name="label_to_be_my_tutor">To Be My Tutor</string>
-    <string name="label_to_be_my_student">To Be My Student</string>
     <string name="label_rete_tutor">Rate Tutor</string>
     <string name="label_student_name">Student Name</string>
     <string name="label_subject_to_be_taught">Subject To Be Taught</string>
@@ -182,14 +178,9 @@
     <string name="label_service_location">Service Location</string>
     <string name="toast_msg_cant_empty">Please input content</string>
     <string name="label_send">Send</string>
-     <string name="label_available_time">Available Time Slot</string>
     <string name="toast_add_to_bookmark_success">Add to Bookmark success</string>
     <string name="label_search_conditions">Search Conditions</string>
     <string name="label_course">Course</string>
     <string name="label_area">Area</string>
-    <string name="label_please_choose">請選擇</string>
-    <string name="label_woman">女</string>
-    <string name="label_man">男</string>
-    <string name="label_time_slot">Time Slot</string>
 
 </resources>

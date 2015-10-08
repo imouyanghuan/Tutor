@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.Toast;
+import cn.jpush.android.api.InstrumentedActivity;
 
 import com.tutor.R;
 import com.tutor.TutorApplication;
@@ -16,7 +18,7 @@ import com.tutor.util.HttpHelper;
  * @author bruce.chen
  * 
  */
-public class WelcomeActivity extends BaseActivity {
+public class WelcomeActivity extends InstrumentedActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +26,7 @@ public class WelcomeActivity extends BaseActivity {
 		setContentView(R.layout.activity_welcome);
 		handler.sendEmptyMessageDelayed(0, Constants.General.WELCOME_DELAY);
 		if (!HttpHelper.isNetworkConnected(this)) {
-			toast(R.string.toast_netwrok_disconnected);
+			Toast.makeText(WelcomeActivity.this, "R.string.toast_netwrok_disconnected", Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -49,7 +51,7 @@ public class WelcomeActivity extends BaseActivity {
 				intent.setClass(WelcomeActivity.this, ChoiceRoleActivity.class);
 			}
 			startActivity(intent);
-			finishNoAnim();
+			WelcomeActivity.this.finish();
 		};
 	};
 
@@ -57,7 +59,4 @@ public class WelcomeActivity extends BaseActivity {
 	 * 禁用返回鍵
 	 */
 	public void onBackPressed() {};
-
-	@Override
-	protected void initView() {}
 }

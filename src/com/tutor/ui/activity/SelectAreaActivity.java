@@ -184,6 +184,7 @@ public class SelectAreaActivity extends BaseActivity {
 		}
 		int size = selectAreas.size();
 		if (size > 0) {
+			isHaveArea = true;
 			int[] result = new int[size];
 			for (int i = 0; i < size; i++) {
 				result[i] = selectAreas.get(i).getId();

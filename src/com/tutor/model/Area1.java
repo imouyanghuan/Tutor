@@ -11,9 +11,11 @@ public class Area1 implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private int id;
-	private String district;
 	private boolean isChecked;
+	private String lang;
 	private String address;
+	private String district;
+	private int value;
 
 	public boolean isChecked() {
 		return isChecked;
@@ -50,5 +52,21 @@ public class Area1 implements Serializable {
 	@Override
 	public String toString() {
 		return "Area1 [id=" + id + ", district=" + district + ", isChecked=" + isChecked + ", address=" + address + "]";
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
 	}
 }

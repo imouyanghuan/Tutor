@@ -15,11 +15,17 @@ public class ApiUrl {
 	public static final String XMPP_SERVERNAME = "vm-server4";
 	// ------------------------------------------------------------------
 	/** api */
-	public static final String DOMAIN = "http://192.168.0.187:8081/Tutor/";
+	public static final String DOMAIN = "http://192.168.0.187:8081/Tutor/";   
+	// http://192.168.0.187:8081/Tutor/    
+	// http://kevin-zhao.missionsky.com/Tutor.Api/
 	/** 用戶註冊 */
 	public static final String REGISTER = "api/v1/accounts/register";
 	/** 用戶登錄 */
 	public static final String LOGIN = "api/v1/accounts/login";
+	/** 忘记密码*/
+	public static final String FORGET_PASSWORD = "api/v1/password/forget";
+	/** 修改密码 */
+	public static final String CHANGE_PASSWORD = "api/v1/password/change";
 	/** 用戶facebook登錄 */
 	public static final String LOGIN_FACEBOOK = "api/v1/accounts/login/fb";
 	/** 郵箱验证用户是否存在 */

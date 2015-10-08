@@ -32,9 +32,13 @@ public final class Constants {
 		/** 老師 */
 		public static final int ROLE_TUTOR = 0X1;
 		/** 男 */
-		public static final int MALE = 0;
+		public static final int MALE = 0x0;
 		/** 女 */
-		public static final int FEMALE = 1;
+		public static final int FEMALE = 0x1;
+		/** 忘记密码 */
+		public static final int FORGET_PASSWORD = 0x0;
+		/** 修改密码 */
+		public static final int CHANGE_PASSWORD = 0x1;
 		/** 圖片結尾 */
 		public static final String IMAGE_END = ".jpg";
 		/** Token过期状态码 */
@@ -123,6 +127,12 @@ public final class Constants {
 		public static final String INTENT_EXTRA_TOKENINVALID = "token.invalid";
 		/** 搜索条件 */
 		public static final String INTENT_EXTRA_SEARCH_CONDITION = "search.condition";
+		/** 邮箱 */
+		public static final String INTENT_EXTRA_EMAIL = "email";
+		/** 密码 */
+		public static final String INTENT_EXTRA_PASSWORD = "password";
+		/** 忘记密码或修改密码的标识 */
+		public static final String INTENT_EXTRA_PASSWORD_FLAG = "password.flag";
 	}
 
 	/**

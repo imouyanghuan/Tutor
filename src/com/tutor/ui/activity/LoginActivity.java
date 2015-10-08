@@ -103,6 +103,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		getView(R.id.ac_login_btn_facebook).setOnClickListener(this);
 		getView(R.id.ac_login_btn_login).setOnClickListener(this);
 		getView(R.id.ac_login_btn_register).setOnClickListener(this);
+		getView(R.id.ac_login_btn_forgetPassword).setOnClickListener(this);
 	}
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -126,6 +127,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 				intent.setClass(this, RegisterActivity.class);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, role);
 				startActivity(intent);
+				break;
+			case R.id.ac_login_btn_forgetPassword:
+				// 忘记密码
+				String emailString = email.getEditableText().toString().trim();
+				if (TextUtils.isEmpty(emailString) || !ValidatorHelper.isEmail(emailString)) {
+					emailString = "";
+				}
+				Intent intent2 = new Intent();
+				intent2.setClass(this, ForgetPasswordActivity.class);
+				intent2.putExtra(Constants.IntentExtra.INTENT_EXTRA_EMAIL, emailString);
+				startActivity(intent2);
 				break;
 		}
 	}
@@ -200,15 +212,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 								toast(R.string.toast_server_error);
 								return;
 							}
-							Intent intent = new Intent();
-							if (Constants.General.ROLE_TUTOR == role) {
-								intent.setClass(LoginActivity.this, TeacherMainActivity.class);
-							} else {
-								intent.setClass(LoginActivity.this, StudentMainActivity.class);
-							}
-							// 保存信息
-							TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, true);
-							TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ROLE, role);
 							// 保存賬號資料
 							Account account = new Account();
 							account.setId("1");
@@ -223,7 +226,24 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 							account.setImPswd(model.getIMID());
 							account.setToken(result.getResult().getToken());
 							TutorApplication.getAccountDao().insertOrReplace(account);
+							// 临时密码登录的需要去设置新密码
+							if (2 == result.getResult().getStatus()) {
+								Intent i = new Intent(LoginActivity.this, ChangePasswordActivity.class);
+								i.putExtra(Constants.IntentExtra.INTENT_EXTRA_PASSWORD_FLAG, Constants.General.FORGET_PASSWORD);
+								i.putExtra(Constants.IntentExtra.INTENT_EXTRA_PASSWORD, model.getPassword());
+								startActivity(i);
+								return;
+							}
+							// 保存信息
+							TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, true);
+							TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ROLE, role);
 							// 進入主界面
+							Intent intent = new Intent();
+							if (Constants.General.ROLE_TUTOR == role) {
+								intent.setClass(LoginActivity.this, TeacherMainActivity.class);
+							} else {
+								intent.setClass(LoginActivity.this, StudentMainActivity.class);
+							}
 							startActivity(intent);
 							TutorApplication.isTokenInvalid = false;
 							// 發廣播結束前面的activity

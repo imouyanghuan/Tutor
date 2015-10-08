@@ -16,7 +16,7 @@ import com.tutor.model.Area1;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
-import com.tutor.ui.activity.PersonInfoActivity;
+import com.tutor.ui.activity.StudentInfoActivity;
 import com.tutor.util.ImageUtils;
 
 /**
@@ -77,7 +77,7 @@ public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 
 			@Override
 			public void onClick(View arg0) {
-				Intent intent = new Intent(mContext, PersonInfoActivity.class);
+				Intent intent = new Intent(mContext, StudentInfoActivity.class);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, t);
 				mContext.startActivity(intent);
 			}

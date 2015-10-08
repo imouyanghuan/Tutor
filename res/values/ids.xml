@@ -25,7 +25,13 @@
     <item name="ac_login_ll" type="id"></item>
     <item name="ac_login_btn_login" type="id"></item>
     <item name="ac_login_btn_register" type="id"></item>
+    <item name="ac_login_btn_forgetPassword" type="id"></item>
     <item name="ac_login_btn_facebook" type="id"></item>
+    <!-- 修改密碼 -->
+    <item name="ac_change_pswd_et_old" type="id"></item>
+    <item name="ac_change_pswd_et_new" type="id"></item>
+    <item name="ac_change_pswd_et_new2" type="id"></item>
+    <item name="ac_change_pswd_btn" type="id"></item>
     <!-- 註冊 -->
     <item name="ac_register_et_email" type="id"></item>
     <item name="ac_register_et_pswd" type="id"></item>

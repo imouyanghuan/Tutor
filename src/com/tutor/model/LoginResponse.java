@@ -11,6 +11,7 @@ public class LoginResponse {
 
 	private int id;// 會員id
 	private String token;
+	private int status;
 
 	public int getId() {
 		return id;
@@ -26,5 +27,13 @@ public class LoginResponse {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
 	}
 }
