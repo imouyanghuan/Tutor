@@ -75,12 +75,16 @@ public class NotificationAdapter extends BaseSwipeAdapter {
 		TextView msg = (TextView) convertView.findViewById(R.id.student_list_item_area);
 		// 左滑删除item
 		swipeItem = (ZSwipeItem) convertView.findViewById(R.id.swipe_item);
-		LinearLayout llDelete = (LinearLayout) convertView.findViewById(R.id.ll_delete);
+		TextView tvAccept = (TextView) convertView.findViewById(R.id.tv_accept);
+		tvAccept.setVisibility(View.VISIBLE);
+		TextView tvReject = (TextView) convertView.findViewById(R.id.tv_reject);
+		tvReject.setVisibility(View.VISIBLE);
+		TextView tvDelete = (TextView) convertView.findViewById(R.id.tv_delete);
 		// 删除按钮显示的模式
 		swipeItem.setShowMode(ShowMode.PullOut);
 		// 划出的模式
 		swipeItem.setDragEdge(DragEdge.Right);
-		llDelete.setOnClickListener(new OnClickListener() {
+		tvDelete.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {

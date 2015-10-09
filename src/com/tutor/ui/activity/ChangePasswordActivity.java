@@ -91,7 +91,7 @@ public class ChangePasswordActivity extends BaseActivity implements OnClickListe
 			toast(R.string.toast_pswd_repeat_error);
 			return;
 		}
-		ChangePassword changePassword = new ChangePassword(ACCESSIBILITY_SERVICE, newPswd);
+		ChangePassword changePassword = new ChangePassword(oldPassword, newPswd);
 		showDialogRes(R.string.loading);
 		change(changePassword);
 	}

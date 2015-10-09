@@ -14,6 +14,7 @@ public class RegisterLoginModel {
 	private String FBOpenID;// Facebook開放id
 	private String IMID; // im賬號
 	private int AccountType;// 類型.0學生,1老師
+	private String jRegistrationID; // JPush的注册id
 
 	public String getEmail() {
 		return Email;
@@ -58,5 +59,15 @@ public class RegisterLoginModel {
 	@Override
 	public String toString() {
 		return "RegisterLoginModel [Email=" + Email + ", Password=" + Password + ", FBOpenID=" + FBOpenID + ", IMID=" + IMID + ", AccountType=" + AccountType + "]";
+	}
+
+	
+	public String getjRegistrationID() {
+		return jRegistrationID;
+	}
+
+	
+	public void setjRegistrationID(String jRegistrationID) {
+		this.jRegistrationID = jRegistrationID;
 	}
 }

@@ -3,9 +3,9 @@ package com.tutor.model;
 /**
  * @author bruce.chen
  * 
- *         2015-9-23
+ *         2015-10-9
  */
-public class TeacherInfoResult extends ApiResult<TeacherProfile> {
+public class UserInfoResult extends ApiResult<UserInfo> {
 
 	private static final long serialVersionUID = 1L;
 }

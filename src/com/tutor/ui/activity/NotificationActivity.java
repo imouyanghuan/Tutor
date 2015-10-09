@@ -1,5 +1,6 @@
 package com.tutor.ui.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
@@ -10,13 +11,21 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.loopj.android.http.RequestParams;
 import com.tutor.R;
+import com.tutor.TutorApplication;
 import com.tutor.adapter.NotificationAdapter;
 import com.tutor.adapter.NotificationAdapter.OnDeleteItemClickListener;
 import com.tutor.im.IMMessageManager;
 import com.tutor.model.IMMessage;
+import com.tutor.model.Notification;
+import com.tutor.model.NotificationListResult;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.CheckTokenUtils;
+import com.tutor.util.HttpHelper;
+import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
  * 消息
@@ -29,12 +38,14 @@ public class NotificationActivity extends BaseActivity {
 
 	private ListView lvNotification;
 	private NotificationAdapter mAdapter;
+	private List<IMMessage> messages = new ArrayList<IMMessage>();
 
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.activity_notification);
 		initView();
+		getNotificationCount();
 	}
 
 	@Override
@@ -43,7 +54,8 @@ public class NotificationActivity extends BaseActivity {
 		bar.initBack(this);
 		bar.setTitle(R.string.notification);
 		lvNotification = getView(R.id.lv_notifications);
-		mAdapter = new NotificationAdapter(NotificationActivity.this, getMessages());
+		messages = IMMessageManager.getManager().getRecentContactsWithLastMsg();
+		mAdapter = new NotificationAdapter(NotificationActivity.this, messages);
 		// 左滑删除
 		mAdapter.setOnDeleteItemClickListener(new OnDeleteItemClickListener() {
 
@@ -72,12 +84,63 @@ public class NotificationActivity extends BaseActivity {
 	}
 
 	/**
+	 * 获取消息数量 Sent 0 Accept 1 Reject 2 Acknowle 3 All 4
+	 */
+	private void getNotificationCount() {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		RequestParams params = new RequestParams();
+		params.put("pageIndex", "0");
+		params.put("pageSize", "1");
+		HttpHelper.get(this, ApiUrl.NOTIFICATIONLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<NotificationListResult>(NotificationListResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				if (0 == status) {
+					getNotificationCount();
+					return;
+				}
+				CheckTokenUtils.checkToken(status);
+			}
+
+			@Override
+			public void onSuccess(NotificationListResult result) {
+				CheckTokenUtils.checkToken(result);
+				if (null != result && 200 == result.getStatusCode()) {
+					//
+					ArrayList<Notification> notifications = result.getResult();
+					if (notifications != null && notifications.size() > 0) {
+						Notification notify = notifications.get(0);
+						if (notify != null) {
+							IMMessage msg = new IMMessage();
+							msg.setId(notify.getId());
+							msg.setContent(notify.getContent());
+							msg.setTime(notify.getCreatedTime());
+							msg.setMsgType(IMMessage.MESSAGE_TYPE_SYS_MSG);
+							String nickName = notify.getNickName();
+							if (!TextUtils.isEmpty(nickName)) {
+								msg.setFromSubJid(nickName);
+							} else {
+								msg.setFromSubJid(notify.getUserName());
+							}
+							messages.add(0, msg);
+							mAdapter.notifyDataSetChanged();
+						}
+					}
+				}
+			}
+		});
+	}
+
+	/**
 	 * 获取聊天记录
 	 * 
 	 * @return
 	 */
 	private List<IMMessage> getMessages() {
-		List<IMMessage> messages = IMMessageManager.getManager().getRecentContactsWithLastMsg();
+		messages = IMMessageManager.getManager().getRecentContactsWithLastMsg();
 		return messages;
 	}
 

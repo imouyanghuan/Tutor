@@ -2,12 +2,8 @@ package com.tutor.model;
 
 import java.io.Serializable;
 
+public class BookmarkModel implements Serializable {
 
-public class BookmarkModel implements Serializable{
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private int bookmarkId;
 	private UserInfo memberModel;

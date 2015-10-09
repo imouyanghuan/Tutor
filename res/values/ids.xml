@@ -48,10 +48,10 @@
     <item name="ac_fill_personal_info_et_name" type="id"></item>
     <item name="ac_fill_personal_info_et_hkid" type="id"></item>
     <item name="ac_fill_personal_info_et_phone" type="id"></item>
-    <item name="ac_fill_personal_info_ll_hkid" type="id"></item>
+    <item name="ac_fill_personal_info_et_birth" type="id"></item>
+    <item name="ac_fill_personal_info_et_address" type="id"></item>
     <item name="ac_fill_personal_info_ll_areas" type="id"></item>
     <item name="ac_fill_personal_info_rg" type="id"></item>
-    <item name="ac_fill_personal_info_datePicker" type="id"></item>
     <item name="ac_fill_personal_course_scrollview" type="id"></item>
     <item name="ac_fill_personal_info_rb_male" type="id"></item>
     <item name="ac_fill_personal_info_rb_female" type="id"></item>

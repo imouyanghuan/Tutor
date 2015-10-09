@@ -25,9 +25,8 @@ import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.TimeSlotAdapter;
 import com.tutor.model.EditProfileResult;
-import com.tutor.model.StudentProfile;
-import com.tutor.model.TeacherProfile;
 import com.tutor.model.Timeslot;
+import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.dialog.TimeSlotDialog;
@@ -51,9 +50,8 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 
 	/** 是否是编辑资料模式 */
 	private boolean isEdit;
-	private int role;
-	private TeacherProfile teacherProfile;
-	private StudentProfile studentProfile;
+	private int role = -1;
+	private UserInfo userInfo;
 	private ArrayList<Timeslot> timeslots;
 	/** 时间段列表 */
 	private CustomListView listView;
@@ -73,12 +71,9 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		isEdit = getIntent().getBooleanExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, false);
-		teacherProfile = (TeacherProfile) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_TUTORPRIFILE);
-		studentProfile = (StudentProfile) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_STUDENTPROFILE);
-		if (null != teacherProfile) {
-			role = teacherProfile.getAccountType();
-		} else {
-			role = studentProfile.getAccountType();
+		userInfo = (UserInfo) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO);
+		if (null != userInfo) {
+			role = userInfo.getAccountType();
 		}
 		if (role == -1) {
 			throw new IllegalArgumentException("role is -1");
@@ -86,8 +81,8 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 		setContentView(R.layout.activity_select_timeslot);
 		initView();
 		if (isEdit) {
-			if (null != teacherProfile) {
-				eb = teacherProfile.getEducationDegree();
+			if (null != userInfo) {
+				eb = userInfo.getEducationDegree();
 			}
 		} else {
 			eb = 0;
@@ -112,13 +107,10 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 					toast(R.string.toast_no_timeslot);
 					return;
 				}
-				if (null != teacherProfile) {
-					teacherProfile.setTimeslots(timeslots);
-					teacherProfile.setEducationDegree(eb);
-					submitTutorProfile(teacherProfile);
-				} else {
-					studentProfile.setTimeslots(timeslots);
-					submitStudentProfile(studentProfile);
+				if (null != userInfo) {
+					userInfo.setTimeslots(timeslots);
+					userInfo.setEducationDegree(eb);
+					submitTutorProfile(userInfo);
 				}
 			}
 		});
@@ -146,9 +138,9 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 					}
 				}
 			});
-			if (isEdit && null != teacherProfile) {
+			if (isEdit && null != userInfo) {
 				int id = R.id.ac_fill_personal_info_rb_eb1;
-				switch (teacherProfile.getEducationDegree()) {
+				switch (userInfo.getEducationDegree()) {
 					case 0:
 						id = R.id.ac_fill_personal_info_rb_eb1;
 						break;
@@ -180,10 +172,8 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 		// 时间段列表
 		listView = getView(R.id.ac_fill_personal_info_timeslot_lv);
 		if (isEdit) {
-			if (null != teacherProfile) {
-				timeslots = teacherProfile.getTimeslots();
-			} else {
-				timeslots = studentProfile.getTimeslots();
+			if (null != userInfo) {
+				timeslots = userInfo.getTimeslots();
 			}
 		}
 		adapter = new TimeSlotAdapter(this, timeslots, true);
@@ -198,10 +188,8 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 					if (null == timeslots) {
 						timeslots = new ArrayList<Timeslot>();
 					}
-					if (null != teacherProfile) {
-						timeslot.setMemberId(teacherProfile.getId());
-					} else {
-						timeslot.setMemberId(studentProfile.getId());
+					if (null != userInfo) {
+						timeslot.setMemberId(userInfo.getId());
 					}
 					timeslots.add(timeslot);
 					adapter.refresh(timeslots);
@@ -391,7 +379,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 	 * 提交老师信息任务
 	 * 
 	 */
-	private void submitTutorProfile(final TeacherProfile profile) {
+	private void submitTutorProfile(final UserInfo profile) {
 		if (!HttpHelper.isNetworkConnected(this)) {
 			toast(R.string.toast_netwrok_disconnected);
 			return;
@@ -401,59 +389,18 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 		LogUtils.d(json);
 		try {
 			StringEntity entity = new StringEntity(json, HTTP.UTF_8);
-			HttpHelper.put(this, ApiUrl.TUTORPROFILE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+			String url;
+			if (Constants.General.ROLE_TUTOR == role) {
+				url = ApiUrl.TUTORPROFILE;
+			} else {
+				url = ApiUrl.STUDENTPROFILE;
+			}
+			HttpHelper.put(this, url, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {
 					if (0 == status) {
 						submitTutorProfile(profile);
-						return;
-					}
-					dismissDialog();
-					LogUtils.e(message);
-					toast(R.string.toast_server_error);
-				}
-
-				@Override
-				public void onSuccess(EditProfileResult result) {
-					dismissDialog();
-					if (null != result) {
-						if (200 == result.getStatusCode() && result.getResult()) {
-							go2Main();
-						} else {
-							toast(result.getMessage());
-						}
-					} else {
-						toast(R.string.toast_server_error);
-					}
-				}
-			});
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			dismissDialog();
-		}
-	}
-
-	/**
-	 * 提交学生信息任务
-	 * 
-	 */
-	private void submitStudentProfile(final StudentProfile profile) {
-		if (!HttpHelper.isNetworkConnected(this)) {
-			toast(R.string.toast_netwrok_disconnected);
-			return;
-		}
-		showDialogRes(R.string.loading);
-		String json = JsonUtil.parseObject2Str(profile);
-		LogUtils.d(json);
-		try {
-			StringEntity entity = new StringEntity(json, HTTP.UTF_8);
-			HttpHelper.put(this, ApiUrl.STUDENTPROFILE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
-
-				@Override
-				public void onFailure(int status, String message) {
-					if (0 == status) {
-						submitStudentProfile(profile);
 						return;
 					}
 					dismissDialog();

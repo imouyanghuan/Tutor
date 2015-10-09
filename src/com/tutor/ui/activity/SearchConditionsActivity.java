@@ -1,6 +1,10 @@
 package com.tutor.ui.activity;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +15,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -31,6 +37,7 @@ import com.tutor.model.Course;
 import com.tutor.model.CourseItem1;
 import com.tutor.model.CourseItem2;
 import com.tutor.model.CourseListResult;
+import com.tutor.model.MatchStudentListResult;
 import com.tutor.model.SearchCondition;
 import com.tutor.model.Timeslot;
 import com.tutor.params.ApiUrl;
@@ -40,7 +47,9 @@ import com.tutor.ui.dialog.TimeSlotDialog.onTimeSelectedCallBack;
 import com.tutor.ui.dialog.WeekDialog;
 import com.tutor.ui.dialog.WeekDialog.OnWeekSelectedCallback;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.HttpHelper;
+import com.tutor.util.JsonUtil;
 import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
@@ -85,18 +94,26 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 	private boolean isStrat;
 	// 课程value
 	private int courseValue = -1;
-	private String curSchool;
-	private String curGrade;
-	private String curCourse;
+	private String curSchool = "";
+	private String curGrade = "";
+	private String curCourse = "";
 	// 区域value
 	private int areaValue = -1;
-	private String curCity;
-	private String curCountry;
+	private String curCity = "";
+	private String curCountry = "";
 	// gender
 	private Spinner spGender;
 	private ArrayList<String> genders;
 	private ArrayAdapter<String> genderAdapter;
 	private int genderValue = -1;
+	private EditText etSearch;
+	// 是否是搜索狀態
+	private boolean isSearchStatus = false;
+	// 頁碼,每頁大小
+	private int pageIndex = 0, pageSize = 20;
+	private SearchCondition condition = null;
+	private boolean isFromTeacher;
+	private LinearLayout llGender;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -109,6 +126,10 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 
 	@Override
 	protected void initView() {
+		Intent intent = getIntent();
+		if (intent != null) {
+			isFromTeacher = intent.getBooleanExtra(Constants.General.IS_FROM_TEACHER, false);
+		}
 		TitleBar bar = getView(R.id.title_bar);
 		bar.setTitle(R.string.label_search_conditions);
 		bar.initBack(this);
@@ -117,16 +138,44 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 			@Override
 			public void onClick(View v) {
 				SearchCondition condition = new SearchCondition();
-				condition.setAreaId(areaValue);
-				condition.setCourseId(courseValue);
+				String keyword = etSearch.getText().toString();
+				condition.setSearchKeyword(keyword);
+				condition.setAreaValue(areaValue);
+				String areaName = "";
+				if (!curCity.equals(getString(R.string.label_please_choose))) {
+					areaName = curCity + curCountry;
+				} else {
+					areaName = "";
+				}
+				condition.setAreaName(areaName);
+				condition.setCourseValue(courseValue);
+				String courseName = "";
+				if (!curSchool.equals(getString(R.string.label_please_choose))) {
+					courseName = curSchool + curGrade + curCourse;
+				} else {
+					courseName = "";
+				}
+				condition.setCourseName(courseName);
 				condition.setTimeslot(timeslot);
 				condition.setGender(genderValue);
+				String genderName = "";
+				if (genderValue == -1) {
+					genderName = "";
+				} else if (genderValue == Constants.General.MALE) {
+					genderName = getString(R.string.label_man);
+				} else {
+					genderName = getString(R.string.label_woman);
+				}
+				condition.setGenderName(genderName);
 				Intent intent = new Intent();
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_SEARCH_CONDITION, condition);
 				setResult(Constants.RequestResultCode.SEARCH_CONDITIONS, intent);
 				SearchConditionsActivity.this.finish();
 			}
 		});
+		llGender = getView(R.id.ll_gender);
+		etSearch = getView(R.id.fragment_find_student_et);
+		getView(R.id.fragment_find_student_btn).setVisibility(View.GONE);
 		weekTextView = getView(R.id.ac_fill_personal_time_tv_week);
 		weekTextView.setOnClickListener(this);
 		startTimeTextView = getView(R.id.ac_fill_personal_time_tv_start);
@@ -153,7 +202,9 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				String currentGender = genderAdapter.getItem(position);
-				if (currentGender.equals(getString(R.string.label_man))) {
+				if (currentGender.equals(getString(R.string.label_please_choose))) {
+					genderValue = -1;
+				} else if (currentGender.equals(getString(R.string.label_man))) {
 					genderValue = Constants.General.MALE;
 				} else {
 					genderValue = Constants.General.FEMALE;
@@ -165,6 +216,12 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 				// TODO Auto-generated method stub
 			}
 		});
+		// 如果是老师则隐藏性别布局
+		if (isFromTeacher) {
+			llGender.setVisibility(View.GONE);
+		} else {
+			llGender.setVisibility(View.VISIBLE);
+		}
 	}
 
 	/**
@@ -272,7 +329,7 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				curCity = cityAdapter.getItem(position).getName();
-				if (curCity.equals(R.string.label_please_choose)) {
+				if (curCity.equals(getString(R.string.label_please_choose))) {
 					clearCountry();
 					spCountry.setVisibility(View.GONE);
 					return;
@@ -335,37 +392,19 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 		spSchool.setAdapter(schoolAdapter);
 		// 设置默认选中第0个值
 		spSchool.setSelection(0, true);
-		//
-		// if (schools != null && schools.size() > 0) {
-		// ArrayList<CourseItem1> courseItem = schools.get(0).getResult();
-		// grades.addAll(courseItem);
-		// }
 		gradeAdapter = new GradeAdapter(SearchConditionsActivity.this, grades);
 		spGrade.setAdapter(gradeAdapter);
 		spGrade.setSelection(0, true);
-		//
-		// if (grades != null && grades.size() > 0) {
-		// ArrayList<CourseItem2> courseItem = grades.get(0).getResult();
-		// courses.addAll(courseItem);
-		// }
 		courseAdapter = new CourseAdapter(SearchConditionsActivity.this, courses);
 		spCourse.setAdapter(courseAdapter);
 		spCourse.setSelection(0, true);
-		//
-		// Course school = schools.get(0);
-		// curSchool = school.getName();
-		// CourseItem1 grade = school.getResult().get(0);
-		// curGrade = grade.getName();
-		// curCourse = grade.getResult().get(0).getCourseName();
-		// courseValue = getCourseValue();
-		// toast(curSchool + curGrade + curCourse + "id:" + courseId);
 		// 学校下拉框监听
 		spSchool.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
 			@Override
 			public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
 				curSchool = schoolAdapter.getItem(position).getName();
-				if (curSchool.equals(R.string.label_please_choose)) {
+				if (curSchool.equals(getString(R.string.label_please_choose))) {
 					clearGrade();
 					clearCourse();
 					spGrade.setVisibility(View.GONE);
@@ -380,7 +419,7 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 				}
 				for (int i = 0; i < schools.size(); i++) {
 					String course = schools.get(i).getName();
-					if (!course.equalsIgnoreCase(curSchool)) {
+					if (!course.equalsIgnoreCase(curSchool) || curSchool.equals(getString(R.string.label_please_choose))) {
 						continue;
 					}
 					ArrayList<CourseItem1> courseItem = schools.get(i).getResult();
@@ -406,8 +445,6 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 					}
 				}
 				courseValue = getCourseValue();
-				// toast(curSchool + curGrade + curCourse + "id:" +
-				// courseValue);
 			}
 
 			@Override
@@ -577,8 +614,81 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 				}
 				timeSlotDialog1.show();
 				break;
+			case R.id.fragment_find_student_btn:
+				// 關鍵字搜索
+				String keyWords = etSearch.getEditableText().toString().trim();
+				// if (TextUtils.isEmpty(keyWords)) {
+				// if (!isSearchStatus) {
+				// toast(R.string.toast_no_keywords);
+				// return;
+				// } else {
+				// isSearchStatus = false;
+				// // 獲取匹配學生列表
+				// pageIndex = 0;
+				// getStudentList(pageIndex, pageSize);
+				// return;
+				// }
+				// }
+				isSearchStatus = true;
+				// 獲取搜索的學生列表
+				pageIndex = 0;
+				if (!HttpHelper.isNetworkConnected(SearchConditionsActivity.this)) {
+					toast(R.string.toast_netwrok_disconnected);
+					return;
+				}
+				showDialogRes(R.string.loading);
+				getSearchStudent(keyWords, pageIndex, pageSize);
+				break;
 			default:
 				break;
+		}
+	}
+
+	/**
+	 * 獲取搜索學生列表
+	 * 
+	 */
+	private void getSearchStudent(final String keyWord, final int pageIndex, final int pageSize) {
+		if (!HttpHelper.isNetworkConnected(SearchConditionsActivity.this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		StringBuffer sb = new StringBuffer();
+		sb.append(ApiUrl.SEARCHSTUDENT);
+		sb.append("?pageIndex=");
+		sb.append(pageIndex);
+		sb.append("&pageSize=");
+		sb.append(pageSize);
+		String body;
+		if (condition != null) {
+			body = JsonUtil.parseObject2Str(condition);
+		} else {
+			body = JsonUtil.parseObject2Str(new Object());
+		}
+		try {
+			StringEntity entity = new StringEntity(body, HTTP.UTF_8);
+			HttpHelper.post(SearchConditionsActivity.this, sb.toString(), TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<MatchStudentListResult>(MatchStudentListResult.class) {
+
+				@Override
+				public void onFailure(int status, String message) {
+					if (0 == status) {
+						getSearchStudent(keyWord, pageIndex, pageSize);
+						return;
+					}
+					// setData(null);
+					CheckTokenUtils.checkToken(status);
+					listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
+				}
+
+				@Override
+				public void onSuccess(MatchStudentListResult t) {
+					CheckTokenUtils.checkToken(t);
+					// setData(t);
+				}
+			});
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			// setData(null);
 		}
 	}
 

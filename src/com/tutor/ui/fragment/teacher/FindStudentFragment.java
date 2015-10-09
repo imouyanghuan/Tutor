@@ -10,12 +10,14 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 import com.loopj.android.http.RequestParams;
@@ -29,6 +31,7 @@ import com.tutor.adapter.MatchStudentAdapter;
 import com.tutor.model.MatchStudentListResult;
 import com.tutor.model.Page;
 import com.tutor.model.SearchCondition;
+import com.tutor.model.Timeslot;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
@@ -63,6 +66,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 	// 是否是搜索狀態
 	private boolean isSearchStatus = false;
 	private SearchCondition condition = null;
+	private ImageButton ibDelete;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -82,13 +86,15 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		editText = ViewHelper.get(serchView, R.id.fragment_find_student_et);
 		editText.setOnClickListener(this);
 		editText.setFocusable(false);
+		ibDelete = ViewHelper.get(serchView, R.id.ib_delete);
+		ibDelete.setOnClickListener(this);
 		ViewHelper.get(serchView, R.id.fragment_find_student_btn).setOnClickListener(this);
 		listView = ViewHelper.get(view, R.id.fragment_find_student_lv);
 		listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
 		listView.setShowIndicator(false);
 		listView.getRefreshableView().addHeaderView(serchView);
 		// 設置可上拉加載和下拉刷新
-		listView.setMode(Mode.BOTH); 
+		listView.setMode(Mode.BOTH);
 		listView.setOnRefreshListener(this);
 		adapter = new MatchStudentAdapter(getActivity(), users);
 		listView.setAdapter(adapter);
@@ -184,7 +190,16 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 			// 添加条件搜索
 			case R.id.fragment_find_student_et:
 				Intent intent = new Intent(getActivity(), SearchConditionsActivity.class);
+				intent.putExtra(Constants.General.IS_FROM_TEACHER, true);
 				startActivityForResult(intent, Constants.RequestResultCode.SEARCH_CONDITIONS);
+				break;
+			// 删除搜索条件
+			case R.id.ib_delete:
+				editText.setText("");
+				condition = null;
+				editText.setHint(R.string.hint_search_student_keywords);
+				ibDelete.setVisibility(View.GONE);
+				getSearchStudent(keyWords, pageIndex, pageSize);
 				break;
 			default:
 				break;
@@ -193,12 +208,86 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
 			case Constants.RequestResultCode.SEARCH_CONDITIONS:
 				if (data != null) {
 					condition = (SearchCondition) data.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_SEARCH_CONDITION);
+					if (condition != null) {
+						String COM = ", ";
+						String SPACE = "";
+						String keyword = condition.getSearchKeyword();
+						if (!TextUtils.isEmpty(keyword)) {
+							keyword += COM;
+						} else {
+							keyword = SPACE;
+						}
+						String courseName = condition.getCourseName();
+						if (!TextUtils.isEmpty(courseName)) {
+							courseName += COM;
+						} else {
+							courseName = SPACE;
+						}
+						String areaName = condition.getAreaName();
+						if (!TextUtils.isEmpty(areaName)) {
+							areaName += COM;
+						} else {
+							areaName = SPACE;
+						}
+						String genderName = condition.getGenderName();
+						if (!TextUtils.isEmpty(genderName)) {
+							genderName += COM;
+						} else {
+							genderName = SPACE;
+						}
+						Timeslot time = condition.getTimeslot();
+						String timeStr = SPACE;
+						if (time != null) {
+							int week = time.getDayOfWeek();
+							String weekStr = "";
+							String[] weeks = getResources().getStringArray(R.array.weeks);
+							switch (week) {
+								case 0:
+									weekStr = weeks[0];
+									break;
+								case 1:
+									weekStr = weeks[1];
+									break;
+								case 2:
+									weekStr = weeks[2];
+									break;
+								case 3:
+									weekStr = weeks[3];
+									break;
+								case 4:
+									weekStr = weeks[4];
+									break;
+								case 5:
+									weekStr = weeks[5];
+									break;
+								case 6:
+									weekStr = weeks[6];
+									break;
+							}
+							int endHour = time.getEndHour();
+							int endMinute = time.getEndMinute();
+							int startHour = time.getStartHour();
+							int startMinute = time.getStartMinute();
+							timeStr = weekStr + " " + startHour + getString(R.string.hour) + startMinute + getString(R.string.minute) + " - " + endHour + getString(R.string.hour) + endMinute
+									+ getString(R.string.minute) + COM;
+						}
+						String searchKeyWork = keyword + courseName + areaName + genderName + timeStr;
+						if (searchKeyWork.length() > 2) {
+							editText.setText(searchKeyWork.substring(0, (searchKeyWork.length() - 2)));
+						} else {
+							editText.setText("");
+						}
+						if (editText.getText().toString().length() > 0) {
+							ibDelete.setVisibility(View.VISIBLE);
+						} else {
+							ibDelete.setVisibility(View.GONE);
+						}
+					}
 				}
 				break;
 			default:
@@ -304,7 +393,11 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 							toast(R.string.toast_no_match_student);
 							listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
 						} else {
-							listView.setBackgroundColor(getResources().getColor(R.color.transparent));
+							if (users.size() > 2) {
+								listView.setBackgroundColor(getResources().getColor(R.color.transparent));
+							} else {
+								listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
+							}
 						}
 					} else {
 						// 加載更多

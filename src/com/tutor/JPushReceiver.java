@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.tutor.ui.activity.JPushActivity;
+import com.tutor.ui.activity.NotificationActivity;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -44,7 +45,7 @@ public class JPushReceiver extends BroadcastReceiver {
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
             Log.d(TAG, "[JPushReceiver] 用户点击打开了通知");
         	//打开自定义的Activity 点击手机状态栏通知要跳转的页面
-        	Intent i = new Intent(context, JPushActivity.class);
+        	Intent i = new Intent(context, NotificationActivity.class);
         	i.putExtras(bundle);
         	//i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         	i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP );

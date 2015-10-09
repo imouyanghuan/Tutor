@@ -26,7 +26,7 @@ public class WelcomeActivity extends InstrumentedActivity {
 		setContentView(R.layout.activity_welcome);
 		handler.sendEmptyMessageDelayed(0, Constants.General.WELCOME_DELAY);
 		if (!HttpHelper.isNetworkConnected(this)) {
-			Toast.makeText(WelcomeActivity.this, "R.string.toast_netwrok_disconnected", Toast.LENGTH_SHORT).show();
+			Toast.makeText(WelcomeActivity.this, R.string.toast_netwrok_disconnected, Toast.LENGTH_SHORT).show();
 		}
 	}
 

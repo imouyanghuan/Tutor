@@ -45,6 +45,7 @@ public final class Constants {
 		public static final int TOKEN_INVALID = 401;
 		/** 精确到毫秒 */
 		public static final String MS_FORMART = "yyyy-MM-dd HH:mm:ss SSS";
+		public static final String IS_FROM_TEACHER = "isFromTeacher";
 	}
 
 	/**
@@ -117,12 +118,10 @@ public final class Constants {
 		public static final String INTENT_EXTRA_GROUP = "group.key";
 		/** 用戶信息 */
 		public static final String INTENT_EXTRA_USER_INFO = "userInfo";
+		/** 用戶id */
+		public static final String INTENT_EXTRA_USER_ID = "user.id";
 		/** 是否编辑资料状态 */
 		public static final String INTENT_EXTRA_ISEDIT = "is.edit";
-		/** 教师资料 */
-		public static final String INTENT_EXTRA_TUTORPRIFILE = "tutor.prifile";
-		/** 学生资料 */
-		public static final String INTENT_EXTRA_STUDENTPROFILE = "student.prifile";
 		/** token 过期 */
 		public static final String INTENT_EXTRA_TOKENINVALID = "token.invalid";
 		/** 搜索条件 */

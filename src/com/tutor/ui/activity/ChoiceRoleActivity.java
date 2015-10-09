@@ -51,7 +51,7 @@ public class ChoiceRoleActivity extends BaseActivity {
 
 			@Override
 			public void onClick(View v) {
-				toast(R.string.overseas_education);
+				//toast(getString(R.string.overseas_education));
 			}
 		});
 	}

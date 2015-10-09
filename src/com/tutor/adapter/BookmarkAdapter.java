@@ -1,6 +1,5 @@
 package com.tutor.adapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -17,9 +16,8 @@ import com.mssky.mobile.ui.zlistview.DragEdge;
 import com.mssky.mobile.ui.zlistview.ShowMode;
 import com.mssky.mobile.ui.zlistview.ZSwipeItem;
 import com.tutor.R;
-import com.tutor.model.Area;
-import com.tutor.model.Area1;
 import com.tutor.model.BookmarkModel;
+import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.util.ImageUtils;
 
@@ -80,12 +78,12 @@ public class BookmarkAdapter extends BaseSwipeAdapter {
 		TextView msg = (TextView) convertView.findViewById(R.id.student_list_item_area);
 		// 左滑删除item
 		swipeItem = (ZSwipeItem) convertView.findViewById(R.id.swipe_item);
-		LinearLayout llDelete = (LinearLayout) convertView.findViewById(R.id.ll_delete);
+		TextView tvDelete = (TextView) convertView.findViewById(R.id.tv_delete);
 		// 删除按钮显示的模式
 		swipeItem.setShowMode(ShowMode.PullOut);
 		// 划出的模式
 		swipeItem.setDragEdge(DragEdge.Right);
-		llDelete.setOnClickListener(new OnClickListener() {
+		tvDelete.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -97,41 +95,25 @@ public class BookmarkAdapter extends BaseSwipeAdapter {
 				swipeItem.close(isEmpty());
 			}
 		});
+		UserInfo userInfo = getItem(position).getMemberModel();
 		// 头像
-		if (TextUtils.isEmpty(mList.get(position).getMemberModel().getAvatar())) {
+		if (TextUtils.isEmpty(userInfo.getAvatar())) {
 			ImageUtils.loadImage(imgAvatar, "drawable://" + R.drawable.avatar);
 		} else {
-			String path = ApiUrl.DOMAIN + mList.get(position).getMemberModel().getAvatar();
+			String path = ApiUrl.DOMAIN + userInfo.getAvatar();
 			ImageUtils.loadImage(imgAvatar, path);
 		}
-		
-		if (TextUtils.isEmpty(mList.get(position).getMemberModel().getEmail())) {
-			msgNickName.setText("Student");
-		} else {
-			if (mList.get(position).getMemberModel().getEmail().contains("@")) {
-				msgNickName.setText(mList.get(position).getMemberModel().getEmail().substring(0, mList.get(position).getMemberModel().getEmail().lastIndexOf("@")));
-			} else {
-				msgNickName.setText(mList.get(position).getMemberModel().getEmail());
-			}
+		if (!TextUtils.isEmpty(userInfo.getNickName())) {
+			msgNickName.setText(userInfo.getNickName());
+		} else if (!TextUtils.isEmpty(userInfo.getUserName())) {
+			msgNickName.setText(userInfo.getUserName());
 		}
-		
-		ArrayList<Area> areas = mList.get(position).getMemberModel().getAreas();
-		if (null != areas && 0 != areas.size()) {
-			StringBuffer sb = new StringBuffer();
-			for (Area area : areas) {
-				ArrayList<Area1> area1s = area.getResult();
-				for (Area1 area1 : area1s) {
-					sb.append(area1.getAddress() + ",");
-				}
-			}
-			// 刪除最後一個符號
-			sb.deleteCharAt(sb.length() - 1);
-			msg.setText(sb.toString());
+		if (!TextUtils.isEmpty(userInfo.getResidentialAddress())) {
+			msg.setText(userInfo.getResidentialAddress());
 		} else {
 			msg.setText(R.string.label_none_area);
 		}
-		
-		String createTime = mList.get(position).getMemberModel().getCreatedTime();
+		String createTime = userInfo.getCreatedTime();
 		if (TextUtils.isEmpty(createTime)) {
 			time.setText("");
 		} else {

@@ -56,7 +56,7 @@ public class TutorApplication extends Application {
 		// 设置开启日志,发布时请关闭日志
         JPushInterface.setDebugMode(true);
         // 初始化 JPush
-        JPushInterface.init(this);     		
+        JPushInterface.init(this);  
 	}
 
 	private void initDao() {

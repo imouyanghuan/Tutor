@@ -2,6 +2,7 @@ package com.tutor.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * 用戶登錄后或註冊后返回的信息
@@ -13,28 +14,141 @@ import java.util.ArrayList;
 public class UserInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	/**
+	 * 学习中
+	 */
+	public static final int STUDYING = 0;
+	/**
+	 * 已经毕业
+	 */
+	public static final int GRADUATED = 1;
+	// 教师才有的字段
+	private String hkidNumber;
+	private int exprience;// 辅导经验年数
+	private String registrationTime;// 教师登记时间
+	private float ratingGrade;
+	private int bookmarkedCount;
+	private int studentCount;
+	private int educationDegree;
+	private String graduateSchool;
+	private int educationStatus;
+	private String major;
+	private String introductionVideo;
+	// 学生字段
+	private String grade;
+	// 教师和学生都有的字段
 	private int id;
 	private String nickName;
 	private String userName;
 	private String phone;
 	private String email;
+	private String residentialAddress;
 	private String imid;
 	private String password;
 	private String fbOpenID;
 	private String avatar;
 	private String birth;
-	private String gender;
+	private int gender;
 	private String introduction;
-	private String introductionVideo;
 	private String token;
 	private String expirationTime;
 	private String createdTime;
 	private int status;
 	private int accountType;
 	private int bookmarkID;
+	private int[] coursesValues;
+	private int[] areaValues;
 	private ArrayList<Course> courses;
 	private ArrayList<Area> areas;
 	private ArrayList<Timeslot> timeslots;
+
+	public String getHkidNumber() {
+		return hkidNumber;
+	}
+
+	public void setHkidNumber(String hkidNumber) {
+		this.hkidNumber = hkidNumber;
+	}
+
+	public String getGrade() {
+		return grade;
+	}
+
+	public void setGrade(String grade) {
+		this.grade = grade;
+	}
+
+	public int getExprience() {
+		return exprience;
+	}
+
+	public void setExprience(int exprience) {
+		this.exprience = exprience;
+	}
+
+	public String getRegistrationTime() {
+		return registrationTime;
+	}
+
+	public void setRegistrationTime(String registrationTime) {
+		this.registrationTime = registrationTime;
+	}
+
+	public float getRatingGrade() {
+		return ratingGrade;
+	}
+
+	public void setRatingGrade(float ratingGrade) {
+		this.ratingGrade = ratingGrade;
+	}
+
+	public int getBookmarkedCount() {
+		return bookmarkedCount;
+	}
+
+	public void setBookmarkedCount(int bookmarkedCount) {
+		this.bookmarkedCount = bookmarkedCount;
+	}
+
+	public int getStudentCount() {
+		return studentCount;
+	}
+
+	public void setStudentCount(int studentCount) {
+		this.studentCount = studentCount;
+	}
+
+	public int getEducationDegree() {
+		return educationDegree;
+	}
+
+	public void setEducationDegree(int educationDegree) {
+		this.educationDegree = educationDegree;
+	}
+
+	public String getGraduateSchool() {
+		return graduateSchool;
+	}
+
+	public void setGraduateSchool(String graduateSchool) {
+		this.graduateSchool = graduateSchool;
+	}
+
+	public int getEducationStatus() {
+		return educationStatus;
+	}
+
+	public void setEducationStatus(int educationStatus) {
+		this.educationStatus = educationStatus;
+	}
+
+	public String getMajor() {
+		return major;
+	}
+
+	public void setMajor(String major) {
+		this.major = major;
+	}
 
 	public ArrayList<Course> getCourses() {
 		return courses;
@@ -140,11 +254,11 @@ public class UserInfo implements Serializable {
 		this.birth = birth;
 	}
 
-	public String getGender() {
+	public int getGender() {
 		return gender;
 	}
 
-	public void setGender(String gender) {
+	public void setGender(int gender) {
 		this.gender = gender;
 	}
 
@@ -212,10 +326,38 @@ public class UserInfo implements Serializable {
 		this.bookmarkID = bookmarkID;
 	}
 
+	public String getResidentialAddress() {
+		return residentialAddress;
+	}
+
+	public void setResidentialAddress(String residentialAddress) {
+		this.residentialAddress = residentialAddress;
+	}
+
+	public int[] getCoursesValues() {
+		return coursesValues;
+	}
+
+	public void setCoursesValues(int[] coursesValues) {
+		this.coursesValues = coursesValues;
+	}
+
+	public int[] getAreaValues() {
+		return areaValues;
+	}
+
+	public void setAreaValues(int[] areaValues) {
+		this.areaValues = areaValues;
+	}
+
 	@Override
 	public String toString() {
-		return "UserInfo [nickName=" + nickName + ", userName=" + userName + ", phone=" + phone + ", email=" + email + ", imid=" + imid + ", password=" + password + ", fbOpenID=" + fbOpenID
-				+ ", avatar=" + avatar + ", birth=" + birth + ", gender=" + gender + ", introduction=" + introduction + ", introductionVideo=" + introductionVideo + ", token=" + token
-				+ ", expirationTime=" + expirationTime + ", createdTime=" + createdTime + ", status=" + status + ", accountType=" + accountType + ", bookmarkID=" + bookmarkID + "]";
+		return "UserInfo [hkidNumber=" + hkidNumber + ", exprience=" + exprience + ", registrationTime=" + registrationTime + ", ratingGrade=" + ratingGrade + ", bookmarkedCount=" + bookmarkedCount
+				+ ", studentCount=" + studentCount + ", educationDegree=" + educationDegree + ", graduateSchool=" + graduateSchool + ", educationStatus=" + educationStatus + ", major=" + major
+				+ ", introductionVideo=" + introductionVideo + ", grade=" + grade + ", id=" + id + ", nickName=" + nickName + ", userName=" + userName + ", phone=" + phone + ", email=" + email
+				+ ", residentialAddress=" + residentialAddress + ", imid=" + imid + ", password=" + password + ", fbOpenID=" + fbOpenID + ", avatar=" + avatar + ", birth=" + birth + ", gender="
+				+ gender + ", introduction=" + introduction + ", token=" + token + ", expirationTime=" + expirationTime + ", createdTime=" + createdTime + ", status=" + status + ", accountType="
+				+ accountType + ", bookmarkID=" + bookmarkID + ", coursesValues=" + Arrays.toString(coursesValues) + ", areaValues=" + Arrays.toString(areaValues) + ", courses=" + courses
+				+ ", areas=" + areas + ", timeslots=" + timeslots + "]";
 	}
 }

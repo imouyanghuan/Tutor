@@ -46,7 +46,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@id/ac_fill_personal_info_ll_hkid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_20"
@@ -136,19 +135,44 @@
                 </RadioGroup>
             </FrameLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_20"
+                android:gravity="center_vertical"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_birth"
+                    android:textSize="@dimen/sp_18" />
+
+                <TextView
+                    android:id="@id/ac_fill_personal_info_et_birth"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_40"
+                    android:background="@drawable/editview_bg"
+                    android:singleLine="true" />
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_20"
-                android:text="@string/label_birth"
+                android:text="@string/label_address"
                 android:textSize="@dimen/sp_18" />
 
-            <DatePicker
-                android:id="@id/ac_fill_personal_info_datePicker"
-                android:layout_width="wrap_content"
+            <EditText
+                android:id="@id/ac_fill_personal_info_et_address"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:calendarViewShown="false" />
+                android:background="@drawable/editview_bg"
+                android:gravity="top"
+                android:hint="@string/hint_enter_address"
+                android:inputType="text"
+                android:minHeight="@dimen/dp_100"
+                android:singleLine="true" />
         </LinearLayout>
     </ScrollView>
 

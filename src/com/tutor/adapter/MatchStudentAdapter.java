@@ -1,6 +1,5 @@
 package com.tutor.adapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -11,8 +10,6 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 import com.tutor.R;
-import com.tutor.model.Area;
-import com.tutor.model.Area1;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
@@ -46,31 +43,17 @@ public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 			String path = ApiUrl.DOMAIN + t.getAvatar();
 			ImageUtils.loadImage(avatar, path);
 		}
-		if (TextUtils.isEmpty(t.getEmail())) {
-			holder.setText(R.id.student_list_item_nick, "Student");
-		} else {
-			if (t.getEmail().contains("@")) {
-				holder.setText(R.id.student_list_item_nick, t.getEmail().substring(0, t.getEmail().lastIndexOf("@")));
-			} else {
-				holder.setText(R.id.student_list_item_nick, t.getEmail());
-			}
+		if (!TextUtils.isEmpty(t.getNickName())) {
+			holder.setText(R.id.student_list_item_nick, t.getNickName());
+		} else if (!TextUtils.isEmpty(t.getUserName())) {
+			holder.setText(R.id.student_list_item_nick, t.getUserName());
 		}
-		ArrayList<Area> areas = t.getAreas();
-		if (null != areas && 0 != areas.size()) {
-			StringBuffer sb = new StringBuffer();
-			for (Area area : areas) {
-				ArrayList<Area1> area1s = area.getResult();
-				for (Area1 area1 : area1s) {
-					sb.append(area1.getAddress() + ",");
-				}
-			}
-			// 刪除最後一個符號
-			sb.deleteCharAt(sb.length() - 1);
-			holder.setText(R.id.student_list_item_area, sb.toString());
+		if (!TextUtils.isEmpty(t.getResidentialAddress())) {
+			holder.setText(R.id.student_list_item_area, t.getResidentialAddress());
 		} else {
 			holder.setText(R.id.student_list_item_area, R.string.label_none_area);
 		}
-		holder.setText(R.id.student_list_item_form, t.getGender());
+		holder.setText(R.id.student_list_item_form, Constants.General.MALE == t.getGender() ? R.string.label_male : R.string.label_female);
 		holder.setText(R.id.student_list_item_time, t.getCreatedTime().toString().substring(0, 11));
 		// 學生item點擊事件
 		holder.getView(R.id.student_list_item_layout).setOnClickListener(new OnClickListener() {

@@ -1,6 +1,7 @@
 package com.tutor.ui.activity;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Set;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
@@ -16,6 +17,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 
 import com.facebook.utils.FBUser;
 import com.facebook.utils.LogInStateListener;
@@ -317,6 +321,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 					model.setFBOpenID(id);
 					String im = role + getString(R.string.app_name) + id;
 					model.setIMID(im);
+					// JPush register id
+					String registerId = JPushInterface.getRegistrationID(getApplicationContext());
+					model.setjRegistrationID(registerId);
+					// 设置别名
+					JPushInterface.setAlias(getApplicationContext(), id, new TagAliasCallback() {
+
+						@Override
+						public void gotResult(int arg0, String arg1, Set<String> arg2) {
+							// TODO Auto-generated method stub
+						}
+					});
 					if (result.getResult()) {
 						// 存在,直接登錄
 						login(model);

@@ -151,19 +151,26 @@
             </LinearLayout>
         </LinearLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:background="@color/gray_light"
-            android:gravity="center_vertical"
-            android:paddingLeft="@dimen/dp_15"
-            android:text="@string/label_gender" />
-
-        <Spinner
-            android:id="@+id/sp_gender"
+        <LinearLayout
+            android:id="@+id/ll_gender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="@dimen/dp_15" />
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@color/gray_light"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dp_15"
+                android:text="@string/label_gender" />
+
+            <Spinner
+                android:id="@+id/sp_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/dp_15" />
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>

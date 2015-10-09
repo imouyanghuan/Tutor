@@ -28,9 +28,9 @@ import com.loopj.android.http.RequestParams;
 import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.model.EditProfileResult;
-import com.tutor.model.TeacherInfoResult;
-import com.tutor.model.TeacherProfile;
 import com.tutor.model.UploadAvatarResult;
+import com.tutor.model.UserInfo;
+import com.tutor.model.UserInfoResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.activity.BaseActivity;
@@ -70,7 +70,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	// 保存
 	private Button save;
 	/** 个人信息 */
-	private TeacherProfile teacherProfile;
+	private UserInfo userInfo;
 	private boolean isUpdate = false;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -115,8 +115,8 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	 * 
 	 * @param profile
 	 */
-	private void setData(TeacherProfile profile) {
-		teacherProfile = profile;
+	private void setData(UserInfo profile) {
+		userInfo = profile;
 		userName.setText(!TextUtils.isEmpty(profile.getUserName()) ? profile.getUserName() : "Tutor" + profile.getId());
 		gender.setText(Constants.General.MALE == profile.getGender() ? R.string.label_male : R.string.label_female);
 		nickName.setText(!TextUtils.isEmpty(profile.getNickName()) ? profile.getNickName() : "");
@@ -172,14 +172,14 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 				save();
 				break;
 			case R.id.fragment_my_tv_edit:
-				if (null == teacherProfile) {
+				if (null == userInfo) {
 					toast(R.string.loading);
 					return;
 				}
 				Intent intent = new Intent();
 				intent.setClass(getActivity(), FillPersonalInfoActivity.class);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, true);
-				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TUTORPRIFILE, teacherProfile);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 				startActivity(intent);
 				isUpdate = true;
 				break;
@@ -192,7 +192,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	 * 提交老师修改资料
 	 */
 	private void save() {
-		if (null == teacherProfile) {
+		if (null == userInfo) {
 			toast(R.string.loading);
 			return;
 		}
@@ -201,7 +201,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 			return;
 		}
 		showDialogRes(R.string.loading);
-		String json = JsonUtil.parseObject2Str(getTeacherProfile());
+		String json = JsonUtil.parseObject2Str(getUserInfo());
 		LogUtils.d(json);
 		try {
 			StringEntity entity = new StringEntity(json, HTTP.UTF_8);
@@ -224,7 +224,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 					if (null != result) {
 						if (200 == result.getStatusCode() && result.getResult()) {
 							toast(R.string.toast_save_successed);
-							setData(teacherProfile);
+							setData(userInfo);
 						} else {
 							toast(result.getMessage());
 						}
@@ -239,14 +239,14 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 		}
 	}
 
-	private TeacherProfile getTeacherProfile() {
-		teacherProfile.setNickName(nickName.getEditableText().toString().trim());
-		teacherProfile.setGraduateSchool(school.getEditableText().toString().trim());
-		teacherProfile.setMajor(major.getEditableText().toString().trim());
-		teacherProfile.setExprience(Integer.parseInt(year.getEditableText().toString()));
-		teacherProfile.setIntroduction(introduction.getEditableText().toString().trim());
-		teacherProfile.setIntroductionVideo(videoLink.getEditableText().toString().trim());
-		return teacherProfile;
+	private UserInfo getUserInfo() {
+		userInfo.setNickName(nickName.getEditableText().toString().trim());
+		userInfo.setGraduateSchool(school.getEditableText().toString().trim());
+		userInfo.setMajor(major.getEditableText().toString().trim());
+		userInfo.setExprience(Integer.parseInt(year.getEditableText().toString()));
+		userInfo.setIntroduction(introduction.getEditableText().toString().trim());
+		userInfo.setIntroductionVideo(videoLink.getEditableText().toString().trim());
+		return userInfo;
 	}
 
 	@Override
@@ -365,7 +365,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	private void getTutorProfile() {
 		RequestParams params = new RequestParams();
 		params.put("memberId", TutorApplication.getMemberId());
-		HttpHelper.get(getActivity(), ApiUrl.TUTORINFO, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<TeacherInfoResult>(TeacherInfoResult.class) {
+		HttpHelper.get(getActivity(), ApiUrl.TUTORINFO, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -378,7 +378,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 			}
 
 			@Override
-			public void onSuccess(TeacherInfoResult t) {
+			public void onSuccess(UserInfoResult t) {
 				if (null != t.getResult()) {
 					setData(t.getResult());
 				} else {

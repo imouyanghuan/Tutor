@@ -60,25 +60,21 @@ public class CourseItem2 implements Serializable {
 
 	@Override
 	public String toString() {
-		return "CourseItem2 [id=" + id + ", type=" + type + ", subType=" + subType + ", courseName=" + courseName + ", isChecked=" + isChecked + "]";
+		return "CourseItem2 [id=" + id + ", isChecked=" + isChecked + ", lang=" + lang + ", courseName=" + courseName + ", subType=" + subType + ", type=" + type + ", value=" + value + "]";
 	}
 
-	
 	public String getLang() {
 		return lang;
 	}
 
-	
 	public void setLang(String lang) {
 		this.lang = lang;
 	}
 
-	
 	public int getValue() {
 		return value;
 	}
 
-	
 	public void setValue(int value) {
 		this.value = value;
 	}

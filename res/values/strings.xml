@@ -4,6 +4,8 @@
     <!-- 通用 -->
     <string name="app_name">Tutor</string>
     <string name="welcome_txt">The Best. We Match. No Fee.</string>
+    <string name="overseas_education">Overseas Education</string>
+    <string name="study_abroad">Study Abroad</string>
     <string name="action_settings">設置</string>
     <string name="mystudents">我的學生</string>
     <string name="findstudents">找學生</string>
@@ -22,6 +24,7 @@
     <string name="hour">時</string>
     <string name="minute">分</string>
     <string name="tips">提示</string>
+    <string name="delete">删除</string>
     <string name="logining">登錄中&#8230;</string>
     <string name="forget_password">忘記密碼</string>
     <string name="registering">註冊中&#8230;</string>
@@ -48,8 +51,11 @@
     <string name="label_avatar">Avatar:</string>
     <string name="label_hkid_number">HKID Number:</string>
     <string name="label_phone">Phone Number:</string>
-    <string name="label_gender">Gender</string>
+    <string name="label_gender">Gender:</string>
+    <string name="label_grade">Grade:</string>
     <string name="label_birth">Date of Birth:</string>
+    <string name="label_address">Residential Address(Optional):</string>
+    <string name="label_address1">Address:</string>
     <string name="label_male">Male</string>
     <string name="label_register"><u>No account yet?  Register</u></string>
     <string name="label_forget_password"><u>Forget password</u></string>
@@ -66,7 +72,10 @@
     <string name="label_studying_couress">Studying Couress</string>
     <string name="label_teach_time_slot">Preferred Teaching Time Slot</string>
     <string name="label_study_time_slot">Preferred Study Time Slot</string>
-    <string name="label_none_area">None area</string>
+    <string name="label_none_area">Unknow area</string>
+    <string name="label_unknow_phone">Unknow Phone</string>
+    <string name="label_unknow_address">Unknow Address</string>
+    <string name="label_unknow">Unknow</string>
     <string name="label_start">Start Time</string>
     <string name="label_end">End Time</string>
     <string name="label_week">Week</string>
@@ -78,6 +87,7 @@
     <string name="label_experience_year">Year(s)</string>
     <string name="label_self_introduction">Self Introduction(Optional):</string>
     <string name="label_self_introduction_video">Self Introduction Video(Optional):</string>
+    <string name="label_optional">(Optional)</string>
     <!-- button -->
     <string name="btn_role_student">Find tutors</string>
     <string name="btn_role_tutor">Join 2utor</string>
@@ -102,6 +112,7 @@
     <string name="hint_enter_nickname">Enter NickName</string>
     <string name="hint_enter_school">Enter Degree or School</string>
     <string name="hint_enter_major">Enter Major</string>
+    <string name="hint_enter_address">Enter Residential Address</string>
     <string name="hint_enter_introduction">Enter Self Introduction&#8230;</string>
     <string name="hint_enter_video_path">Enter Self Introduction Video Link</string>
     <string name="hint_0">0</string>
@@ -182,7 +193,7 @@
     <string name="label_service_location">Service Location</string>
     <string name="toast_msg_cant_empty">Please input content</string>
     <string name="label_send">Send</string>
-     <string name="label_available_time">Available Time Slot</string>
+    <string name="label_available_time">Available Time Slot</string>
     <string name="toast_add_to_bookmark_success">Add to Bookmark success</string>
     <string name="label_search_conditions">Search Conditions</string>
     <string name="label_course">Course</string>
@@ -191,5 +202,7 @@
     <string name="label_woman">女</string>
     <string name="label_man">男</string>
     <string name="label_time_slot">Time Slot</string>
+    <string name="label_accept">接受</string>
+    <string name="label_reject">拒絕</string>
 
 </resources>

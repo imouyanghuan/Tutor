@@ -41,6 +41,7 @@
     <string name="uploading_avatar">Uploading Avatar</string>
     <string name="set_pswd">Reset password</string>
     <string name="change_pswd">Change password</string>
+    <string name="delete">Delete</string>
 
     <!-- label -->
     <string name="label_role_student">Students/Parents</string>
@@ -66,7 +67,7 @@
     <string name="label_teaching_couress">Teaching Couress</string>
     <string name="label_teach_time_slot">Preferred Teaching Time Slot</string>
     <string name="label_study_time_slot">Preferred Study Time Slot</string>
-    <string name="label_none_area">None area</string>
+    <string name="label_none_area">Unknow area</string>
     <string name="label_start">Start Time</string>
     <string name="label_end">End Time</string>
     <string name="label_week">Week</string>

@@ -18,8 +18,7 @@ import com.tutor.model.Course;
 import com.tutor.model.CourseItem1;
 import com.tutor.model.CourseItem2;
 import com.tutor.model.CourseListResult;
-import com.tutor.model.StudentProfile;
-import com.tutor.model.TeacherProfile;
+import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.CourseLayout;
@@ -40,9 +39,8 @@ public class SelectCourseActivity extends BaseActivity {
 	private ScrollView scrollView;
 	/** 是否是编辑资料模式 */
 	private boolean isEdit;
-	private int role;
-	private TeacherProfile teacherProfile;
-	private StudentProfile studentProfile;
+	private int role = -1;
+	private UserInfo userInfo;
 	// 课程列表
 	private ArrayList<Course> courses;
 
@@ -51,12 +49,9 @@ public class SelectCourseActivity extends BaseActivity {
 		super.onCreate(arg0);
 		setContentView(R.layout.activity_select_course);
 		isEdit = getIntent().getBooleanExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, false);
-		teacherProfile = (TeacherProfile) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_TUTORPRIFILE);
-		studentProfile = (StudentProfile) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_STUDENTPROFILE);
-		if (null != teacherProfile) {
-			role = teacherProfile.getAccountType();
-		} else {
-			role = studentProfile.getAccountType();
+		userInfo = (UserInfo) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO);
+		if (null != userInfo) {
+			role = userInfo.getAccountType();
 		}
 		if (role == -1) {
 			throw new IllegalArgumentException("role is -1");
@@ -85,19 +80,10 @@ public class SelectCourseActivity extends BaseActivity {
 			public void onClick(View arg0) {
 				// 课程列表
 				int[] choiceCourses = getChoiceCourses();
-				if (!isHaveCourse) {
-					toast(R.string.toast_not_select_cours);
-					return;
-				}
 				Intent intent = new Intent(SelectCourseActivity.this, SelectAreaActivity.class);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, isEdit);
-				if (Constants.General.ROLE_TUTOR == role) {
-					teacherProfile.setCourseIds(choiceCourses);
-					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TUTORPRIFILE, teacherProfile);
-				} else {
-					studentProfile.setCourseIds(choiceCourses);
-					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_STUDENTPROFILE, studentProfile);
-				}
+				userInfo.setCoursesValues(choiceCourses);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 				startActivity(intent);
 			}
 		});
@@ -170,8 +156,6 @@ public class SelectCourseActivity extends BaseActivity {
 		}
 	}
 
-	private boolean isHaveCourse = false;
-
 	/**
 	 * 获取选中的课程
 	 * 
@@ -179,7 +163,7 @@ public class SelectCourseActivity extends BaseActivity {
 	 */
 	private int[] getChoiceCourses() {
 		if (null == courses) {
-			return null;
+			return new int[] {};
 		}
 		// 选中的课程集合
 		ArrayList<CourseItem2> selectCourses = new ArrayList<CourseItem2>();
@@ -196,13 +180,11 @@ public class SelectCourseActivity extends BaseActivity {
 		}
 		int size = selectCourses.size();
 		if (size > 0) {
-			isHaveCourse = true;
 			int[] result = new int[size];
 			for (int i = 0; i < size; i++) {
-				result[i] = selectCourses.get(i).getId();
+				result[i] = selectCourses.get(i).getValue();
 			}
 			LogUtils.d(result.toString());
-			LogUtils.d(selectCourses.toString());
 			return result;
 		}
 		return new int[] {};

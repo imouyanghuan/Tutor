@@ -17,8 +17,7 @@ import com.tutor.TutorApplication;
 import com.tutor.model.Area;
 import com.tutor.model.Area1;
 import com.tutor.model.AreaListResult;
-import com.tutor.model.StudentProfile;
-import com.tutor.model.TeacherProfile;
+import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.AreaItemLayout;
@@ -38,9 +37,8 @@ public class SelectAreaActivity extends BaseActivity {
 
 	/** 是否是编辑资料模式 */
 	private boolean isEdit;
-	private int role;
-	private TeacherProfile teacherProfile;
-	private StudentProfile studentProfile;
+	private int role = -1;
+	private UserInfo userInfo;
 	private ArrayList<Area> areas;
 	private LinearLayout linearLayout;
 
@@ -48,12 +46,9 @@ public class SelectAreaActivity extends BaseActivity {
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		isEdit = getIntent().getBooleanExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, false);
-		teacherProfile = (TeacherProfile) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_TUTORPRIFILE);
-		studentProfile = (StudentProfile) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_STUDENTPROFILE);
-		if (null != teacherProfile) {
-			role = teacherProfile.getAccountType();
-		} else {
-			role = studentProfile.getAccountType();
+		userInfo = (UserInfo) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO);
+		if (null != userInfo) {
+			role = userInfo.getAccountType();
 		}
 		if (role == -1) {
 			throw new IllegalArgumentException("role is -1");
@@ -82,19 +77,10 @@ public class SelectAreaActivity extends BaseActivity {
 			public void onClick(View arg0) {
 				// 区域列表
 				int[] choiceAreas = getChoiceAreas();
-				if (!isHaveArea) {
-					toast(R.string.toast_not_select_area);
-					return;
-				}
 				Intent intent = new Intent(SelectAreaActivity.this, SelectTimeSlotActivity.class);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, isEdit);
-				if (Constants.General.ROLE_TUTOR == role) {
-					teacherProfile.setAreaIds(choiceAreas);
-					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TUTORPRIFILE, teacherProfile);
-				} else {
-					studentProfile.setAreaIds(choiceAreas);
-					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_STUDENTPROFILE, studentProfile);
-				}
+				userInfo.setAreaValues(choiceAreas);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 				startActivity(intent);
 			}
 		});
@@ -165,14 +151,15 @@ public class SelectAreaActivity extends BaseActivity {
 		}
 	}
 
-	private boolean isHaveArea = false;
-
 	/**
 	 * 获取选中的地区
 	 * 
 	 * @return
 	 */
 	private int[] getChoiceAreas() {
+		if (null == areas) {
+			return new int[] {};
+		}
 		ArrayList<Area1> selectAreas = new ArrayList<Area1>();
 		for (Area area : areas) {
 			ArrayList<Area1> area1s = area.getResult();
@@ -184,10 +171,9 @@ public class SelectAreaActivity extends BaseActivity {
 		}
 		int size = selectAreas.size();
 		if (size > 0) {
-			isHaveArea = true;
 			int[] result = new int[size];
 			for (int i = 0; i < size; i++) {
-				result[i] = selectAreas.get(i).getId();
+				result[i] = selectAreas.get(i).getValue();
 			}
 			LogUtils.d(result.toString());
 			return result;
