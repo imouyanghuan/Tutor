@@ -18,6 +18,6 @@
         android:layout_height="@dimen/dp_20"
         android:layout_gravity="end|center"
         android:background="@drawable/delete_timeslot_btn_bg"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </FrameLayout>

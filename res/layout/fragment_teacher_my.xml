@@ -108,6 +108,51 @@
             android:inputType="text"
             android:singleLine="true"
             android:textColor="@color/black" />
+
+        <!-- 毕业状态 -->
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/gray_light"
+                android:padding="@dimen/dp_5"
+                android:text="@string/label_education_status"
+                android:textSize="@dimen/sp_16" />
+
+            <RadioGroup
+                android:id="@id/fragment_my_rg_es"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@id/fragment_my_rb_studying"
+                    android:layout_width="@dimen/dp_90"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/find_teacher_tab_left"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="@string/label_studying"
+                    android:textColor="@color/find_teacher_tab_txt_color" />
+
+                <RadioButton
+                    android:id="@id/fragment_my_rb_graduated"
+                    android:layout_width="@dimen/dp_90"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/find_teacher_tab_right"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="@string/label_graduated"
+                    android:textColor="@color/find_teacher_tab_txt_color" />
+            </RadioGroup>
+        </FrameLayout>
         <!-- 专业 -->
 
         <TextView
@@ -164,6 +209,29 @@
                 android:padding="@dimen/dp_5"
                 android:text="@string/label_experience_year"
                 android:textSize="@dimen/sp_16" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_5"
+                android:text="@string/label_registration_time"
+                android:textSize="@dimen/sp_16" />
+
+            <TextView
+                android:id="@id/fragment_my_tv_registration_time"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40"
+                android:textSize="@dimen/sp_14"
+                android:background="@drawable/editview_bg"
+                android:singleLine="true" />
         </LinearLayout>
 
         <TextView

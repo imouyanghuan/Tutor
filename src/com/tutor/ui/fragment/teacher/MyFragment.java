@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
 
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -19,9 +23,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.loopj.android.http.RequestParams;
@@ -62,7 +68,8 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	// 保存拍照圖片uri
 	private Uri imageUri, zoomUri;
 	// 用户名,性别,修改资料
-	private TextView userName, gender, editInfo;
+	private TextView userName, gender, editInfo, registrationTime;
+	private RadioGroup educationStatus;
 	// 昵称,大学,专业,年限,自我介绍,视频地址
 	private EditText nickName, school, major, year, introduction, videoLink;
 	// 播放视频
@@ -72,6 +79,8 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	/** 个人信息 */
 	private UserInfo userInfo;
 	private boolean isUpdate = false;
+	private int es;
+	private String rTime;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_teacher_my, container, false);
@@ -91,16 +100,33 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 		//
 		nickName = ViewHelper.get(view, R.id.fragment_my_et_nickname);
 		school = ViewHelper.get(view, R.id.fragment_my_et_school);
+		educationStatus = ViewHelper.get(view, R.id.fragment_my_rg_es);
 		major = ViewHelper.get(view, R.id.fragment_my_et_major);
 		year = ViewHelper.get(view, R.id.fragment_my_et_year);
+		registrationTime = ViewHelper.get(view, R.id.fragment_my_tv_registration_time);
 		introduction = ViewHelper.get(view, R.id.fragment_my_et_introduction);
 		videoLink = ViewHelper.get(view, R.id.fragment_my_et_video_path);
 		//
 		play = ViewHelper.get(view, R.id.fragment_my_ib_play);
 		save = ViewHelper.get(view, R.id.fragment_my_btn_save);
+		educationStatus.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+			@Override
+			public void onCheckedChanged(RadioGroup group, int checkedId) {
+				switch (checkedId) {
+					case R.id.fragment_my_rb_studying:
+						es = Constants.General.STUDYING;
+						break;
+					case R.id.fragment_my_rb_graduated:
+						es = Constants.General.GRADUATED;
+						break;
+				}
+			}
+		});
 		editInfo.setOnClickListener(this);
 		play.setOnClickListener(this);
 		save.setOnClickListener(this);
+		registrationTime.setOnClickListener(this);
 	}
 
 	@Override
@@ -125,6 +151,9 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 		year.setText(profile.getExprience() + "");
 		introduction.setText(!TextUtils.isEmpty(profile.getIntroduction()) ? profile.getIntroduction() : "");
 		videoLink.setText(!TextUtils.isEmpty(profile.getIntroductionVideo()) ? profile.getIntroductionVideo() : "");
+		educationStatus.check(Constants.General.STUDYING == profile.getEducationStatus() ? R.id.fragment_my_rb_studying : R.id.fragment_my_rb_graduated);
+		registrationTime.setText(TextUtils.isEmpty(profile.getRegistrationTime()) ? getString(R.string.label_none) : profile.getRegistrationTime().substring(0, 11));
+		rTime = profile.getRegistrationTime();
 	}
 
 	@Override
@@ -182,6 +211,31 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 				startActivity(intent);
 				isUpdate = true;
+				break;
+			case R.id.fragment_my_tv_registration_time:
+				Calendar calendar = Calendar.getInstance();
+				if (!TextUtils.isEmpty(rTime)) {
+					Date date = DateTimeUtil.str2Date(rTime, DateTimeUtil.FORMART_2);
+					calendar.setTime(date);
+				}
+				DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new OnDateSetListener() {
+
+					@Override
+					public void onDateSet(DatePicker view, int y, int m, int d) {
+						String month = (m + 1) + "";
+						if (m < 9) {
+							month = "0" + month;
+						}
+						String day = d + "";
+						if (d < 10) {
+							day = "0" + day;
+						}
+						rTime = y + "-" + month + "-" + day + " 00:00:00";
+						registrationTime.setText(rTime.substring(0, 11));
+						LogUtils.d(rTime);
+					}
+				}, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+				datePickerDialog.show();
 				break;
 			default:
 				break;
@@ -246,6 +300,8 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 		userInfo.setExprience(Integer.parseInt(year.getEditableText().toString()));
 		userInfo.setIntroduction(introduction.getEditableText().toString().trim());
 		userInfo.setIntroductionVideo(videoLink.getEditableText().toString().trim());
+		userInfo.setEducationStatus(es);
+		userInfo.setRegistrationTime(rTime);
 		return userInfo;
 	}
 

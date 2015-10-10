@@ -356,7 +356,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 	 * 進入主界面
 	 */
 	private void go2Main() {
-		if (!isEdit) {
+		if (!isEdit || (isEdit && !TutorApplication.isMainActivity)) {
 			Intent intent = new Intent();
 			if (Constants.General.ROLE_TUTOR == role) {
 				intent.setClass(this, TeacherMainActivity.class);
@@ -376,7 +376,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 	}
 
 	/**
-	 * 提交老师信息任务
+	 * 提信息任务
 	 * 
 	 */
 	private void submitTutorProfile(final UserInfo profile) {

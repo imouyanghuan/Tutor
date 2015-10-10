@@ -28,13 +28,13 @@ import com.tutor.util.ImageUtils;
  * 
  *         2015-9-18
  */
-public class NotificationAdapter extends BaseSwipeAdapter {
+public class SysNotificationAdapter extends BaseSwipeAdapter {
 
 	private Context mContext;
 	private List<IMMessage> mList;
 	private ZSwipeItem swipeItem;
 
-	public NotificationAdapter(Context mContext, List<IMMessage> mList) {
+	public SysNotificationAdapter(Context mContext, List<IMMessage> mList) {
 		this.mContext = mContext;
 		this.mList = mList;
 	}
@@ -76,10 +76,13 @@ public class NotificationAdapter extends BaseSwipeAdapter {
 		TextView msgNickName = (TextView) convertView.findViewById(R.id.student_list_item_nick);
 		TextView time = (TextView) convertView.findViewById(R.id.student_list_item_time);
 		TextView msg = (TextView) convertView.findViewById(R.id.student_list_item_area);
+		TextView tvStatus = (TextView) convertView.findViewById(R.id.student_list_item_form);
+		tvStatus.setTextColor(mContext.getResources().getColor(R.color.black_line));
+		tvStatus.setTextSize(14);
 		// 左滑删除item
 		swipeItem = (ZSwipeItem) convertView.findViewById(R.id.swipe_item);
 		TextView tvAccept = (TextView) convertView.findViewById(R.id.tv_accept);
-		tvAccept.setVisibility(View.GONE);
+		tvAccept.setVisibility(View.VISIBLE);
 		tvAccept.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -90,7 +93,7 @@ public class NotificationAdapter extends BaseSwipeAdapter {
 			}
 		});
 		TextView tvReject = (TextView) convertView.findViewById(R.id.tv_reject);
-		tvReject.setVisibility(View.GONE);
+		tvReject.setVisibility(View.VISIBLE);
 		tvReject.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -119,12 +122,22 @@ public class NotificationAdapter extends BaseSwipeAdapter {
 			}
 		});
 		if (mList != null) {
-			ImageUtils.loadImage(imgAvatar, ApiUrl.DOMAIN + mList.get(position).getAvatar());
-			if (mList.get(position).getMsgType() == IMMessage.MESSAGE_TYPE_SYS_MSG) {
-				tvDelete.setVisibility(View.GONE);
+			int status = mList.get(position).getReadStatus();
+			if (status == Constants.General.ACCEPT) {
+				tvStatus.setText("已接受");
+				tvAccept.setVisibility(View.GONE);
+				tvReject.setVisibility(View.GONE);
+			} else if (status == Constants.General.REJECT) {
+				tvStatus.setText("已拒絕");
+				tvAccept.setVisibility(View.GONE);
+				tvReject.setVisibility(View.GONE);
 			} else {
-				tvDelete.setVisibility(View.VISIBLE);
+				tvAccept.setVisibility(View.VISIBLE);
+				tvReject.setVisibility(View.VISIBLE);
 			}
+		}
+		if (mList != null) {
+			ImageUtils.loadImage(imgAvatar, ApiUrl.DOMAIN + mList.get(position).getAvatar());
 		}
 		String msgFrom = mList.get(position).getFromSubJid();
 		if (TextUtils.isEmpty(msgFrom)) {

@@ -10,14 +10,18 @@ package com.tutor.params;
 public class ApiUrl {
 
 	/** 即时通讯相关 */
-	public static final String XMPP_HOST = "192.168.0.187";
+	// public static final String XMPP_HOST = "192.168.0.187";
+	// public static final int XMPP_PORT = 5222;
+	// public static final String XMPP_SERVERNAME = "vm-server4";
+	// 公网
+	public static final String XMPP_HOST = "54.255.164.232";
 	public static final int XMPP_PORT = 5222;
-	public static final String XMPP_SERVERNAME = "vm-server4";
+	public static final String XMPP_SERVERNAME = "WIN-IIMO7NUVJ0R";
 	// ------------------------------------------------------------------
 	/** api */
-	public static final String DOMAIN = "http://192.168.0.187:8081/Tutor/";
-	// http://192.168.0.187:8081/Tutor/
-	// http://kevin-zhao.missionsky.com/Tutor.Api/
+	public static final String DOMAIN = "http://54.255.164.232/TutorApi/";
+	// http://192.168.0.187:8081/Tutor/ 本地
+	// http://54.255.164.232/TutorApi/
 	/** 用戶註冊 */
 	public static final String REGISTER = "api/v1/accounts/register";
 	/** 用戶登錄 */
@@ -68,4 +72,14 @@ public class ApiUrl {
 	public static final String BOOTMARK_GET_STUDENT_LIST = "api/v1/bookmark/student/list";
 	/** 从收藏夹移除学生 */
 	public static final String BOOTMARK_REMOVE_STUDENT = "api/v1/bookmark/student/remove/%s";
+	/** 接受或者拒绝邀请成为学生 */
+	public static final String NOTIFICATION_UPDATE = "api/v1/notification/update";
+	/** 获取币种 */
+	public static final String CURRENCYS = "api/v1/config/currencys";
+	/** 邀请成为我的学生 (发送者：辅导老师) */
+	public static final String TO_BE_MY_STUDENT = "api/v1/notification/student";
+	/** 邀请成为我的辅导老师 (发送者：学生) */
+	public static final String TO_BE_MY_TUTOR = "api/v1/notification/tutor";
+	/** 获取我的老师列表 */
+	public static final String MYTUTORLIST = "api/v1/notification/me/tutors";
 }

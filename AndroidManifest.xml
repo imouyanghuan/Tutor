@@ -63,13 +63,13 @@
         <activity
             android:name="com.tutor.ui.activity.TeacherMainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden" >
+            android:windowSoftInputMode="stateHidden|adjustPan" >
         </activity>
         <!-- 學生主頁 -->
         <activity
             android:name="com.tutor.ui.activity.StudentMainActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden" >
+            android:windowSoftInputMode="stateHidden|adjustPan" >
         </activity>
         <!-- 註冊 -->
         <activity
@@ -135,7 +135,8 @@
         <!-- 成為我的學生 -->
         <activity
             android:name="com.tutor.ui.activity.ToBeMyStudentActivity"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
         </activity>
         <!-- 选择地區页面 -->
         <activity
@@ -155,6 +156,12 @@
         <!-- 搜索条件页面 -->
         <activity
             android:name="com.tutor.ui.activity.SearchConditionsActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <!-- 系统消息页面 -->
+        <activity
+            android:name="com.tutor.ui.activity.SystemNotificationActivity"
             android:screenOrientation="portrait" >
         </activity>
 

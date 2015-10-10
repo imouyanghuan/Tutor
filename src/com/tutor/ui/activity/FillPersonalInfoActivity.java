@@ -215,12 +215,16 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		// 电话号码
 		String phone = phoneEditText.getEditableText().toString().trim();
 		if (TextUtils.isEmpty(phone)) {
-			phone = "";
+			toast(R.string.toast_phone_isEmpty);
+			phoneEditText.requestFocus();
+			return;
 		}
 		// 地址
 		String address = addressEditText.getEditableText().toString().trim();
 		if (TextUtils.isEmpty(address)) {
-			address = "";
+			toast(R.string.toast_address_isEmpty);
+			addressEditText.requestFocus();
+			return;
 		}
 		Intent intent = new Intent(this, SelectCourseActivity.class);
 		intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, isEdit);

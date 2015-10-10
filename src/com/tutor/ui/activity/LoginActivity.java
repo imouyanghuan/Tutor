@@ -34,9 +34,11 @@ import com.tutor.model.CheckExistResult;
 import com.tutor.model.LoginResponseResult;
 import com.tutor.model.RegisterInfoResult;
 import com.tutor.model.RegisterLoginModel;
+import com.tutor.model.UserInfoResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.JsonUtil;
 import com.tutor.util.LogUtils;
@@ -238,6 +240,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 								startActivity(i);
 								return;
 							}
+							// 没有完善资料去完善资料界面
+							if (!result.getResult().isInfoComplete()) {
+								go2FillInfo(result.getResult().getId());
+								return;
+							}
 							// 保存信息
 							TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, true);
 							TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ROLE, role);
@@ -265,6 +272,47 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 			e.printStackTrace();
 			toast(R.string.toast_login_failed);
 		}
+	}
+
+	/**
+	 * 进入完善资料界面
+	 * 
+	 * @param id
+	 */
+	private void go2FillInfo(final int id) {
+		// 先获取个人资料
+		RequestParams params = new RequestParams();
+		params.put("memberId", id);
+		String url;
+		if (Constants.General.ROLE_TUTOR == role) {
+			url = ApiUrl.TUTORINFO;
+		} else {
+			url = ApiUrl.STUDENTINFO;
+		}
+		HttpHelper.get(this, url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				if (0 == status) {
+					go2FillInfo(id);
+					return;
+				}
+				CheckTokenUtils.checkToken(status);
+				toast(R.string.toast_server_error);
+			}
+
+			@Override
+			public void onSuccess(UserInfoResult t) {
+				if (null != t.getResult()) {
+					Intent intent = new Intent(LoginActivity.this, FillPersonalInfoActivity.class);
+					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, true);
+					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, t.getResult());
+					startActivity(intent);
+				} else {
+					toast(R.string.toast_server_error);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -448,7 +496,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 							TutorApplication.getAccountDao().insertOrReplace(account);
 							// 進入隱私聲明
 							Intent intent = new Intent();
-							intent.setClass(LoginActivity.this, TeamConditionsActivity.class);
+							intent.setClass(LoginActivity.this, FillPersonalInfoActivity.class);
 							intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, role);
 							startActivity(intent);
 							finishNoAnim();

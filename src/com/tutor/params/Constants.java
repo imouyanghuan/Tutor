@@ -35,6 +35,10 @@ public final class Constants {
 		public static final int MALE = 0x0;
 		/** 女 */
 		public static final int FEMALE = 0x1;
+		/** 学习中 */
+		public static final int STUDYING = 0x0;
+		/** 已毕业 */
+		public static final int GRADUATED = 0x1;
 		/** 忘记密码 */
 		public static final int FORGET_PASSWORD = 0x0;
 		/** 修改密码 */
@@ -46,6 +50,14 @@ public final class Constants {
 		/** 精确到毫秒 */
 		public static final String MS_FORMART = "yyyy-MM-dd HH:mm:ss SSS";
 		public static final String IS_FROM_TEACHER = "isFromTeacher";
+		/** 接受 */
+		public static final int ACCEPT = 1;
+		/** 拒绝 */
+		public static final int REJECT = 2;
+		/** nickname */
+		public static final String NICKNAME = "nickName";
+		/** avatar */
+		public static final String AVATAR = "avatar";
 	}
 
 	/**

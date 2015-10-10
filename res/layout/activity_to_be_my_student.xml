@@ -23,11 +23,15 @@
                 android:layout_height="@dimen/dp_25"
                 android:background="@color/gray_light"
                 android:gravity="center_vertical"
+                android:paddingEnd="@dimen/dp_0"
                 android:paddingLeft="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_0"
+                android:paddingStart="@dimen/dp_15"
                 android:text="@string/label_student_name"
                 android:textColor="@color/gray_text" />
 
             <EditText
+                android:id="@+id/et_nick"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginBottom="@dimen/dp_15"
@@ -36,18 +40,23 @@
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/editview_bg"
                 android:gravity="center_vertical"
-                android:text="Abby Chan" />
+                android:inputType="text"
+                android:singleLine="true" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_25"
                 android:background="@color/gray_light"
                 android:gravity="center_vertical"
+                android:paddingEnd="@dimen/dp_0"
                 android:paddingLeft="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_0"
+                android:paddingStart="@dimen/dp_15"
                 android:text="@string/label_subject_to_be_taught"
                 android:textColor="@color/gray_text" />
 
             <EditText
+                android:id="@+id/et_course"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginBottom="@dimen/dp_15"
@@ -56,18 +65,23 @@
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/editview_bg"
                 android:gravity="center_vertical"
-                android:text="ESE English" />
+                android:inputType="text"
+                android:singleLine="true" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_25"
                 android:background="@color/gray_light"
                 android:gravity="center_vertical"
+                android:paddingEnd="@dimen/dp_0"
                 android:paddingLeft="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_0"
+                android:paddingStart="@dimen/dp_15"
                 android:text="@string/label_frequency_of_lessons"
                 android:textColor="@color/gray_text" />
 
             <EditText
+                android:id="@+id/et_frequency"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginBottom="@dimen/dp_15"
@@ -76,38 +90,64 @@
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/editview_bg"
                 android:gravity="center_vertical"
-                android:text="Twice a Weak" />
+                android:inputType="text"
+                android:singleLine="true" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_25"
                 android:background="@color/gray_light"
                 android:gravity="center_vertical"
+                android:paddingEnd="@dimen/dp_0"
                 android:paddingLeft="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_0"
+                android:paddingStart="@dimen/dp_15"
                 android:text="@string/label_price_per_hour"
                 android:textColor="@color/gray_text" />
 
-            <EditText
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginBottom="@dimen/dp_15"
                 android:layout_marginLeft="@dimen/dp_15"
                 android:layout_marginRight="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_10"
-                android:background="@drawable/editview_bg"
-                android:gravity="center_vertical"
-                android:text="200 HK Dollars" />
+                android:orientation="horizontal" >
+
+                <EditText
+                    android:id="@+id/et_price"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_45"
+                    android:layout_weight="2"
+                    android:background="@drawable/editview_bg"
+                    android:gravity="center_vertical"
+                    android:inputType="number"
+                    android:maxLength="10"
+                    android:singleLine="true" />
+
+                <Spinner
+                    android:id="@+id/spinner_priceType"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dp_45"
+                    android:layout_marginLeft="@dimen/dp_2"
+                    android:layout_marginStart="@dimen/dp_2"
+                    android:layout_weight="1" />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_25"
                 android:background="@color/gray_light"
                 android:gravity="center_vertical"
+                android:paddingEnd="@dimen/dp_0"
                 android:paddingLeft="@dimen/dp_15"
+                android:paddingRight="@dimen/dp_0"
+                android:paddingStart="@dimen/dp_15"
                 android:text="@string/label_service_location"
                 android:textColor="@color/gray_text" />
 
             <EditText
+                android:id="@+id/et_address"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_45"
                 android:layout_marginBottom="@dimen/dp_15"
@@ -116,7 +156,8 @@
                 android:layout_marginTop="@dimen/dp_10"
                 android:background="@drawable/editview_bg"
                 android:gravity="center_vertical"
-                android:text="Central,Hong Kong" />
+                android:inputType="text"
+                android:singleLine="true" />
         </LinearLayout>
     </ScrollView>
 

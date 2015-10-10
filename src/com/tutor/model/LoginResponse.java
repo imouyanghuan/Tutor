@@ -12,6 +12,15 @@ public class LoginResponse {
 	private int id;// 會員id
 	private String token;
 	private int status;
+	private boolean isInfoComplete;
+
+	public boolean isInfoComplete() {
+		return isInfoComplete;
+	}
+
+	public void setInfoComplete(boolean isInfoComplete) {
+		this.isInfoComplete = isInfoComplete;
+	}
 
 	public int getId() {
 		return id;

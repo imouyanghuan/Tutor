@@ -17,7 +17,7 @@
             android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_marginRight="1dp"
-            android:background="#CCE8CF"
+            android:background="@color/btn_normal"
             android:clickable="true"
             android:gravity="center"
             android:text="@string/label_accept"

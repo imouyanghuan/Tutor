@@ -43,7 +43,9 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 	private boolean isRefresh = false;
 	// 与谁聊天
 	private User user;
-
+	private TitleBar bar;
+	private String toAvatar;
+	
 	@Override
 	protected void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
@@ -70,6 +72,10 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 		lvChat.setShowIndicator(false);
 		adapter = new ChatAdapter(this, getMessages());
 		adapter.setReSendListener(this);
+		// 设置对方的头像
+		if(!TextUtils.isEmpty(toAvatar)){
+			adapter.setToAvatar(toAvatar);
+		}
 		lvChat.setAdapter(adapter);
 		lvChat.getRefreshableView().setSelection(adapter.getCount() - 1);
 		lvChat.setOnRefreshListener(new OnRefreshListener<ListView>() {
@@ -113,19 +119,19 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 		bar = getView(R.id.title_bar);
 		bar.setTitle("聊天");
 		bar.initBack(this);
-		user = ContactManager.getManager().getByUserJid(chatWithJid, TutorApplication.connectionManager.getConnection());
 		String title = null;
-		if (null != user) {
-			title = user.getName() == null ? StringUtils.getUserNameByJid(chatWithJid) : user.getName();
-			if (null != user.getStatus()) {
-				title = title + "(" + user.getStatus() + ")";
-			} else {
-				title = StringUtils.getUserNameByJid(chatWithJid) + "(離線)";
-			}
-		} else {
-			title = StringUtils.getUserNameByJid(chatWithJid) + "(離線)";
+		Intent intent = getIntent();
+		if (intent != null) {
+			// title bar
+			title = intent.getStringExtra(Constants.General.NICKNAME);
+			toAvatar = intent.getStringExtra(Constants.General.AVATAR);
 		}
-		bar.setTitle(title);
+
+		if (!TextUtils.isEmpty(title)) {
+			bar.setTitle(title);
+		} else {
+			bar.setTitle("Tutor User");
+		}
 	}
 
 	@Override
@@ -156,18 +162,17 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 			if (user1 != null) {
 				if (user1.getJID().equals(user.getJID())) {
 					String title = user1.getName() == null ? StringUtils.getUserNameByJid(chatWithJid) : user1.getName();
-					if (null != user1.getStatus()) {
-						title = title + "(" + user1.getStatus() + ")";
-					} else {
-						title = title + "(离线)";
-					}
+					// if (null != user1.getStatus()) {
+					// title = title + "(" + user1.getStatus() + ")";
+					// } else {
+					// title = title + "(离线)";
+					// }
 					bar.setTitle(title);
 					user = user1;
 				}
 			}
 		}
 	};
-	private TitleBar bar;
 
 	@Override
 	public void onClick(View v) {
@@ -200,6 +205,6 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 	@Override
 	public void onReSend(IMMessage message) {
 		// TODO
-		ToastUtil.showToastShort(this, "重新发送");
+		//ToastUtil.showToastShort(this, "重新发送");
 	}
 }

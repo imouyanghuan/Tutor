@@ -45,7 +45,6 @@ public class NotificationActivity extends BaseActivity {
 		super.onCreate(arg0);
 		setContentView(R.layout.activity_notification);
 		initView();
-		getNotificationCount();
 	}
 
 	@Override
@@ -54,8 +53,7 @@ public class NotificationActivity extends BaseActivity {
 		bar.initBack(this);
 		bar.setTitle(R.string.notification);
 		lvNotification = getView(R.id.lv_notifications);
-		messages = IMMessageManager.getManager().getRecentContactsWithLastMsg();
-		mAdapter = new NotificationAdapter(NotificationActivity.this, messages);
+		mAdapter = new NotificationAdapter(NotificationActivity.this, getMessages());
 		// 左滑删除
 		mAdapter.setOnDeleteItemClickListener(new OnDeleteItemClickListener() {
 
@@ -73,11 +71,19 @@ public class NotificationActivity extends BaseActivity {
 				if (msg == null) {
 					return;
 				}
-				String imId = msg.getFromSubJid();
-				if (!TextUtils.isEmpty(imId)) {
-					Intent intent = new Intent(NotificationActivity.this, ChatActivity.class);
-					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId);
+				int msgType = msg.getMsgType();
+				if (msgType == IMMessage.MESSAGE_TYPE_SYS_MSG) {
+					// 系统消息
+					Intent intent = new Intent(NotificationActivity.this, SystemNotificationActivity.class);
 					startActivity(intent);
+				} else {
+					String imId = msg.getFromSubJid();
+					if (!TextUtils.isEmpty(imId)) {
+						Intent intent = new Intent(NotificationActivity.this, ChatActivity.class);
+						intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId);
+						intent.putExtra(Constants.General.NICKNAME, msg.getFromSubJid());
+						startActivity(intent);
+					}
 				}
 			}
 		});
@@ -86,7 +92,7 @@ public class NotificationActivity extends BaseActivity {
 	/**
 	 * 获取消息数量 Sent 0 Accept 1 Reject 2 Acknowle 3 All 4
 	 */
-	private void getNotificationCount() {
+	private void getNotificationMsg() {
 		if (!HttpHelper.isNetworkConnected(this)) {
 			toast(R.string.toast_netwrok_disconnected);
 			return;
@@ -99,7 +105,7 @@ public class NotificationActivity extends BaseActivity {
 			@Override
 			public void onFailure(int status, String message) {
 				if (0 == status) {
-					getNotificationCount();
+					getNotificationMsg();
 					return;
 				}
 				CheckTokenUtils.checkToken(status);
@@ -117,6 +123,7 @@ public class NotificationActivity extends BaseActivity {
 							IMMessage msg = new IMMessage();
 							msg.setId(notify.getId());
 							msg.setContent(notify.getContent());
+							msg.setAvatar(notify.getAvatar());
 							msg.setTime(notify.getCreatedTime());
 							msg.setMsgType(IMMessage.MESSAGE_TYPE_SYS_MSG);
 							String nickName = notify.getNickName();
@@ -140,7 +147,14 @@ public class NotificationActivity extends BaseActivity {
 	 * @return
 	 */
 	private List<IMMessage> getMessages() {
+		if (messages != null && messages.size() > 0) {
+			messages.clear();
+		}
 		messages = IMMessageManager.getManager().getRecentContactsWithLastMsg();
+		if (mAdapter != null) {
+			mAdapter.notifyDataSetChanged();
+		}
+		getNotificationMsg();
 		return messages;
 	}
 
@@ -152,17 +166,7 @@ public class NotificationActivity extends BaseActivity {
 	private void deleteMessages(String fromSubJid) {
 		boolean isDelete = IMMessageManager.getManager().deleteMsgWhereJid(fromSubJid);
 		if (isDelete) {
-			if (mAdapter != null) {
-				mAdapter.refresh(getMessages());
-			}
-		}
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		if (mAdapter != null) {
-			mAdapter.refresh(getMessages());
+			getMessages();
 		}
 	}
 }

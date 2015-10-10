@@ -3,8 +3,12 @@ package com.tutor.ui.activity;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.loopj.android.http.RequestParams;
@@ -20,7 +24,9 @@ import com.tutor.model.BookmarkModel;
 import com.tutor.model.BookmarkStudentListResult;
 import com.tutor.model.Page;
 import com.tutor.model.RemoveBookmarkResult;
+import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
+import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.ObjectHttpResponseHandler;
@@ -62,6 +68,23 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 		lvBookmark.setOnRefreshListener(this);
 		mAdapter = new BookmarkAdapter(this, users);
 		lvBookmark.setAdapter(mAdapter);
+		lvBookmark.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				UserInfo info = mAdapter.getItem(position - 1).getMemberModel();
+				if (info != null) {
+					Intent intent = null;
+					if (info.getAccountType() == Constants.General.ROLE_STUDENT) {
+						intent = new Intent(BookmarkActivity.this, StudentInfoActivity.class);
+					} else {
+						intent = new Intent(BookmarkActivity.this, TeacherInfoActivity.class);
+					}
+					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, info);
+					startActivity(intent);
+				}
+			}
+		});
 		mAdapter.setOnDeleteItemClickListener(new OnDeleteItemClickListener() {
 
 			@Override

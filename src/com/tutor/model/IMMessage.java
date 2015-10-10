@@ -48,6 +48,7 @@ public class IMMessage implements Serializable, Comparable<IMMessage> {
 	private Integer readStatus;
 	private String noticeTime;
 	private Integer noticeSum;
+	private String avatar;
 	/**
 	 * 消息类型 1.好友请求 2.系统消息3.聊天消息
 	 */
@@ -234,5 +235,15 @@ public class IMMessage implements Serializable, Comparable<IMMessage> {
 	public String toString() {
 		return "IMMessage [id=" + id + ", sendStatus=" + sendStatus + ", title=" + title + ", content=" + content + ", time=" + time + ", fromSubJid=" + fromSubJid + ", toJid=" + toJid
 				+ ", readStatus=" + readStatus + ", noticeTime=" + noticeTime + ", noticeSum=" + noticeSum + ", noticeType=" + noticeType + ", msgType=" + msgType + "]";
+	}
+
+	
+	public String getAvatar() {
+		return avatar;
+	}
+
+	
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 }

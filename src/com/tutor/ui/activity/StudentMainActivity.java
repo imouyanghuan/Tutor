@@ -69,6 +69,7 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
+		TutorApplication.isMainActivity = true;
 		mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.Type.BEHIND, Position.LEFT, MenuDrawer.MENU_DRAG_WINDOW);
 		mMenuDrawer.setContentView(R.layout.activity_student_main);
 		mMenuDrawer.setMenuView(R.layout.menu_layout);
@@ -241,6 +242,7 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 		stopService(intent);
 		// 清空缓存的图片
 		ImageUtils.clearChache();
+		TutorApplication.isMainActivity = false;
 		super.onDestroy();
 	}
 

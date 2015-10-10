@@ -487,6 +487,7 @@ public class IMService extends Service {
 		Notification myNoti = new Notification();
 		/* 设置statusbar显示的icon */
 		myNoti.icon = iconId;
+		myNoti.flags = Notification.FLAG_AUTO_CANCEL;
 		/* 设置statusbar显示的文字信息 */
 		myNoti.tickerText = contentTitle;
 		/* 设置notification发生时同时发出默认声音 */

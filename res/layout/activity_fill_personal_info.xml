@@ -152,6 +152,7 @@
                     android:id="@id/ac_fill_personal_info_et_birth"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_40"
+                    android:textSize="@dimen/sp_14"
                     android:background="@drawable/editview_bg"
                     android:singleLine="true" />
             </LinearLayout>

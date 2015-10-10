@@ -1,6 +1,7 @@
 package com.tutor;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 import android.app.Application;
 import android.content.Context;
@@ -30,6 +31,8 @@ import com.tutor.util.SettingManager;
  */
 public class TutorApplication extends Application {
 
+	// 用来判断是否是进入到了主界面
+	public static boolean isMainActivity = false;
 	public static boolean DEBUG = false;
 	public static SettingManager settingManager;
 	// 数据库相关
@@ -54,9 +57,9 @@ public class TutorApplication extends Application {
 		initDao();
 		initImageLoader(this);
 		// 设置开启日志,发布时请关闭日志
-        JPushInterface.setDebugMode(true);
-        // 初始化 JPush
-        JPushInterface.init(this);  
+		JPushInterface.setDebugMode(true);
+		// 初始化 JPush
+		JPushInterface.init(this);
 	}
 
 	private void initDao() {
@@ -140,7 +143,18 @@ public class TutorApplication extends Application {
 	public static HashMap<String, String> getHeaders() {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put("token", getToken());
-		map.put("lang", "en_US");
+		map.put("lang", getLang());
 		return map;
+	}
+
+	private static String getLang() {
+		String lang = Locale.getDefault().getLanguage();
+		System.out.println(lang);
+		if (null != lang && lang.endsWith("zh")) {
+			lang = "zh-hk";
+		} else {
+			lang = "en-us";
+		}
+		return lang;
 	}
 }
