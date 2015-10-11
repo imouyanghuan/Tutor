@@ -1,10 +1,6 @@
 package com.tutor.ui.activity;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-
-import org.apache.http.entity.StringEntity;
-import org.apache.http.protocol.HTTP;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,7 +33,6 @@ import com.tutor.model.Course;
 import com.tutor.model.CourseItem1;
 import com.tutor.model.CourseItem2;
 import com.tutor.model.CourseListResult;
-import com.tutor.model.MatchStudentListResult;
 import com.tutor.model.SearchCondition;
 import com.tutor.model.Timeslot;
 import com.tutor.params.ApiUrl;
@@ -47,9 +42,7 @@ import com.tutor.ui.dialog.TimeSlotDialog.onTimeSelectedCallBack;
 import com.tutor.ui.dialog.WeekDialog;
 import com.tutor.ui.dialog.WeekDialog.OnWeekSelectedCallback;
 import com.tutor.ui.view.TitleBar;
-import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.HttpHelper;
-import com.tutor.util.JsonUtil;
 import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
@@ -108,10 +101,6 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 	private int genderValue = -1;
 	private EditText etSearch;
 	// 是否是搜索狀態
-	private boolean isSearchStatus = false;
-	// 頁碼,每頁大小
-	private int pageIndex = 0, pageSize = 20;
-	private SearchCondition condition = null;
 	private boolean isFromTeacher;
 	private LinearLayout llGender;
 
@@ -571,11 +560,6 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 					if (null == timeslots) {
 						timeslots = new ArrayList<Timeslot>();
 					}
-					// if (null != teacherProfile) {
-					// timeslot.setMemberId(teacherProfile.getId());
-					// } else {
-					// timeslot.setMemberId(studentProfile.getId());
-					// }
 					timeslots.add(timeslot);
 					adapter.refresh(timeslots);
 					saveTime.setEnabled(false);
@@ -614,81 +598,8 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 				}
 				timeSlotDialog1.show();
 				break;
-			case R.id.fragment_find_student_btn:
-				// 關鍵字搜索
-				String keyWords = etSearch.getEditableText().toString().trim();
-				// if (TextUtils.isEmpty(keyWords)) {
-				// if (!isSearchStatus) {
-				// toast(R.string.toast_no_keywords);
-				// return;
-				// } else {
-				// isSearchStatus = false;
-				// // 獲取匹配學生列表
-				// pageIndex = 0;
-				// getStudentList(pageIndex, pageSize);
-				// return;
-				// }
-				// }
-				isSearchStatus = true;
-				// 獲取搜索的學生列表
-				pageIndex = 0;
-				if (!HttpHelper.isNetworkConnected(SearchConditionsActivity.this)) {
-					toast(R.string.toast_netwrok_disconnected);
-					return;
-				}
-				showDialogRes(R.string.loading);
-				getSearchStudent(keyWords, pageIndex, pageSize);
-				break;
 			default:
 				break;
-		}
-	}
-
-	/**
-	 * 獲取搜索學生列表
-	 * 
-	 */
-	private void getSearchStudent(final String keyWord, final int pageIndex, final int pageSize) {
-		if (!HttpHelper.isNetworkConnected(SearchConditionsActivity.this)) {
-			toast(R.string.toast_netwrok_disconnected);
-			return;
-		}
-		StringBuffer sb = new StringBuffer();
-		sb.append(ApiUrl.SEARCHSTUDENT);
-		sb.append("?pageIndex=");
-		sb.append(pageIndex);
-		sb.append("&pageSize=");
-		sb.append(pageSize);
-		String body;
-		if (condition != null) {
-			body = JsonUtil.parseObject2Str(condition);
-		} else {
-			body = JsonUtil.parseObject2Str(new Object());
-		}
-		try {
-			StringEntity entity = new StringEntity(body, HTTP.UTF_8);
-			HttpHelper.post(SearchConditionsActivity.this, sb.toString(), TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<MatchStudentListResult>(MatchStudentListResult.class) {
-
-				@Override
-				public void onFailure(int status, String message) {
-					if (0 == status) {
-						getSearchStudent(keyWord, pageIndex, pageSize);
-						return;
-					}
-					// setData(null);
-					CheckTokenUtils.checkToken(status);
-					listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
-				}
-
-				@Override
-				public void onSuccess(MatchStudentListResult t) {
-					CheckTokenUtils.checkToken(t);
-					// setData(t);
-				}
-			});
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-			// setData(null);
 		}
 	}
 
