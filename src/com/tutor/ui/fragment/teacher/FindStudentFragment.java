@@ -28,7 +28,7 @@ import com.mssky.mobile.ui.view.PullToRefreshListView;
 import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.MatchStudentAdapter;
-import com.tutor.model.MatchStudentListResult;
+import com.tutor.model.UserListResult;
 import com.tutor.model.Page;
 import com.tutor.model.SearchCondition;
 import com.tutor.model.Timeslot;
@@ -55,23 +55,16 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 	private PullToRefreshListView listView;
 	private EditText editText;
 	// 數據
-	private MatchStudentListResult listResult;
+	private UserListResult listResult;
 	// 列表
 	private ArrayList<UserInfo> users = new ArrayList<UserInfo>();
 	private MatchStudentAdapter adapter;
 	// 頁碼,每頁大小
 	private int pageIndex = 0, pageSize = 20;
-	// 搜索學生關鍵字
-	private String keyWords;
 	// 是否是搜索狀態
 	private boolean isSearchStatus = false;
 	private SearchCondition condition = null;
 	private ImageButton ibDelete;
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_teacher_findstudent, container, false);
@@ -82,7 +75,6 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 	@SuppressLint("InflateParams")
 	private void initView(LayoutInflater inflater, View view) {
 		View serchView = inflater.inflate(R.layout.find_student_search_layout, null);
-		ViewHelper.get(serchView, R.id.btn_search_conditions).setOnClickListener(this);
 		editText = ViewHelper.get(serchView, R.id.fragment_find_student_et);
 		editText.setOnClickListener(this);
 		editText.setFocusable(false);
@@ -114,7 +106,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		pageIndex = 0;
 		if (isSearchStatus) {
 			// 加載搜索學生列表
-			getSearchStudent(keyWords, pageIndex, pageSize);
+			getSearchStudent(pageIndex, pageSize);
 		} else {
 			// 加載匹配學生列表
 			getStudentList(pageIndex, pageSize);
@@ -132,7 +124,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 				pageIndex += 1;
 				if (isSearchStatus) {
 					// 加載搜索學生列表
-					getSearchStudent(keyWords, pageIndex, pageSize);
+					getSearchStudent(pageIndex, pageSize);
 				} else {
 					// 加載匹配學生列表
 					getStudentList(pageIndex, pageSize);
@@ -163,20 +155,6 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.fragment_find_student_btn:
-				// 關鍵字搜索
-				keyWords = editText.getEditableText().toString().trim();
-				// if (TextUtils.isEmpty(keyWords)) {
-				// if (!isSearchStatus) {
-				// toast(R.string.toast_no_keywords);
-				// return;
-				// } else {
-				// isSearchStatus = false;
-				// // 獲取匹配學生列表
-				// pageIndex = 0;
-				// getStudentList(pageIndex, pageSize);
-				// return;
-				// }
-				// }
 				isSearchStatus = true;
 				// 獲取搜索的學生列表
 				pageIndex = 0;
@@ -185,7 +163,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 					return;
 				}
 				showDialogRes(R.string.loading);
-				getSearchStudent(keyWords, pageIndex, pageSize);
+				getSearchStudent(pageIndex, pageSize);
 				break;
 			// 添加条件搜索
 			case R.id.fragment_find_student_et:
@@ -199,7 +177,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 				condition = null;
 				editText.setHint(R.string.hint_search_student_keywords);
 				ibDelete.setVisibility(View.GONE);
-				getSearchStudent(keyWords, pageIndex, pageSize);
+				getStudentList(pageIndex, pageSize);
 				break;
 			default:
 				break;
@@ -307,7 +285,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		RequestParams params = new RequestParams();
 		params.put("pageIndex", pageIndex);
 		params.put("pageSize", pageSize);
-		HttpHelper.get(getActivity(), ApiUrl.STUDENTMATCH, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<MatchStudentListResult>(MatchStudentListResult.class) {
+		HttpHelper.get(getActivity(), ApiUrl.STUDENTMATCH, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -320,7 +298,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 			}
 
 			@Override
-			public void onSuccess(MatchStudentListResult result) {
+			public void onSuccess(UserListResult result) {
 				CheckTokenUtils.checkToken(result);
 				setData(result);
 			}
@@ -331,7 +309,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 	 * 獲取搜索學生列表
 	 * 
 	 */
-	private void getSearchStudent(final String keyWord, final int pageIndex, final int pageSize) {
+	private void getSearchStudent(final int pageIndex, final int pageSize) {
 		if (!HttpHelper.isNetworkConnected(getActivity())) {
 			toast(R.string.toast_netwrok_disconnected);
 			return;
@@ -342,9 +320,6 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		sb.append(pageIndex);
 		sb.append("&pageSize=");
 		sb.append(pageSize);
-		// params.put("keywords", keyWord);
-		// params.put("pageIndex", pageIndex);
-		// params.put("pageSize", pageSize);
 		String body;
 		if (condition != null) {
 			body = JsonUtil.parseObject2Str(condition);
@@ -353,12 +328,12 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		}
 		try {
 			StringEntity entity = new StringEntity(body, HTTP.UTF_8);
-			HttpHelper.post(getActivity(), sb.toString(), TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<MatchStudentListResult>(MatchStudentListResult.class) {
+			HttpHelper.post(getActivity(), sb.toString(), TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {
 					if (0 == status) {
-						getSearchStudent(keyWord, pageIndex, pageSize);
+						getSearchStudent(pageIndex, pageSize);
 						return;
 					}
 					setData(null);
@@ -367,7 +342,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 				}
 
 				@Override
-				public void onSuccess(MatchStudentListResult t) {
+				public void onSuccess(UserListResult t) {
 					CheckTokenUtils.checkToken(t);
 					setData(t);
 				}
@@ -378,7 +353,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		}
 	}
 
-	private void setData(MatchStudentListResult result) {
+	private void setData(UserListResult result) {
 		listView.onRefreshComplete();
 		dismissDialog();
 		if (null != result) {

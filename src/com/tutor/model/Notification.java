@@ -16,7 +16,8 @@ public class Notification {
 	private int orientation;
 	private int status;
 	private String content;
-	private String course;
+	private int[] coursesValues;
+	private String displayCourses;
 	private String frequent;
 	private String pricePerHour;
 	private int priceCurrency;
@@ -68,12 +69,20 @@ public class Notification {
 		this.content = content;
 	}
 
-	public String getCourse() {
-		return course;
+	public int[] getCoursesValues() {
+		return coursesValues;
 	}
 
-	public void setCourse(String course) {
-		this.course = course;
+	public void setCoursesValues(int[] coursesValues) {
+		this.coursesValues = coursesValues;
+	}
+
+	public String getDisplayCourses() {
+		return displayCourses;
+	}
+
+	public void setDisplayCourses(String displayCourses) {
+		this.displayCourses = displayCourses;
 	}
 
 	public String getFrequent() {

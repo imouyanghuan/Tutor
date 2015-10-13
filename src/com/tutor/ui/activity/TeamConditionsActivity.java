@@ -1,5 +1,7 @@
 package com.tutor.ui.activity;
 
+import java.io.InputStream;
+
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,6 +12,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.tutor.R;
+import com.tutor.TutorApplication;
 import com.tutor.ui.view.TitleBar;
 
 /**
@@ -29,6 +32,29 @@ public class TeamConditionsActivity extends BaseActivity implements OnClickListe
 		super.onCreate(arg0);
 		setContentView(R.layout.activity_team_conditions);
 		initView();
+		setText();
+	}
+
+	private void setText() {
+		String txt;
+		try {
+			String fileName;
+			if (TutorApplication.isCH()) {
+				fileName = "term_ch.txt";
+			} else {
+				fileName = "term_en.txt";
+			}
+			// 获得AssetManger 对象, 调用其open 方法取得 对应的inputStream对象
+			InputStream in = getAssets().open(fileName);
+			int size = in.available();// 取得数据流的数据大小
+			byte[] buffer = new byte[size];
+			in.read(buffer);
+			in.close();
+			txt = new String(buffer);
+		} catch (Exception e) {
+			txt = "";
+		}
+		textView.setText(txt);
 	}
 
 	@Override
@@ -40,7 +66,6 @@ public class TeamConditionsActivity extends BaseActivity implements OnClickListe
 		button.setOnClickListener(this);
 		CheckBox box = getView(R.id.ac_teamcondition_cb);
 		box.setOnCheckedChangeListener(this);
-		textView.setText(R.string.team_conditions_txt);
 	}
 
 	@Override

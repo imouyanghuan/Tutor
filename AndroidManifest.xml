@@ -164,7 +164,27 @@
             android:name="com.tutor.ui.activity.SystemNotificationActivity"
             android:screenOrientation="portrait" >
         </activity>
-
+        <!-- 评价老师页面 -->
+        <activity
+            android:name="com.tutor.ui.activity.RateTutorActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <!-- 评论列表页面 -->
+        <activity
+            android:name="com.tutor.ui.activity.RateCommentListActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 评论列表页面 -->
+        <activity
+            android:name="com.tutor.ui.activity.SureCourseActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <!-- 聊天列表页面 -->
+        <activity
+            android:name="com.tutor.ui.activity.ChatListActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         <!-- IM服务 -->
         <service android:name="com.tutor.service.IMService" >
         </service>

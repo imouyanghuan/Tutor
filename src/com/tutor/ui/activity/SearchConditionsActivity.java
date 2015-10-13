@@ -100,7 +100,6 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 	private ArrayAdapter<String> genderAdapter;
 	private int genderValue = -1;
 	private EditText etSearch;
-	// 是否是搜索狀態
 	private boolean isFromTeacher;
 	private LinearLayout llGender;
 

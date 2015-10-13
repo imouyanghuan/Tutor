@@ -157,4 +157,14 @@ public class TutorApplication extends Application {
 		}
 		return lang;
 	}
+
+	public static boolean isCH() {
+		String lang = Locale.getDefault().getLanguage();
+		System.out.println(lang);
+		if (null != lang && lang.endsWith("zh")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }

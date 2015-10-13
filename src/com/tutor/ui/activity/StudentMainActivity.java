@@ -84,7 +84,7 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 	@Override
 	protected void initView() {
 		bar = getView(R.id.title_bar);
-		bar.setTitle(R.string.findteacher);
+		bar.setTitle(R.string.study_abroad);
 		bar.setLeftButton(R.drawable.menu_selector, new OnClickListener() {
 
 			@Override
@@ -96,13 +96,17 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 		// 底部菜單切換時的操作
 		mRadioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-			// TODO 改變標題欄右按鈕的圖標和監聽
+			// 改變標題欄右按鈕的圖標和監聽
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				switch (checkedId) {
 					case R.id.ac_main_rb1:
 						if (currentFragment != findTeacherFragment) {
 							ft = getSupportFragmentManager().beginTransaction();
+							if (null == findTeacherFragment) {
+								findTeacherFragment = new FindTeacherFragment();
+								ft.add(R.id.ac_main_content_fragment, findTeacherFragment, "findTeacherFragment");
+							}
 							ft.hide(currentFragment);
 							ft.show(findTeacherFragment);
 							ft.commit();
@@ -168,6 +172,7 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 		// 菜單項
 		getView(R.id.menu_item_notification).setOnClickListener(this);
 		getView(R.id.menu_item_bookmark).setOnClickListener(this);
+		getView(R.id.menu_item_chatlist).setOnClickListener(this);
 		msgCount = getView(R.id.menu_item_tv_msgCount);
 	}
 
@@ -192,12 +197,12 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 	}
 
 	private void initFragment() {
-		findTeacherFragment = new FindTeacherFragment();
+		overseasEducationFragment = new OverseasEducationFragment();
 		ft = getSupportFragmentManager().beginTransaction();
-		ft.add(R.id.ac_main_content_fragment, findTeacherFragment, "findTeacherFragment");
-		ft.show(findTeacherFragment);
+		ft.add(R.id.ac_main_content_fragment, overseasEducationFragment, "overseasEducationFragment");
+		ft.show(overseasEducationFragment);
 		ft.commit();
-		currentFragment = findTeacherFragment;
+		currentFragment = overseasEducationFragment;
 	}
 
 	@Override
@@ -288,12 +293,16 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.menu_item_notification:
-				Intent notification = new Intent(this, NotificationActivity.class);
+				Intent notification = new Intent(this, SystemNotificationActivity.class);// NotificationActivity.class
 				startActivity(notification);
 				break;
 			case R.id.menu_item_bookmark:
 				Intent bookmark = new Intent(this, BookmarkActivity.class);
 				startActivity(bookmark);
+				break;
+			case R.id.menu_item_chatlist:
+				Intent chatlist = new Intent(this, NotificationActivity.class);
+				startActivity(chatlist);
 				break;
 			default:
 				break;

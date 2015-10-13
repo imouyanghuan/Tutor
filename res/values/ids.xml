@@ -49,8 +49,10 @@
     <item name="ac_fill_personal_info_et_hkid" type="id"></item>
     <item name="ac_fill_personal_info_et_phone" type="id"></item>
     <item name="ac_fill_personal_info_et_birth" type="id"></item>
+    <item name="ac_fill_personal_info_et_grade" type="id"></item>
     <item name="ac_fill_personal_info_et_address" type="id"></item>
     <item name="ac_fill_personal_info_ll_areas" type="id"></item>
+    <item name="ac_fill_personal_info_ll_grade" type="id"></item>
     <item name="ac_fill_personal_info_rg" type="id"></item>
     <item name="ac_fill_personal_course_scrollview" type="id"></item>
     <item name="ac_fill_personal_info_rb_male" type="id"></item>
@@ -64,6 +66,7 @@
     <item name="ac_fill_personal_info_rb_eb4" type="id"></item>
     <item name="ac_fill_personal_info_timeslot_lv" type="id"></item>
     <item name="ac_fill_personal_time_tv_week" type="id"></item>
+    <item name="ac_fill_personal_tv_hkid" type="id"></item>
     <item name="ac_fill_personal_time_tv_start" type="id"></item>
     <item name="ac_fill_personal_time_tv_end" type="id"></item>
     <item name="ac_fill_personal_time_np_week" type="id"></item>
@@ -104,6 +107,13 @@
     <item name="student_list_item_area" type="id"></item>
     <item name="student_list_item_form" type="id"></item>
     <item name="student_list_item_time" type="id"></item>
+    <!-- 老师列表item -->
+    <item name="teacher_list_item_layout" type="id"></item>
+    <item name="teacher_list_item_avatar" type="id"></item>
+    <item name="teacher_list_item_nick" type="id"></item>
+    <item name="teacher_list_item_coures" type="id"></item>
+    <item name="teacher_list_item_rating" type="id"></item>
+    <item name="teacher_list_item_studentNumber" type="id"></item>
     <!-- my fragment -->
     <item name="fragment_my_iv_avatar" type="id"></item>
     <item name="fragment_my_rg_es" type="id"></item>
@@ -117,6 +127,7 @@
     <item name="fragment_my_tv_edit" type="id"></item>
     <item name="fragment_my_et_nickname" type="id"></item>
     <item name="fragment_my_et_school" type="id"></item>
+    <item name="fragment_my_tv_changepswd" type="id"></item>
     <item name="fragment_my_et_major" type="id"></item>
     <item name="fragment_my_et_year" type="id"></item>
     <item name="fragment_my_et_introduction" type="id"></item>

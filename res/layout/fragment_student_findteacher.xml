@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/default_bg_color" >
+    android:background="@drawable/listview_bg" >
 
     <com.mssky.mobile.ui.view.PullToRefreshListView
         android:id="@id/fragment_find_teacher_lv"
@@ -10,8 +10,8 @@
         android:layout_height="match_parent"
         android:cacheColorHint="@color/transparent"
         android:divider="@null"
+        android:fadingEdge="none"
         android:listSelector="@color/transparent"
-        android:paddingBottom="@dimen/dp_3"
-        android:scrollbars="none" />
+        android:overScrollMode="never" />
 
 </FrameLayout>

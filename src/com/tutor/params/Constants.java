@@ -58,6 +58,8 @@ public final class Constants {
 		public static final String NICKNAME = "nickName";
 		/** avatar */
 		public static final String AVATAR = "avatar";
+		/** tutorId */
+		public static final String TUTOR_ID = "tutorId";
 	}
 
 	/**
@@ -94,6 +96,8 @@ public final class Constants {
 		public static final int ZOOM = 0x3;
 		/** 搜索条件 */
 		public static final int SEARCH_CONDITIONS = 0x4;
+		/** 邀请的时候确定课程 */
+		public static final int SURE_COURSES = 0x5;
 	}
 
 	/**
@@ -144,6 +148,8 @@ public final class Constants {
 		public static final String INTENT_EXTRA_PASSWORD = "password";
 		/** 忘记密码或修改密码的标识 */
 		public static final String INTENT_EXTRA_PASSWORD_FLAG = "password.flag";
+		/** 忘记密码或修改密码的标识 */
+		public static final String INTENT_EXTRA_COURSESLIST= "course.list";
 	}
 
 	/**

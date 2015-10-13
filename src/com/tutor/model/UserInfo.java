@@ -35,7 +35,7 @@ public class UserInfo implements Serializable {
 	private String major;
 	private String introductionVideo;
 	// 学生字段
-	private String grade;
+	private int grade;
 	// 教师和学生都有的字段
 	private int id;
 	private String nickName;
@@ -61,6 +61,8 @@ public class UserInfo implements Serializable {
 	private ArrayList<Course> courses;
 	private ArrayList<Area> areas;
 	private ArrayList<Timeslot> timeslots;
+	private boolean isMatched;
+	private String gradeName;
 
 	public String getHkidNumber() {
 		return hkidNumber;
@@ -70,11 +72,11 @@ public class UserInfo implements Serializable {
 		this.hkidNumber = hkidNumber;
 	}
 
-	public String getGrade() {
+	public int getGrade() {
 		return grade;
 	}
 
-	public void setGrade(String grade) {
+	public void setGrade(int grade) {
 		this.grade = grade;
 	}
 
@@ -359,5 +361,25 @@ public class UserInfo implements Serializable {
 				+ gender + ", introduction=" + introduction + ", token=" + token + ", expirationTime=" + expirationTime + ", createdTime=" + createdTime + ", status=" + status + ", accountType="
 				+ accountType + ", bookmarkID=" + bookmarkID + ", coursesValues=" + Arrays.toString(coursesValues) + ", areaValues=" + Arrays.toString(areaValues) + ", courses=" + courses
 				+ ", areas=" + areas + ", timeslots=" + timeslots + "]";
+	}
+
+	
+	public boolean isMatched() {
+		return isMatched;
+	}
+
+	
+	public void setMatched(boolean isMatched) {
+		this.isMatched = isMatched;
+	}
+
+	
+	public String getGradeName() {
+		return gradeName;
+	}
+
+	
+	public void setGradeName(String gradeName) {
+		this.gradeName = gradeName;
 	}
 }

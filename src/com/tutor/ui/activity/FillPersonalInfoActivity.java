@@ -13,20 +13,31 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.loopj.android.http.RequestParams;
 import com.tutor.R;
 import com.tutor.TutorApplication;
+import com.tutor.adapter.CurrencysAdapter;
 import com.tutor.model.Account;
+import com.tutor.model.Currency;
+import com.tutor.model.CurrencyListResult;
 import com.tutor.model.UserInfo;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.DateTimeUtil;
+import com.tutor.util.HttpHelper;
 import com.tutor.util.LogUtils;
+import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
  * 完善資料界面
@@ -46,13 +57,17 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	// views
 	/** 姓名,證件號,電話號碼 ,生日,地址 */
 	private EditText nameEditText, hKidEditText, phoneEditText, addressEditText;
-	private TextView birthEditText;
+	private TextView birthEditText, hkidTextView;
+	private Spinner gradeSpinner;
+	private CurrencysAdapter adapter;
+	private LinearLayout gradeLinearLayout;
 	/** 性別 */
 	private RadioGroup sexRadioGroup;
 	/** 性别 */
 	private int sex = 0;
 	/** 出生日期 */
 	private String birth;
+	private int gradeValue;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -66,12 +81,14 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 			}
 			role = getIntent().getIntExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, -1);
 			birth = BIRTH;
+			gradeValue = -1;
 		} else {
 			userInfo = (UserInfo) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO);
 			if (null != userInfo) {
 				role = userInfo.getAccountType();
 				birth = userInfo.getBirth();
 				sex = userInfo.getGender();
+				gradeValue = userInfo.getGrade();
 			}
 			if (TextUtils.isEmpty(birth)) {
 				birth = BIRTH;
@@ -82,6 +99,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		}
 		setContentView(R.layout.activity_fill_personal_info);
 		initView();
+		getGrades();
 	}
 
 	@Override
@@ -105,10 +123,30 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		hKidEditText = getView(R.id.ac_fill_personal_info_et_hkid);
 		phoneEditText = getView(R.id.ac_fill_personal_info_et_phone);
 		birthEditText = getView(R.id.ac_fill_personal_info_et_birth);
+		gradeSpinner = getView(R.id.ac_fill_personal_info_et_grade);
+		hkidTextView = getView(R.id.ac_fill_personal_tv_hkid);
+		gradeLinearLayout = getView(R.id.ac_fill_personal_info_ll_grade);
 		birthEditText.setOnClickListener(this);
+		gradeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				if (null != adapter) {
+					Currency currency = adapter.getItem(arg2);
+					if (null != currency) {
+						gradeValue = currency.getValue();
+					}
+				}
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {}
+		});
 		addressEditText = getView(R.id.ac_fill_personal_info_et_address);
 		if (Constants.General.ROLE_STUDENT == role) {
 			hKidEditText.setHint(R.string.label_optional);
+			gradeLinearLayout.setVisibility(View.VISIBLE);
+			hkidTextView.setVisibility(View.GONE);
 		}
 		sexRadioGroup = getView(R.id.ac_fill_personal_info_rg);
 		sexRadioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -208,6 +246,12 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				hKidEditText.requestFocus();
 				return;
 			}
+		} else {
+			// 学生必须填写年级
+			if (gradeValue == -1) {
+				toast(R.string.toast_grade_noChoice);
+				return;
+			}
 		}
 		if (TextUtils.isEmpty(hkid)) {
 			hkid = "";
@@ -234,6 +278,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		userInfo.setHkidNumber(hkid);
 		userInfo.setUserName(name);
 		userInfo.setPhone(phone);
+		userInfo.setGrade(gradeValue);
 		userInfo.setBirth(birth);
 		userInfo.setGender(sex);
 		userInfo.setResidentialAddress(address);
@@ -257,5 +302,50 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		userInfo.setToken(account.getToken());
 		userInfo.setAccountType(role);
 		return userInfo;
+	}
+
+	private void getGrades() {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		showDialogRes(R.string.loading);
+		HttpHelper.get(this, ApiUrl.GRADE, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<CurrencyListResult>(CurrencyListResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				// 连接超时,再获取一次
+				if (0 == status) {
+					getGrades();
+					return;
+				}
+				dismissDialog();
+				toast(R.string.toast_server_error);
+			}
+
+			@Override
+			public void onSuccess(CurrencyListResult t) {
+				dismissDialog();
+				if (null != t) {
+					adapter = new CurrencysAdapter(FillPersonalInfoActivity.this, t.getResult());
+					gradeSpinner.setAdapter(adapter);
+					if (null == userInfo) {
+						gradeValue = 0;
+					} else {
+						gradeValue = userInfo.getGrade();
+						int size = t.getResult().size();
+						for (int i = 0; i < size; i++) {
+							Currency currency = t.getResult().get(i);
+							if (currency.getValue() == gradeValue) {
+								gradeSpinner.setSelection(i);
+								break;
+							}
+						}
+					}
+				} else {
+					toast(R.string.toast_server_error);
+				}
+			}
+		});
 	}
 }

@@ -43,7 +43,6 @@ import com.tutor.ui.activity.NoticeActivity;
 import com.tutor.util.DateTimeUtil;
 import com.tutor.util.LogUtils;
 import com.tutor.util.StringUtils;
-import com.tutor.util.ToastUtil;
 import com.tutor.util.UUIDUtils;
 
 /**
@@ -55,8 +54,6 @@ import com.tutor.util.UUIDUtils;
  */
 public class IMService extends Service {
 
-	// 上下文
-	private Context mContext;
 	// 通知欄消息管理器
 	private NotificationManager notificationManager;
 	// 網絡連接管理器
@@ -431,18 +428,23 @@ public class IMService extends Service {
 	 * 
 	 * @param connection
 	 */
-	private void reConnect(XMPPConnection connection) {
-		try {
-			connection.connect();
-			if (connection.isConnected()) {
-				Presence presence = new Presence(Presence.Type.available);
-				connection.sendPacket(presence);
-				ToastUtil.showToastShort(mContext, R.string.toast_online);
+	private void reConnect(final XMPPConnection connection) {
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					connection.connect();
+					if (connection.isConnected()) {
+						Presence presence = new Presence(Presence.Type.available);
+						connection.sendPacket(presence);
+					}
+				} catch (XMPPException e) {
+					LogUtils.e("connection failed!" + e.toString());
+					reConnect(connection);
+				}
 			}
-		} catch (XMPPException e) {
-			LogUtils.e("connection failed!" + e.toString());
-			reConnect(connection);
-		}
+		}).start();
 	}
 
 	/**

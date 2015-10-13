@@ -3,4 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <com.mssky.mobile.ui.view.PullToRefreshListView
+        android:id="@id/fragment_find_student_lv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:cacheColorHint="@color/transparent"
+        android:divider="@null"
+        android:footerDividersEnabled="false"
+        android:headerDividersEnabled="false"
+        android:listSelector="@color/transparent"
+        android:paddingBottom="@dimen/dp_3"
+        android:scrollbars="none" />
+
 </FrameLayout>

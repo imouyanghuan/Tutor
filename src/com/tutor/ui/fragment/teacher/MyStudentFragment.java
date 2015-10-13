@@ -8,8 +8,6 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.loopj.android.http.RequestParams;
@@ -20,7 +18,7 @@ import com.mssky.mobile.ui.view.PullToRefreshListView;
 import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.MatchStudentAdapter;
-import com.tutor.model.MatchStudentListResult;
+import com.tutor.model.UserListResult;
 import com.tutor.model.Page;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
@@ -37,16 +35,16 @@ import com.tutor.util.ViewHelper;
  * 
  *         2015-8-20
  */
-public class MyStudentFragment extends BaseFragment implements OnRefreshListener2<ListView>, OnItemClickListener {
+public class MyStudentFragment extends BaseFragment implements OnRefreshListener2<ListView> {
 
 	private PullToRefreshListView listView;
 	// 數據
-	private MatchStudentListResult listResult;
+	private UserListResult listResult;
 	// 列表
 	private ArrayList<UserInfo> users = new ArrayList<UserInfo>();
-	private MatchStudentAdapter adapter;
 	// 頁碼,每頁大小
 	private int pageIndex = 0, pageSize = 20;
+	private MatchStudentAdapter adapter;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,15 +62,9 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 		// 設置可上拉加載和下拉刷新
 		listView.setMode(Mode.BOTH);
 		listView.setOnRefreshListener(this);
-		listView.setOnItemClickListener(this);
 		adapter = new MatchStudentAdapter(getActivity(), users);
 		listView.setAdapter(adapter);
 		getStudentList(pageIndex, pageSize);
-	}
-
-	@Override
-	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -126,7 +118,7 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 		RequestParams params = new RequestParams();
 		params.put("pageIndex", pageIndex);
 		params.put("pageSize", pageSize);
-		HttpHelper.get(getActivity(), ApiUrl.MYSTUDENTLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<MatchStudentListResult>(MatchStudentListResult.class) {
+		HttpHelper.get(getActivity(), ApiUrl.MYSTUDENTLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -139,7 +131,7 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 			}
 
 			@Override
-			public void onSuccess(MatchStudentListResult result) {
+			public void onSuccess(UserListResult result) {
 				listView.onRefreshComplete();
 				CheckTokenUtils.checkToken(result);
 				if (null != result) {

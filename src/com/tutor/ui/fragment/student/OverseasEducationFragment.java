@@ -28,5 +28,14 @@ public class OverseasEducationFragment extends BaseFragment {
 		return view;
 	}
 
-	private void initView(View view) {}
+	private void initView(View view) {
+//		view.findViewById(R.id.tv_study_abroad).setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				Intent intent = new Intent(getActivity(), TeacherInfoActivity.class);
+//				startActivity(intent);
+//			}
+//		});
+	}
 }

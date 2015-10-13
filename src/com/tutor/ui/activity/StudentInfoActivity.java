@@ -86,7 +86,12 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		} else {
 			phoneTextView.setText(phone);
 		}
-		gradeTextView.setText(TextUtils.isEmpty(userInfo.getGrade()) ? getString(R.string.label_unknow) : userInfo.getGrade());
+		String gradeName = userInfo.getGradeName();
+		if (!TextUtils.isEmpty(gradeName)) {
+			gradeTextView.setText(gradeName);
+		} else {
+			gradeTextView.setText(getString(R.string.label_unknow_grade));
+		}
 		birthTextView.setText(TextUtils.isEmpty(userInfo.getBirth()) ? getString(R.string.label_unknow) : userInfo.getBirth().substring(0, 11));
 		addressTextView.setText(TextUtils.isEmpty(userInfo.getResidentialAddress()) ? getString(R.string.label_unknow_address) : userInfo.getResidentialAddress());
 		// 时间段
@@ -127,7 +132,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		if (TextUtils.isEmpty(titleName)) {
 			titleName = userInfo.getUserName();
 			if (TextUtils.isEmpty(titleName)) {
-				titleName = "PersonInfo";
+				titleName = "Student Info";
 			}
 		}
 		bar.setTitle(titleName);
@@ -143,8 +148,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 			}
 		});
 		getView(R.id.btn_chat_with_tutor).setOnClickListener(this);
-		getView(R.id.btn_to_be_my_tutor).setOnClickListener(this);
-		avatarImageView = getView(R.id.iv_avatar);
+		getView(R.id.btn_to_be_my_student).setOnClickListener(this);
 		nickTextView = getView(R.id.tv_user_name);
 		genderTextView = getView(R.id.tv_gender);
 		gradeTextView = getView(R.id.tv_grade);
@@ -156,6 +160,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		timeslotTip = getView(R.id.tv_timeslot_tip);
 		courseTip = getView(R.id.tv_course_tip);
 		nickTextView.setText(titleName);
+		avatarImageView = getView(R.id.iv_avatar);
 		ImageUtils.loadImage(avatarImageView, ApiUrl.DOMAIN + userInfo.getAvatar());
 	}
 
@@ -174,7 +179,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 				}
 				break;
 			// to be my student
-			case R.id.btn_to_be_my_tutor:
+			case R.id.btn_to_be_my_student:
 				if (null != userInfo) {
 					Intent intent = new Intent(StudentInfoActivity.this, ToBeMyStudentActivity.class);
 					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
@@ -209,8 +214,11 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 			@Override
 			public void onSuccess(AddBookmarkResult result) {
 				dismissDialog();
-				if (result.getStatusCode() == HttpURLConnection.HTTP_OK) {
+				int statusCode = result.getStatusCode();
+				if (statusCode == HttpURLConnection.HTTP_OK) {
 					toast(R.string.toast_add_to_bookmark_success);
+				} else if (statusCode == HttpURLConnection.HTTP_INTERNAL_ERROR) {
+					toast(result.getMessage());
 				}
 			}
 		});

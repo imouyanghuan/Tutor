@@ -33,12 +33,17 @@ public class BaseFragment extends Fragment {
 	 * @param txt
 	 */
 	protected void toast(String txt) {
-		if (null == toast) {
-			toast = Toast.makeText(getActivity(), txt, SHORT);
+		try {
+			if (null == toast) {
+				toast = Toast.makeText(getActivity(), txt, SHORT);
+			}
+			toast.setText(txt);
+			toast.setDuration(SHORT);
+			toast.show();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		toast.setText(txt);
-		toast.setDuration(SHORT);
-		toast.show();
 	}
 
 	/**
@@ -47,12 +52,17 @@ public class BaseFragment extends Fragment {
 	 * @param txt
 	 */
 	protected void toastLong(String txt) {
-		if (null == toast) {
-			toast = Toast.makeText(getActivity(), txt, LONG);
+		try {
+			if (null == toast) {
+				toast = Toast.makeText(getActivity(), txt, LONG);
+			}
+			toast.setText(txt);
+			toast.setDuration(LONG);
+			toast.show();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		toast.setText(txt);
-		toast.setDuration(LONG);
-		toast.show();
 	}
 
 	/**
@@ -61,12 +71,16 @@ public class BaseFragment extends Fragment {
 	 * @param txt
 	 */
 	protected void toast(int txt) {
-		if (null == toast) {
-			toast = Toast.makeText(getActivity(), txt, SHORT);
+		try {
+			if (null == toast) {
+				toast = Toast.makeText(getActivity(), txt, SHORT);
+			}
+			toast.setText(txt);
+			toast.setDuration(SHORT);
+			toast.show();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		toast.setText(txt);
-		toast.setDuration(SHORT);
-		toast.show();
 	}
 
 	/**

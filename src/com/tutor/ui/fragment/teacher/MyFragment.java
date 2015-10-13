@@ -40,6 +40,7 @@ import com.tutor.model.UserInfoResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.activity.BaseActivity;
+import com.tutor.ui.activity.ChangePasswordActivity;
 import com.tutor.ui.activity.FillPersonalInfoActivity;
 import com.tutor.ui.dialog.ChangeAvatarDialog;
 import com.tutor.ui.fragment.BaseFragment;
@@ -68,7 +69,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	// 保存拍照圖片uri
 	private Uri imageUri, zoomUri;
 	// 用户名,性别,修改资料
-	private TextView userName, gender, editInfo, registrationTime;
+	private TextView userName, gender, editInfo, registrationTime, changepswd;
 	private RadioGroup educationStatus;
 	// 昵称,大学,专业,年限,自我介绍,视频地址
 	private EditText nickName, school, major, year, introduction, videoLink;
@@ -99,16 +100,17 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 		editInfo = ViewHelper.get(view, R.id.fragment_my_tv_edit);
 		//
 		nickName = ViewHelper.get(view, R.id.fragment_my_et_nickname);
+		introduction = ViewHelper.get(view, R.id.fragment_my_et_introduction);
 		school = ViewHelper.get(view, R.id.fragment_my_et_school);
 		educationStatus = ViewHelper.get(view, R.id.fragment_my_rg_es);
 		major = ViewHelper.get(view, R.id.fragment_my_et_major);
 		year = ViewHelper.get(view, R.id.fragment_my_et_year);
 		registrationTime = ViewHelper.get(view, R.id.fragment_my_tv_registration_time);
-		introduction = ViewHelper.get(view, R.id.fragment_my_et_introduction);
 		videoLink = ViewHelper.get(view, R.id.fragment_my_et_video_path);
 		//
 		play = ViewHelper.get(view, R.id.fragment_my_ib_play);
 		save = ViewHelper.get(view, R.id.fragment_my_btn_save);
+		changepswd = ViewHelper.get(view, R.id.fragment_my_tv_changepswd);
 		educationStatus.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
 			@Override
@@ -124,6 +126,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 			}
 		});
 		editInfo.setOnClickListener(this);
+		changepswd.setOnClickListener(this);
 		play.setOnClickListener(this);
 		save.setOnClickListener(this);
 		registrationTime.setOnClickListener(this);
@@ -187,6 +190,10 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 					toast(R.string.toast_video_link_empety);
 					return;
 				}
+				if (!link.startsWith("http")) {
+					toast(R.string.toast_video_unplay);
+					return;
+				}
 				try {
 					Intent it = new Intent(Intent.ACTION_VIEW);
 					Uri uri = Uri.parse(link);
@@ -236,6 +243,11 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 					}
 				}, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 				datePickerDialog.show();
+				break;
+			case R.id.fragment_my_tv_changepswd:
+				Intent intent2 = new Intent(getActivity(), ChangePasswordActivity.class);
+				intent2.putExtra(Constants.IntentExtra.INTENT_EXTRA_PASSWORD_FLAG, Constants.General.CHANGE_PASSWORD);
+				startActivity(intent2);
 				break;
 			default:
 				break;

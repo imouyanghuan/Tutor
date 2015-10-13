@@ -10,16 +10,16 @@ package com.tutor.params;
 public class ApiUrl {
 
 	/** 即时通讯相关 */
-	// public static final String XMPP_HOST = "192.168.0.187";
-	// public static final int XMPP_PORT = 5222;
-	// public static final String XMPP_SERVERNAME = "vm-server4";
-	// 公网
-	public static final String XMPP_HOST = "54.255.164.232";
+	public static final String XMPP_HOST = "192.168.0.187";
 	public static final int XMPP_PORT = 5222;
-	public static final String XMPP_SERVERNAME = "WIN-IIMO7NUVJ0R";
+	public static final String XMPP_SERVERNAME = "vm-server4";
+	// 公网
+	// public static final String XMPP_HOST = "54.255.164.232";
+	// public static final int XMPP_PORT = 5222;
+	// public static final String XMPP_SERVERNAME = "WIN-IIMO7NUVJ0R";
 	// ------------------------------------------------------------------
 	/** api */
-	public static final String DOMAIN = "http://54.255.164.232/TutorApi/";
+	public static final String DOMAIN = "http://192.168.0.187:8081/Tutor/";
 	// http://192.168.0.187:8081/Tutor/ 本地
 	// http://54.255.164.232/TutorApi/
 	/** 用戶註冊 */
@@ -50,8 +50,6 @@ public class ApiUrl {
 	public static final String TUTORPROFILE = "api/v1/members/tutor/profile";
 	/** 获取辅导老师信息 */
 	public static final String TUTORINFO = "api/v1/members/tutor";
-	/** 搜索辅导老师信息 */
-	public static final String SEARCHTUTOR = "api/v1/members/tutor/search";
 	/** 编辑学生信息 */
 	public static final String STUDENTPROFILE = "api/v1/members/student/profile";
 	/** 獲取学生信息 */
@@ -60,14 +58,20 @@ public class ApiUrl {
 	public static final String SEARCHSTUDENT = "api/v1/members/student/search";
 	/** 获取匹配的学生信息列表 */
 	public static final String STUDENTMATCH = "api/v1/members/student/match";
-	/** 获取匹配的老師信息列表 */
-	public static final String TUTORMATCH = "api/v1/members/tutor/match";
+	/** 根据综合评分排序获取老师信息列表 */
+	public static final String TUTORRATING = "api/v1/members/tutor/orderbyrating";
+	/** 根据学生数量排序获取老师列表 */
+	public static final String TUTORPOPULARITY = "api/v1/members/tutor/orderbypopularity";
+	/** 搜索老师 */
+	public static final String SEARCHTUTOR = "api/v1/members/tutor/search";
 	/** 获取我的學生列表 */
 	public static final String MYSTUDENTLIST = "api/v1/notification/me/students";
 	/** 获取消息列表 */
 	public static final String NOTIFICATIONLIST = "api/v1/notification/list";
 	/** 增加学生到收藏夹 */
 	public static final String BOOTMARK_ADD_STUDENT = "api/v1/bookmark/student/%s/add";
+	/** 增加老师到收藏夹 */
+	public static final String BOOTMARK_ADD_TUTOR = "api/v1/bookmark/tutor/%s/add";
 	/** 获取收藏的学生列表 */
 	public static final String BOOTMARK_GET_STUDENT_LIST = "api/v1/bookmark/student/list";
 	/** 从收藏夹移除学生 */
@@ -82,4 +86,10 @@ public class ApiUrl {
 	public static final String TO_BE_MY_TUTOR = "api/v1/notification/tutor";
 	/** 获取我的老师列表 */
 	public static final String MYTUTORLIST = "api/v1/notification/me/tutors";
+	/** 增加对老师的评价 */
+	public static final String RATING = "api/v1/rating/add/%s";
+	/** 获取对某老师的评论列表 */
+	public static final String RATING_COMMENT_LIST = "api/v1/rating/%s/list";
+	/** 获取年级 */
+	public static final String GRADE = "api/v1/config/grades";
 }

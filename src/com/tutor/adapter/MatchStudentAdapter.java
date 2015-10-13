@@ -37,12 +37,8 @@ public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 	@Override
 	protected void convert(ViewHolder holder, final UserInfo t, int position) {
 		ImageView avatar = holder.getView(R.id.student_list_item_avatar);
-		if (TextUtils.isEmpty(t.getAvatar())) {
-			ImageUtils.loadImage(avatar, "drawable://" + R.drawable.avatar);
-		} else {
-			String path = ApiUrl.DOMAIN + t.getAvatar();
-			ImageUtils.loadImage(avatar, path);
-		}
+		String path = ApiUrl.DOMAIN + t.getAvatar();
+		ImageUtils.loadImage(avatar, path);
 		if (!TextUtils.isEmpty(t.getNickName())) {
 			holder.setText(R.id.student_list_item_nick, t.getNickName());
 		} else if (!TextUtils.isEmpty(t.getUserName())) {
@@ -51,9 +47,14 @@ public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 		if (!TextUtils.isEmpty(t.getResidentialAddress())) {
 			holder.setText(R.id.student_list_item_area, t.getResidentialAddress());
 		} else {
-			holder.setText(R.id.student_list_item_area, R.string.label_none_area);
+			holder.setText(R.id.student_list_item_area, R.string.label_unknow_address);
 		}
-		holder.setText(R.id.student_list_item_form, Constants.General.MALE == t.getGender() ? R.string.label_male : R.string.label_female);
+		String gradeName = t.getGradeName();
+		if(!TextUtils.isEmpty(gradeName)){
+			holder.setText(R.id.student_list_item_form, gradeName);
+		}else{
+			holder.setText(R.id.student_list_item_form, R.string.label_unknow_grade);
+		}
 		holder.setText(R.id.student_list_item_time, t.getCreatedTime().toString().substring(0, 11));
 		// 學生item點擊事件
 		holder.getView(R.id.student_list_item_layout).setOnClickListener(new OnClickListener() {

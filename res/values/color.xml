@@ -27,5 +27,6 @@
     <color name="yellow_press">#d39407</color>
     <color name="black_2">#8f41484e</color>
     <color name="gray_line">#edf0f5</color>
+    <color name="red_dot">#e0491b</color>
 
 </resources>
