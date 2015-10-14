@@ -193,6 +193,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 			toast(R.string.toast_netwrok_disconnected);
 			return;
 		}
+		// 设置别名
+		JPushInterface.setAlias(getApplicationContext(), model.getIMID(), new TagAliasCallback() {
+
+			@Override
+			public void gotResult(int arg0, String arg1, Set<String> arg2) {
+				// TODO Auto-generated method stub
+			}
+		});
 		showDialogRes(R.string.logining);
 		String content = JsonUtil.parseObject2Str(model);
 		try {
@@ -372,14 +380,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 					// JPush register id
 					String registerId = JPushInterface.getRegistrationID(getApplicationContext());
 					model.setjRegistrationID(registerId);
-					// 设置别名
-					JPushInterface.setAlias(getApplicationContext(), id, new TagAliasCallback() {
-
-						@Override
-						public void gotResult(int arg0, String arg1, Set<String> arg2) {
-							// TODO Auto-generated method stub
-						}
-					});
 					if (result.getResult()) {
 						// 存在,直接登錄
 						login(model);
@@ -402,6 +402,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 			toast(R.string.toast_netwrok_disconnected);
 			return;
 		}
+		// 设置别名
+		JPushInterface.setAlias(getApplicationContext(), model.getIMID(), new TagAliasCallback() {
+
+			@Override
+			public void gotResult(int arg0, String arg1, Set<String> arg2) {
+				// TODO Auto-generated method stub
+			}
+		});
 		showDialogRes(R.string.logining);
 		String content = JsonUtil.parseObject2Str(model);
 		try {

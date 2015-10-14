@@ -3,7 +3,6 @@ package com.tutor.model;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
-
 import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.internal.DaoConfig;
@@ -27,13 +26,15 @@ public class IMMessageDao extends AbstractDao<IMMessage, String> {
 		public final static Property Title = new Property(2, String.class, "title", false, "TITLE");
 		public final static Property Content = new Property(3, String.class, "content", false, "CONTENT");
 		public final static Property Time = new Property(4, String.class, "time", false, "TIME");
-		public final static Property FromSubJid = new Property(5, String.class, "fromSubJid", false, "FROM_SUB_JID");
-		public final static Property ToJid = new Property(6, String.class, "toJid", false, "TO_JID");
-		public final static Property ReadStatus = new Property(7, Integer.class, "readStatus", false, "READ_STATUS");
-		public final static Property NoticeTime = new Property(8, String.class, "noticeTime", false, "NOTICE_TIME");
-		public final static Property NoticeSum = new Property(9, Integer.class, "noticeSum", false, "NOTICE_SUM");
-		public final static Property NoticeType = new Property(10, Integer.class, "noticeType", false, "NOTICE_TYPE");
-		public final static Property MsgType = new Property(11, Integer.class, "msgType", false, "MSG_TYPE");
+		public final static Property Avatar = new Property(5, String.class, "avatar", false, "AVATAR");
+		public final static Property FromSubJid = new Property(6, String.class, "fromSubJid", false, "FROM_SUB_JID");
+		public final static Property FromUserName = new Property(7, String.class, "fromUserName", false, "FROM_USER_NAME");
+		public final static Property ToJid = new Property(8, String.class, "toJid", false, "TO_JID");
+		public final static Property ReadStatus = new Property(9, Integer.class, "readStatus", false, "READ_STATUS");
+		public final static Property NoticeTime = new Property(10, String.class, "noticeTime", false, "NOTICE_TIME");
+		public final static Property NoticeSum = new Property(11, Integer.class, "noticeSum", false, "NOTICE_SUM");
+		public final static Property NoticeType = new Property(12, Integer.class, "noticeType", false, "NOTICE_TYPE");
+		public final static Property MsgType = new Property(13, Integer.class, "msgType", false, "MSG_TYPE");
 	};
 
 	public IMMessageDao(DaoConfig config) {
@@ -53,13 +54,15 @@ public class IMMessageDao extends AbstractDao<IMMessage, String> {
 				"\"TITLE\" TEXT," + // 2: title
 				"\"CONTENT\" TEXT NOT NULL ," + // 3: content
 				"\"TIME\" TEXT," + // 4: time
-				"\"FROM_SUB_JID\" TEXT NOT NULL ," + // 5: fromSubJid
-				"\"TO_JID\" TEXT NOT NULL ," + // 6: toJid
-				"\"READ_STATUS\" INTEGER," + // 7: readStatus
-				"\"NOTICE_TIME\" TEXT," + // 8: noticeTime
-				"\"NOTICE_SUM\" INTEGER," + // 9: noticeSum
-				"\"NOTICE_TYPE\" INTEGER," + // 10: noticeType
-				"\"MSG_TYPE\" INTEGER);"); // 11: msgType
+				"\"AVATAR\" TEXT," + // 5: avatar
+				"\"FROM_SUB_JID\" TEXT NOT NULL ," + // 6: fromSubJid
+				"\"FROM_USER_NAME\" TEXT," + // 7: fromUserName
+				"\"TO_JID\" TEXT NOT NULL ," + // 8: toJid
+				"\"READ_STATUS\" INTEGER," + // 9: readStatus
+				"\"NOTICE_TIME\" TEXT," + // 10: noticeTime
+				"\"NOTICE_SUM\" INTEGER," + // 11: noticeSum
+				"\"NOTICE_TYPE\" INTEGER," + // 12: noticeType
+				"\"MSG_TYPE\" INTEGER);"); // 13: msgType
 	}
 
 	/** Drops the underlying database table. */
@@ -86,27 +89,35 @@ public class IMMessageDao extends AbstractDao<IMMessage, String> {
 		if (time != null) {
 			stmt.bindString(5, time);
 		}
-		stmt.bindString(6, entity.getFromSubJid());
-		stmt.bindString(7, entity.getToJid());
+		String avatar = entity.getAvatar();
+		if (avatar != null) {
+			stmt.bindString(6, avatar);
+		}
+		stmt.bindString(7, entity.getFromSubJid());
+		String fromUserName = entity.getFromUserName();
+		if (fromUserName != null) {
+			stmt.bindString(8, fromUserName);
+		}
+		stmt.bindString(9, entity.getToJid());
 		Integer readStatus = entity.getReadStatus();
 		if (readStatus != null) {
-			stmt.bindLong(8, readStatus);
+			stmt.bindLong(10, readStatus);
 		}
 		String noticeTime = entity.getNoticeTime();
 		if (noticeTime != null) {
-			stmt.bindString(9, noticeTime);
+			stmt.bindString(11, noticeTime);
 		}
 		Integer noticeSum = entity.getNoticeSum();
 		if (noticeSum != null) {
-			stmt.bindLong(10, noticeSum);
+			stmt.bindLong(12, noticeSum);
 		}
 		Integer noticeType = entity.getNoticeType();
 		if (noticeType != null) {
-			stmt.bindLong(11, noticeType);
+			stmt.bindLong(13, noticeType);
 		}
 		Integer msgType = entity.getMsgType();
 		if (msgType != null) {
-			stmt.bindLong(12, msgType);
+			stmt.bindLong(14, msgType);
 		}
 	}
 
@@ -125,13 +136,15 @@ public class IMMessageDao extends AbstractDao<IMMessage, String> {
 				cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // title
 				cursor.getString(offset + 3), // content
 				cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // time
-				cursor.getString(offset + 5), // fromSubJid
-				cursor.getString(offset + 6), // toJid
-				cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // readStatus
-				cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // noticeTime
-				cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // noticeSum
-				cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10), // noticeType
-				cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11) // msgType
+				cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // avatar
+				cursor.getString(offset + 6), // fromSubJid
+				cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // fromUserName
+				cursor.getString(offset + 8), // toJid
+				cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9), // readStatus
+				cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // noticeTime
+				cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11), // noticeSum
+				cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12), // noticeType
+				cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13) // msgType
 		);
 		return entity;
 	}
@@ -144,13 +157,15 @@ public class IMMessageDao extends AbstractDao<IMMessage, String> {
 		entity.setTitle(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
 		entity.setContent(cursor.getString(offset + 3));
 		entity.setTime(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-		entity.setFromSubJid(cursor.getString(offset + 5));
-		entity.setToJid(cursor.getString(offset + 6));
-		entity.setReadStatus(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
-		entity.setNoticeTime(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-		entity.setNoticeSum(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
-		entity.setNoticeType(cursor.isNull(offset + 10) ? null : cursor.getInt(offset + 10));
-		entity.setMsgType(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
+		entity.setAvatar(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+		entity.setFromSubJid(cursor.getString(offset + 6));
+		entity.setFromUserName(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+		entity.setToJid(cursor.getString(offset + 8));
+		entity.setReadStatus(cursor.isNull(offset + 9) ? null : cursor.getInt(offset + 9));
+		entity.setNoticeTime(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+		entity.setNoticeSum(cursor.isNull(offset + 11) ? null : cursor.getInt(offset + 11));
+		entity.setNoticeType(cursor.isNull(offset + 12) ? null : cursor.getInt(offset + 12));
+		entity.setMsgType(cursor.isNull(offset + 13) ? null : cursor.getInt(offset + 13));
 	}
 
 	/** @inheritdoc */

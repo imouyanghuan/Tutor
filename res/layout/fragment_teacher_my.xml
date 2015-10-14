@@ -264,7 +264,7 @@
             android:padding="@dimen/dp_10"
             android:text="@string/edit_personal_info"
             android:textColor="@color/blue_color_selector"
-            android:textSize="@dimen/sp_20" />
+            android:textSize="@dimen/sp_18" />
         <!-- 介绍 -->
 
         <TextView

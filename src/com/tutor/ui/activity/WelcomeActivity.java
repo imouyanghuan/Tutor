@@ -4,13 +4,18 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.Toast;
 import cn.jpush.android.api.InstrumentedActivity;
 
+import com.loopj.android.http.RequestParams;
 import com.tutor.R;
 import com.tutor.TutorApplication;
+import com.tutor.model.VersionUpDate;
+import com.tutor.model.VersionUpDateResult;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.util.HttpHelper;
+import com.tutor.util.ObjectHttpResponseHandler;
+import com.tutor.util.ToastUtil;
 
 /**
  * 歡迎界面
@@ -20,20 +25,42 @@ import com.tutor.util.HttpHelper;
  */
 public class WelcomeActivity extends InstrumentedActivity {
 
+	private VersionUpDate versionUpDate;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_welcome);
+		// 檢查版本更新
+		checkVersion();
 		handler.sendEmptyMessageDelayed(0, Constants.General.WELCOME_DELAY);
+	}
+
+	private void checkVersion() {
 		if (!HttpHelper.isNetworkConnected(this)) {
-			Toast.makeText(WelcomeActivity.this, R.string.toast_netwrok_disconnected, Toast.LENGTH_SHORT).show();
+			ToastUtil.showToastLong(this, R.string.toast_netwrok_disconnected);
+			return;
 		}
+		HttpHelper.get(this, ApiUrl.UPDATEVERSION, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<VersionUpDateResult>(VersionUpDateResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onSuccess(VersionUpDateResult t) {
+				versionUpDate = t.getResult();
+			}
+		});
 	}
 
 	@SuppressLint("HandlerLeak")
 	Handler handler = new Handler() {
 
 		public void handleMessage(android.os.Message msg) {
+			//
+			if (null != versionUpDate) {}
 			Intent intent = new Intent();
 			// 是否登錄
 			boolean isLogin = (Boolean) TutorApplication.settingManager.readSetting(Constants.SharedPreferences.SP_ISLOGIN, false);

@@ -49,6 +49,7 @@ public class IMMessage implements Serializable, Comparable<IMMessage> {
 	private String noticeTime;
 	private Integer noticeSum;
 	private String avatar;
+	private String fromUserName;
 	/**
 	 * 消息类型 1.好友请求 2.系统消息3.聊天消息
 	 */
@@ -69,14 +70,16 @@ public class IMMessage implements Serializable, Comparable<IMMessage> {
 		msgType = 0;
 	}
 
-	public IMMessage(String id, Integer sendStatus, String title, String content, String time, String fromSubJid, String toJid, Integer readStatus, String noticeTime, Integer noticeSum,
-			Integer noticeType, Integer msgType) {
+	public IMMessage(String id, Integer sendStatus, String title, String content, String time, String avatar, String fromSubJid, String fromUserName, String toJid, Integer readStatus,
+			String noticeTime, Integer noticeSum, Integer noticeType, Integer msgType) {
 		this.id = id;
 		this.sendStatus = sendStatus;
 		this.title = title;
 		this.content = content;
 		this.time = time;
+		this.avatar = avatar;
 		this.fromSubJid = fromSubJid;
+		this.fromUserName = fromUserName;
 		this.toJid = toJid;
 		this.readStatus = readStatus;
 		this.noticeTime = noticeTime;
@@ -237,13 +240,19 @@ public class IMMessage implements Serializable, Comparable<IMMessage> {
 				+ ", readStatus=" + readStatus + ", noticeTime=" + noticeTime + ", noticeSum=" + noticeSum + ", noticeType=" + noticeType + ", msgType=" + msgType + "]";
 	}
 
-	
 	public String getAvatar() {
 		return avatar;
 	}
 
-	
 	public void setAvatar(String avatar) {
 		this.avatar = avatar;
+	}
+
+	public String getFromUserName() {
+		return fromUserName;
+	}
+
+	public void setFromUserName(String fromUserName) {
+		this.fromUserName = fromUserName;
 	}
 }

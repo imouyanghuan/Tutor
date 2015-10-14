@@ -50,10 +50,13 @@ public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 			holder.setText(R.id.student_list_item_area, R.string.label_unknow_address);
 		}
 		String gradeName = t.getGradeName();
-		if(!TextUtils.isEmpty(gradeName)){
+		if (!TextUtils.isEmpty(gradeName)) {
 			holder.setText(R.id.student_list_item_form, gradeName);
-		}else{
-			holder.setText(R.id.student_list_item_form, R.string.label_unknow_grade);
+		} else {
+			holder.setText(R.id.student_list_item_form, ""/*
+														 * R.string.
+														 * label_unknow_grade
+														 */);
 		}
 		holder.setText(R.id.student_list_item_time, t.getCreatedTime().toString().substring(0, 11));
 		// 學生item點擊事件

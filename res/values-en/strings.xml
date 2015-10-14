@@ -50,8 +50,8 @@
     <string name="student_count">Student: %s</string>
     <string name="rating">Rating:</string>
     <string name="nust_flag">*</string>
-    <string name="note">根據勞工處職業介紹所之規例，職業介紹所需保留求職者之地址及身分證號碼，其資料將受本應用程式之私隱政策限制，詳情請參閱本公司之網頁。</string>
-    <string name="sys_notification">System Message</string>
+    <string name="note">According to the regulation of the employment agency in Labour Department，the employment agency will keep the jobhunter’s address and HKID, and this information will be restricted by privacy policy of our application, please check our website for detail.</string>
+    <string name="sys_notification">Message</string>
 
     <!-- label -->
     <string name="label_role_student">Students/Parents</string>
@@ -81,7 +81,7 @@
     <string name="label_edit_timeslot">Edit Timeslot</string>
     <string name="label_education_background">Education Background</string>
     <string name="label_education_background2">Current Education :</string>
-    <string name="label_education_status">Education Status:</string>
+    <string name="label_education_status">Current Education Status:</string>
     <string name="label_teaching_couress">Teaching Couress</string>
     <string name="label_interested_couress">Interested Couress</string>
     <string name="label_teach_time_slot">Preferred Teaching Time Slot</string>
@@ -107,6 +107,7 @@
     <string name="label_self_introduction_video">Self Introduction Video(Optional):</string>
     <string name="label_optional">(Optional)</string>
     <string name="label_registration_time">Registration Time:</string>
+    <string name="label_chat">Chat</string>
     <!-- button -->
     <string name="btn_role_student">Find tutors</string>
     <string name="btn_role_tutor">Join 2utor</string>
@@ -160,6 +161,8 @@
     <string name="toast_no_timeslot">Please add timeslot!</string>
     <string name="toast_name_isEmpty">Name is Empty!</string>
     <string name="toast_hkid_isEmpty">HKID is Empty!</string>
+    <string name="toast_hkid_error">HKID format error!</string>
+    <string name="toast_phone_error">Phone number format error!</string>
     <string name="toast_phone_isEmpty">Phone number is Empty!</string>
     <string name="toast_no_data">No Data</string>
     <string name="toast_no_more_data">There is no more data</string>

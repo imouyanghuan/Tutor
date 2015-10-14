@@ -74,8 +74,12 @@ public class ApiUrl {
 	public static final String BOOTMARK_ADD_TUTOR = "api/v1/bookmark/tutor/%s/add";
 	/** 获取收藏的学生列表 */
 	public static final String BOOTMARK_GET_STUDENT_LIST = "api/v1/bookmark/student/list";
+	/** 获取收藏的老师列表 */
+	public static final String BOOTMARK_GET_TUTOR_LIST = "api/v1/bookmark/tutor/list";
 	/** 从收藏夹移除学生 */
 	public static final String BOOTMARK_REMOVE_STUDENT = "api/v1/bookmark/student/remove/%s";
+	/** 从收藏夹移除老师 */
+	public static final String BOOTMARK_REMOVE_TUTOR = "api/v1/bookmark/tutor/remove/%s";
 	/** 接受或者拒绝邀请成为学生 */
 	public static final String NOTIFICATION_UPDATE = "api/v1/notification/update";
 	/** 获取币种 */
@@ -92,4 +96,8 @@ public class ApiUrl {
 	public static final String RATING_COMMENT_LIST = "api/v1/rating/%s/list";
 	/** 获取年级 */
 	public static final String GRADE = "api/v1/config/grades";
+	/** 檢查新版本 */
+	public static final String UPDATEVERSION = "api/v1/config/appversion/android";
+	/** 根据imid 获取用户信息 */
+	public static final String IM_GET_INFO = "api/v1/members/im/%s";
 }

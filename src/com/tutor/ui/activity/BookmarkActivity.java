@@ -47,11 +47,18 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 	private ArrayList<BookmarkModel> users = new ArrayList<BookmarkModel>();
 	private BookmarkAdapter mAdapter;
 	private BookmarkStudentListResult listResult;
+	// 当前用户身份类型
+	private int role;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.activity_bookmark);
+		role = TutorApplication.getRole();
+		if (role == -1) {
+			finish();
+			return;
+		}
 		initView();
 	}
 
@@ -92,14 +99,14 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 				deleteBookmark(bookmarkId);
 			}
 		});
-		getStudentList(pageIndex, pageSize);
+		getList(pageIndex, pageSize);
 	}
 
 	/**
 	 * 获取收藏的学生列表
 	 * 
 	 */
-	private void getStudentList(int pageIndex, int pageSize) {
+	private void getList(int pageIndex, int pageSize) {
 		if (!HttpHelper.isNetworkConnected(this)) {
 			toast(R.string.toast_netwrok_disconnected);
 			return;
@@ -109,7 +116,13 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 		RequestParams params = new RequestParams();
 		params.put("pageIndex", pageIndex);
 		params.put("pageSize", pageSize);
-		HttpHelper.get(this, ApiUrl.BOOTMARK_GET_STUDENT_LIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<BookmarkStudentListResult>(BookmarkStudentListResult.class) {
+		String url;
+		if (Constants.General.ROLE_STUDENT == role) {
+			url = ApiUrl.BOOTMARK_GET_TUTOR_LIST;
+		} else {
+			url = ApiUrl.BOOTMARK_GET_STUDENT_LIST;
+		}
+		HttpHelper.get(this, url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<BookmarkStudentListResult>(BookmarkStudentListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -140,7 +153,12 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 			return;
 		}
 		RequestParams params = new RequestParams();
-		String url = String.format(ApiUrl.BOOTMARK_REMOVE_STUDENT, bookmarkId);
+		String url;
+		if (Constants.General.ROLE_STUDENT == role) {
+			url = String.format(ApiUrl.BOOTMARK_REMOVE_TUTOR, bookmarkId);
+		} else {
+			url = String.format(ApiUrl.BOOTMARK_REMOVE_STUDENT, bookmarkId);
+		}
 		HttpHelper.get(this, url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<RemoveBookmarkResult>(RemoveBookmarkResult.class) {
 
 			@Override
@@ -176,7 +194,7 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 			Page page = listResult.getPage();
 			if (null != page && page.isHasNextPage()) {
 				pageIndex += 1;
-				getStudentList(pageIndex, pageSize);
+				getList(pageIndex, pageSize);
 			} else {
 				new Handler().post(new Runnable() {
 

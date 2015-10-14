@@ -8,7 +8,7 @@
         android:id="@id/course_item_title2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_18" />
+        android:textSize="@dimen/sp_16" />
 
     <com.tutor.ui.view.CustomGridView
         android:id="@id/course_item_gv"

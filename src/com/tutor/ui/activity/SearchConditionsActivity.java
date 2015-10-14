@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -99,7 +98,7 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 	private ArrayList<String> genders;
 	private ArrayAdapter<String> genderAdapter;
 	private int genderValue = -1;
-	private EditText etSearch;
+	// private EditText etSearch;
 	private boolean isFromTeacher;
 	private LinearLayout llGender;
 
@@ -126,8 +125,8 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 			@Override
 			public void onClick(View v) {
 				SearchCondition condition = new SearchCondition();
-				String keyword = etSearch.getText().toString();
-				condition.setSearchKeyword(keyword);
+				// String keyword = etSearch.getText().toString();
+				// condition.setSearchKeyword(keyword);
 				condition.setAreaValue(areaValue);
 				String areaName = "";
 				if (!curCity.equals(getString(R.string.label_please_choose))) {
@@ -162,8 +161,8 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 			}
 		});
 		llGender = getView(R.id.ll_gender);
-		etSearch = getView(R.id.fragment_find_student_et);
-		getView(R.id.fragment_find_student_btn).setVisibility(View.GONE);
+		// etSearch = getView(R.id.fragment_find_student_et);
+		// getView(R.id.fragment_find_student_btn).setVisibility(View.GONE);
 		weekTextView = getView(R.id.ac_fill_personal_time_tv_week);
 		weekTextView.setOnClickListener(this);
 		startTimeTextView = getView(R.id.ac_fill_personal_time_tv_start);

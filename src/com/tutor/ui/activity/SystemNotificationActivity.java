@@ -182,11 +182,10 @@ public class SystemNotificationActivity extends BaseActivity {
 				} else {
 					toast("已经拒绝邀请");
 				}
-				
-				if(messages != null && messages.size() > 0){
-					for(int i = 0; i< messages.size(); i++){
+				if (messages != null && messages.size() > 0) {
+					for (int i = 0; i < messages.size(); i++) {
 						String notifyId = messages.get(i).getId();
-						if(notifyId.equals(notificationId)){
+						if (notifyId.equals(notificationId)) {
 							messages.get(i).setReadStatus(curStatus);
 							mAdapter.notifyDataSetChanged();
 							break;

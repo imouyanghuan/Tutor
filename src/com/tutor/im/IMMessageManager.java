@@ -176,7 +176,7 @@ public class IMMessageManager {
 		StringBuffer sqlBuffer = new StringBuffer();
 		sqlBuffer.append(" select * from ( ");
 		sqlBuffer.append(" select ");
-		sqlBuffer.append(" m.ID,m.CONTENT,m.TITLE,m.TIME,m.FROM_SUB_JID,m.NOTICE_TYPE,m.TO_JID ");
+		sqlBuffer.append(" m.ID,m.CONTENT,m.TITLE,m.TIME,m.FROM_SUB_JID,m.NOTICE_TYPE,m.TO_JID,m.FROM_USER_NAME ,m.AVATAR ");
 		sqlBuffer.append(" from ");
 		sqlBuffer.append(IMMessageDao.TABLENAME).append(" m ");
 		sqlBuffer.append(" where ");
@@ -194,6 +194,8 @@ public class IMMessageManager {
 				message.setTime(cursor.getString(cursor.getColumnIndex("TIME")));
 				message.setFromSubJid(cursor.getString(cursor.getColumnIndex("FROM_SUB_JID")));
 				message.setNoticeType(cursor.getInt(cursor.getColumnIndex("NOTICE_TYPE")));
+				message.setFromUserName(cursor.getString(cursor.getColumnIndex("FROM_USER_NAME")));
+				message.setAvatar(cursor.getString(cursor.getColumnIndex("AVATAR")));
 				list.add(message);
 			}
 		}

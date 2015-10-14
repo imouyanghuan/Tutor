@@ -137,7 +137,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 			String registerId = JPushInterface.getRegistrationID(getApplicationContext());
 			model.setjRegistrationID(registerId);
 			// 设置别名
-			JPushInterface.setAlias(getApplicationContext(), email, new TagAliasCallback() {
+			JPushInterface.setAlias(getApplicationContext(), im, new TagAliasCallback() {
 				
 				@Override
 				public void gotResult(int arg0, String arg1, Set<String> arg2) {

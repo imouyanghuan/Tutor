@@ -16,7 +16,6 @@ import com.mssky.mobile.ui.zlistview.ShowMode;
 import com.mssky.mobile.ui.zlistview.ZSwipeItem;
 import com.tutor.R;
 import com.tutor.model.IMMessage;
-import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.util.ImageUtils;
 
@@ -118,16 +117,16 @@ public class NotificationAdapter extends BaseSwipeAdapter {
 			}
 		});
 		if (mList != null) {
-			ImageUtils.loadImage(imgAvatar, ApiUrl.DOMAIN + mList.get(position).getAvatar());
+			ImageUtils.loadImage(imgAvatar, mList.get(position).getAvatar());
 			if (mList.get(position).getMsgType() == IMMessage.MESSAGE_TYPE_SYS_MSG) {
 				tvDelete.setVisibility(View.GONE);
 			} else {
 				tvDelete.setVisibility(View.VISIBLE);
 			}
 		}
-		String msgFrom = mList.get(position).getFromSubJid();
+		String msgFrom = mList.get(position).getFromUserName();
 		if (TextUtils.isEmpty(msgFrom)) {
-			msgNickName.setText("Tutor Student");
+			msgNickName.setText("Tutor User");
 		} else {
 			msgNickName.setText(msgFrom);
 		}

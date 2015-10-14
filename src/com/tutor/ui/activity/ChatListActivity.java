@@ -63,19 +63,13 @@ public class ChatListActivity extends BaseActivity {
 				if (msg == null) {
 					return;
 				}
-				int msgType = msg.getMsgType();
-				if (msgType == IMMessage.MESSAGE_TYPE_SYS_MSG) {
-					// 系统消息
-					Intent intent = new Intent(ChatListActivity.this, SystemNotificationActivity.class);
+				String imId = msg.getFromSubJid();
+				if (!TextUtils.isEmpty(imId)) {
+					Intent intent = new Intent(ChatListActivity.this, ChatActivity.class);
+					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId);
+					intent.putExtra(Constants.General.NICKNAME, msg.getFromUserName());
+					intent.putExtra(Constants.General.AVATAR, msg.getAvatar());
 					startActivity(intent);
-				} else {
-					String imId = msg.getFromSubJid();
-					if (!TextUtils.isEmpty(imId)) {
-						Intent intent = new Intent(ChatListActivity.this, ChatActivity.class);
-						intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId);
-						intent.putExtra(Constants.General.NICKNAME, msg.getFromSubJid());
-						startActivity(intent);
-					}
 				}
 			}
 		});

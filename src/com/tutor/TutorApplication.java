@@ -16,6 +16,7 @@ import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.tutor.im.XMPPConnectionManager;
 import com.tutor.model.Account;
 import com.tutor.model.AccountDao;
+import com.tutor.model.AvatarDao;
 import com.tutor.model.DaoMaster;
 import com.tutor.model.DaoMaster.OpenHelper;
 import com.tutor.model.DaoSession;
@@ -38,6 +39,7 @@ public class TutorApplication extends Application {
 	// 数据库相关
 	private static AccountDao accountDao;
 	private static IMMessageDao imMessageDao;
+	private static AvatarDao avatarDao;
 	private static SQLiteDatabase db;
 	//
 	public static TutorApplication instance;
@@ -69,6 +71,7 @@ public class TutorApplication extends Application {
 		DaoSession daoSession = daoMaster.newSession();
 		accountDao = daoSession.getAccountDao();
 		imMessageDao = daoSession.getIMMessageDao();
+		avatarDao = daoSession.getAvatarDao();
 	}
 
 	/**
@@ -90,6 +93,10 @@ public class TutorApplication extends Application {
 
 	public static AccountDao getAccountDao() {
 		return accountDao;
+	}
+
+	public static AvatarDao getAvatarDao() {
+		return avatarDao;
 	}
 
 	public static IMMessageDao getImMessageDao() {

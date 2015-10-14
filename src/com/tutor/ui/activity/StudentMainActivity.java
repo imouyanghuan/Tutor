@@ -14,15 +14,12 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
-import com.loopj.android.http.RequestParams;
 import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.im.IMMessageManager;
 import com.tutor.im.XMPPConnectionManager;
 import com.tutor.im.XmppManager;
 import com.tutor.model.Account;
-import com.tutor.model.NotificationListResult;
-import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.service.IMService;
 import com.tutor.ui.fragment.BaseFragment;
@@ -31,10 +28,7 @@ import com.tutor.ui.fragment.student.MyFragment;
 import com.tutor.ui.fragment.student.MyTeacherFragment;
 import com.tutor.ui.fragment.student.OverseasEducationFragment;
 import com.tutor.ui.view.TitleBar;
-import com.tutor.util.CheckTokenUtils;
-import com.tutor.util.HttpHelper;
 import com.tutor.util.ImageUtils;
-import com.tutor.util.ObjectHttpResponseHandler;
 import com.tutor.util.ScreenUtil;
 
 /**
@@ -64,7 +58,6 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 	// 显示消息条数
 	private TextView msgCount;
 	private long count = 0;
-	private boolean isGetdata;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -77,7 +70,6 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 		initView();
 		// 初始化fragment
 		initFragment();
-		isGetdata = false;
 		new LoginImTask().execute();
 	}
 
@@ -210,7 +202,6 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 		super.onResume();
 		Constants.Xmpp.isChatNotification = false;
 		initMsgCount();
-		// TODO 註冊廣播接收IM消息
 	}
 
 	/**
@@ -225,17 +216,12 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 			msgCount.setText("");
 			msgCount.setVisibility(View.GONE);
 		}
-		if (!isGetdata) {
-			isGetdata = true;
-			getNotificationCount();
-		}
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
 		Constants.Xmpp.isChatNotification = true;
-		// TODO 註銷廣播
 	}
 
 	@Override
@@ -301,54 +287,12 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 				startActivity(bookmark);
 				break;
 			case R.id.menu_item_chatlist:
-				Intent chatlist = new Intent(this, NotificationActivity.class);
+				Intent chatlist = new Intent(this, ChatListActivity.class);
 				startActivity(chatlist);
 				break;
 			default:
 				break;
 		}
-	}
-
-	/**
-	 * 获取消息数量 Sent 0 Accept 1 Reject 2 Acknowle 3 All 4
-	 */
-	private void getNotificationCount() {
-		if (!HttpHelper.isNetworkConnected(this)) {
-			toast(R.string.toast_netwrok_disconnected);
-			return;
-		}
-		RequestParams params = new RequestParams();
-		params.put("status", "1");
-		params.put("pageIndex", "0");
-		params.put("pageSize", "1");
-		HttpHelper.get(this, ApiUrl.NOTIFICATIONLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<NotificationListResult>(NotificationListResult.class) {
-
-			@Override
-			public void onFailure(int status, String message) {
-				if (0 == status) {
-					getNotificationCount();
-					return;
-				}
-				isGetdata = false;
-				CheckTokenUtils.checkToken(status);
-			}
-
-			@Override
-			public void onSuccess(NotificationListResult result) {
-				isGetdata = false;
-				CheckTokenUtils.checkToken(result);
-				if (null != result && 200 == result.getStatusCode()) {
-					count += result.getPage().getTotalCount();
-					if (0 < count) {
-						msgCount.setText("" + count);
-						msgCount.setVisibility(View.VISIBLE);
-					} else {
-						msgCount.setText("");
-						msgCount.setVisibility(View.GONE);
-					}
-				}
-			}
-		});
 	}
 
 	/**

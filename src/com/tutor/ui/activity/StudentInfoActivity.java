@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -50,6 +51,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 	private TextView nickTextView, genderTextView, phoneTextView, gradeTextView, birthTextView, addressTextView, timeslotTip, courseTip;
 	private CustomListView timeListView, couresListView;
 	private String titleName;
+	private Button button;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -77,6 +79,11 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 	private void setData() {
 		if (userInfo == null) {
 			return;
+		}
+		if (userInfo.isMatched()) {
+			button.setEnabled(false);
+		} else {
+			button.setEnabled(true);
 		}
 		genderTextView.setText(Constants.General.MALE == userInfo.getGender() ? R.string.label_male : R.string.label_female);
 		// 电话号码
@@ -148,7 +155,8 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 			}
 		});
 		getView(R.id.btn_chat_with_tutor).setOnClickListener(this);
-		getView(R.id.btn_to_be_my_student).setOnClickListener(this);
+		button = getView(R.id.btn_to_be_my_student);
+		button.setOnClickListener(this);
 		nickTextView = getView(R.id.tv_user_name);
 		genderTextView = getView(R.id.tv_gender);
 		gradeTextView = getView(R.id.tv_grade);
@@ -170,12 +178,14 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		// chat with student
 			case R.id.btn_chat_with_tutor:
 				if (!TextUtils.isEmpty(imId)) {
-					ContactManager.getManager().addFriend(imId, imId);
-					Intent intent = new Intent(StudentInfoActivity.this, ChatActivity.class);
-					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId + "@" + XMPPConnectionManager.getManager().getServiceName());
-					intent.putExtra(Constants.General.NICKNAME, titleName);
-					intent.putExtra(Constants.General.AVATAR, ApiUrl.DOMAIN + userInfo.getAvatar());
-					startActivity(intent);
+					boolean isFriend = ContactManager.getManager().addFriend(imId, imId);
+					if (isFriend) {
+						Intent intent = new Intent(StudentInfoActivity.this, ChatActivity.class);
+						intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId + "@" + XMPPConnectionManager.getManager().getServiceName());
+						intent.putExtra(Constants.General.NICKNAME, titleName);
+						intent.putExtra(Constants.General.AVATAR, ApiUrl.DOMAIN + userInfo.getAvatar());
+						startActivity(intent);
+					}
 				}
 				break;
 			// to be my student

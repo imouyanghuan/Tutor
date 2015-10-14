@@ -38,6 +38,7 @@ import com.tutor.util.DateTimeUtil;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.LogUtils;
 import com.tutor.util.ObjectHttpResponseHandler;
+import com.tutor.util.StringUtils;
 
 /**
  * 完善資料界面
@@ -246,6 +247,11 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				hKidEditText.requestFocus();
 				return;
 			}
+			if (!StringUtils.isHKID(hkid)) {
+				toast(R.string.toast_hkid_error);
+				hKidEditText.requestFocus();
+				return;
+			}
 		} else {
 			// 学生必须填写年级
 			if (gradeValue == -1) {
@@ -260,6 +266,11 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		String phone = phoneEditText.getEditableText().toString().trim();
 		if (TextUtils.isEmpty(phone)) {
 			toast(R.string.toast_phone_isEmpty);
+			phoneEditText.requestFocus();
+			return;
+		}
+		if (!StringUtils.isHKPhone(phone)) {
+			toast(R.string.toast_phone_error);
 			phoneEditText.requestFocus();
 			return;
 		}
@@ -288,19 +299,13 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 
 	private UserInfo getUserInfo() {
 		UserInfo userInfo = new UserInfo();
-		userInfo.setExprience(1);
-		userInfo.setRatingGrade(5.0f);
-		userInfo.setBookmarkedCount(0);
-		userInfo.setStudentCount(0);
+		userInfo.setExprience(0);
 		userInfo.setId(account.getMemberId());
 		userInfo.setEmail(account.getEmail());
 		userInfo.setPassword(account.getPswd());
 		userInfo.setFbOpenID(account.getFacebookId());
 		userInfo.setImid(account.getImAccount());
-		userInfo.setStatus(account.getRole());
 		userInfo.setCreatedTime(account.getCreatedTime());
-		userInfo.setToken(account.getToken());
-		userInfo.setAccountType(role);
 		return userInfo;
 	}
 

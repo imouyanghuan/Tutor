@@ -1,5 +1,7 @@
 package com.tutor.util;
 
+import android.text.TextUtils;
+
 public class StringUtils {
 
 	/**
@@ -31,5 +33,20 @@ public class StringUtils {
 	public static boolean notEmpty(Object o) {
 		return o != null && !"".equals(o.toString().trim()) && !"null".equalsIgnoreCase(o.toString().trim()) && !"undefined".equalsIgnoreCase(o.toString().trim())
 				&& !PLEASE_SELECT.equals(o.toString().trim());
+	}
+
+	public static boolean isHKPhone(String phone) {
+		if (TextUtils.isEmpty(phone) || phone.length() < 8) {
+			return false;
+		}
+		return true;
+	}
+
+	public static boolean isHKID(String hkid) {
+		if (TextUtils.isEmpty(hkid) || hkid.length() < 10) {
+			return false;
+		}
+		// String format = "[a-zA-Z][0-9]\\d{6}$";
+		return true;
 	}
 }

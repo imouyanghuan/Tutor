@@ -318,18 +318,21 @@ public class ContactManager {
 		user.setType(entry.getType());
 		return user;
 	}
-	
+
 	/**
 	 * 添加好友
+	 * 
 	 * @param imId
 	 * @param nickName
 	 */
-	public void addFriend(String imId,String nickName){
+	public boolean addFriend(String imId, String nickName) {
 		try {
-			TutorApplication.connectionManager.getConnection().getRoster().createEntry(imId, nickName, null);
-		} catch (XMPPException e) {
-			// TODO Auto-generated catch block
+			XMPPConnection connection = TutorApplication.connectionManager.getConnection();
+			connection.getRoster().createEntry(imId, nickName, null);
+			return true;
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return false;
 	}
 }

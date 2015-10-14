@@ -51,7 +51,7 @@
     <string name="rating">評價:</string>
     <string name="nust_flag">*</string>
     <string name="note">根據勞工處職業介紹所之規例，職業介紹所需保留求職者之地址及身分證號碼，其資料將受本應用程式之私隱政策限制，詳情請參閱本公司之網頁。</string>
-    <string name="sys_notification">系統消息</string>
+    <string name="sys_notification">消息</string>
 
     <!-- label -->
     <string name="label_role_student">學生/家長</string>
@@ -107,6 +107,7 @@
     <string name="label_self_introduction_video">自我介紹視頻(可選):</string>
     <string name="label_optional">(可選)</string>
     <string name="label_registration_time">教師證註冊時間:</string>
+    <string name="label_chat">聊天</string>
     <!-- button -->
     <string name="btn_role_student">尋找老師</string>
     <string name="btn_role_tutor">加入2utor</string>
@@ -160,6 +161,8 @@
     <string name="toast_no_timeslot">請添加時間段!</string>
     <string name="toast_name_isEmpty">姓名不能為空!</string>
     <string name="toast_hkid_isEmpty">香港身份證號碼不能為空!</string>
+    <string name="toast_hkid_error">香港身份證號碼格式錯誤!</string>
+    <string name="toast_phone_error">手機號碼格式錯誤!</string>
     <string name="toast_phone_isEmpty">手機號碼不能為空!</string>
     <string name="toast_no_data">沒有數據</string>
     <string name="toast_no_more_data">沒有更多數據</string>

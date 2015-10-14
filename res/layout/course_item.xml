@@ -5,4 +5,4 @@
     android:layout_height="wrap_content"
     android:background="@color/gray_light"
     android:textColor="@color/btn_press"
-    android:textSize="@dimen/sp_22" />
+    android:textSize="@dimen/sp_20" />

@@ -35,15 +35,24 @@ public abstract class BaseChatActivity extends BaseActivity {
 	protected String chatWithJid;
 	/** 聊天消息 */
 	private List<IMMessage> imMessages;
+	private String title;
+	// 对方的头像
+	private String toAvatar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		chatWithJid = getIntent().getStringExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO);
+		Intent intent = getIntent();
+		if (intent == null) {
+			return;
+		}
+		chatWithJid = intent.getStringExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO);
 		if (chatWithJid == null) {
 			return;
 		}
 		chat = TutorApplication.connectionManager.getConnection().getChatManager().createChat(chatWithJid, null);
+		title = intent.getStringExtra(Constants.General.NICKNAME);
+		toAvatar = intent.getStringExtra(Constants.General.AVATAR);
 		// 第一次加载数据
 		imMessages = IMMessageManager.getManager().searchChatMessages(chatWithJid, 0, Constants.Xmpp.CHAT_PAGESIZE);
 		if (null != imMessages && imMessages.size() > 0) {
@@ -127,8 +136,10 @@ public abstract class BaseChatActivity extends BaseActivity {
 			imMessage.setReadStatus(IMMessage.READ_STATUS_READ);
 			imMessage.setTitle("");
 			imMessage.setFromSubJid(chatWithJid);
+			imMessage.setFromUserName(title);
+			imMessage.setAvatar(toAvatar);
 			//
-			imMessage.setToJid(TutorApplication.getAccountDao().load("1").getImAccount() +"@"+ XMPPConnectionManager.getManager().getServiceName());
+			imMessage.setToJid(TutorApplication.getAccountDao().load("1").getImAccount() + "@" + XMPPConnectionManager.getManager().getServiceName());
 			imMessage.setNoticeType(IMMessage.MESSAGE_TYPE_CHAT_MSG);
 			imMessage.setSendStatus(IMMessage.SEND_STATUS_SUCCESS);
 		} catch (XMPPException e) {

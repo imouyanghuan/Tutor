@@ -161,6 +161,13 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		} else {
 			tvPhone.setText(phone);
 		}
+		TextView tvCurEducationStatus = getView(R.id.tv_current_education_status);
+		int eduStatus = userInfo.getEducationStatus();
+		if (eduStatus == Constants.General.STUDYING) {
+			tvCurEducationStatus.setText(getString(R.string.label_studying));
+		} else {
+			tvCurEducationStatus.setText(getString(R.string.label_graduated));
+		}
 	}
 
 	/**
@@ -272,12 +279,14 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		// chat with student
 			case R.id.btn_chat_with_tutor:
 				if (!TextUtils.isEmpty(imId)) {
-					ContactManager.getManager().addFriend(imId, imId);
-					Intent intent = new Intent(TeacherInfoActivity.this, ChatActivity.class);
-					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId + "@" + XMPPConnectionManager.getManager().getServiceName());
-					intent.putExtra(Constants.General.NICKNAME, titleName);
-					intent.putExtra(Constants.General.AVATAR, ApiUrl.DOMAIN + userInfo.getAvatar());
-					startActivity(intent);
+					boolean isFriend = ContactManager.getManager().addFriend(imId, imId);
+					if (isFriend) {
+						Intent intent = new Intent(TeacherInfoActivity.this, ChatActivity.class);
+						intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId + "@" + XMPPConnectionManager.getManager().getServiceName());
+						intent.putExtra(Constants.General.NICKNAME, titleName);
+						intent.putExtra(Constants.General.AVATAR, ApiUrl.DOMAIN + userInfo.getAvatar());
+						startActivity(intent);
+					}
 				}
 				break;
 			// to be my student

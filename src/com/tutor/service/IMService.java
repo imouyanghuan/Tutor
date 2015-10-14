@@ -1,5 +1,6 @@
 package com.tutor.service;
 
+import java.net.HttpURLConnection;
 import java.util.Calendar;
 import java.util.Collection;
 
@@ -16,6 +17,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -26,22 +28,31 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.text.TextUtils;
 
+import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.helper.ToastUtils;
 import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.im.ContactManager;
 import com.tutor.im.IMMessageManager;
 import com.tutor.im.XMPPConnectionManager;
+import com.tutor.model.Avatar;
 import com.tutor.model.IMMessage;
 import com.tutor.model.User;
+import com.tutor.model.UserInfo;
+import com.tutor.model.UserInfoResult;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.activity.ChatActivity;
 import com.tutor.ui.activity.NoticeActivity;
 import com.tutor.util.DateTimeUtil;
+import com.tutor.util.HttpHelper;
 import com.tutor.util.LogUtils;
+import com.tutor.util.ObjectHttpResponseHandler;
 import com.tutor.util.StringUtils;
 import com.tutor.util.UUIDUtils;
 
@@ -65,10 +76,15 @@ public class IMService extends Service {
 	// XMPPConnect
 	private XMPPConnection connection;
 	private Roster roster;
+	// 震動
+	private Vibrator vibrator;
+	// private final static int SENSOR_SNAKE = 10;
+	private long[] times = new long[] { 100, 200, 100, 200 };
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 		notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 		// 註冊网络连接廣播
 		IntentFilter filter = new IntentFilter();
@@ -150,7 +166,7 @@ public class IMService extends Service {
 					sendBroadcast(intent);
 					// 發送通知
 					if (Constants.Xmpp.isChatNotification) {
-						setNotiType(R.drawable.icon_notification, title, content, NoticeActivity.class, null);
+						setNotiType(R.drawable.icon_notification, imMessage, NoticeActivity.class);
 					}
 				}
 			}
@@ -195,6 +211,21 @@ public class IMService extends Service {
 				imMessage.setMsgType(IMMessage.CHAT_MESSAGE_TYPE_RECEIVE);
 				imMessage.setNoticeSum(1);
 				imMessage.setNoticeType(IMMessage.MESSAGE_TYPE_CHAT_MSG);
+				int index = from.indexOf("@");
+				String imId = from.substring(0, index);
+				Avatar avatar = TutorApplication.getAvatarDao().load(imId);
+				if (avatar == null) {
+					IMService.this.imMessage = imMessage;
+					IMService.this.imid = imId;
+					handler.sendEmptyMessage(0);
+					return;
+				}
+				imMessage.setAvatar(avatar.getAvatar());
+				String name = avatar.getNickName();
+				if (TextUtils.isEmpty(name)) {
+					name = avatar.getUserName();
+				}
+				imMessage.setFromUserName(name);
 				// 保存
 				long status = IMMessageManager.getManager().sava(imMessage);
 				if (-1 != status) {
@@ -203,14 +234,75 @@ public class IMService extends Service {
 					Intent intent = new Intent(Constants.Action.ACTION_NEW_MESSAGE);
 					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_IMMESSAGE_KEY, imMessage);
 					sendBroadcast(intent);
+					// 震動提示
+					vibrator.vibrate(times, -1);
 					// 發送通知
 					if (Constants.Xmpp.isChatNotification) {
-						setNotiType(R.drawable.icon_notification, title, content, ChatActivity.class, from);
+						setNotiType(R.drawable.icon_notification, imMessage, ChatActivity.class);
 					}
 				}
 			}
 		}
 	};
+	IMMessage imMessage;
+	String imid;
+	@SuppressLint("HandlerLeak")
+	Handler handler = new Handler() {
+
+		@Override
+		public void handleMessage(android.os.Message msg) {
+			getUserInfo(imMessage, imid);
+			super.handleMessage(msg);
+		}
+	};
+
+	private void getUserInfo(final IMMessage imMessage, final String imId) {
+		String url = String.format(ApiUrl.IM_GET_INFO, imId);
+		HttpHelper.get(TutorApplication.instance, url, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				// TODO Auto-generated method stub
+				LogUtils.e("-----status:" + status + ",message +" + message);
+			}
+
+			@Override
+			public void onSuccess(UserInfoResult info) {
+				if (info.getStatusCode() == HttpURLConnection.HTTP_OK) {
+					UserInfo userInfo = info.getResult();
+					Avatar avatar = new Avatar();
+					String avatarStr = ApiUrl.DOMAIN + userInfo.getAvatar();
+					avatar.setAvatar(avatarStr);
+					avatar.setId(imId);
+					avatar.setNickName(userInfo.getNickName());
+					avatar.setUserName(userInfo.getUserName());
+					TutorApplication.getAvatarDao().insert(avatar);
+					imMessage.setAvatar(avatarStr);
+					String name = avatar.getNickName();
+					if (TextUtils.isEmpty(name)) {
+						name = avatar.getUserName();
+					}
+					imMessage.setFromUserName(name);
+					// 保存
+					long status = IMMessageManager.getManager().sava(imMessage);
+					if (-1 != status) {
+						// 保存成功
+						// 發送廣播
+						Intent intent = new Intent(Constants.Action.ACTION_NEW_MESSAGE);
+						intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_IMMESSAGE_KEY, imMessage);
+						sendBroadcast(intent);
+						// 震動提示
+						vibrator.vibrate(times, -1);
+						// 發送通知
+						if (Constants.Xmpp.isChatNotification) {
+							setNotiType(R.drawable.icon_notification, imMessage, ChatActivity.class);
+						}
+					}
+				}
+			}
+		});
+	}
+
 	/**
 	 * 好友請求監聽
 	 */
@@ -274,7 +366,7 @@ public class IMService extends Service {
 						sendBroadcast(intent);
 						// 發送通知
 						if (Constants.Xmpp.isChatNotification) {
-							setNotiType(R.drawable.icon_notification, title, content, NoticeActivity.class, null);
+							setNotiType(R.drawable.icon_notification, imMessage, NoticeActivity.class);
 						}
 					}
 				}
@@ -474,14 +566,16 @@ public class IMService extends Service {
 	 *            要進入的activity
 	 */
 	@SuppressWarnings("deprecation")
-	private void setNotiType(int iconId, String contentTitle, String contentText, Class<?> activity, String fromJid) {
+	private void setNotiType(int iconId, IMMessage message, Class<?> activity) {
 		/*
 		 * 创建新的Intent，作为点击Notification留言条时， 会运行的Activity
 		 */
 		Intent notifyIntent = new Intent(this, activity);
 		notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		if (null != fromJid) {
-			notifyIntent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, fromJid);
+		if (null != message.getFromSubJid()) {
+			notifyIntent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, message.getFromSubJid());
+			notifyIntent.putExtra(Constants.General.NICKNAME, message.getFromUserName());
+			notifyIntent.putExtra(Constants.General.AVATAR, message.getAvatar());
 		}
 		/* 创建PendingIntent作为设置递延运行的Activity */
 		PendingIntent appIntent = PendingIntent.getActivity(this, 0, notifyIntent, 0);
@@ -491,11 +585,11 @@ public class IMService extends Service {
 		myNoti.icon = iconId;
 		myNoti.flags = Notification.FLAG_AUTO_CANCEL;
 		/* 设置statusbar显示的文字信息 */
-		myNoti.tickerText = contentTitle;
+		myNoti.tickerText = message.getTitle();
 		/* 设置notification发生时同时发出默认声音 */
 		myNoti.defaults = Notification.DEFAULT_SOUND;
 		/* 设置Notification留言条的参数 */
-		myNoti.setLatestEventInfo(this, contentTitle, contentText, appIntent);
+		myNoti.setLatestEventInfo(this, message.getTitle(), message.getContent(), appIntent);
 		/* 送出Notification */
 		notificationManager.notify(0, myNoti);
 	}
