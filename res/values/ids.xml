@@ -57,6 +57,7 @@
     <item name="ac_fill_personal_course_scrollview" type="id"></item>
     <item name="ac_fill_personal_info_rb_male" type="id"></item>
     <item name="ac_fill_personal_info_rb_female" type="id"></item>
+    <item name="ac_fill_personal_info_rb_ignore" type="id"></item>
     <item name="ac_fill_personal_info_ll_eb" type="id"></item>
     <item name="ac_fill_personal_info_btn_save_timeslot" type="id"></item>
     <item name="ac_fill_personal_info_rg_eb" type="id"></item>

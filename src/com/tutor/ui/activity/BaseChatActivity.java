@@ -9,6 +9,12 @@ import org.jivesoftware.smack.Chat;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+
 import com.tutor.TutorApplication;
 import com.tutor.im.IMMessageManager;
 import com.tutor.im.XMPPConnectionManager;
@@ -16,12 +22,6 @@ import com.tutor.model.IMMessage;
 import com.tutor.params.Constants;
 import com.tutor.util.DateTimeUtil;
 import com.tutor.util.UUIDUtils;
-
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Bundle;
 
 /**
  * 聊天activity父类
@@ -80,6 +80,9 @@ public abstract class BaseChatActivity extends BaseActivity {
 		super.onPause();
 	}
 
+	/**
+	 * 接收到聊天消息
+	 */
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 
 		@Override
@@ -139,10 +142,11 @@ public abstract class BaseChatActivity extends BaseActivity {
 			imMessage.setFromUserName(title);
 			imMessage.setAvatar(toAvatar);
 			//
-			imMessage.setToJid(TutorApplication.getAccountDao().load("1").getImAccount() + "@" + XMPPConnectionManager.getManager().getServiceName());
+			String toJid = TutorApplication.getAccountDao().load("1").getImAccount() + "@" + XMPPConnectionManager.getManager().getServiceName();
+			imMessage.setToJid(toJid);
 			imMessage.setNoticeType(IMMessage.MESSAGE_TYPE_CHAT_MSG);
 			imMessage.setSendStatus(IMMessage.SEND_STATUS_SUCCESS);
-		} catch (XMPPException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			imMessage.setSendStatus(IMMessage.SEND_STATUS_ERROR);
 		}

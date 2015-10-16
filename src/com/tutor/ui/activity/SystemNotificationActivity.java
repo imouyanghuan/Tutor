@@ -7,11 +7,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 
 import com.loopj.android.http.RequestParams;
+import com.mssky.mobile.helper.SharePrefUtil;
 import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.SysNotificationAdapter.OnAcceptItemClickListener;
@@ -35,11 +38,12 @@ import com.tutor.util.ObjectHttpResponseHandler;
  * 
  *         2015-10-10
  */
-public class SystemNotificationActivity extends BaseActivity {
+public class SystemNotificationActivity extends BaseActivity implements OnClickListener {
 
 	private ListView lvNotification;
 	private SysNotificationAdapter mAdapter;
 	private List<IMMessage> messages = new ArrayList<IMMessage>();
+	private FrameLayout flTipNotification;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -51,6 +55,8 @@ public class SystemNotificationActivity extends BaseActivity {
 
 	@Override
 	protected void initView() {
+		flTipNotification = getView(R.id.fl_tip_notification);
+		flTipNotification.setOnClickListener(this);
 		TitleBar bar = getView(R.id.title_bar);
 		bar.initBack(this);
 		bar.setTitle(R.string.sys_notification);
@@ -104,6 +110,7 @@ public class SystemNotificationActivity extends BaseActivity {
 			toast(R.string.toast_netwrok_disconnected);
 			return;
 		}
+		showDialogRes(R.string.loading);
 		RequestParams params = new RequestParams();
 		params.put("pageIndex", "0");
 		params.put("pageSize", "20");
@@ -116,11 +123,13 @@ public class SystemNotificationActivity extends BaseActivity {
 					return;
 				}
 				CheckTokenUtils.checkToken(status);
+				dismissDialog();
 			}
 
 			@Override
 			public void onSuccess(NotificationListResult result) {
 				CheckTokenUtils.checkToken(result);
+				dismissDialog();
 				if (null != result && 200 == result.getStatusCode()) {
 					//
 					ArrayList<Notification> notifications = result.getResult();
@@ -145,6 +154,13 @@ public class SystemNotificationActivity extends BaseActivity {
 							}
 						}
 						mAdapter.notifyDataSetChanged();
+						// 当切换为这个tab的时候才显示tip
+						boolean isNeedShow = SharePrefUtil.getBoolean(getApplicationContext(), Constants.General.IS_NEED_SHOW_NOTIFICATION_TIP, true);
+						if (isNeedShow) {
+							flTipNotification.setVisibility(View.VISIBLE);
+						} else {
+							flTipNotification.setVisibility(View.GONE);
+						}
 					}
 				}
 			}
@@ -177,11 +193,11 @@ public class SystemNotificationActivity extends BaseActivity {
 			@Override
 			public void onSuccess(EditProfileResult result) {
 				CheckTokenUtils.checkToken(result);
-				if (curStatus == Constants.General.ACCEPT) {
-					toast("已经接受邀请");
-				} else {
-					toast("已经拒绝邀请");
-				}
+				// if (curStatus == Constants.General.ACCEPT) {
+				// toast("已经接受邀请");
+				// } else {
+				// toast("已经拒绝邀请");
+				// }
 				if (messages != null && messages.size() > 0) {
 					for (int i = 0; i < messages.size(); i++) {
 						String notifyId = messages.get(i).getId();
@@ -194,5 +210,17 @@ public class SystemNotificationActivity extends BaseActivity {
 				}
 			}
 		});
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.fl_tip_notification:
+				flTipNotification.setVisibility(View.GONE);
+				SharePrefUtil.saveBoolean(getApplicationContext(), Constants.General.IS_NEED_SHOW_NOTIFICATION_TIP, false);
+				break;
+			default:
+				break;
+		}
 	}
 }

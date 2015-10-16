@@ -4,13 +4,13 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -51,8 +51,8 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 	private UserInfo userInfo;
 	private String titleName;
 	private CustomListView timeListView, couresListView;
-	private TextView timeslotTip, courseTip;
-	private LinearLayout llRateTutor;
+	private TextView timeslotTip, courseTip, introduction;
+	private Button btnRateTutor, btnPlayVideo;
 	private Button btnToBeMyTutor;
 
 	@Override
@@ -102,17 +102,27 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 			}
 		});
 		// 评价老师
-		llRateTutor = getView(R.id.ll_rate_tutor);
-		llRateTutor.setOnClickListener(this);
+		btnRateTutor = getView(R.id.btn_rate_tutor);
+		btnRateTutor.setOnClickListener(this);
 		getView(R.id.btn_chat_with_tutor).setOnClickListener(this);
 		btnToBeMyTutor = getView(R.id.btn_to_be_my_tutor);
 		btnToBeMyTutor.setOnClickListener(this);
+		btnPlayVideo = getView(R.id.btn_play_video);
+		btnPlayVideo.setOnClickListener(this);
 		// nick
 		TextView tvNick = getView(R.id.tv_user_name);
 		tvNick.setText(titleName);
 		// gender
 		TextView tvGender = getView(R.id.tv_gender);
-		tvGender.setText(Constants.General.MALE == userInfo.getGender() ? R.string.label_male : R.string.label_female);
+		int genderStr;
+		if (userInfo.getGender() == null) {
+			genderStr = R.string.label_ignore1;
+		} else if (Constants.General.MALE == userInfo.getGender()) {
+			genderStr = R.string.label_male;
+		} else {
+			genderStr = R.string.label_female;
+		}
+		tvGender.setText(genderStr);
 		// major
 		TextView tvMajor = getView(R.id.tv_major);
 		tvMajor.setText(!TextUtils.isEmpty(userInfo.getMajor()) ? userInfo.getMajor() : getString(R.string.label_unknow_major));
@@ -168,6 +178,7 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		} else {
 			tvCurEducationStatus.setText(getString(R.string.label_graduated));
 		}
+		introduction = getView(R.id.tv_self_introduction);
 	}
 
 	/**
@@ -236,11 +247,23 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 			return;
 		}
 		if (userInfo.isMatched()) {
-			llRateTutor.setVisibility(View.VISIBLE);
+			btnRateTutor.setEnabled(true);
 			btnToBeMyTutor.setEnabled(false);
 		} else {
-			llRateTutor.setVisibility(View.INVISIBLE);
+			btnRateTutor.setEnabled(false);
 			btnToBeMyTutor.setEnabled(true);
+		}
+		String introductionString = userInfo.getIntroduction();
+		if (TextUtils.isEmpty(introductionString)) {
+			introduction.setText(introductionString);
+		} else {
+			introduction.setText("...");
+		}
+		String introductionVideoString = userInfo.getIntroduction();
+		if (TextUtils.isEmpty(introductionVideoString)) {
+			btnPlayVideo.setEnabled(false);
+		} else {
+			btnPlayVideo.setEnabled(true);
 		}
 		// 时间段
 		ArrayList<Timeslot> timeslots = userInfo.getTimeslots();
@@ -298,11 +321,25 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 				}
 				break;
 			// rate tutor
-			case R.id.ll_rate_tutor:
+			case R.id.btn_rate_tutor:
 				if (userInfo != null) {
 					Intent intent = new Intent(TeacherInfoActivity.this, RateTutorActivity.class);
 					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 					startActivity(intent);
+				}
+				break;
+			// 播放视频
+			case R.id.btn_play_video:
+				if (userInfo != null && !TextUtils.isEmpty(userInfo.getIntroductionVideo())) {
+					try {
+						Intent it = new Intent(Intent.ACTION_VIEW);
+						Uri uri = Uri.parse(userInfo.getIntroductionVideo());
+						it.setDataAndType(uri, "video/*");
+						startActivity(it);
+					} catch (Exception e) {
+						e.printStackTrace();
+						toast(R.string.toast_video_unplay);
+					}
 				}
 				break;
 			default:

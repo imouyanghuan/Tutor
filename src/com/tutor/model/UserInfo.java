@@ -48,7 +48,7 @@ public class UserInfo implements Serializable {
 	private String fbOpenID;
 	private String avatar;
 	private String birth;
-	private int gender;
+	private Integer gender;
 	private String introduction;
 	private String token;
 	private String expirationTime;
@@ -256,11 +256,11 @@ public class UserInfo implements Serializable {
 		this.birth = birth;
 	}
 
-	public int getGender() {
+	public Integer getGender() {
 		return gender;
 	}
 
-	public void setGender(int gender) {
+	public void setGender(Integer gender) {
 		this.gender = gender;
 	}
 
@@ -363,22 +363,18 @@ public class UserInfo implements Serializable {
 				+ ", areas=" + areas + ", timeslots=" + timeslots + "]";
 	}
 
-	
 	public boolean isMatched() {
 		return isMatched;
 	}
 
-	
 	public void setMatched(boolean isMatched) {
 		this.isMatched = isMatched;
 	}
 
-	
 	public String getGradeName() {
 		return gradeName;
 	}
 
-	
 	public void setGradeName(String gradeName) {
 		this.gradeName = gradeName;
 	}

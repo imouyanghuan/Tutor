@@ -11,11 +11,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.loopj.android.http.RequestParams;
+import com.mssky.mobile.helper.SharePrefUtil;
 import com.mssky.mobile.ui.view.CustomListView;
 import com.tutor.R;
 import com.tutor.TutorApplication;
@@ -101,6 +103,7 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 	// private EditText etSearch;
 	private boolean isFromTeacher;
 	private LinearLayout llGender;
+	private FrameLayout flTipSearch;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -125,8 +128,6 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 			@Override
 			public void onClick(View v) {
 				SearchCondition condition = new SearchCondition();
-				// String keyword = etSearch.getText().toString();
-				// condition.setSearchKeyword(keyword);
 				condition.setAreaValue(areaValue);
 				String areaName = "";
 				if (!curCity.equals(getString(R.string.label_please_choose))) {
@@ -161,6 +162,23 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 			}
 		});
 		llGender = getView(R.id.ll_gender);
+		// tip
+		flTipSearch = getView(R.id.fl_tip_search);
+		flTipSearch.setOnClickListener(this);
+		TextView tvTimeSlot = getView(R.id.tv_timeslot);
+		boolean isChinese = TutorApplication.isCH();
+		if (isChinese) {
+			tvTimeSlot.setBackgroundResource(R.drawable.timeslot_zh);
+		} else {
+			tvTimeSlot.setBackgroundResource(R.drawable.timeslot);
+		}
+		// 当切换为这个tab的时候才显示tip
+		boolean isNeedShow = SharePrefUtil.getBoolean(getApplicationContext(), Constants.General.IS_NEED_SHOW_SEARCH_TIP, true);
+		if (isNeedShow) {
+			flTipSearch.setVisibility(View.VISIBLE);
+		} else {
+			flTipSearch.setVisibility(View.GONE);
+		}
 		// etSearch = getView(R.id.fragment_find_student_et);
 		// getView(R.id.fragment_find_student_btn).setVisibility(View.GONE);
 		weekTextView = getView(R.id.ac_fill_personal_time_tv_week);
@@ -189,7 +207,7 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				String currentGender = genderAdapter.getItem(position);
-				if (currentGender.equals(getString(R.string.label_please_choose))) {
+				if (currentGender.equals(getString(R.string.label_ignore))) {
 					genderValue = -1;
 				} else if (currentGender.equals(getString(R.string.label_man))) {
 					genderValue = Constants.General.MALE;
@@ -595,6 +613,10 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 					timeSlotDialog1 = new TimeSlotDialog(this, 0, 0, this);
 				}
 				timeSlotDialog1.show();
+				break;
+			case R.id.fl_tip_search:
+				flTipSearch.setVisibility(View.GONE);
+				SharePrefUtil.saveBoolean(getApplicationContext(), Constants.General.IS_NEED_SHOW_SEARCH_TIP, false);
 				break;
 			default:
 				break;

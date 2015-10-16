@@ -1,9 +1,16 @@
 package com.tutor.ui.activity;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import cn.jpush.android.api.InstrumentedActivity;
 
 import com.loopj.android.http.RequestParams;
@@ -55,12 +62,40 @@ public class WelcomeActivity extends InstrumentedActivity {
 		});
 	}
 
+	public String getVersionName(Context activity) {
+		String pName = activity.getPackageName();
+		String versionName = "";
+		try {
+			PackageInfo pinfo = activity.getPackageManager().getPackageInfo(pName, PackageManager.GET_CONFIGURATIONS);
+			versionName = pinfo.versionName;
+		} catch (NameNotFoundException e) {}
+		return versionName;
+	}
+
 	@SuppressLint("HandlerLeak")
 	Handler handler = new Handler() {
 
 		public void handleMessage(android.os.Message msg) {
 			//
-			if (null != versionUpDate) {}
+			if (null != versionUpDate && !TextUtils.isEmpty(versionUpDate.getVersion())) {
+				if (!versionUpDate.getVersion().equals(getVersionName(WelcomeActivity.this)) && versionUpDate.isForceUpdate()) {
+					// 新版本強制更新
+					AlertDialog.Builder builder = new AlertDialog.Builder(WelcomeActivity.this);
+					builder.setCancelable(false);
+					builder.setTitle(R.string.tips);
+					builder.setMessage(versionUpDate.getDescription());
+					builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface arg0, int arg1) {
+							WelcomeActivity.this.finish();
+						}
+					});
+					AlertDialog dialog = builder.create();
+					dialog.show();
+					return;
+				}
+			}
 			Intent intent = new Intent();
 			// 是否登錄
 			boolean isLogin = (Boolean) TutorApplication.settingManager.readSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
@@ -80,6 +115,12 @@ public class WelcomeActivity extends InstrumentedActivity {
 			startActivity(intent);
 			WelcomeActivity.this.finish();
 		};
+	};
+
+	@Override
+	public void startActivity(Intent intent) {
+		super.startActivity(intent);
+		overridePendingTransition(R.anim.start_activity_in, R.anim.start_activity_out);
 	};
 
 	/**

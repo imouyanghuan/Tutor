@@ -1,0 +1,1 @@
+keytool -exportcert -alias tutor -keystore F:\resource\Tutor\Android\Tutor\tutor.keystore | openssl sha1 -binary | openssl base64

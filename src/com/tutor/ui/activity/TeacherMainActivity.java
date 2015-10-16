@@ -3,17 +3,22 @@ package com.tutor.ui.activity;
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
+import com.mssky.mobile.helper.SharePrefUtil;
 import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.im.IMMessageManager;
@@ -62,6 +67,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
+		// Constants.Xmpp.isChatNotification = false;
 		TutorApplication.isMainActivity = true;
 		mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.Type.BEHIND, Position.LEFT, MenuDrawer.MENU_DRAG_WINDOW);
 		mMenuDrawer.setContentView(R.layout.activity_teacher_main);
@@ -76,7 +82,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 	@Override
 	protected void initView() {
 		bar = getView(R.id.title_bar);
-		bar.setTitle(R.string.study_abroad);
+		bar.setTitle(R.string.findstudents);
 		bar.setLeftButton(R.drawable.menu_selector, new OnClickListener() {
 
 			@Override
@@ -166,6 +172,9 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		getView(R.id.menu_item_bookmark).setOnClickListener(this);
 		getView(R.id.menu_item_chatlist).setOnClickListener(this);
 		msgCount = getView(R.id.menu_item_tv_msgCount);
+		// tip
+		flTipFindStudent = getView(R.id.fl_tip_find_student);
+		flTipFindStudent.setOnClickListener(this);
 	}
 
 	private void loginOut() {
@@ -192,19 +201,28 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 	 * 初始化fragment
 	 */
 	private void initFragment() {
-		overseasEducationFragment = new OverseasEducationFragment();
+		findStudentFragment = new FindStudentFragment();
 		ft = getSupportFragmentManager().beginTransaction();
-		ft.add(R.id.ac_main_content_fragment, overseasEducationFragment, "overseasEducationFragment");
-		ft.show(overseasEducationFragment);
+		ft.add(R.id.ac_main_content_fragment, findStudentFragment, "findStudentFragment");
+		ft.show(findStudentFragment);
 		ft.commit();
-		currentFragment = overseasEducationFragment;
+		currentFragment = findStudentFragment;
+		// 当切换为这个tab的时候才显示tip
+		boolean isNeedShow = SharePrefUtil.getBoolean(getApplicationContext(), Constants.General.IS_NEED_SHOW_STUDENT_TIP, true);
+		if (isNeedShow) {
+			flTipFindStudent.setVisibility(View.VISIBLE);
+		} else {
+			flTipFindStudent.setVisibility(View.GONE);
+		}
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Constants.Xmpp.isChatNotification = false;
 		initMsgCount();
+		// 註冊廣播
+		IntentFilter filter = new IntentFilter(Constants.Action.ACTION_NEW_MESSAGE);
+		registerReceiver(receiver, filter);
 	}
 
 	@Override
@@ -232,8 +250,21 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 	@Override
 	protected void onPause() {
 		super.onPause();
-		Constants.Xmpp.isChatNotification = true;
+		unregisterReceiver(receiver);
 	}
+
+	BroadcastReceiver receiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+			if (Constants.Action.ACTION_NEW_MESSAGE.equals(action)) {
+				count++;
+				msgCount.setText("" + count);
+				msgCount.setVisibility(View.VISIBLE);
+			}
+		}
+	};
 
 	@Override
 	protected void onDestroy() {
@@ -245,10 +276,12 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		// 清空缓存的图片
 		ImageUtils.clearChache();
 		TutorApplication.isMainActivity = false;
+		// Constants.Xmpp.isChatNotification = true;
 		super.onDestroy();
 	}
 
 	private static long lastTime = 0;
+	private FrameLayout flTipFindStudent;
 
 	/**
 	 * 菜單打開是按返回鍵關閉菜單,否則按兩次退出
@@ -295,6 +328,10 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 				Intent chatlist = new Intent(this, ChatListActivity.class);
 				startActivity(chatlist);
 				break;
+			case R.id.fl_tip_find_student:
+				flTipFindStudent.setVisibility(View.GONE);
+				SharePrefUtil.saveBoolean(getApplicationContext(), Constants.General.IS_NEED_SHOW_STUDENT_TIP, false);
+				break;
 			default:
 				break;
 		}
@@ -327,9 +364,6 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 				Intent intent = new Intent(TeacherMainActivity.this, IMService.class);
 				startService(intent);
 			} else {
-				if (!TutorApplication.isTokenInvalid) {
-					toast(R.string.toast_login_im_fail);
-				}
 				new LoginImTask().execute();
 			}
 		}

@@ -48,7 +48,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 	private String imId;
 	private UserInfo userInfo;
 	private ImageView avatarImageView;
-	private TextView nickTextView, genderTextView, phoneTextView, gradeTextView, birthTextView, addressTextView, timeslotTip, courseTip;
+	private TextView nickTextView, genderTextView, phoneTextView, gradeTextView, birthTextView, addressTextView, timeslotTip, courseTip, introduction;
 	private CustomListView timeListView, couresListView;
 	private String titleName;
 	private Button button;
@@ -85,7 +85,21 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		} else {
 			button.setEnabled(true);
 		}
-		genderTextView.setText(Constants.General.MALE == userInfo.getGender() ? R.string.label_male : R.string.label_female);
+		String introductionString = userInfo.getIntroduction();
+		if (TextUtils.isEmpty(introductionString)) {
+			introduction.setText(introductionString);
+		} else {
+			introduction.setText("...");
+		}
+		int genderStr;
+		if (userInfo.getGender() == null) {
+			genderStr = R.string.label_ignore1;
+		} else if (Constants.General.MALE == userInfo.getGender()) {
+			genderStr = R.string.label_male;
+		} else {
+			genderStr = R.string.label_female;
+		}
+		genderTextView.setText(genderStr);
 		// 电话号码
 		String phone = userInfo.getPhone();
 		if (TextUtils.isEmpty(phone)) {
@@ -170,6 +184,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		nickTextView.setText(titleName);
 		avatarImageView = getView(R.id.iv_avatar);
 		ImageUtils.loadImage(avatarImageView, ApiUrl.DOMAIN + userInfo.getAvatar());
+		introduction = getView(R.id.tv_self_introduction);
 	}
 
 	@Override

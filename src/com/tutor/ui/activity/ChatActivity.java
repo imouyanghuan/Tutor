@@ -22,10 +22,8 @@ import com.tutor.R;
 import com.tutor.adapter.ChatAdapter;
 import com.tutor.adapter.ChatAdapter.OnReSendListener;
 import com.tutor.model.IMMessage;
-import com.tutor.model.User;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
-import com.tutor.util.StringUtils;
 import com.tutor.util.ToastUtil;
 
 /**
@@ -100,7 +98,7 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 						protected void onPostExecute(Boolean result) {
 							lvChat.onRefreshComplete();
 							if (!addNewMsg()) {
-								ToastUtil.showToastShort(ChatActivity.this, "没有更多聊天记录了!");
+								ToastUtil.showToastShort(ChatActivity.this, R.string.toast_no_more_history);
 							}
 							resh();
 							lvChat.getRefreshableView().setTranscriptMode(ListView.TRANSCRIPT_MODE_DISABLED);
@@ -154,11 +152,13 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 			if (!Constants.Action.ACTION_ROSTER_PRESENCE_CHANGED.equals(acion)) {
 				return;
 			}
-			User user1 = (User) intent.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_USER_KEY);
-			if (user1 != null) {
-				String title = user1.getName() == null ? StringUtils.getUserNameByJid(chatWithJid) : user1.getName();
-				bar.setTitle(title);
-			}
+			// User user1 = (User)
+			// intent.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_USER_KEY);
+			// if (user1 != null) {
+			// String title = user1.getName() == null ?
+			// StringUtils.getUserNameByJid(chatWithJid) : user1.getName();
+			// bar.setTitle(title);
+			// }
 		}
 	};
 

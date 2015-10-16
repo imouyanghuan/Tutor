@@ -7,11 +7,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.loopj.android.http.RequestParams;
+import com.mssky.mobile.helper.SharePrefUtil;
 import com.mssky.mobile.ui.view.PullToRefreshBase;
 import com.mssky.mobile.ui.view.PullToRefreshBase.Mode;
 import com.mssky.mobile.ui.view.PullToRefreshBase.OnRefreshListener;
@@ -38,7 +41,7 @@ import com.tutor.util.ObjectHttpResponseHandler;
  * 
  *         2015-8-26
  */
-public class BookmarkActivity extends BaseActivity implements OnRefreshListener<ListView> {
+public class BookmarkActivity extends BaseActivity implements OnRefreshListener<ListView>, OnClickListener {
 
 	// 頁碼,每頁大小
 	private int pageIndex = 0, pageSize = 20;
@@ -49,6 +52,7 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 	private BookmarkStudentListResult listResult;
 	// 当前用户身份类型
 	private int role;
+	private FrameLayout flTipNotification;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -64,6 +68,8 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 
 	@Override
 	protected void initView() {
+		flTipNotification = getView(R.id.fl_tip_notification);
+		flTipNotification.setOnClickListener(this);
 		TitleBar bar = getView(R.id.title_bar);
 		bar.initBack(this);
 		bar.setTitle(R.string.bookmark);
@@ -139,6 +145,15 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 				}
 				users.addAll(result.getResult());
 				mAdapter.notifyDataSetChanged();
+				if (users != null && users.size() > 0) {
+					// 当切换为这个tab的时候才显示tip
+					boolean isNeedShow = SharePrefUtil.getBoolean(getApplicationContext(), Constants.General.IS_NEED_SHOW_BOOKMARK_TIP, true);
+					if (isNeedShow) {
+						flTipNotification.setVisibility(View.VISIBLE);
+					} else {
+						flTipNotification.setVisibility(View.GONE);
+					}
+				}
 			}
 		});
 	}
@@ -214,6 +229,18 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 				}
 			});
 			toast(R.string.toast_no_data);
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.fl_tip_notification:
+				flTipNotification.setVisibility(View.GONE);
+				SharePrefUtil.saveBoolean(getApplicationContext(), Constants.General.IS_NEED_SHOW_BOOKMARK_TIP, false);
+				break;
+			default:
+				break;
 		}
 	}
 }

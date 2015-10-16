@@ -80,8 +80,8 @@
                     android:inputType="text"
                     android:maxLength="20"
                     android:singleLine="true"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/sp_16" />
+                    android:textColor="@color/gray_text"
+                    android:textSize="@dimen/sp_14" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -101,7 +101,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/label_male"
-                        android:textColor="@color/black"
+                        android:textColor="@color/gray_text"
                         android:textSize="@dimen/sp_16" />
                 </LinearLayout>
             </LinearLayout>
@@ -140,8 +140,8 @@
             android:hint="@string/hint_enter_introduction"
             android:inputType="text"
             android:minHeight="@dimen/dp_120"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_16" />
+            android:textColor="@color/gray_text"
+            android:textSize="@dimen/sp_14" />
 
         <Button
             android:id="@id/fragment_my_btn_save"

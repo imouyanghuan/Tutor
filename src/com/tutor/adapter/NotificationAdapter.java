@@ -3,7 +3,9 @@ package com.tutor.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -74,6 +76,7 @@ public class NotificationAdapter extends BaseSwipeAdapter {
 		TextView msgNickName = (TextView) convertView.findViewById(R.id.student_list_item_nick);
 		TextView time = (TextView) convertView.findViewById(R.id.student_list_item_time);
 		TextView msg = (TextView) convertView.findViewById(R.id.student_list_item_area);
+		TextView msgCount = (TextView) convertView.findViewById(R.id.student_list_item_form);
 		// 左滑删除item
 		swipeItem = (ZSwipeItem) convertView.findViewById(R.id.swipe_item);
 		TextView tvAccept = (TextView) convertView.findViewById(R.id.tv_accept);
@@ -123,6 +126,20 @@ public class NotificationAdapter extends BaseSwipeAdapter {
 			} else {
 				tvDelete.setVisibility(View.VISIBLE);
 			}
+		}
+		// 未读消息气泡
+		int unReadCount = mList.get(position).getNoticeSum();
+		if (unReadCount > 0) {
+			msgCount.setText(String.valueOf(unReadCount));
+			msgCount.setBackgroundResource(R.drawable.menu_msg_count_bg);
+			msgCount.setTextColor(Color.WHITE);
+			msgCount.setTextSize(12);
+			msgCount.setGravity(Gravity.CENTER);
+			msgCount.setVisibility(View.VISIBLE);
+			msgCount.setPadding(2, 2, 2, 2);
+		} else {
+			msgCount.setText("");
+			msgCount.setVisibility(View.INVISIBLE);
 		}
 		String msgFrom = mList.get(position).getFromUserName();
 		if (TextUtils.isEmpty(msgFrom)) {

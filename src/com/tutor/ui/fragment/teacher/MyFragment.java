@@ -79,7 +79,6 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	private Button save;
 	/** 个人信息 */
 	private UserInfo userInfo;
-	private boolean isUpdate = false;
 	private int es;
 	private String rTime;
 
@@ -147,7 +146,15 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	private void setData(UserInfo profile) {
 		userInfo = profile;
 		userName.setText(!TextUtils.isEmpty(profile.getUserName()) ? profile.getUserName() : "Tutor" + profile.getId());
-		gender.setText(Constants.General.MALE == profile.getGender() ? R.string.label_male : R.string.label_female);
+		int genderStr;
+		if (userInfo.getGender() == null) {
+			genderStr = R.string.label_ignore1;
+		} else if (Constants.General.MALE == userInfo.getGender()) {
+			genderStr = R.string.label_male;
+		} else {
+			genderStr = R.string.label_female;
+		}
+		gender.setText(genderStr);
 		nickName.setText(!TextUtils.isEmpty(profile.getNickName()) ? profile.getNickName() : "");
 		school.setText(!TextUtils.isEmpty(profile.getGraduateSchool()) ? profile.getGraduateSchool() : "");
 		major.setText(!TextUtils.isEmpty(profile.getMajor()) ? profile.getMajor() : "");
@@ -162,11 +169,8 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (isUpdate) {
-			// 更新数据
-			getTutorProfile();
-			isUpdate = false;
-		}
+		// 更新数据
+		getTutorProfile();
 	}
 
 	@Override
@@ -177,6 +181,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 				if (null == dialog) {
 					dialog = new ChangeAvatarDialog((BaseActivity) getActivity());
 				}
+				ImageUtils.clearChache();
 				// 初始化uri
 				String fileName = DateTimeUtil.getSystemDateTime(DateTimeUtil.FORMART_YMDHMS) + Constants.General.IMAGE_END;
 				imageUri = Uri.fromFile(new File(Constants.SDCard.getImageDir(), fileName));
@@ -217,7 +222,6 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, true);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 				startActivity(intent);
-				isUpdate = true;
 				break;
 			case R.id.fragment_my_tv_registration_time:
 				Calendar calendar = Calendar.getInstance();

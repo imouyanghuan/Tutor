@@ -9,7 +9,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_45"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="@dimen/dp_5" >
@@ -39,7 +39,7 @@
         <EditText
             android:id="@+id/edit_chat_et"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_30"
+            android:layout_height="@dimen/dp_35"
             android:layout_marginLeft="@dimen/dp_5"
             android:layout_weight="1"
             android:background="@drawable/chat_et_bg"
@@ -51,7 +51,7 @@
         <Button
             android:id="@+id/edit_chat_btn_send"
             android:layout_width="@dimen/dp_50"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/dp_35"
             android:layout_marginLeft="@dimen/dp_3"
             android:layout_marginRight="@dimen/dp_5"
             android:background="@drawable/btn_bg_selector"

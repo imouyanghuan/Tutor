@@ -37,6 +37,7 @@ import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.helper.ToastUtils;
 import com.tutor.R;
 import com.tutor.TutorApplication;
+import com.tutor.adapter.SysNotificationAdapter;
 import com.tutor.im.ContactManager;
 import com.tutor.im.IMMessageManager;
 import com.tutor.im.XMPPConnectionManager;
@@ -48,7 +49,9 @@ import com.tutor.model.UserInfoResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.activity.ChatActivity;
+import com.tutor.ui.activity.ChatListActivity;
 import com.tutor.ui.activity.NoticeActivity;
+import com.tutor.ui.activity.SystemNotificationActivity;
 import com.tutor.util.DateTimeUtil;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.LogUtils;
@@ -166,7 +169,7 @@ public class IMService extends Service {
 					sendBroadcast(intent);
 					// 發送通知
 					if (Constants.Xmpp.isChatNotification) {
-						setNotiType(R.drawable.icon_notification, imMessage, NoticeActivity.class);
+						setNotiType(R.drawable.icon_notification, imMessage, SystemNotificationActivity.class);
 					}
 				}
 			}
@@ -184,7 +187,7 @@ public class IMService extends Service {
 				IMMessage imMessage = new IMMessage();
 				// 內容
 				String content = message.getBody();
-				LogUtils.d("接收到新消息-->" + content);
+				LogUtils.d("接收到聊天消息-->" + content);
 				// 時間
 				String time = (String) message.getProperty(Constants.IntentExtra.INTENT_EXTRA_IMMESSAGE_TIME);
 				if (null == time) {
@@ -238,7 +241,7 @@ public class IMService extends Service {
 					vibrator.vibrate(times, -1);
 					// 發送通知
 					if (Constants.Xmpp.isChatNotification) {
-						setNotiType(R.drawable.icon_notification, imMessage, ChatActivity.class);
+						setNotiType(R.drawable.icon_notification, imMessage, ChatListActivity.class); // 暂时修改为聊天记录页面
 					}
 				}
 			}

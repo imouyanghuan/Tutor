@@ -69,7 +69,6 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	private Button save;
 	/** 个人信息 */
 	private UserInfo userInfo;
-	private boolean isUpdate = false;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_student_my, container, false);
@@ -87,11 +86,8 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if (isUpdate) {
-			// 更新数据
-			getData();
-			isUpdate = false;
-		}
+		// 更新数据
+		getData();
 	}
 
 	/**
@@ -102,7 +98,15 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	private void setData(UserInfo profile) {
 		userInfo = profile;
 		userName.setText(!TextUtils.isEmpty(profile.getUserName()) ? profile.getUserName() : "Tutor" + profile.getId());
-		gender.setText(Constants.General.MALE == profile.getGender() ? R.string.label_male : R.string.label_female);
+		int genderStr;
+		if (profile.getGender() == null) {
+			genderStr = R.string.label_ignore1;
+		} else if (Constants.General.MALE == profile.getGender()) {
+			genderStr = R.string.label_male;
+		} else {
+			genderStr = R.string.label_female;
+		}
+		gender.setText(genderStr);
 		nickName.setText(!TextUtils.isEmpty(profile.getNickName()) ? profile.getNickName() : "");
 		introduction.setText(!TextUtils.isEmpty(profile.getIntroduction()) ? profile.getIntroduction() : "");
 	}
@@ -217,6 +221,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 				if (null == dialog) {
 					dialog = new ChangeAvatarDialog((BaseActivity) getActivity());
 				}
+				ImageUtils.clearChache();
 				// 初始化uri
 				String fileName = DateTimeUtil.getSystemDateTime(DateTimeUtil.FORMART_YMDHMS) + Constants.General.IMAGE_END;
 				imageUri = Uri.fromFile(new File(Constants.SDCard.getImageDir(), fileName));
@@ -236,7 +241,6 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, true);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 				startActivity(intent);
-				isUpdate = true;
 				break;
 			case R.id.fragment_my_tv_changepswd:
 				Intent intent2 = new Intent(getActivity(), ChangePasswordActivity.class);

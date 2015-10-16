@@ -12,6 +12,7 @@
     <color name="red">#ff0000</color>
     <color name="black_line">#c9ced6</color>
     <color name="transparent">#00000000</color>
+    <color name="transparent_2">#88000000</color>
     <color name="gray">#b7bbc2</color>
     <color name="tab_txt_color">#b7bbc2</color>
     <color name="tab_bg">#f6f6f7</color>

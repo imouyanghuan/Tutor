@@ -183,6 +183,7 @@
         <!-- 聊天列表页面 -->
         <activity
             android:name="com.tutor.ui.activity.ChatListActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
         <!-- IM服务 -->
@@ -204,7 +205,7 @@
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider508961679269484"
+            android:authorities="com.facebook.app.FacebookContentProvider955813547811269"
             android:exported="true" />
 
         <receiver

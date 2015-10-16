@@ -65,7 +65,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	/** 性別 */
 	private RadioGroup sexRadioGroup;
 	/** 性别 */
-	private int sex = 0;
+	private Integer sex = null;
 	/** 出生日期 */
 	private String birth;
 	private int gradeValue;
@@ -161,6 +161,9 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 					case R.id.ac_fill_personal_info_rb_female:
 						sex = Constants.General.FEMALE;
 						break;
+					case R.id.ac_fill_personal_info_rb_ignore:
+						sex = null;
+						break;
 				}
 			}
 		});
@@ -171,7 +174,15 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				hKidEditText.setText(userInfo.getHkidNumber());
 				phoneEditText.setText(userInfo.getPhone());
 				addressEditText.setText(userInfo.getResidentialAddress());
-				sexRadioGroup.check(Constants.General.MALE == userInfo.getGender() ? R.id.ac_fill_personal_info_rb_male : R.id.ac_fill_personal_info_rb_female);
+				int checkId;
+				if (sex == null) {
+					checkId = R.id.ac_fill_personal_info_rb_ignore;
+				} else if (Constants.General.MALE == sex) {
+					checkId = R.id.ac_fill_personal_info_rb_male;
+				} else {
+					checkId = R.id.ac_fill_personal_info_rb_female;
+				}
+				sexRadioGroup.check(checkId);
 			}
 		}
 	}
@@ -306,6 +317,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		userInfo.setFbOpenID(account.getFacebookId());
 		userInfo.setImid(account.getImAccount());
 		userInfo.setCreatedTime(account.getCreatedTime());
+		userInfo.setAccountType(role);
 		return userInfo;
 	}
 

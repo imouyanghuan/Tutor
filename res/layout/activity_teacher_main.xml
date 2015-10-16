@@ -8,55 +8,87 @@
     <include layout="@layout/title_bar" />
 
     <FrameLayout
-        android:id="@id/ac_main_content_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1" >
+        android:layout_height="match_parent" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <FrameLayout
+                android:id="@id/ac_main_content_fragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1" >
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:orientation="vertical" >
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/line_height"
+                    android:background="@color/black_line" />
+
+                <RadioGroup
+                    android:id="@id/ac_main_rg"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_55"
+                    android:background="@color/tab_bg"
+                    android:orientation="horizontal" >
+
+                    <RadioButton
+                        android:id="@id/ac_main_rb2"
+                        style="@style/main_tab"
+                        android:drawableTop="@drawable/tab_oe_selector"
+                        android:text="@string/study_abroad" />
+
+                    <RadioButton
+                        android:id="@id/ac_main_rb1"
+                        style="@style/main_tab"
+                        android:checked="true"
+                        android:drawableTop="@drawable/tab_search_selector"
+                        android:text="@string/findstudents" />
+
+                    <RadioButton
+                        android:id="@id/ac_main_rb3"
+                        style="@style/main_tab"
+                        android:drawableTop="@drawable/tab_my_ts_selector"
+                        android:text="@string/mystudents" />
+
+                    <RadioButton
+                        android:id="@id/ac_main_rb4"
+                        style="@style/main_tab"
+                        android:drawableTop="@drawable/tab_mp_selector"
+                        android:text="@string/my" />
+                </RadioGroup>
+            </LinearLayout>
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_tip_find_student"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent_2"
+            android:visibility="gone" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/findstudents"
+                android:gravity="center"
+                android:paddingBottom="15dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:text="@string/tip_find_students"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_12" />
+        </FrameLayout>
     </FrameLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:orientation="vertical" >
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/line_height"
-            android:background="@color/black_line" />
-
-        <RadioGroup
-            android:id="@id/ac_main_rg"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_55"
-            android:background="@color/tab_bg"
-            android:orientation="horizontal" >
-
-            <RadioButton
-                android:id="@id/ac_main_rb2"
-                style="@style/main_tab"
-                android:checked="true"
-                android:drawableTop="@drawable/tab_oe_selector"
-                android:text="@string/study_abroad" />
-
-            <RadioButton
-                android:id="@id/ac_main_rb1"
-                style="@style/main_tab"
-                android:drawableTop="@drawable/tab_search_selector"
-                android:text="@string/findstudents" />
-
-            <RadioButton
-                android:id="@id/ac_main_rb3"
-                style="@style/main_tab"
-                android:drawableTop="@drawable/tab_my_ts_selector"
-                android:text="@string/mystudents" />
-
-            <RadioButton
-                android:id="@id/ac_main_rb4"
-                style="@style/main_tab"
-                android:drawableTop="@drawable/tab_mp_selector"
-                android:text="@string/my" />
-        </RadioGroup>
-    </LinearLayout>
 
 </LinearLayout>

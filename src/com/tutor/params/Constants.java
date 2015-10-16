@@ -60,6 +60,11 @@ public final class Constants {
 		public static final String AVATAR = "avatar";
 		/** tutorId */
 		public static final String TUTOR_ID = "tutorId";
+		public static final String IS_NEED_SHOW_STUDENT_TIP = "isNeedShowFindStudent";
+		public static final String IS_NEED_SHOW_TUTOR_TIP = "isNeedShowFindTutor";
+		public static final String IS_NEED_SHOW_SEARCH_TIP = "isNeedShowSearch";
+		public static final String IS_NEED_SHOW_NOTIFICATION_TIP = "isNeedShowNotification";
+		public static final String IS_NEED_SHOW_BOOKMARK_TIP = "isNeedShowBookmark";
 	}
 
 	/**

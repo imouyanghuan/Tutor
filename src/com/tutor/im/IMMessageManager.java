@@ -36,19 +36,19 @@ public class IMMessageManager {
 	// WhereCondition... condMore)：使用and构成查询条件
 	private static IMMessageManager imMessageManager;
 	private IMMessageDao imMessageDao;
-	private String currentIMAccount = null;
+	private static String currentIMAccount = null;
 
 	private IMMessageManager() {
 		imMessageDao = TutorApplication.getImMessageDao();
-		Account account = TutorApplication.getAccountDao().load("1");
-		if (null != account) {
-			currentIMAccount = account.getImAccount()+"@"+ XMPPConnectionManager.getManager().getServiceName();
-		}
 	}
 
 	public static IMMessageManager getManager() {
 		if (imMessageManager == null) {
 			imMessageManager = new IMMessageManager();
+		}
+		Account account = TutorApplication.getAccountDao().load("1");
+		if (null != account) {
+			currentIMAccount = account.getImAccount() + "@" + XMPPConnectionManager.getManager().getServiceName();
 		}
 		return imMessageManager;
 	}

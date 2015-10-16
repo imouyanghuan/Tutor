@@ -168,10 +168,21 @@
                         android:id="@id/ac_fill_personal_info_rb_female"
                         android:layout_width="@dimen/dp_60"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/find_teacher_tab_right"
+                        android:background="@drawable/find_teacher_tab_center"
                         android:button="@null"
                         android:gravity="center"
                         android:text="@string/label_female"
+                        android:textColor="@color/find_teacher_tab_txt_color"
+                        android:textSize="@dimen/sp_16" />
+
+                    <RadioButton
+                        android:id="@id/ac_fill_personal_info_rb_ignore"
+                        android:layout_width="@dimen/dp_60"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/find_teacher_tab_right"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/label_ignore1"
                         android:textColor="@color/find_teacher_tab_txt_color"
                         android:textSize="@dimen/sp_16" />
                 </RadioGroup>
