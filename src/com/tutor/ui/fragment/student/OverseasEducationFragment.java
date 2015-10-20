@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.ui.fragment.BaseFragment;
 
 /**

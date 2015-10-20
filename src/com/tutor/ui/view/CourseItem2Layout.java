@@ -11,7 +11,8 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tutor.R;
+import com.hk.tutor.R;
+import com.mssky.mobile.ui.view.CustomListView;
 import com.tutor.adapter.TutorBaseAdapter;
 import com.tutor.adapter.ViewHolder;
 import com.tutor.model.CourseItem1;
@@ -43,9 +44,9 @@ public class CourseItem2Layout extends LinearLayout {
 		title.setText(courseItem.getName());
 		ArrayList<CourseItem2> list = courseItem.getResult();
 		if (null != list) {
-			CustomGridView gridView = ViewHelper.get(view, R.id.course_item_gv);
+			CustomListView listView = ViewHelper.get(view, R.id.course_item_gv);
 			CourseAdapter adapter = new CourseAdapter(getContext(), list);
-			gridView.setAdapter(adapter);
+			listView.setAdapter(adapter);
 		}
 	}
 

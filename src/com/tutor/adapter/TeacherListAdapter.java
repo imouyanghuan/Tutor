@@ -11,7 +11,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.model.Course;
 import com.tutor.model.CourseItem1;
 import com.tutor.model.CourseItem2;

@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hk.tutor.R;
 import com.mssky.mobile.ui.view.CustomListView;
-import com.tutor.R;
 import com.tutor.model.Course;
 import com.tutor.model.CourseItem1;
 

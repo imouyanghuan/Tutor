@@ -11,7 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.ui.view.TitleBar;
 

@@ -24,8 +24,8 @@ import android.widget.TextView;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 
+import com.hk.tutor.R;
 import com.mssky.mobile.helper.ValidatorHelper;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.im.XmppManager;
 import com.tutor.model.Account;

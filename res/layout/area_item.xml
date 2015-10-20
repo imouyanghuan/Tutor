@@ -12,13 +12,12 @@
         android:textColor="@color/btn_press"
         android:textSize="@dimen/sp_18" />
 
-    <com.tutor.ui.view.CustomGridView
+    <com.mssky.mobile.ui.view.CustomListView
         android:id="@id/area_item_gv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_3"
         android:cacheColorHint="@color/transparent"
-        android:listSelector="@color/transparent"
-        android:numColumns="2" />
+        android:listSelector="@color/transparent" />
 
 </LinearLayout>

@@ -1,12 +1,16 @@
 package com.tutor.ui.fragment.teacher;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-import com.tutor.R;
+import com.hk.tutor.R;
+import com.tutor.ui.activity.CourseSelectionActivity;
 import com.tutor.ui.fragment.BaseFragment;
+import com.tutor.util.ViewHelper;
 
 /**
  * 老師首頁,消息
@@ -15,7 +19,7 @@ import com.tutor.ui.fragment.BaseFragment;
  * 
  *         2015-8-20
  */
-public class OverseasEducationFragment extends BaseFragment {
+public class OverseasEducationFragment extends BaseFragment implements OnClickListener {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -28,5 +32,25 @@ public class OverseasEducationFragment extends BaseFragment {
 		return view;
 	}
 
-	private void initView(View view) {}
+	private void initView(View view) {
+		ViewHelper.get(view, R.id.rl_course_select).setOnClickListener(this);
+		ViewHelper.get(view, R.id.rl_advisory).setOnClickListener(this);
+		ViewHelper.get(view, R.id.rl_faq).setOnClickListener(this);
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.rl_course_select:
+				Intent intent = new Intent(getActivity(), CourseSelectionActivity.class);
+				startActivity(intent);
+				break;
+			case R.id.rl_advisory:
+				break;
+			case R.id.rl_faq:
+				break;
+			default:
+				break;
+		}
+	}
 }

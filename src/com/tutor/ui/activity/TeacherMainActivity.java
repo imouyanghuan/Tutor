@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
@@ -18,8 +19,9 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
+import com.facebook.login.LoginManager;
+import com.hk.tutor.R;
 import com.mssky.mobile.helper.SharePrefUtil;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.im.IMMessageManager;
 import com.tutor.im.XMPPConnectionManager;
@@ -186,6 +188,10 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
+				Account account = TutorApplication.getAccountDao().load("1");
+				if (account != null && !TextUtils.isEmpty(account.getFacebookId())) {
+					LoginManager.getInstance().logOut();
+				}
 				// TODO 请求退出登录api
 				TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
 				Intent intent = new Intent(TeacherMainActivity.this, ChoiceRoleActivity.class);

@@ -3,6 +3,7 @@
 
     <!-- 通用 -->
     <string name="app_name">Tutor</string>
+    <string name="tutor">2utor</string>
     <string name="welcome_txt">The Best. We Match. No Fee.</string>
     <string name="study_abroad">Study Abroad</string>
     <string name="overseas_education">Overseas Education</string>
@@ -170,6 +171,7 @@
     <string name="toast_netwrok_disconnected">Network Disconnected!</string>
     <string name="toast_login_im_fail">IM Service does not Started!</string>
     <string name="toast_no_match_student">No match student</string>
+    <string name="toast_no_match_tutor">No match tutor</string>
     <string name="toast_not_select_cours">Please choice a Course at least</string>
     <string name="toast_not_select_area">Please choice an Area at least</string>
     <string name="toast_endtime_behind_starttime">End time must be behind the start time</string>
@@ -228,8 +230,8 @@
     <string name="label_please_choose">None</string>
     <string name="label_ignore">Ignore</string>
     <string name="label_ignore1">Ignore</string>
-    <string name="label_woman">Male</string>
-    <string name="label_man">Female</string>
+    <string name="label_woman">Female</string>
+    <string name="label_man">Male</string>
     <string name="label_time_slot">Timeslot</string>
     <string name="label_accept">Accept</string>
     <string name="label_reject">Reject</string>
@@ -252,5 +254,12 @@
     <string name="tip_apply_selected_options">Apply selected options</string>
     <string name="tip_confirm_time_slot">Confirm Time slot</string>
     <string name="toast_no_more_history">No more chat messages</string>
+    <string name="label_course_selection">Course Selection</string>
+    <string name="label_sharing">Sharing</string>
+    <string name="label_advisory_for_study_abroad">Advisory for Study Abroad</string>
+    <string name="label_faq">FAQ</string>
+    <string name="label_chat_with_adviser">Chat With Adviser</string>
+    <string name="label_isprivacy">isPrivacy</string>
+    <string name="label_send_failed">Send failed</string>
 
 </resources>

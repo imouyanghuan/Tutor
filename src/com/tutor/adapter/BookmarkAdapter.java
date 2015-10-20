@@ -10,11 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hk.tutor.R;
 import com.mssky.mobile.ui.zlistview.BaseSwipeAdapter;
 import com.mssky.mobile.ui.zlistview.DragEdge;
 import com.mssky.mobile.ui.zlistview.ShowMode;
 import com.mssky.mobile.ui.zlistview.ZSwipeItem;
-import com.tutor.R;
 import com.tutor.model.BookmarkModel;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;

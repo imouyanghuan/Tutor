@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager.LayoutParams;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.params.Constants;
 import com.tutor.ui.activity.BaseActivity;
 import com.tutor.util.ScreenUtil;

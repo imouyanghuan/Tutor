@@ -11,8 +11,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
+import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.model.Area;
 import com.tutor.model.Area1;

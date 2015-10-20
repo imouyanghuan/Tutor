@@ -1,6 +1,6 @@
 package com.tutor.ui.dialog;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.util.ScreenUtil;
 import com.tutor.util.ViewHelper;
 

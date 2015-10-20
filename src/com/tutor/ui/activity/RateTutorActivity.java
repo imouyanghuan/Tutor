@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.model.AddBookmarkResult;
 import com.tutor.model.RatingModel;

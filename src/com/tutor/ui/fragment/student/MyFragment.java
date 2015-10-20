@@ -23,8 +23,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.model.EditProfileResult;
 import com.tutor.model.UploadAvatarResult;

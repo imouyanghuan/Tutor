@@ -11,7 +11,7 @@ import android.util.SparseArray;
 import android.view.View;
 import android.widget.Toast;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.params.Constants;
 
 /**

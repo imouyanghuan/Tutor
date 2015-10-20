@@ -23,8 +23,8 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.CurrencysAdapter;
 import com.tutor.model.Account;

@@ -12,7 +12,7 @@ import android.widget.NumberPicker;
 import android.widget.NumberPicker.Formatter;
 import android.widget.NumberPicker.OnValueChangeListener;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.util.ScreenUtil;
 import com.tutor.util.ToastUtil;
 import com.tutor.util.ViewHelper;

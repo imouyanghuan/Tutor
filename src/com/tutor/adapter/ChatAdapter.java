@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hk.tutor.R;
 import com.mssky.mobile.ui.view.CircleImageView;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.model.IMMessage;
 import com.tutor.params.ApiUrl;

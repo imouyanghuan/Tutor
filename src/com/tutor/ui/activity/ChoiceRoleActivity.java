@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.params.Constants;
 
 /**

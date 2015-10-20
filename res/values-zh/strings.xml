@@ -3,6 +3,7 @@
 
     <!-- 通用 -->
     <string name="app_name">Tutor</string>
+    <string name="tutor">2utor</string>
     <string name="welcome_txt">The Best. We Match. No Fee.</string>
     <string name="overseas_education">海外求學</string>
     <string name="study_abroad">海外求學</string>
@@ -170,6 +171,7 @@
     <string name="toast_netwrok_disconnected">網絡未連接!</string>
     <string name="toast_login_im_fail">IM服務器未啟動!</string>
     <string name="toast_no_match_student">沒有匹配的學生</string>
+    <string name="toast_no_match_tutor">沒有匹配的老師</string>
     <string name="toast_not_select_cours">請選擇至少一門課程</string>
     <string name="toast_not_select_area">請選擇至少一個區域</string>
     <string name="toast_endtime_behind_starttime">結束時間必須在開始時間之後</string>
@@ -252,5 +254,8 @@
     <string name="tip_apply_selected_options">應用所選條件</string>
     <string name="tip_confirm_time_slot">確認時間段</string>
     <string name="toast_no_more_history">暫無聯天記錄</string>
+    <string name="label_course_selection">Course Selection</string>
+    <string name="label_sharing">Sharing</string>
+    <string name="label_advisory_for_study_abroad">Advisory for Study Abroad</string>
 
 </resources>

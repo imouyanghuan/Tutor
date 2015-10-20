@@ -2,9 +2,9 @@ package com.tutor.ui.activity;
 
 import java.net.HttpURLConnection;
 
+import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.helper.ValidatorHelper;
-import com.tutor.R;
 import com.tutor.model.EditProfileResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;

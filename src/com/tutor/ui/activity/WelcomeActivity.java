@@ -13,8 +13,8 @@ import android.os.Handler;
 import android.text.TextUtils;
 import cn.jpush.android.api.InstrumentedActivity;
 
+import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.model.VersionUpDate;
 import com.tutor.model.VersionUpDateResult;

@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 
+import com.hk.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.im.IMMessageManager;
 import com.tutor.im.XMPPConnectionManager;
@@ -146,14 +147,14 @@ public abstract class BaseChatActivity extends BaseActivity {
 			imMessage.setToJid(toJid);
 			imMessage.setNoticeType(IMMessage.MESSAGE_TYPE_CHAT_MSG);
 			imMessage.setSendStatus(IMMessage.SEND_STATUS_SUCCESS);
+			imMessages.add(imMessage);
+			IMMessageManager.getManager().sava(imMessage);
+			// 刷新
+			refreshMessage(imMessages);
 		} catch (Exception e) {
 			e.printStackTrace();
-			imMessage.setSendStatus(IMMessage.SEND_STATUS_ERROR);
+			toast(R.string.label_send_failed);
 		}
-		imMessages.add(imMessage);
-		IMMessageManager.getManager().sava(imMessage);
-		// 刷新
-		refreshMessage(imMessages);
 	}
 
 	/**

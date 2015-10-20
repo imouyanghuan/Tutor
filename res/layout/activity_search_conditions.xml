@@ -37,17 +37,17 @@
                     <Spinner
                         android:id="@+id/spin_school"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp" />
+                        android:layout_height="45dp" />
 
                     <Spinner
                         android:id="@+id/spin_grade"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp" />
+                        android:layout_height="45dp" />
 
                     <Spinner
                         android:id="@+id/spin_course"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp" />
+                        android:layout_height="45dp" />
                 </LinearLayout>
 
                 <TextView
@@ -68,12 +68,12 @@
                     <Spinner
                         android:id="@+id/sp_city"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp" />
+                        android:layout_height="45dp" />
 
                     <Spinner
                         android:id="@+id/sp_county"
                         android:layout_width="match_parent"
-                        android:layout_height="40dp" />
+                        android:layout_height="45dp" />
                 </LinearLayout>
 
                 <TextView
@@ -129,7 +129,7 @@
                             android:gravity="center"
                             android:hint="@string/label_start"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/sp_16" />
+                            android:textSize="@dimen/sp_14" />
 
                         <TextView
                             android:id="@id/ac_fill_personal_time_tv_end"
@@ -140,7 +140,7 @@
                             android:gravity="center"
                             android:hint="@string/label_end"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/sp_16" />
+                            android:textSize="@dimen/sp_14" />
 
                         <Button
                             android:id="@id/ac_fill_personal_info_btn_save_timeslot"
@@ -216,7 +216,7 @@
                 android:layout_gravity="center"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginTop="235dp"
+                android:layout_marginTop="245dp"
                 android:gravity="bottom|left|center"
                 android:paddingBottom="15dp"
                 android:paddingLeft="10dp"

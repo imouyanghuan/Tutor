@@ -24,9 +24,9 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.widget.ImageView;
 
+import com.hk.tutor.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.tutor.R;
 
 /**
  * @author bruce.chen

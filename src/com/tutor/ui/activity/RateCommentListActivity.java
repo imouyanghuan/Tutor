@@ -11,12 +11,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ListView;
 
+import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.ui.view.PullToRefreshBase;
 import com.mssky.mobile.ui.view.PullToRefreshBase.Mode;
 import com.mssky.mobile.ui.view.PullToRefreshBase.OnRefreshListener;
 import com.mssky.mobile.ui.view.PullToRefreshListView;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.RateCommentsAdapter;
 import com.tutor.model.RatingModel;

@@ -40,6 +40,7 @@ public class HttpHelper {
 	 */
 	public static <T> void post(Context context, String url, HashMap<String, String> headers, RequestParams params, ObjectHttpResponseHandler<T> responseHandler) {
 		addHeader(headers);
+		LogUtils.d(url);
 		client.post(ApiUrl.DOMAIN + url, params, responseHandler);
 	}
 
@@ -54,6 +55,7 @@ public class HttpHelper {
 	 */
 	public static <T> void post(Context context, String url, HashMap<String, String> headers, HttpEntity entity, ObjectHttpResponseHandler<T> responseHandler) {
 		addHeader(headers);
+		LogUtils.d(url);
 		client.post(context, ApiUrl.DOMAIN + url, null, entity, "application/json", responseHandler);
 	}
 
@@ -69,6 +71,7 @@ public class HttpHelper {
 	 */
 	public static <T> void get(Context context, String url, HashMap<String, String> headers, RequestParams params, ObjectHttpResponseHandler<T> responseHandler) {
 		addHeader(headers);
+		LogUtils.d(url);
 		client.get(context, ApiUrl.DOMAIN + url, params, responseHandler);
 	}
 
@@ -84,6 +87,7 @@ public class HttpHelper {
 	 */
 	public static <T> void put(Context context, String url, HashMap<String, String> headers, RequestParams params, ObjectHttpResponseHandler<T> responseHandler) {
 		addHeader(headers);
+		LogUtils.d(url);
 		client.put(context, ApiUrl.DOMAIN + url, params, responseHandler);
 	}
 
@@ -99,6 +103,7 @@ public class HttpHelper {
 	 */
 	public static <T> void put(Context context, String url, HashMap<String, String> headers, HttpEntity entity, ObjectHttpResponseHandler<T> responseHandler) {
 		addHeader(headers);
+		LogUtils.d(url);
 		client.put(context, ApiUrl.DOMAIN + url, null, entity, "application/json", responseHandler);
 	}
 

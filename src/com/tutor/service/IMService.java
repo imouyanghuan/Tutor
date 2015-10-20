@@ -33,11 +33,10 @@ import android.os.IBinder;
 import android.os.Vibrator;
 import android.text.TextUtils;
 
+import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.helper.ToastUtils;
-import com.tutor.R;
 import com.tutor.TutorApplication;
-import com.tutor.adapter.SysNotificationAdapter;
 import com.tutor.im.ContactManager;
 import com.tutor.im.IMMessageManager;
 import com.tutor.im.XMPPConnectionManager;
@@ -529,10 +528,12 @@ public class IMService extends Service {
 			@Override
 			public void run() {
 				try {
-					connection.connect();
-					if (connection.isConnected()) {
-						Presence presence = new Presence(Presence.Type.available);
-						connection.sendPacket(presence);
+					if (!connection.isConnected()) {
+						connection.connect();
+						if (connection.isConnected()) {
+							Presence presence = new Presence(Presence.Type.available);
+							connection.sendPacket(presence);
+						}
 					}
 				} catch (XMPPException e) {
 					LogUtils.e("connection failed!" + e.toString());

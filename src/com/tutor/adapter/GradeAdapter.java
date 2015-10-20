@@ -4,7 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.model.CourseItem1;
 
 public class GradeAdapter extends TutorBaseAdapter<CourseItem1> {

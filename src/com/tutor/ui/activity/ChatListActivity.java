@@ -14,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.adapter.NotificationAdapter;
 import com.tutor.adapter.NotificationAdapter.OnDeleteItemClickListener;
 import com.tutor.im.IMMessageManager;

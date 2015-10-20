@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.model.ChangePassword;
 import com.tutor.model.EditProfileResult;

@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.model.Timeslot;
 
 /**

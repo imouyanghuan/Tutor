@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.model.RatingModel;
 import com.tutor.params.ApiUrl;
 import com.tutor.util.ImageUtils;

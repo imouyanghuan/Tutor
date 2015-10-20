@@ -4,7 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.model.Currency;
 
 public class CurrencysAdapter extends TutorBaseAdapter<Currency> {

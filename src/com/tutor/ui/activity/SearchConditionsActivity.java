@@ -16,10 +16,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.helper.SharePrefUtil;
 import com.mssky.mobile.ui.view.CustomListView;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.CityAdapter;
 import com.tutor.adapter.CountryAdapter;
@@ -207,7 +207,7 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				String currentGender = genderAdapter.getItem(position);
-				if (currentGender.equals(getString(R.string.label_ignore))) {
+				if (currentGender.equals(getString(R.string.label_please_choose))) {
 					genderValue = -1;
 				} else if (currentGender.equals(getString(R.string.label_man))) {
 					genderValue = Constants.General.MALE;

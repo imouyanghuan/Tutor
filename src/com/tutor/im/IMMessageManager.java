@@ -240,7 +240,7 @@ public class IMMessageManager {
 	 */
 	public Long getUnReadNoticeCount() {
 		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
-		return qb.where(Properties.ReadStatus.eq("" + IMMessage.READ_STATUS_UNREAD)).count();
+		return qb.where(Properties.ReadStatus.eq("" + IMMessage.READ_STATUS_UNREAD), Properties.ToJid.eq(currentIMAccount)).count();
 	}
 
 	/**

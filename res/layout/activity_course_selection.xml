@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/default_bg_color" >
+
+    <include layout="@layout/title_bar" />
+
+    <com.tutor.ui.view.ObservableScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_bar" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/rl_grade"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_55"
+                android:background="@drawable/listview_item_bg"
+                android:clickable="true" >
+
+                <Spinner
+                    android:id="@+id/sp_grade"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:background="@color/white"
+                    android:dropDownWidth="match_parent"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:spinnerMode="dropdown"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_16" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true" >
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="10dp"
+                        android:layout_marginRight="@dimen/dp_15"
+                        android:background="@drawable/down" />
+                </FrameLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/gray_line"
+                    android:visibility="visible" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_country"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_55"
+                android:background="@drawable/listview_item_bg"
+                android:clickable="true" >
+
+                <Spinner
+                    android:id="@+id/sp_country"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:background="@color/white"
+                    android:paddingLeft="@dimen/dp_8"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_16" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true" >
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="10dp"
+                        android:layout_marginRight="@dimen/dp_15"
+                        android:background="@drawable/down" />
+                </FrameLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/gray_line"
+                    android:visibility="visible" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/l_isprivacy"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_35"
+                android:background="@drawable/listview_item_bg"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/dp_8" >
+
+                <CheckBox
+                    android:id="@+id/cb_is_privacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_5" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_isprivacy" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="asdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdf"
+                android:textSize="20dp"
+                android:visibility="gone" />
+        </LinearLayout>
+    </com.tutor.ui.view.ObservableScrollView>
+
+    <FrameLayout
+        android:id="@+id/fl_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true" >
+
+        <Button
+            android:id="@+id/btn_chat_with_adviser"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_45"
+            android:background="@drawable/selector_blue_btn"
+            android:gravity="center"
+            android:text="@string/label_chat_with_adviser"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_20" />
+
+    </FrameLayout>
+
+</RelativeLayout>

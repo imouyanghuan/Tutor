@@ -11,8 +11,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.NotificationAdapter;
 import com.tutor.adapter.NotificationAdapter.OnDeleteItemClickListener;

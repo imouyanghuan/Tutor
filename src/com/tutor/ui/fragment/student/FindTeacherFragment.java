@@ -22,12 +22,12 @@ import android.widget.ListView;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
+import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.ui.view.PullToRefreshBase;
 import com.mssky.mobile.ui.view.PullToRefreshBase.Mode;
 import com.mssky.mobile.ui.view.PullToRefreshBase.OnRefreshListener2;
 import com.mssky.mobile.ui.view.PullToRefreshListView;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.TeacherListAdapter;
 import com.tutor.model.Page;
@@ -416,7 +416,7 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 						users.clear();
 						users.addAll(result.getResult());
 						if (0 == users.size()) {
-							toast(R.string.toast_no_match_student);
+							toast(R.string.toast_no_match_tutor);
 							listView.setBackgroundColor(getResources().getColor(R.color.default_bg_color));
 						} else {
 							if (users.size() > 2) {

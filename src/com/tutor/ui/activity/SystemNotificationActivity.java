@@ -13,9 +13,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 
+import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.helper.SharePrefUtil;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.SysNotificationAdapter.OnAcceptItemClickListener;
 import com.tutor.adapter.SysNotificationAdapter.OnRejectItemClickListener;

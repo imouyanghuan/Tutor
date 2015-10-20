@@ -7,7 +7,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.tutor.R;
+import com.hk.tutor.R;
 import com.tutor.ui.activity.BaseActivity;
 import com.tutor.util.ViewHelper;
 

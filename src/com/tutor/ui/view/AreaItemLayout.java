@@ -11,7 +11,8 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tutor.R;
+import com.hk.tutor.R;
+import com.mssky.mobile.ui.view.CustomListView;
 import com.tutor.adapter.TutorBaseAdapter;
 import com.tutor.adapter.ViewHolder;
 import com.tutor.model.Area;
@@ -43,9 +44,9 @@ public class AreaItemLayout extends LinearLayout {
 		title.setText(area.getName());
 		ArrayList<Area1> arrayList = area.getResult();
 		if (null != arrayList) {
-			CustomGridView gridView = ViewHelper.get(root, R.id.area_item_gv);
+			CustomListView listView = ViewHelper.get(root, R.id.area_item_gv);
 			AreaAdapter adapter = new AreaAdapter(getContext(), arrayList);
-			gridView.setAdapter(adapter);
+			listView.setAdapter(adapter);
 		}
 	}
 

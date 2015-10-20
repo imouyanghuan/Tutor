@@ -20,8 +20,8 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
+import com.hk.tutor.R;
 import com.mssky.mobile.ui.view.CustomListView;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.TimeSlotAdapter;
 import com.tutor.model.EditProfileResult;

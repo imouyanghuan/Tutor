@@ -14,9 +14,9 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.ui.view.CustomListView;
-import com.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.CourseListAdapter;
 import com.tutor.adapter.TimeSlotAdapter;
