@@ -11,6 +11,7 @@
         android:layout_marginBottom="15dp"
         android:layout_marginTop="15dp"
         android:background="@drawable/coming_soon"
+        android:contentDescription="@string/app_name"
         android:visibility="gone" />
 
     <RelativeLayout
@@ -27,7 +28,8 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_centerVertical="true"
-            android:background="@drawable/course_selection" />
+            android:background="@drawable/course_selection"
+            android:contentDescription="@string/app_name" />
 
         <TextView
             android:id="@+id/tv_course_select"
@@ -46,50 +48,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dp_15"
-            android:background="@drawable/right" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="29dp"
-            android:background="@color/gray_line" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/rl_advisory"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_55"
-        android:background="@drawable/listview_item_bg"
-        android:clickable="true"
-        android:paddingLeft="@dimen/dp_15"
-        android:visibility="visible" >
-
-        <ImageView
-            android:id="@+id/iv_advisory"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_centerVertical="true"
-            android:background="@drawable/sharing" />
-
-        <TextView
-            android:id="@+id/tv_advisory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_toRightOf="@id/iv_advisory"
-            android:text="@string/label_advisory_for_study_abroad"
-            android:textColor="@color/black"
-            android:textSize="@dimen/sp_16" />
-
-        <ImageView
-            android:layout_width="10dp"
-            android:layout_height="18dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/dp_15"
-            android:background="@drawable/right" />
+            android:background="@drawable/right"
+            android:contentDescription="@string/app_name" />
 
         <View
             android:layout_width="match_parent"
@@ -105,6 +65,7 @@
         android:layout_height="@dimen/dp_55"
         android:background="@drawable/listview_item_bg"
         android:clickable="true"
+        android:paddingLeft="@dimen/dp_15"
         android:visibility="visible" >
 
         <ImageView
@@ -112,8 +73,8 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/dp_15"
-            android:background="@drawable/faq" />
+            android:background="@drawable/faq"
+            android:contentDescription="@string/app_name" />
 
         <TextView
             android:id="@+id/tv_faq"
@@ -132,7 +93,53 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dp_15"
-            android:background="@drawable/right" />
+            android:background="@drawable/right"
+            android:contentDescription="@string/app_name" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="29dp"
+            android:background="@color/gray_line" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_advisory"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_55"
+        android:background="@drawable/listview_item_bg"
+        android:clickable="true"
+        android:visibility="visible" >
+
+        <ImageView
+            android:id="@+id/iv_advisory"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_15"
+            android:background="@drawable/sharing"
+            android:contentDescription="@string/app_name" />
+
+        <TextView
+            android:id="@+id/tv_advisory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toRightOf="@id/iv_advisory"
+            android:text="@string/label_advisory_for_study_abroad"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_16" />
+
+        <ImageView
+            android:layout_width="10dp"
+            android:layout_height="18dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dp_15"
+            android:background="@drawable/right"
+            android:contentDescription="@string/app_name" />
 
         <View
             android:layout_width="match_parent"

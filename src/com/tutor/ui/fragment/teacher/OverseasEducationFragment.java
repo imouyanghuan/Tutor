@@ -8,7 +8,9 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.hk.tutor.R;
+import com.tutor.ui.activity.AdvisoryActivity;
 import com.tutor.ui.activity.CourseSelectionActivity;
+import com.tutor.ui.activity.FAQActivity;
 import com.tutor.ui.fragment.BaseFragment;
 import com.tutor.util.ViewHelper;
 
@@ -38,19 +40,23 @@ public class OverseasEducationFragment extends BaseFragment implements OnClickLi
 		ViewHelper.get(view, R.id.rl_faq).setOnClickListener(this);
 	}
 
+	private Intent intent;
+
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.rl_course_select:
-				Intent intent = new Intent(getActivity(), CourseSelectionActivity.class);
-				startActivity(intent);
+				intent = new Intent(getActivity(), CourseSelectionActivity.class);
 				break;
 			case R.id.rl_advisory:
+				intent = new Intent(getActivity(), AdvisoryActivity.class);
 				break;
 			case R.id.rl_faq:
+				intent = new Intent(getActivity(), FAQActivity.class);
 				break;
 			default:
 				break;
 		}
+		startActivity(intent);
 	}
 }

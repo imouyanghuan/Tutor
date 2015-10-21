@@ -254,8 +254,11 @@
     <string name="tip_apply_selected_options">應用所選條件</string>
     <string name="tip_confirm_time_slot">確認時間段</string>
     <string name="toast_no_more_history">暫無聯天記錄</string>
-    <string name="label_course_selection">Course Selection</string>
-    <string name="label_sharing">Sharing</string>
-    <string name="label_advisory_for_study_abroad">Advisory for Study Abroad</string>
+    <string name="label_course_selection">選擇課程</string>
+    <string name="label_advisory_for_study_abroad">求學顧問</string>
+    <string name="label_faq">常見問題</string>
+    <string name="label_chat_with_adviser">咨詢顧問</string>
+    <string name="label_isprivacy">是否私立</string>
+    <string name="label_send_failed">發送失敗</string>
 
 </resources>

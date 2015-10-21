@@ -10,16 +10,16 @@ package com.tutor.params;
 public class ApiUrl {
 
 	/** 即时通讯相关 */
-//	public static final String XMPP_HOST = "192.168.0.187";
-//	public static final int XMPP_PORT = 5222;
-//	public static final String XMPP_SERVERNAME = "vm-server4";
+	 public static final String XMPP_HOST = "192.168.0.187";
+	 public static final int XMPP_PORT = 5222;
+	 public static final String XMPP_SERVERNAME = "vm-server4";
 	// 公网
-	public static final String XMPP_HOST = "54.255.164.232";
-	public static final int XMPP_PORT = 5222;
-	public static final String XMPP_SERVERNAME = "win-iimo7nuvj0r";
+//	public static final String XMPP_HOST = "54.255.164.232";
+//	public static final int XMPP_PORT = 5222;
+//	public static final String XMPP_SERVERNAME = "win-iimo7nuvj0r";
 	// ------------------------------------------------------------------
 	/** api */
-	public static final String DOMAIN = "http://54.255.164.232/TutorApi/";
+	public static final String DOMAIN = "http://192.168.0.187:8081/Tutor/";
 	// http://192.168.0.187:8081/Tutor/ 本地
 	// http://54.255.164.232/TutorApi/
 	/** 用戶註冊 */
@@ -100,4 +100,16 @@ public class ApiUrl {
 	public static final String UPDATEVERSION = "api/v1/config/appversion/android";
 	/** 根据imid 获取用户信息 */
 	public static final String IM_GET_INFO = "api/v1/members/im/%s";
+	/** 海外求学-获取年级 */
+	public static final String STUDY_ABROAD_GRADES = "api/v1/config/abroadgrades";
+	/** 海外求学-获取国家 */
+	public static final String STUDY_ABROAD_STATES = "api/v1/config/states";
+	/** 海外求学-根据年级和国家查询 */
+	public static final String STUDY_ABROAD_COURSE_QUERY = "api/v1/studyabroad/course";
+	/** 海外求学-FAQ */
+	public static final String STUDY_ABROAD_FAQ = "api/v1/studyabroad/faq";
+	/** 海外求学-求学顾问 */
+	public static final String STUDY_ABROAD_ADVISORY = "api/v1/studyabroad/advisory";
+	/** 海外求学-登记聊天会员信息:已经聊过天了就调用这个API */
+	public static final String STUDY_ABROAD_LOGCHAT = "api/v1/studyabroad/logchat";
 }

@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_40"
-    android:layout_marginBottom="5dp"
-    android:layout_marginTop="5dp"
-    android:background="@color/default_bg_color"
-    android:paddingEnd="@dimen/dp_0"
-    android:paddingLeft="@dimen/dp_15"
-    android:paddingRight="@dimen/dp_0"
-    android:paddingStart="@dimen/dp_15" >
+    android:layout_height="wrap_content" >
 
     <TextView
         android:id="@+id/tv_item"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/listview_item_bg"
         android:gravity="center_vertical"
         android:paddingBottom="@dimen/dp_5"
+        android:paddingLeft="15dp"
         android:paddingTop="@dimen/dp_5" >
     </TextView>
 

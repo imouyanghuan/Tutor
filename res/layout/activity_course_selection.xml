@@ -9,12 +9,12 @@
     <com.tutor.ui.view.ObservableScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@id/title_bar" >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical" >
 
             <RelativeLayout
@@ -107,7 +107,8 @@
                     android:id="@+id/cb_is_privacy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dp_5" />
+                    android:layout_marginRight="@dimen/dp_5"
+                    android:button="@drawable/checkbox_selector" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -115,11 +116,10 @@
                     android:text="@string/label_isprivacy" />
             </LinearLayout>
 
-            <TextView
+            <WebView
+                android:id="@+id/webView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="asdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdfasdfdsfsdfsdfsdfsdfsdfsresfsdfsdfsdfsdfsdfsdf"
-                android:textSize="20dp"
+                android:layout_height="match_parent"
                 android:visibility="gone" />
         </LinearLayout>
     </com.tutor.ui.view.ObservableScrollView>
@@ -134,12 +134,11 @@
             android:id="@+id/btn_chat_with_adviser"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_45"
-            android:background="@drawable/selector_blue_btn"
+            android:background="@drawable/title_bar_btn_bg_selector"
             android:gravity="center"
             android:text="@string/label_chat_with_adviser"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_20" />
-
     </FrameLayout>
 
 </RelativeLayout>
