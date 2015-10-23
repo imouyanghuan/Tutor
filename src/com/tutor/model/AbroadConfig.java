@@ -14,6 +14,8 @@ public class AbroadConfig {
 	private int type;
 	private String createdTime;
 	private int id;
+	// 客服的名字
+	private String alias;
 
 	public int getValue() {
 		return value;
@@ -61,5 +63,13 @@ public class AbroadConfig {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
 	}
 }

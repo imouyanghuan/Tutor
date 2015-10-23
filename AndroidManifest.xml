@@ -197,6 +197,9 @@
         <activity
             android:name="com.tutor.ui.activity.AdvisoryActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tutor.ui.activity.CourseSelectionResultActivity"
+            android:screenOrientation="portrait" />
         <!-- IM服务 -->
         <service android:name="com.tutor.service.IMService" >
         </service>

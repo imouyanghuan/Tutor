@@ -1,6 +1,11 @@
 package com.tutor.ui.activity;
 
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.util.List;
+
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,11 +24,20 @@ import com.mssky.mobile.ui.view.PullToRefreshBase;
 import com.mssky.mobile.ui.view.PullToRefreshBase.Mode;
 import com.mssky.mobile.ui.view.PullToRefreshBase.OnRefreshListener;
 import com.mssky.mobile.ui.view.PullToRefreshListView;
+import com.tutor.TutorApplication;
 import com.tutor.adapter.ChatAdapter;
 import com.tutor.adapter.ChatAdapter.OnReSendListener;
+import com.tutor.model.EditProfileResult;
 import com.tutor.model.IMMessage;
+import com.tutor.model.LogChat;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.CheckTokenUtils;
+import com.tutor.util.HttpHelper;
+import com.tutor.util.JsonUtil;
+import com.tutor.util.LogUtils;
+import com.tutor.util.ObjectHttpResponseHandler;
 import com.tutor.util.ToastUtil;
 
 /**
@@ -41,6 +55,8 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 	// private User user;
 	private TitleBar bar;
 	private String toAvatar;
+	private boolean isFromCourseSelection;
+	private int gradeValue = -1;
 
 	@Override
 	protected void onCreate(Bundle bundle) {
@@ -121,6 +137,10 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 			// title bar
 			title = intent.getStringExtra(Constants.General.NICKNAME);
 			toAvatar = intent.getStringExtra(Constants.General.AVATAR);
+			isFromCourseSelection = intent.getBooleanExtra(Constants.General.IS_FROM_COURSE_SELECTION, false);
+			if (isFromCourseSelection) {
+				gradeValue = intent.getIntExtra(Constants.General.GRADE_VALUE, -1);
+			}
 		}
 		if (!TextUtils.isEmpty(title)) {
 			bar.setTitle(title);
@@ -171,6 +191,10 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 					// 發送聊天內容
 					sendMessage(msg);
 					etMessage.setText("");
+					if (isFromCourseSelection) {
+						// 发送log
+						logChat();
+					}
 				} else {
 					toast(R.string.toast_msg_cant_empty);
 				}
@@ -194,5 +218,47 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 	public void onReSend(IMMessage message) {
 		// TODO
 		// ToastUtil.showToastShort(this, "重新发送");
+	}
+
+	/**
+	 * 登记聊天会员信息
+	 */
+	private void logChat() {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		LogChat log = new LogChat();
+		log.setGradeValue(gradeValue);
+		log.setMemberId(TutorApplication.getMemberId());
+		String body = JsonUtil.parseObject2Str(log);
+		StringEntity entity = null;
+		try {
+			entity = new StringEntity(body, HTTP.UTF_8);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		HttpHelper.post(this, ApiUrl.STUDY_ABROAD_LOGCHAT, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				if (0 == status) {
+					return;
+				}
+				CheckTokenUtils.checkToken(status);
+			}
+
+			@Override
+			public void onSuccess(EditProfileResult result) {
+				if (result.getStatusCode() == HttpURLConnection.HTTP_OK) {
+					// TODO
+					boolean isLog = result.getResult();
+					LogUtils.e("Is Log Success?--------> " + isLog);
+				} else {
+					toast(result.getMessage());
+				}
+			}
+		});
 	}
 }

@@ -200,7 +200,17 @@ public class IMService extends Service {
 				// 來自于誰
 				String from = message.getFrom().split("/")[0];
 				// 發送給誰
-				String to = message.getTo();
+				String to = "";
+				if (message.getTo().contains("/")) {
+					String[] msgTos = message.getTo().split("/");
+					if (msgTos.length >= 2) {
+						to = message.getTo().split("/")[0];
+					} else {
+						to = message.getTo();
+					}
+				} else {
+					to = message.getTo();
+				}
 				String title = getString(R.string.new_message);
 				imMessage.setId(id);
 				imMessage.setTitle(title);
@@ -226,6 +236,9 @@ public class IMService extends Service {
 				String name = avatar.getNickName();
 				if (TextUtils.isEmpty(name)) {
 					name = avatar.getUserName();
+					if (TextUtils.isEmpty(name)) {
+						name = "Adviser";
+					}
 				}
 				imMessage.setFromUserName(name);
 				// 保存
@@ -273,11 +286,18 @@ public class IMService extends Service {
 				if (info.getStatusCode() == HttpURLConnection.HTTP_OK) {
 					UserInfo userInfo = info.getResult();
 					Avatar avatar = new Avatar();
-					String avatarStr = ApiUrl.DOMAIN + userInfo.getAvatar();
+					String avatarStr = "";
+					if (userInfo != null) {
+						avatarStr = ApiUrl.DOMAIN + userInfo.getAvatar();
+						avatar.setNickName(userInfo.getNickName());
+						avatar.setUserName(userInfo.getUserName());
+					} else {
+						avatarStr = "";
+						avatar.setNickName("");
+						avatar.setUserName("");
+					}
 					avatar.setAvatar(avatarStr);
 					avatar.setId(imId);
-					avatar.setNickName(userInfo.getNickName());
-					avatar.setUserName(userInfo.getUserName());
 					TutorApplication.getAvatarDao().insert(avatar);
 					imMessage.setAvatar(avatarStr);
 					String name = avatar.getNickName();

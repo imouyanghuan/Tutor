@@ -1,46 +1,39 @@
 package com.tutor.ui.activity;
 
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
-import org.apache.http.entity.StringEntity;
-import org.apache.http.protocol.HTTP;
-
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.animation.TranslateAnimation;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.FrameLayout;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 
 import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.AbroadConfigAdapter;
+import com.tutor.adapter.AdviserAdapter;
 import com.tutor.im.ContactManager;
 import com.tutor.im.XMPPConnectionManager;
 import com.tutor.model.AbroadConfig;
 import com.tutor.model.AbroadConfigListResult;
-import com.tutor.model.CourseSelectionSearch;
-import com.tutor.model.StringResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
-import com.tutor.ui.view.ObservableScrollView;
-import com.tutor.ui.view.ObservableScrollView.ScrollViewListener;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.HttpHelper;
-import com.tutor.util.JsonUtil;
 import com.tutor.util.ObjectHttpResponseHandler;
+import com.tutor.util.ScreenUtil;
 
 /**
  * Course Selection
@@ -49,22 +42,21 @@ import com.tutor.util.ObjectHttpResponseHandler;
  * 
  *         2015-10-19
  */
-public class CourseSelectionActivity extends BaseActivity implements ScrollViewListener, OnClickListener {
+public class CourseSelectionActivity extends BaseActivity implements OnClickListener {
 
 	private Spinner spGrade;
 	private Spinner spCountry;
-	private ObservableScrollView scrollView;
-	private FrameLayout flToolbar;
-	private boolean isGone = true;
 	private CheckBox cbIsPrivacy;
 	private ArrayList<AbroadConfig> grades = new ArrayList<AbroadConfig>();
 	private ArrayList<AbroadConfig> countrys = new ArrayList<AbroadConfig>();
+	private ArrayList<AbroadConfig> imIds = new ArrayList<AbroadConfig>();
 	private AbroadConfigAdapter gradeAdapter;
 	private AbroadConfigAdapter countryAdapter;
 	private int curGradeValue = -1;
 	private int curCountryValue = -1;
 	private boolean isPrivacy = false;
-	private WebView webView;
+	private Button btnChat;
+	private String curCountryName;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -77,6 +69,7 @@ public class CourseSelectionActivity extends BaseActivity implements ScrollViewL
 	private void initData() {
 		getGrade();
 		getCountrys();
+		getIMIds();
 	}
 
 	/**
@@ -150,27 +143,15 @@ public class CourseSelectionActivity extends BaseActivity implements ScrollViewL
 	}
 
 	/**
-	 * 获取结果
+	 * 获取所有的客服
 	 */
-	private void getQueryResult() {
+	private void getIMIds() {
 		if (!HttpHelper.isNetworkConnected(this)) {
 			toast(R.string.toast_netwrok_disconnected);
 			return;
 		}
-		showDialogRes(R.string.loading);
-		CourseSelectionSearch search = new CourseSelectionSearch();
-		search.setGradeValue(curGradeValue);
-		search.setStateValue(curCountryValue);
-		search.setPrivicy(isPrivacy);
-		String body = JsonUtil.parseObject2Str(search);
-		StringEntity entity = null;
-		try {
-			entity = new StringEntity(body, HTTP.UTF_8);
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		HttpHelper.post(this, ApiUrl.STUDY_ABROAD_COURSE_QUERY, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<StringResult>(StringResult.class) {
+		RequestParams params = new RequestParams();
+		HttpHelper.get(this, ApiUrl.STUDY_ABROAD_IM_IDS, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AbroadConfigListResult>(AbroadConfigListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -179,43 +160,24 @@ public class CourseSelectionActivity extends BaseActivity implements ScrollViewL
 				}
 				dismissDialog();
 				CheckTokenUtils.checkToken(status);
-				// toast(R.string.toast_server_error);
+				toast(R.string.toast_server_error);
 			}
 
 			@Override
-			public void onSuccess(StringResult result) {
+			public void onSuccess(AbroadConfigListResult result) {
 				dismissDialog();
 				if (result.getStatusCode() == HttpURLConnection.HTTP_OK) {
-					// TODO
-					String str = result.getResult();
-					if (!TextUtils.isEmpty(str)) {
-						str = Html.fromHtml(str).toString();
-						webView.loadDataWithBaseURL("about:blank", str, "text/html", HTTP.UTF_8, null);
-						webView.setVisibility(View.VISIBLE);
-					} else {
-						webView.setVisibility(View.GONE);
+					imIds.addAll(result.getResult());
+					if (imIds != null && imIds.size() > 0) {
+						for (int i = 0; i < imIds.size(); i++) {
+							imIds.get(i).setAlias("Adviser" + (i + 1));
+						}
 					}
 				} else {
 					toast(result.getMessage());
 				}
 			}
 		});
-	}
-
-	private ArrayList<String> getCourse() {
-		ArrayList<String> data = new ArrayList<String>();
-		for (int i = 0; i < 6; i++) {
-			data.add("Grade 1 - 1" + i);
-		}
-		return data;
-	}
-
-	private ArrayList<String> getCountry() {
-		ArrayList<String> data = new ArrayList<String>();
-		for (int i = 0; i < 6; i++) {
-			data.add("England " + i);
-		}
-		return data;
 	}
 
 	@Override
@@ -231,9 +193,6 @@ public class CourseSelectionActivity extends BaseActivity implements ScrollViewL
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				AbroadConfig config = gradeAdapter.getItem(position);
 				curGradeValue = config.getValue();
-				if (curGradeValue != -1) {
-					getQueryResult();
-				}
 			}
 
 			@Override
@@ -249,9 +208,7 @@ public class CourseSelectionActivity extends BaseActivity implements ScrollViewL
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				AbroadConfig config = countryAdapter.getItem(position);
 				curCountryValue = config.getValue();
-				if (curCountryValue != -1) {
-					getQueryResult();
-				}
+				curCountryName = config.getText();
 			}
 
 			@Override
@@ -264,18 +221,11 @@ public class CourseSelectionActivity extends BaseActivity implements ScrollViewL
 			@Override
 			public void onClick(View v) {
 				isPrivacy = !isPrivacy;
-				getQueryResult();
 			}
 		});
-		// scrollview
-		scrollView = getView(R.id.scrollView);
-		scrollView.setScrollViewListener(this);
-		// toolbar
-		flToolbar = getView(R.id.fl_toolbar);
-		getView(R.id.btn_chat_with_adviser).setOnClickListener(this);
-		// webview
-		webView = getView(R.id.webView);
-		webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+		btnChat = getView(R.id.btn_chat_with_adviser);
+		btnChat.setOnClickListener(this);
+		getView(R.id.btn_confirm).setOnClickListener(this);
 	}
 
 	private void initTitleBar() {
@@ -285,54 +235,63 @@ public class CourseSelectionActivity extends BaseActivity implements ScrollViewL
 	}
 
 	@Override
-	public void onScrollChanged(ObservableScrollView scrollView, int x, int y, int oldx, int oldy) {
-		//
-		if (oldy < y && Math.abs(oldy - y) > 20) {
-			if (isGone) {
-				// 向下滚动
-				flToolbar.setVisibility(View.GONE);
-				TranslateAnimation goneAnim = new TranslateAnimation(0, 0, 0, 150);
-				goneAnim.setDuration(200);
-				goneAnim.setFillAfter(true);
-				flToolbar.setAnimation(goneAnim);
-				isGone = false;
-			}
-		} else if (oldy > y && Math.abs(oldy - y) > 20) {
-			if (!isGone) {
-				// 向上滚动
-				flToolbar.setVisibility(View.VISIBLE);
-				TranslateAnimation visibleAnim = new TranslateAnimation(0, 0, 150, 0);
-				visibleAnim.setDuration(200);
-				visibleAnim.setFillAfter(true);
-				flToolbar.setAnimation(visibleAnim);
-				isGone = true;
-			}
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.btn_confirm:
+				Intent intent = new Intent(this, CourseSelectionResultActivity.class);
+				intent.putExtra(Constants.General.GRADE_VALUE, curGradeValue);
+				intent.putExtra(Constants.General.COUNTRY_VALUE, curCountryValue);
+				intent.putExtra(Constants.General.COUNTRY_NAME, curCountryName);
+				intent.putExtra(Constants.General.IS_PRIVACY, isPrivacy);
+				startActivity(intent);
+				break;
+			case R.id.btn_chat_with_adviser:
+				showPopupWindow(btnChat);
+				break;
 		}
 	}
 
-	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-			case R.id.btn_chat_with_adviser:
-				// TODO
-				// if (!TextUtils.isEmpty(imId)) {
-				// boolean isFriend =
-				// ContactManager.getManager().addFriend(imId, imId);
-				// if (isFriend) {
-				// Intent intent = new Intent(StudentInfoActivity.this,
-				// ChatActivity.class);
-				// intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO,
-				// imId + "@" +
-				// XMPPConnectionManager.getManager().getServiceName());
-				// intent.putExtra(Constants.General.NICKNAME, titleName);
-				// intent.putExtra(Constants.General.AVATAR, ApiUrl.DOMAIN +
-				// userInfo.getAvatar());
-				// startActivity(intent);
-				// }
-				// }
-				break;
-			default:
-				break;
-		}
+	private void showPopupWindow(Button btnChat) {
+		View view = View.inflate(CourseSelectionActivity.this, R.layout.layout_adviser_list, null);
+		ListView lvAdviser = (ListView) view.findViewById(R.id.lv_adviser);
+		final AdviserAdapter adapter = new AdviserAdapter(CourseSelectionActivity.this, imIds);
+		lvAdviser.setAdapter(adapter);
+		int itemCount = adapter.getCount();
+		final PopupWindow popupWindow = new PopupWindow(view);
+		popupWindow.setFocusable(true);
+		int itemWidth = ScreenUtil.getSW(this);
+		int itemHeight = ScreenUtil.dip2Px(CourseSelectionActivity.this, 40) * itemCount;
+		int btnHeight = ScreenUtil.dip2Px(CourseSelectionActivity.this, 45);
+		// 设置SelectPicPopupWindow弹出窗体的宽
+		popupWindow.setWidth(itemWidth / 2);
+		// 设置SelectPicPopupWindow弹出窗体的高
+		popupWindow.setHeight(itemHeight);
+		// 点击“返回Back”也能使其消失
+		popupWindow.setOutsideTouchable(true);
+		popupWindow.setBackgroundDrawable(new ColorDrawable(R.color.white));
+		popupWindow.showAsDropDown(btnChat, itemWidth / 2, -(itemHeight + btnHeight));
+		lvAdviser.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+				AbroadConfig config = adapter.getItem(position);
+				String imId = config.getText();
+				String adviserName = config.getAlias();
+				if (!TextUtils.isEmpty(imId)) {
+					boolean isFriend = ContactManager.getManager().addFriend(imId, imId);
+					if (isFriend) {
+						Intent intent = new Intent(CourseSelectionActivity.this, ChatActivity.class);
+						intent.putExtra(Constants.General.IS_FROM_COURSE_SELECTION, true);
+						intent.putExtra(Constants.General.GRADE_VALUE, curGradeValue);
+						intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId + "@" + XMPPConnectionManager.getManager().getServiceName());
+						intent.putExtra(Constants.General.NICKNAME, adviserName);
+						startActivity(intent);
+					}
+				}
+				if (popupWindow != null) {
+					popupWindow.dismiss();
+				}
+			}
+		});
 	}
 }

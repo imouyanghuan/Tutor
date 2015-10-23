@@ -260,5 +260,11 @@
     <string name="label_chat_with_adviser">咨詢顧問</string>
     <string name="label_isprivacy">是否私立</string>
     <string name="label_send_failed">發送失敗</string>
+    <string name="label_country">國家或地區</string>
+    <string name="label_confirm">確認</string>
+    <string name="label_there_is_no_relative_info">暫無信息</string>
+    <string name="label_selection_grade">年級</string>
+    <string name="label_privacy">私立</string>
+    <string name="label_non_provacy">非私立</string>
 
 </resources>

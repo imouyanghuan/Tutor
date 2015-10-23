@@ -133,6 +133,7 @@ public class ChatListActivity extends BaseActivity {
 		boolean isDelete = IMMessageManager.getManager().deleteMsgWhereJid(fromSubJid);
 		if (isDelete) {
 			getMessages();
+			mAdapter.refresh(messages);
 		}
 	}
 }

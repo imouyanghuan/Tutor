@@ -65,6 +65,11 @@ public final class Constants {
 		public static final String IS_NEED_SHOW_SEARCH_TIP = "isNeedShowSearch";
 		public static final String IS_NEED_SHOW_NOTIFICATION_TIP = "isNeedShowNotification";
 		public static final String IS_NEED_SHOW_BOOKMARK_TIP = "isNeedShowBookmark";
+		public static final String IS_FROM_COURSE_SELECTION = "isFromCourseSelection";
+		public static final String GRADE_VALUE = "gradeValue";
+		public static final String COUNTRY_VALUE = "countryValue";
+		public static final String COUNTRY_NAME = "countryName";
+		public static final String IS_PRIVACY = "isPrivacy";
 	}
 
 	/**
