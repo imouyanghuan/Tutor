@@ -69,7 +69,7 @@
     <string name="label_male">男</string>
     <string name="label_studying">學習中</string>
     <string name="label_graduated">已畢業</string>
-    <string name="label_register"><u>還沒有賬戶？   註冊</u></string>
+    <string name="label_register"><u>註冊</u></string>
     <string name="label_forget_password"><u>忘記密碼</u></string>
     <string name="label_female">女</string>
     <string name="label_select_couress">選擇課程</string>

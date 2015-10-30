@@ -27,7 +27,7 @@
     <string name="tips">Tips</string>
     <string name="delete">Delete</string>
     <string name="logining">Logining&#8230;</string>
-    <string name="forget_password">Forget password</string>
+    <string name="forget_password">Forgot password</string>
     <string name="registering">Registering</string>
     <string name="register_cbtxt">Registration is agreed to the user agreement</string>
     <string name="register_tip_tutor">Will be Register as Student/Parent when select Student/Parent at first</string>
@@ -69,8 +69,8 @@
     <string name="label_male">Male</string>
     <string name="label_studying">Studying</string>
     <string name="label_graduated">Graduated</string>
-    <string name="label_register"><u>No account yet?  Register</u></string>
-    <string name="label_forget_password"><u>Forget password</u></string>
+    <string name="label_register"><u>Sign up</u></string>
+    <string name="label_forget_password"><u>Forgot password</u></string>
     <string name="label_female">Female</string>
     <string name="label_select_couress">Select Couress</string>
     <string name="label_edit_couress">Edit Couress</string>
