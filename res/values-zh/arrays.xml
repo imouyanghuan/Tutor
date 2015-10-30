@@ -10,6 +10,24 @@
         <item>星期六</item>
         <item>星期日</item>
     </string-array>
+    <string-array name="time_table_detail_weeks">
+        <item>週一</item>
+        <item>週二</item>
+        <item>週三</item>
+        <item>週四</item>
+        <item>週五</item>
+        <item>週六</item>
+        <item>週日</item>
+    </string-array>
+    <string-array name="time_table_weeks">
+        <item>週日</item>
+        <item>週一</item>
+        <item>週二</item>
+        <item>週三</item>
+        <item>週四</item>
+        <item>週五</item>
+        <item>週六</item>
+    </string-array>
     <string-array name="minutes">
         <item>00</item>
         <item>10</item>

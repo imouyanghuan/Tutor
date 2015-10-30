@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 
@@ -70,6 +71,7 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 	private boolean isSearchStatus = false;
 	private int type;
 	private SearchCondition condition = null;
+	private RadioButton goneBtn;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_student_findteacher, container, false);
@@ -90,6 +92,7 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 		ViewHelper.get(serchView, R.id.fragment_find_student_btn).setOnClickListener(this);
 		//
 		group = ViewHelper.get(serchView, R.id.fragment_find_teacher_rg);
+		goneBtn = ViewHelper.get(serchView, R.id.fragment_find_teacher_rb3);
 		group.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
@@ -119,9 +122,26 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 		listView.setOnRefreshListener(this);
 		adapter = new TeacherListAdapter(getActivity(), users);
 		listView.setAdapter(adapter);
-		// 按评分加载老师列表
 		showDialogRes(R.string.loading);
 		getTeachersByRating(pageIndex, pageSize);
+	}
+
+	public void reFresh() {
+		if (isSearchStatus) {
+			editText.setText("");
+			condition = null;
+			editText.setHint(R.string.hint_search_student_keywords);
+			ibDelete.setVisibility(View.GONE);
+			isSearchStatus = false;
+			showDialogRes(R.string.loading);
+			group.check(R.id.fragment_find_teacher_rb1);
+			return;
+		}
+		// 按评分加载老师列表
+		if (type != 0) {
+			showDialogRes(R.string.loading);
+			group.check(R.id.fragment_find_teacher_rb1);
+		}
 	}
 
 	@Override
@@ -138,6 +158,7 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 				editText.setHint(R.string.hint_search_student_keywords);
 				ibDelete.setVisibility(View.GONE);
 				group.check(R.id.fragment_find_teacher_rb1);
+				isSearchStatus = false;
 				if (type == 0) {
 					getTeachersByRating(pageIndex, pageSize);
 				}
@@ -150,6 +171,7 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 					toast(R.string.toast_netwrok_disconnected);
 					return;
 				}
+				goneBtn.setChecked(true);
 				showDialogRes(R.string.loading);
 				getSearchTeachers(pageIndex, pageSize);
 				break;
@@ -223,10 +245,22 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 							}
 							int endHour = time.getEndHour();
 							int endMinute = time.getEndMinute();
+							String endM = "";
+							if (endMinute < 10) {
+								endM = "0" + endMinute;
+							} else {
+								endM = String.valueOf(endMinute);
+							}
 							int startHour = time.getStartHour();
 							int startMinute = time.getStartMinute();
-							timeStr = weekStr + " " + startHour + getString(R.string.hour) + startMinute + getString(R.string.minute) + " - " + endHour + getString(R.string.hour) + endMinute
-									+ getString(R.string.minute) + COM;
+							String startM = "";
+							if (startMinute < 10) {
+								startM = "0" + startMinute;
+							} else {
+								startM = String.valueOf(startMinute);
+							}
+							String COLON = ":";
+							timeStr = weekStr + " " + startHour + COLON + startM + " - " + endHour + COLON + endM + COM;
 						}
 						String searchKeyWork = keyword + courseName + areaName + genderName + timeStr;
 						if (searchKeyWork.length() > 2) {

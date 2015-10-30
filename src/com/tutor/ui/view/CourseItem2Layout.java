@@ -28,13 +28,13 @@ public class CourseItem2Layout extends LinearLayout {
 
 	private CourseItem1 courseItem;
 
-	public CourseItem2Layout(Context context, CourseItem1 item) {
+	public CourseItem2Layout(Context context, CourseItem1 item, OnRefreshListener listener) {
 		super(context);
 		courseItem = item;
-		init();
+		init(listener);
 	}
 
-	private void init() {
+	private void init(OnRefreshListener listener) {
 		setOrientation(LinearLayout.VERTICAL);
 		if (null == courseItem) {
 			return;
@@ -45,7 +45,7 @@ public class CourseItem2Layout extends LinearLayout {
 		ArrayList<CourseItem2> list = courseItem.getResult();
 		if (null != list) {
 			CustomListView listView = ViewHelper.get(view, R.id.course_item_gv);
-			CourseAdapter adapter = new CourseAdapter(getContext(), list);
+			CourseAdapter adapter = new CourseAdapter(getContext(), list, listener);
 			listView.setAdapter(adapter);
 		}
 	}
@@ -60,8 +60,11 @@ public class CourseItem2Layout extends LinearLayout {
 
 	private class CourseAdapter extends TutorBaseAdapter<CourseItem2> {
 
-		public CourseAdapter(Context mContext, List<CourseItem2> mData) {
+		private OnRefreshListener onRefreshListener;
+
+		public CourseAdapter(Context mContext, List<CourseItem2> mData, OnRefreshListener listener) {
 			super(mContext, mData, R.layout.course_item_layout);
+			this.onRefreshListener = listener;
 		}
 
 		@Override
@@ -73,14 +76,23 @@ public class CourseItem2Layout extends LinearLayout {
 
 				@Override
 				public void onClick(View arg0) {
-					if (t.isChecked()) {
-						t.setChecked(false);
+					if (onRefreshListener == null) {
+						if (t.isChecked()) {
+							t.setChecked(false);
+						} else {
+							t.setChecked(true);
+						}
+						notifyDataSetChanged();
 					} else {
-						t.setChecked(true);
+						onRefreshListener.refresh(t);
 					}
-					notifyDataSetChanged();
 				}
 			});
 		}
+	}
+
+	public interface OnRefreshListener {
+
+		public void refresh(CourseItem2 courseItem2);
 	}
 }

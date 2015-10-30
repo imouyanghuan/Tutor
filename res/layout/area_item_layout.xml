@@ -4,15 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="@dimen/dp_5" >
-
-    <TextView
-        android:id="@id/area_item_gv_item_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:textSize="@dimen/sp_16" />
-
+    
     <CheckBox
         android:id="@id/area_item_gv_item_checkbox"
         android:layout_width="wrap_content"
@@ -20,5 +12,13 @@
         android:layout_gravity="center_vertical"
         android:layout_margin="@dimen/dp_5"
         android:button="@drawable/checkbox_selector" />
+
+    <TextView
+        android:id="@id/area_item_gv_item_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:textSize="@dimen/sp_16" />
 
 </LinearLayout>

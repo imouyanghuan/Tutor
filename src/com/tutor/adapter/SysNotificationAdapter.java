@@ -15,7 +15,7 @@ import com.mssky.mobile.ui.zlistview.BaseSwipeAdapter;
 import com.mssky.mobile.ui.zlistview.DragEdge;
 import com.mssky.mobile.ui.zlistview.ShowMode;
 import com.mssky.mobile.ui.zlistview.ZSwipeItem;
-import com.tutor.model.IMMessage;
+import com.tutor.model.Notification;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.util.ImageUtils;
@@ -30,15 +30,15 @@ import com.tutor.util.ImageUtils;
 public class SysNotificationAdapter extends BaseSwipeAdapter {
 
 	private Context mContext;
-	private List<IMMessage> mList;
+	private List<Notification> mList;
 	private ZSwipeItem swipeItem;
 
-	public SysNotificationAdapter(Context mContext, List<IMMessage> mList) {
+	public SysNotificationAdapter(Context mContext, List<Notification> mList) {
 		this.mContext = mContext;
 		this.mList = mList;
 	}
 
-	public void refresh(List<IMMessage> mData) {
+	public void refresh(List<Notification> mData) {
 		this.mList = mData;
 		notifyDataSetChanged();
 	}
@@ -50,7 +50,7 @@ public class SysNotificationAdapter extends BaseSwipeAdapter {
 	}
 
 	@Override
-	public IMMessage getItem(int position) {
+	public Notification getItem(int position) {
 		return mList.get(position);
 	}
 
@@ -80,17 +80,17 @@ public class SysNotificationAdapter extends BaseSwipeAdapter {
 		tvStatus.setTextSize(14);
 		// 左滑删除item
 		swipeItem = (ZSwipeItem) convertView.findViewById(R.id.swipe_item);
-		TextView tvAccept = (TextView) convertView.findViewById(R.id.tv_accept);
-		tvAccept.setVisibility(View.VISIBLE);
-		tvAccept.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (onAcceptItemClickListener != null) {
-					onAcceptItemClickListener.onClick(Constants.General.ACCEPT, mList.get(position).getId());
-				}
-			}
-		});
+		//TextView tvAccept = (TextView) convertView.findViewById(R.id.tv_accept);
+		//tvAccept.setVisibility(View.VISIBLE);
+//		tvAccept.setOnClickListener(new OnClickListener() {
+//
+//			@Override
+//			public void onClick(View v) {
+//				if (onAcceptItemClickListener != null) {
+//					onAcceptItemClickListener.onClick(Constants.General.ACCEPT, mList.get(position).getId());
+//				}
+//			}
+//		});
 		TextView tvReject = (TextView) convertView.findViewById(R.id.tv_reject);
 		tvReject.setVisibility(View.VISIBLE);
 		tvReject.setOnClickListener(new OnClickListener() {
@@ -113,7 +113,7 @@ public class SysNotificationAdapter extends BaseSwipeAdapter {
 			@Override
 			public void onClick(View v) {
 				if (onDeleteItemClickListener != null) {
-					String fromSubJid = mList.get(position).getFromSubJid();
+					String fromSubJid = !TextUtils.isEmpty(mList.get(position).getUserName()) ? mList.get(position).getUserName() : mList.get(position).getNickName();
 					onDeleteItemClickListener.onClick(fromSubJid, position);
 				}
 				notifyDataSetInvalidated();
@@ -121,24 +121,26 @@ public class SysNotificationAdapter extends BaseSwipeAdapter {
 			}
 		});
 		if (mList != null) {
-			int status = mList.get(position).getReadStatus();
+			// 接受或者拒绝
+			int status = mList.get(position).getStatus();
 			if (status == Constants.General.ACCEPT) {
-				tvStatus.setText("已接受");
-				tvAccept.setVisibility(View.GONE);
+				tvStatus.setText(R.string.label_accept);
+				//tvAccept.setVisibility(View.GONE);
 				tvReject.setVisibility(View.GONE);
 			} else if (status == Constants.General.REJECT) {
-				tvStatus.setText("已拒絕");
-				tvAccept.setVisibility(View.GONE);
+				tvStatus.setText(R.string.label_reject);
+				//tvAccept.setVisibility(View.GONE);
 				tvReject.setVisibility(View.GONE);
 			} else {
-				tvAccept.setVisibility(View.VISIBLE);
+				tvStatus.setText("");
+				//tvAccept.setVisibility(View.VISIBLE);
 				tvReject.setVisibility(View.VISIBLE);
 			}
 		}
 		if (mList != null) {
 			ImageUtils.loadImage(imgAvatar, ApiUrl.DOMAIN + mList.get(position).getAvatar());
 		}
-		String msgFrom = mList.get(position).getFromSubJid();
+		String msgFrom = !TextUtils.isEmpty(mList.get(position).getUserName()) ? mList.get(position).getUserName() : mList.get(position).getNickName();
 		if (TextUtils.isEmpty(msgFrom)) {
 			msgNickName.setText("Tutor Student");
 		} else {
@@ -150,7 +152,7 @@ public class SysNotificationAdapter extends BaseSwipeAdapter {
 		} else {
 			msg.setText(msgContent);
 		}
-		String msgTime = mList.get(position).getTime();
+		String msgTime = mList.get(position).getCreatedTime();
 		if (TextUtils.isEmpty(msgTime)) {
 			time.setText("");
 		} else {
@@ -186,7 +188,7 @@ public class SysNotificationAdapter extends BaseSwipeAdapter {
 	/**
 	 * 点击接受按钮回调
 	 */
-	private OnAcceptItemClickListener onAcceptItemClickListener;
+//	private OnAcceptItemClickListener onAcceptItemClickListener;
 
 	/**
 	 * 点击接受按钮回调接口
@@ -198,14 +200,14 @@ public class SysNotificationAdapter extends BaseSwipeAdapter {
 	 */
 	public interface OnAcceptItemClickListener {
 
-		public void onClick(int status, String notificationId);
+		public void onClick(int status, int notificationId);
 	}
 
 	/**
 	 * 点击接受按钮回调set方法
 	 */
 	public void setOnAcceptItemClickListener(OnAcceptItemClickListener onAcceptItemClickListener) {
-		this.onAcceptItemClickListener = onAcceptItemClickListener;
+//		this.onAcceptItemClickListener = onAcceptItemClickListener;
 	}
 
 	/**
@@ -223,7 +225,7 @@ public class SysNotificationAdapter extends BaseSwipeAdapter {
 	 */
 	public interface OnRejectItemClickListener {
 
-		public void onClick(int status, String notificationId);
+		public void onClick(int status, int notificationId);
 	}
 
 	/**

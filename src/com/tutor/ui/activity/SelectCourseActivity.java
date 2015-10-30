@@ -9,7 +9,6 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ScrollView;
 
 import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
@@ -22,6 +21,7 @@ import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.CourseLayout;
+import com.tutor.ui.view.OverScrollView;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.LogUtils;
@@ -36,7 +36,7 @@ import com.tutor.util.ObjectHttpResponseHandler;
  */
 public class SelectCourseActivity extends BaseActivity {
 
-	private ScrollView scrollView;
+	private OverScrollView scrollView;
 	/** 是否是编辑资料模式 */
 	private boolean isEdit;
 	private int role = -1;
@@ -151,7 +151,7 @@ public class SelectCourseActivity extends BaseActivity {
 
 	private void setData(ArrayList<Course> courses) {
 		if (null != courses && 0 != courses.size()) {
-			CourseLayout courseLayout = new CourseLayout(SelectCourseActivity.this, courses);
+			CourseLayout courseLayout = new CourseLayout(SelectCourseActivity.this, courses, null);
 			scrollView.addView(courseLayout);
 		}
 	}

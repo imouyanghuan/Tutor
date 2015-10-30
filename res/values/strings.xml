@@ -29,11 +29,10 @@
     <string name="logining">Logining&#8230;</string>
     <string name="forget_password">Forget password</string>
     <string name="registering">Registering</string>
-    <string name="register_cbtxt">Registration is agreed to the privacy statement</string>
+    <string name="register_cbtxt">Registration is agreed to the user agreement</string>
     <string name="register_tip_tutor">Will be Register as Student/Parent when select Student/Parent at first</string>
     <string name="register_tip_student">Will be Register as Tutor when select Tutor at first</string>
     <string name="team_conditions">Team&amp;Conditions</string>
-    <string name="teamcondition_cbtxt">I understand and agree with above</string>
     <string name="fill_personal_info">Fill Personal Information</string>
     <string name="edit_personal_info">Edit Personal Information</string>
     <string name="add_timeslot">Add Timeslot</string>
@@ -52,20 +51,20 @@
     <string name="rating">Rating:</string>
     <string name="nust_flag">*</string>
     <string name="note">According to the regulation of the employment agency in Labour Department，the employment agency will keep the jobhunter’s address and HKID, and this information will be restricted by privacy policy of our application, please check our website for detail.</string>
-    <string name="sys_notification">Message</string>
+    <string name="sys_notification">Notifications</string>
 
     <!-- label -->
     <string name="label_role_student">Students/Parents</string>
     <string name="label_role_tutor">Tutors</string>
     <string name="label_name">Name:</string>
     <string name="label_avatar">Avatar:</string>
-    <string name="label_hkid_number">HKID Number:</string>
-    <string name="label_phone">Phone Number:</string>
+    <string name="label_hkid_number">HKID Number</string>
+    <string name="label_phone">Phone Number</string>
     <string name="label_gender">Gender:</string>
-    <string name="label_grade">Grade</string>
+    <string name="label_grade">Grade:</string>
     <string name="label_birth">Date of Birth:</string>
     <string name="label_birthday">Birth:</string>
-    <string name="label_address">Residential Address:</string>
+    <string name="label_address">Residential Address</string>
     <string name="label_address1">Address:</string>
     <string name="label_male">Male</string>
     <string name="label_studying">Studying</string>
@@ -117,7 +116,6 @@
     <string name="btn_login_email">Login With Email</string>
     <string name="btn_register_as_tutor">Register As Tutor</string>
     <string name="btn_register_as_student">Register As Student/Parent</string>
-    <string name="btn_forward">Forward</string>
     <string name="btn_fill_info_tutor">Submit&amp;Become A Tutor</string>
     <string name="btn_fill_info_student">Submit&amp;Find A Tutor</string>
     <string name="btn_fragment_find_teacher_rating">Rating</string>
@@ -157,19 +155,19 @@
     <string name="toast_without_mystudent">Whitout Student</string>
     <string name="toast_server_error">Server error</string>
     <string name="toast_register_fail">Register failed</string>
-    <string name="toast_register_exist">User has existed!</string>
+    <string name="toast_register_exist">User has existed</string>
     <string name="toast_avatar_upload">Upload Avatar Successed</string>
     <string name="toast_avatar_upload_fail">Upload Avatar Failed</string>
-    <string name="toast_no_timeslot">Please add timeslot!</string>
-    <string name="toast_name_isEmpty">Name is Empty!</string>
-    <string name="toast_hkid_isEmpty">HKID is Empty!</string>
-    <string name="toast_hkid_error">HKID format error!</string>
-    <string name="toast_phone_error">Phone number format error!</string>
-    <string name="toast_phone_isEmpty">Phone number is Empty!</string>
+    <string name="toast_no_timeslot">Please add timeslot</string>
+    <string name="toast_name_isEmpty">Name is Empty</string>
+    <string name="toast_hkid_isEmpty">HKID is Empty</string>
+    <string name="toast_hkid_error">HKID format error</string>
+    <string name="toast_phone_error">Phone Number format error</string>
+    <string name="toast_phone_isEmpty">Phone Number is Empty</string>
     <string name="toast_no_data">No Data</string>
     <string name="toast_no_more_data">There is no more data</string>
-    <string name="toast_netwrok_disconnected">Network Disconnected!</string>
-    <string name="toast_login_im_fail">IM Service does not Started!</string>
+    <string name="toast_netwrok_disconnected">Network Disconnected</string>
+    <string name="toast_login_im_fail">IM Service does not Started</string>
     <string name="toast_no_match_student">No match student</string>
     <string name="toast_no_match_tutor">No match tutor</string>
     <string name="toast_not_select_cours">Please choice a Course at least</string>
@@ -179,12 +177,12 @@
     <string name="toast_video_unplay">Video link or video format errors</string>
     <string name="toast_video_link_empety">Video link is empty</string>
     <string name="toast_token_invalid">Token expired, please login again</string>
-    <string name="toast_save_successed">Save success!</string>
+    <string name="toast_save_successed">Save success</string>
     <string name="toast_forgetpswd_sendemail_success">A temporary password has been sent to your mailbox, please use the temporary password to log in as soon as possible after setting a new password!</string>
     <string name="toast_without_mytutor">Without Tutors</string>
-    <string name="toast_price_empty">Price Is Empty!</string>
+    <string name="toast_price_empty">Price is empty</string>
     <string name="toast_grade_noChoice">Please choice grade</string>
-    <string name="toast_address_isEmpty">Address Is Empty!</string>
+    <string name="toast_address_isEmpty">Address is empty</string>
 
     <!-- xmpp聊天相關 -->
     <string name="new_message">New short message received</string>
@@ -215,7 +213,7 @@
     <string name="label_rete_tutor">Rate Tutor</string>
     <string name="label_paly_video">Play Video</string>
     <string name="label_to_be_my_student">To Be My Student</string>
-    <string name="label_student_name">Student Name</string>
+    <string name="label_student_name">Full Name</string>
     <string name="label_subject_to_be_taught">Subject To Be Taught</string>
     <string name="label_frequency_of_lessons">Frequency Of Lessons</string>
     <string name="label_price_per_hour">Price Per Hour</string>
@@ -255,7 +253,7 @@
     <string name="tip_confirm_time_slot">Confirm Time slot</string>
     <string name="toast_no_more_history">No more chat messages</string>
     <string name="label_course_selection">Course Selection</string>
-    <string name="label_advisory_for_study_abroad">Advisory for Study Abroad</string>
+    <string name="label_advisory_for_study_abroad">Study Tour</string>
     <string name="label_faq">FAQ</string>
     <string name="label_chat_with_adviser">Chat With Adviser</string>
     <string name="label_isprivacy">IsPrivacy</string>
@@ -266,5 +264,36 @@
     <string name="label_selection_grade">Grade</string>
     <string name="label_privacy">Privacy</string>
     <string name="label_non_provacy">Non-Provacy</string>
-
+    <!-- 日历 -->
+    <string name="add_schedule">添加日程</string>
+    <string name="schedule_det">日程详情</string>
+    <string name="add">Add</string>
+    <string name="no_schedule_tip">您还没有任何的日程活动哦!赶快添加吧!</string>
+    <string name="today">今天</string>
+    <string name="back">返回</string>
+    <string name="save">保存</string>
+    <string name="schedule">日程</string>
+    <string name="yyyy_mm">YYYY年MM月</string>
+    <string name="week1">Mon</string>
+    <string name="week2">Tues</string>
+    <string name="week3">Wed</string>
+    <string name="week4">Thur</string>
+    <string name="week5">Fri</string>
+    <string name="week6">Sat</string>
+    <string name="week7">Sun</string>
+    <string name="label_time_table">Time Table</string>
+    <string name="label_invitation_detail">Notification Detail</string>
+    <string name="label_accepted">Accepted</string>
+    <string name="label_rejected">Rejected</string>
+    <string name="label_time_table_detail">Time Table Detail</string>
+<string name="toast_timeslot_has_a_conflict">TimeSlot has a conflict</string>
+<string name="label_label_course">"Course : "</string>
+<string name="label_label_student">"Student : "</string>
+<string name="label_teacher">"Teacher : "</string>
+<string name="label_invite_people">"Invite People : "</string>
+<string name="label_label_frequency_of_lessons">"Frequency Of Lessons : "</string>
+<string name="label_label_price_per_hour">"Price Per Hour : "</string>
+<string name="label_label_address">"Residential Address : "</string>
+<string name="label_time">"Time : "</string>
+<string name="label_required_info">If you accept the invitation you need to fill in the following information</string>
 </resources>

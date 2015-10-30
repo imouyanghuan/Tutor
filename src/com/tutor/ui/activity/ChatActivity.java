@@ -102,19 +102,16 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 
 						@Override
 						protected Boolean doInBackground(Void... arg0) {
-							try {
-								Thread.sleep(1000);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
 							index = adapter.getCount();
 							return addNewMsg();
 						}
 
 						protected void onPostExecute(Boolean result) {
 							lvChat.onRefreshComplete();
-							if (!addNewMsg()) {
+							if (!result) {
 								ToastUtil.showToastShort(ChatActivity.this, R.string.toast_no_more_history);
+								isRefresh = false;
+								return;
 							}
 							resh();
 							lvChat.getRefreshableView().setTranscriptMode(ListView.TRANSCRIPT_MODE_DISABLED);
@@ -172,13 +169,6 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 			if (!Constants.Action.ACTION_ROSTER_PRESENCE_CHANGED.equals(acion)) {
 				return;
 			}
-			// User user1 = (User)
-			// intent.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_USER_KEY);
-			// if (user1 != null) {
-			// String title = user1.getName() == null ?
-			// StringUtils.getUserNameByJid(chatWithJid) : user1.getName();
-			// bar.setTitle(title);
-			// }
 		}
 	};
 

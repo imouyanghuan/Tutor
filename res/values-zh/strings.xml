@@ -33,7 +33,6 @@
     <string name="register_tip_tutor">一開始選擇學生/家長註冊則會註冊為學生/家長</string>
     <string name="register_tip_student">一開始選擇老師註冊則會註冊為老師</string>
     <string name="team_conditions">條款&amp;協議</string>
-    <string name="teamcondition_cbtxt">我理解并同意全部條款</string>
     <string name="fill_personal_info">填寫個人信息</string>
     <string name="edit_personal_info">編輯個人信息</string>
     <string name="add_timeslot">添加時間段</string>
@@ -59,13 +58,13 @@
     <string name="label_role_tutor">老師</string>
     <string name="label_name">姓名:</string>
     <string name="label_avatar">頭像:</string>
-    <string name="label_hkid_number">香港身份證號碼:</string>
-    <string name="label_phone">手機號碼:</string>
+    <string name="label_hkid_number">香港身份證號碼</string>
+    <string name="label_phone">手機號碼</string>
     <string name="label_gender">性別:</string>
     <string name="label_grade">年級:</string>
     <string name="label_birth">出生年月:</string>
     <string name="label_birthday">出生年月:</string>
-    <string name="label_address">居住地址:</string>
+    <string name="label_address">居住地址</string>
     <string name="label_address1">地址:</string>
     <string name="label_male">男</string>
     <string name="label_studying">學習中</string>
@@ -117,7 +116,6 @@
     <string name="btn_login_email">使用郵箱登錄</string>
     <string name="btn_register_as_tutor">註冊成為老師</string>
     <string name="btn_register_as_student">註冊成為學生/家長</string>
-    <string name="btn_forward">下一步</string>
     <string name="btn_fill_info_tutor">提交&amp;成為老師</string>
     <string name="btn_fill_info_student">提交&amp;尋找老師</string>
     <string name="btn_fragment_find_teacher_rating">評價</string>
@@ -157,19 +155,19 @@
     <string name="toast_without_mystudent">沒有學生</string>
     <string name="toast_server_error">服務器錯誤</string>
     <string name="toast_register_fail">註冊失敗</string>
-    <string name="toast_register_exist">用戶已存在!</string>
+    <string name="toast_register_exist">用戶已存在</string>
     <string name="toast_avatar_upload">上傳頭像成功</string>
     <string name="toast_avatar_upload_fail">上傳頭像失敗</string>
-    <string name="toast_no_timeslot">請添加時間段!</string>
-    <string name="toast_name_isEmpty">姓名不能為空!</string>
-    <string name="toast_hkid_isEmpty">香港身份證號碼不能為空!</string>
-    <string name="toast_hkid_error">香港身份證號碼格式錯誤!</string>
-    <string name="toast_phone_error">手機號碼格式錯誤!</string>
-    <string name="toast_phone_isEmpty">手機號碼不能為空!</string>
+    <string name="toast_no_timeslot">請添加時間段</string>
+    <string name="toast_name_isEmpty">姓名不能為空</string>
+    <string name="toast_hkid_isEmpty">香港身份證號碼不能為空</string>
+    <string name="toast_hkid_error">香港身份證號碼格式錯誤</string>
+    <string name="toast_phone_error">手機號碼格式錯誤</string>
+    <string name="toast_phone_isEmpty">手機號碼不能為空</string>
     <string name="toast_no_data">沒有數據</string>
     <string name="toast_no_more_data">沒有更多數據</string>
-    <string name="toast_netwrok_disconnected">網絡未連接!</string>
-    <string name="toast_login_im_fail">IM服務器未啟動!</string>
+    <string name="toast_netwrok_disconnected">網絡未連接</string>
+    <string name="toast_login_im_fail">IM服務器未啟動</string>
     <string name="toast_no_match_student">沒有匹配的學生</string>
     <string name="toast_no_match_tutor">沒有匹配的老師</string>
     <string name="toast_not_select_cours">請選擇至少一門課程</string>
@@ -180,11 +178,11 @@
     <string name="toast_video_link_empety">視頻鏈接為空</string>
     <string name="toast_token_invalid">登錄已過期，請重新登錄</string>
     <string name="toast_save_successed">保存成功</string>
-    <string name="toast_forgetpswd_sendemail_success">臨時密碼已經送達您的郵箱,請盡快使用臨時密碼登錄后設置新密碼!</string>
+    <string name="toast_forgetpswd_sendemail_success">臨時密碼已經送達您的郵箱,請盡快使用臨時密碼登錄后設置新密碼</string>
     <string name="toast_without_mytutor">沒有老師</string>
-    <string name="toast_price_empty">價格不能為空!</string>
+    <string name="toast_price_empty">價格不能為空</string>
     <string name="toast_grade_noChoice">請選擇年級</string>
-    <string name="toast_address_isEmpty">地址不能為空!</string>
+    <string name="toast_address_isEmpty">地址不能為空</string>
 
     <!-- xmpp聊天相關 -->
     <string name="new_message">收到新短消息</string>
@@ -255,7 +253,7 @@
     <string name="tip_confirm_time_slot">確認時間段</string>
     <string name="toast_no_more_history">暫無聯天記錄</string>
     <string name="label_course_selection">選擇課程</string>
-    <string name="label_advisory_for_study_abroad">求學顧問</string>
+    <string name="label_advisory_for_study_abroad">遊學團 </string>
     <string name="label_faq">常見問題</string>
     <string name="label_chat_with_adviser">咨詢顧問</string>
     <string name="label_isprivacy">是否私立</string>
@@ -266,5 +264,37 @@
     <string name="label_selection_grade">年級</string>
     <string name="label_privacy">私立</string>
     <string name="label_non_provacy">非私立</string>
+    <!-- 日历 -->
+    <string name="add_schedule">添加日程</string>
+    <string name="schedule_det">日程详情</string>
+    <string name="add">添加</string>
+    <string name="no_schedule_tip">您还没有任何的日程活动哦!赶快添加吧!</string>
+    <string name="today">今天</string>
+    <string name="back">返回</string>
+    <string name="save">保存</string>
+    <string name="schedule">日程</string>
+    <string name="yyyy_mm">YYYY年MM月</string>
+    <string name="week1">周一</string>
+    <string name="week2">周二</string>
+    <string name="week3">周三</string>
+    <string name="week4">周四</string>
+    <string name="week5">周五</string>
+    <string name="week6">周六</string>
+    <string name="week7">周日</string>
+    <string name="label_time_table">時間表</string>
+    <string name="label_invitation_detail">消息詳情</string>
+    <string name="label_accepted">已接受</string>
+    <string name="label_rejected">已拒絕</string>
+    <string name="label_time_table_detail">時間表詳情</string>
+    <string name="toast_timeslot_has_a_conflict">時間段有衝突</string>
+    <string name="label_label_course">"課程 : "</string>
+    <string name="label_label_student">"學生 : "</string>
+    <string name="label_teacher">"老師 : "</string>
+    <string name="label_invite_people">"邀請人 : "</string>
+    <string name="label_label_frequency_of_lessons">"課程頻率 : "</string>
+    <string name="label_label_price_per_hour">"每小時價格 : "</string>
+    <string name="label_label_address">"居住地址 : "</string>
+    <string name="label_time">"時間 : "</string>
+    <string name="label_required_info">如果接受邀請則需要填寫以下信息</string>
 
 </resources>

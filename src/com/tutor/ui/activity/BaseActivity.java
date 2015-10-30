@@ -123,7 +123,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	protected void showDialog(String text) {
 		if (dialog == null) {
 			dialog = new ProgressDialog(this);
-			dialog.setCancelable(false);
+			dialog.setCancelable(true);
 		}
 		dialog.setMessage(text);
 		dialog.show();
@@ -137,7 +137,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	protected void showDialogRes(int resId) {
 		if (dialog == null) {
 			dialog = new ProgressDialog(this);
-			dialog.setCancelable(false);
+			dialog.setCancelable(true);
 		}
 		dialog.setMessage(getString(resId));
 		dialog.show();

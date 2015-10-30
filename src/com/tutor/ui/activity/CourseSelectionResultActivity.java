@@ -57,13 +57,14 @@ public class CourseSelectionResultActivity extends BaseActivity {
 			return;
 		}
 		int gradeValue = intent.getIntExtra(Constants.General.GRADE_VALUE, -1);
+		String gradeString = intent.getStringExtra(Constants.General.GRADE_STRING);
 		int countryValue = intent.getIntExtra(Constants.General.COUNTRY_VALUE, -1);
 		String country = intent.getStringExtra(Constants.General.COUNTRY_NAME);
 		boolean isPrivacy = intent.getBooleanExtra(Constants.General.IS_PRIVACY, false);
 		// set title bar
 		String titleBar = "";
 		if (gradeValue != -1 && countryValue != -1) {
-			titleBar = getString(R.string.label_selection_grade) + gradeValue + " " + country + " " + (isPrivacy ? getString(R.string.label_privacy) : getString(R.string.label_non_provacy));
+			titleBar = gradeString + " - " + country + " - " + (isPrivacy ? getString(R.string.label_privacy) : getString(R.string.label_non_provacy));
 		} else {
 			titleBar = getString(R.string.label_course_selection);
 		}

@@ -144,7 +144,9 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 					courseName = "";
 				}
 				condition.setCourseName(courseName);
-				condition.setTimeslot(timeslot);
+				if (timeslots != null && timeslots.size() > 0) {
+					condition.setTimeslot(timeslots.get(0));
+				}
 				condition.setGender(genderValue);
 				String genderName = "";
 				if (genderValue == -1) {
@@ -576,6 +578,7 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 					if (null == timeslots) {
 						timeslots = new ArrayList<Timeslot>();
 					}
+					timeslots.clear();
 					timeslots.add(timeslot);
 					adapter.refresh(timeslots);
 					saveTime.setEnabled(false);

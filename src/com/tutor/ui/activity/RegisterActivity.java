@@ -33,6 +33,7 @@ import com.tutor.model.RegisterInfoResult;
 import com.tutor.model.RegisterLoginModel;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
+import com.tutor.ui.dialog.TeamConditionsDialog;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.JsonUtil;
@@ -138,16 +139,16 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 			model.setjRegistrationID(registerId);
 			// 设置别名
 			JPushInterface.setAlias(getApplicationContext(), im, new TagAliasCallback() {
-				
+
 				@Override
 				public void gotResult(int arg0, String arg1, Set<String> arg2) {
-					// TODO Auto-generated method stub
+					//  Auto-generated method stub
 				}
 			});
 			register(model);
 		} else if (R.id.ac_register_tv_team == v.getId()) {
-			Intent intent = new Intent(this, TeamConditionsActivity.class);
-			startActivity(intent);
+			TeamConditionsDialog dialog = new TeamConditionsDialog(this);
+			dialog.show();
 		}
 	}
 

@@ -13,6 +13,9 @@ public class LoginResponse {
 	private String token;
 	private int status;
 	private boolean isInfoComplete;
+	private String phone;
+	private String hkidNumber;
+	private String residentialAddress;
 
 	public boolean isInfoComplete() {
 		return isInfoComplete;
@@ -44,5 +47,29 @@ public class LoginResponse {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getHkidNumber() {
+		return hkidNumber;
+	}
+
+	public void setHkidNumber(String hkidNumber) {
+		this.hkidNumber = hkidNumber;
+	}
+
+	public String getResidentialAddress() {
+		return residentialAddress;
+	}
+
+	public void setResidentialAddress(String residentialAddress) {
+		this.residentialAddress = residentialAddress;
 	}
 }

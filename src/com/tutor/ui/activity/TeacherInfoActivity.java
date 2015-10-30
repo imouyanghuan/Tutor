@@ -124,29 +124,29 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		}
 		tvGender.setText(genderStr);
 		// major
-		TextView tvMajor = getView(R.id.tv_major);
-		tvMajor.setText(!TextUtils.isEmpty(userInfo.getMajor()) ? userInfo.getMajor() : getString(R.string.label_unknow_major));
+		//TextView tvMajor = getView(R.id.tv_major);
+		//tvMajor.setText(!TextUtils.isEmpty(userInfo.getMajor()) ? userInfo.getMajor() : getString(R.string.label_unknow_major));
 		// current education
-		TextView tvEducation = getView(R.id.tv_education);
-		int curEducation = userInfo.getEducationDegree();
-		switch (curEducation) {
-			case 0:
-				tvEducation.setText(getString(R.string.eb_1));
-				break;
-			case 1:
-				tvEducation.setText(getString(R.string.eb_2));
-				break;
-			case 2:
-				tvEducation.setText(getString(R.string.eb_3));
-				break;
-			case 3:
-				tvEducation.setText(getString(R.string.eb_4));
-				break;
-		}
+		//TextView tvEducation = getView(R.id.tv_education);
+//		int curEducation = userInfo.getEducationDegree();
+//		switch (curEducation) {
+//			case 0:
+//				tvEducation.setText(getString(R.string.eb_1));
+//				break;
+//			case 1:
+//				tvEducation.setText(getString(R.string.eb_2));
+//				break;
+//			case 2:
+//				tvEducation.setText(getString(R.string.eb_3));
+//				break;
+//			case 3:
+//				tvEducation.setText(getString(R.string.eb_4));
+//				break;
+//		}
 		// experience
-		TextView tvExperience = getView(R.id.tv_tutor_experience);
-		String experience = String.format(getString(R.string.label_experience_year2), userInfo.getExprience());
-		tvExperience.setText(experience);
+//		TextView tvExperience = getView(R.id.tv_tutor_experience);
+//		String experience = String.format(getString(R.string.label_experience_year2), userInfo.getExprience());
+//		tvExperience.setText(experience);
 		// student count
 		TextView tvStudentCount = getView(R.id.tv_student_count);
 		tvStudentCount.setText(String.valueOf(userInfo.getStudentCount()));
@@ -156,28 +156,28 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		ImageView ivAvatar = getView(R.id.iv_avatar);
 		ImageUtils.loadImage(ivAvatar, ApiUrl.DOMAIN + userInfo.getAvatar());
 		// address
-		TextView tvAddress = getView(R.id.tv_address);
-		tvAddress.setText(TextUtils.isEmpty(userInfo.getResidentialAddress()) ? getString(R.string.label_unknow_address) : userInfo.getResidentialAddress());
+		//TextView tvAddress = getView(R.id.tv_address);
+		//tvAddress.setText(TextUtils.isEmpty(userInfo.getResidentialAddress()) ? getString(R.string.label_unknow_address) : userInfo.getResidentialAddress());
 		timeListView = getView(R.id.lv_timeslot);
 		couresListView = getView(R.id.lv_coures);
 		timeslotTip = getView(R.id.tv_timeslot_tip);
 		courseTip = getView(R.id.tv_course_tip);
 		//
-		TextView tvPhone = getView(R.id.tv_phone);
+		//TextView tvPhone = getView(R.id.tv_phone);
 		// 电话号码
-		String phone = userInfo.getPhone();
-		if (TextUtils.isEmpty(phone)) {
-			tvPhone.setText(R.string.label_unknow_phone);
-		} else {
-			tvPhone.setText(phone);
-		}
-		TextView tvCurEducationStatus = getView(R.id.tv_current_education_status);
-		int eduStatus = userInfo.getEducationStatus();
-		if (eduStatus == Constants.General.STUDYING) {
-			tvCurEducationStatus.setText(getString(R.string.label_studying));
-		} else {
-			tvCurEducationStatus.setText(getString(R.string.label_graduated));
-		}
+		//String phone = userInfo.getPhone();
+//		if (TextUtils.isEmpty(phone)) {
+//			tvPhone.setText(R.string.label_unknow_phone);
+//		} else {
+//			tvPhone.setText(phone);
+//		}
+		//TextView tvCurEducationStatus = getView(R.id.tv_current_education_status);
+//		int eduStatus = userInfo.getEducationStatus();
+//		if (eduStatus == Constants.General.STUDYING) {
+//			tvCurEducationStatus.setText(getString(R.string.label_studying));
+//		} else {
+//			tvCurEducationStatus.setText(getString(R.string.label_graduated));
+//		}
 		introduction = getView(R.id.tv_self_introduction);
 	}
 
@@ -257,9 +257,9 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		if (TextUtils.isEmpty(introductionString)) {
 			introduction.setText(introductionString);
 		} else {
-			introduction.setText("...");
+			introduction.setText("");
 		}
-		String introductionVideoString = userInfo.getIntroduction();
+		String introductionVideoString = userInfo.getIntroductionVideo();
 		if (TextUtils.isEmpty(introductionVideoString)) {
 			btnPlayVideo.setEnabled(false);
 		} else {

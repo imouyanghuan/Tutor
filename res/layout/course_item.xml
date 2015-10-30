@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@id/course_item_title1"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/gray_light"
-    android:textColor="@color/btn_press"
-    android:textSize="@dimen/sp_20" />
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@id/course_item_title1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray_light"
+        android:padding="@dimen/dp_3"
+        android:textColor="@color/btn_press"
+        android:textSize="@dimen/sp_20" />
+
+    <com.tutor.ui.view.CustomExpandableListView
+        android:id="@+id/course_item_expandableListView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/gray_line"
+        android:dividerHeight="@dimen/line_height"
+        android:footerDividersEnabled="true"
+        android:headerDividersEnabled="true" />
+
+</LinearLayout>

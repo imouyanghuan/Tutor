@@ -39,6 +39,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
     <style name="ratingBar_big" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/ratingbar_drawable_big</item>
         <item name="android:layout_width">wrap_content</item>
@@ -48,4 +49,23 @@
     <style name="CustomTheme.FullscreenTransparent" parent="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+    <!-- 日历style -->
+    <style name="clander_title_font_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/clander_title_btn_bg</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/clander_title_font_color</item>
+    </style>
+
+    <style name="weekName">
+        <item name="android:layout_width">0.0dip</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>

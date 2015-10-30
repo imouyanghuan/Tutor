@@ -7,7 +7,7 @@
 
     <include layout="@layout/title_bar" />
 
-    <ScrollView
+    <com.tutor.ui.view.OverScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fadingEdge="none"
@@ -77,15 +77,13 @@
                     android:layout_marginTop="@dimen/dp_20"
                     android:gravity="center_vertical"
                     android:orientation="horizontal" >
-                    
+
                     <CheckBox
                         android:id="@id/ac_register_cb"
-                        android:layout_width="@dimen/dp_20"
-                        android:layout_height="@dimen/dp_20"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:button="@drawable/checkbox_selector"
-                        android:checked="false"
-                        android:gravity="center"
-                        android:padding="3dp" />
+                        android:checked="false" />
 
                     <TextView
                         android:id="@id/ac_register_tv_team"
@@ -103,8 +101,8 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dp_20"
                     android:background="@drawable/register_btn_bg"
-                    android:gravity="center"
                     android:enabled="false"
+                    android:gravity="center"
                     android:textColor="@color/white" />
             </LinearLayout>
 
@@ -117,6 +115,6 @@
                 android:gravity="center"
                 android:textSize="@dimen/sp_14" />
         </FrameLayout>
-    </ScrollView>
+    </com.tutor.ui.view.OverScrollView>
 
 </LinearLayout>

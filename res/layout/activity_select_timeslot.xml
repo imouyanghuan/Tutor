@@ -7,7 +7,7 @@
 
     <include layout="@layout/title_bar" />
 
-    <ScrollView
+    <com.tutor.ui.view.OverScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none" >
@@ -186,6 +186,6 @@
                     android:paddingRight="@dimen/dp_5" />
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </com.tutor.ui.view.OverScrollView>
 
 </LinearLayout>

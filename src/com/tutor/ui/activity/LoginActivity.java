@@ -239,6 +239,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 							account.setImAccount(model.getIMID());
 							account.setImPswd(model.getIMID());
 							account.setToken(result.getResult().getToken());
+							// add by jerry 2015-10-29
+							account.setPhone(result.getResult().getPhone());
+							account.setHkidNumber(result.getResult().getHkidNumber());
+							account.setResidentialAddress(result.getResult().getResidentialAddress());
+							// add end
 							TutorApplication.getAccountDao().insertOrReplace(account);
 							// 临时密码登录的需要去设置新密码
 							if (2 == result.getResult().getStatus()) {

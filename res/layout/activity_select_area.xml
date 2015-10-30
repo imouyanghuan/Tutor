@@ -6,21 +6,18 @@
 
     <include layout="@layout/title_bar" />
 
-    <ScrollView
+    <com.tutor.ui.view.OverScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none" >
+        android:layout_height="match_parent" >
 
-        <LinearLayout
-            android:id="@id/ac_fill_personal_info_ll_areas"
+        <com.tutor.ui.view.CustomExpandableListView
+            android:id="@+id/area_item_expandableListView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_20"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_10"
-            android:paddingTop="@dimen/dp_20" >
-        </LinearLayout>
-    </ScrollView>
+            android:layout_height="match_parent"
+            android:divider="@color/gray_line"
+            android:dividerHeight="@dimen/line_height"
+            android:footerDividersEnabled="true"
+            android:headerDividersEnabled="true" />
+    </com.tutor.ui.view.OverScrollView>
 
 </LinearLayout>

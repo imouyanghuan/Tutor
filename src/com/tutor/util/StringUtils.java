@@ -43,7 +43,7 @@ public class StringUtils {
 	}
 
 	public static boolean isHKID(String hkid) {
-		if (TextUtils.isEmpty(hkid) || hkid.length() < 10) {
+		if (TextUtils.isEmpty(hkid) || hkid.length() != 10 || hkid.contains("*") || !hkid.contains("(") || !hkid.contains(")")) {
 			return false;
 		}
 		// String format = "[a-zA-Z][0-9]\\d{6}$";

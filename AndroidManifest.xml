@@ -95,11 +95,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
         </activity>
-        <!-- 協議界面 -->
-        <activity
-            android:name="com.tutor.ui.activity.TeamConditionsActivity"
-            android:screenOrientation="portrait" >
-        </activity>
         <!-- 完善資料 -->
         <activity
             android:name="com.tutor.ui.activity.FillPersonalInfoActivity"
@@ -199,6 +194,16 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.tutor.ui.activity.CourseSelectionResultActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tutor.ui.activity.TimeTableActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tutor.ui.activity.InvitationDetailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name="com.tutor.ui.activity.TimeTableDetailActivity"
             android:screenOrientation="portrait" />
         <!-- IM服务 -->
         <service android:name="com.tutor.service.IMService" >

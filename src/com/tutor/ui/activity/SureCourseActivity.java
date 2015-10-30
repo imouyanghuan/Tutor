@@ -17,6 +17,7 @@ import com.tutor.model.CourseItem2;
 import com.tutor.model.CourseListResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
+import com.tutor.ui.view.CourseItemLayout.OnRefreshListener;
 import com.tutor.ui.view.CourseLayout;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.HttpHelper;
@@ -29,12 +30,13 @@ import com.tutor.util.ObjectHttpResponseHandler;
  * 
  *         2015-9-18
  */
-public class SureCourseActivity extends BaseActivity {
+public class SureCourseActivity extends BaseActivity implements OnRefreshListener {
 
 	private ScrollView scrollView;
 	private int role = -1;
 	// 课程列表
 	private ArrayList<Course> courses;
+	private CourseLayout courseLayout;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -110,7 +112,20 @@ public class SureCourseActivity extends BaseActivity {
 
 	private void setData(ArrayList<Course> courses) {
 		if (null != courses && 0 != courses.size()) {
-			CourseLayout courseLayout = new CourseLayout(SureCourseActivity.this, courses);
+			for (Course course : courses) {
+				ArrayList<CourseItem1> courseItem1s = course.getResult();
+				if (courseItem1s != null && courseItem1s.size() > 0) {
+					for (CourseItem1 courseItem1 : courseItem1s) {
+						ArrayList<CourseItem2> courseItem2s = courseItem1.getResult();
+						if (courseItem2s != null && courseItem2s.size() > 0) {
+							for (CourseItem2 courseItem2 : courseItem2s) {
+								courseItem2.setChecked(false);
+							}
+						}
+					}
+				}
+			}
+			courseLayout = new CourseLayout(SureCourseActivity.this, courses, this);
 			scrollView.addView(courseLayout);
 		}
 	}
@@ -138,5 +153,34 @@ public class SureCourseActivity extends BaseActivity {
 			}
 		}
 		return selectCourses;
+	}
+
+	@Override
+	public void refresh(CourseItem2 courseItem) {
+		if (null == courses || courses.size() <= 0) {
+			return;
+		}
+		for (Course course : courses) {
+			ArrayList<CourseItem1> courseItem1s = course.getResult();
+			if (courseItem1s == null || courseItem1s.size() <= 0) {
+				return;
+			}
+			for (CourseItem1 courseItem1 : courseItem1s) {
+				ArrayList<CourseItem2> courseItem2s = courseItem1.getResult();
+				if (courseItem2s == null || courseItem2s.size() <= 0) {
+					return;
+				}
+				for (CourseItem2 courseItem2 : courseItem2s) {
+					if (courseItem2.getValue() == courseItem.getValue()) {
+						courseItem2.setChecked(true);
+					} else {
+						courseItem2.setChecked(false);
+					}
+				}
+			}
+		}
+		if (courseLayout != null) {
+			courseLayout.reFresh();
+		}
 	}
 }

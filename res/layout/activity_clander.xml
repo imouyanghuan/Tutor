@@ -1,0 +1,57 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/default_bg_color"
+    android:orientation="vertical" >
+
+    <include layout="@layout/title_bar" />
+
+    <!-- 星期 -->
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="35dp"
+        android:background="@color/btn_normal" >
+
+        <TextView
+            style="@style/weekName"
+            android:text="@string/week7" />
+
+        <TextView
+            style="@style/weekName"
+            android:text="@string/week1" />
+
+        <TextView
+            style="@style/weekName"
+            android:text="@string/week2" />
+
+        <TextView
+            style="@style/weekName"
+            android:text="@string/week3" />
+
+        <TextView
+            style="@style/weekName"
+            android:text="@string/week4" />
+
+        <TextView
+            style="@style/weekName"
+            android:text="@string/week5" />
+
+        <TextView
+            style="@style/weekName"
+            android:text="@string/week6" />
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/clander_main_gridView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:horizontalSpacing="1px"
+        android:listSelector="@null"
+        android:numColumns="7"
+        android:verticalSpacing="1px" >
+    </GridView>
+
+</LinearLayout>

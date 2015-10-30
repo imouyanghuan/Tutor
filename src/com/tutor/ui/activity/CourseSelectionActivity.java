@@ -53,6 +53,7 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 	private AbroadConfigAdapter gradeAdapter;
 	private AbroadConfigAdapter countryAdapter;
 	private int curGradeValue = -1;
+	private String curGradeString = "";
 	private int curCountryValue = -1;
 	private boolean isPrivacy = false;
 	private Button btnChat;
@@ -193,6 +194,7 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				AbroadConfig config = gradeAdapter.getItem(position);
 				curGradeValue = config.getValue();
+				curGradeString = config.getText();
 			}
 
 			@Override
@@ -240,6 +242,7 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 			case R.id.btn_confirm:
 				Intent intent = new Intent(this, CourseSelectionResultActivity.class);
 				intent.putExtra(Constants.General.GRADE_VALUE, curGradeValue);
+				intent.putExtra(Constants.General.GRADE_STRING, curGradeString);
 				intent.putExtra(Constants.General.COUNTRY_VALUE, curCountryValue);
 				intent.putExtra(Constants.General.COUNTRY_NAME, curCountryName);
 				intent.putExtra(Constants.General.IS_PRIVACY, isPrivacy);

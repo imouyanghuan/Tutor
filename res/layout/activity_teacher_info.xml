@@ -7,7 +7,7 @@
 
     <include layout="@layout/title_bar" />
 
-    <ScrollView
+    <com.tutor.ui.view.OverScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
@@ -60,7 +60,7 @@
                         android:id="@+id/btn_play_video"
                         android:layout_width="125dp"
                         android:layout_height="@dimen/dp_35"
-                        android:layout_marginTop="@dimen/dp_15"
+                        android:layout_marginTop="@dimen/dp_10"
                         android:background="@drawable/team_btn_forward_bg"
                         android:drawableLeft="@drawable/play_s_selector"
                         android:drawableStart="@drawable/play_s_selector"
@@ -112,7 +112,6 @@
                             android:layout_gravity="center"
                             android:layout_marginLeft="@dimen/dp_3"
                             android:layout_marginStart="@dimen/dp_3"
-                            android:text="@string/label_male"
                             android:textColor="@color/black"
                             android:textSize="@dimen/sp_15" />
                     </LinearLayout>
@@ -120,7 +119,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal"
+                        android:visibility="gone" >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -148,7 +148,8 @@
                         android:layout_marginTop="@dimen/dp_2"
                         android:text="@string/label_education_background2"
                         android:textColor="@color/gray_text"
-                        android:textSize="@dimen/sp_15" />
+                        android:textSize="@dimen/sp_15"
+                        android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tv_education"
@@ -158,13 +159,15 @@
                         android:layout_marginBottom="@dimen/dp_2"
                         android:singleLine="true"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sp_15" />
+                        android:textSize="@dimen/sp_15"
+                        android:visibility="gone" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_2"
-                        android:orientation="horizontal" >
+                        android:orientation="horizontal"
+                        android:visibility="gone" >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -180,7 +183,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:singleLine="true"
-                            android:text="@string/label_experience_year2"
                             android:textColor="@color/black"
                             android:textSize="@dimen/sp_15" />
                     </LinearLayout>
@@ -189,7 +191,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_2"
-                        android:orientation="vertical" >
+                        android:orientation="vertical"
+                        android:visibility="gone" >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -204,7 +207,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:singleLine="true"
-                            android:text="@string/label_experience_year2"
                             android:textColor="@color/black"
                             android:textSize="@dimen/sp_15" />
                     </LinearLayout>
@@ -275,7 +277,8 @@
                     android:paddingEnd="@dimen/dp_15"
                     android:paddingLeft="@dimen/dp_15"
                     android:paddingRight="@dimen/dp_15"
-                    android:paddingStart="@dimen/dp_15" >
+                    android:paddingStart="@dimen/dp_15"
+                    android:visibility="gone" >
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -307,7 +310,8 @@
                     android:paddingEnd="@dimen/dp_15"
                     android:paddingLeft="@dimen/dp_15"
                     android:paddingRight="@dimen/dp_15"
-                    android:paddingStart="@dimen/dp_15" >
+                    android:paddingStart="@dimen/dp_15"
+                    android:visibility="gone" >
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -463,6 +467,6 @@
                     android:textSize="@dimen/sp_20" />
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </com.tutor.ui.view.OverScrollView>
 
 </LinearLayout>

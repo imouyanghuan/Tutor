@@ -67,6 +67,7 @@ public final class Constants {
 		public static final String IS_NEED_SHOW_BOOKMARK_TIP = "isNeedShowBookmark";
 		public static final String IS_FROM_COURSE_SELECTION = "isFromCourseSelection";
 		public static final String GRADE_VALUE = "gradeValue";
+		public static final String GRADE_STRING = "gradeString";
 		public static final String COUNTRY_VALUE = "countryValue";
 		public static final String COUNTRY_NAME = "countryName";
 		public static final String IS_PRIVACY = "isPrivacy";
@@ -108,6 +109,8 @@ public final class Constants {
 		public static final int SEARCH_CONDITIONS = 0x4;
 		/** 邀请的时候确定课程 */
 		public static final int SURE_COURSES = 0x5;
+		/** 邀请状态 */
+		public static final int NOTIFICATION_STATUS = 0x6;
 	}
 
 	/**
@@ -159,7 +162,17 @@ public final class Constants {
 		/** 忘记密码或修改密码的标识 */
 		public static final String INTENT_EXTRA_PASSWORD_FLAG = "password.flag";
 		/** 忘记密码或修改密码的标识 */
-		public static final String INTENT_EXTRA_COURSESLIST= "course.list";
+		public static final String INTENT_EXTRA_COURSESLIST = "course.list";
+		/** notification对象 */
+		public static final String INTENT_EXTRA_NOTIFICATION = "notification";
+		/** notification id */
+		public static final String INTENT_EXTRA_NOTIFICATION_ID = "notification.id";
+		/** notification status */
+		public static final String INTENT_EXTRA_NOTIFICATION_STATUS = "notification.status";
+		/** time table */
+		public static final String INTENT_EXTRA_TIME_TABLE = "timetable";
+		/** day of week */
+		public static final String INTENT_EXTRA_DAY_OF_WEEK = "dayOfWeek";
 	}
 
 	/**

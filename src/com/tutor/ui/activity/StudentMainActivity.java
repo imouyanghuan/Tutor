@@ -110,6 +110,7 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 							ft.hide(currentFragment);
 							ft.show(findTeacherFragment);
 							ft.commit();
+							findTeacherFragment.reFresh();
 							bar.setTitle(R.string.findteacher);
 							bar.setRightTextVisibility(false);
 							currentFragment = findTeacherFragment;
@@ -173,6 +174,7 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 		getView(R.id.menu_item_notification).setOnClickListener(this);
 		getView(R.id.menu_item_bookmark).setOnClickListener(this);
 		getView(R.id.menu_item_chatlist).setOnClickListener(this);
+		getView(R.id.menu_item_calendar).setOnClickListener(this);
 		msgCount = getView(R.id.menu_item_tv_msgCount);
 		flTipFindTutor = getView(R.id.fl_tip_find_tutor);
 		flTipFindTutor.setOnClickListener(this);
@@ -328,6 +330,9 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 				Intent chatlist = new Intent(this, ChatListActivity.class);
 				startActivity(chatlist);
 				break;
+			case R.id.menu_item_calendar:
+				Intent calenderIntent = new Intent(this, TimeTableActivity.class);
+				startActivity(calenderIntent);
 			case R.id.fl_tip_find_tutor:
 				flTipFindTutor.setVisibility(View.GONE);
 				SharePrefUtil.saveBoolean(getApplicationContext(), Constants.General.IS_NEED_SHOW_TUTOR_TIP, false);

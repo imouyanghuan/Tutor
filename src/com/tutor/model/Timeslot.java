@@ -65,6 +65,26 @@ public class Timeslot implements Serializable {
 		this.endMinute = endMinute;
 	}
 
+	public boolean isRepeat(Timeslot timeslot) {
+		// 星期不同,不会冲突
+		if (getDayOfWeek() != timeslot.dayOfWeek) {
+			return false;
+		}
+		// 第二个的开始时间在第一个的结束时间之后 , 或者第二个的结束时间在第一个的开始时间之前,不冲突
+		if (getStartHour() > timeslot.getEndHour() || getEndHour() < timeslot.getStartHour()) {
+			return false;
+		}
+		// 第二个的开始时间和第一个的结束时间相等,判断分钟(第二个的开始分钟大于第一个的结束分钟,不冲突)
+		if (getStartHour() == timeslot.getEndHour() && getStartMinute() >= timeslot.getEndMinute()) {
+			return false;
+		}
+		// 第二个的结束时间等于第一个的开始时间,判断分钟(第二个的结束分钟小于第一个的开始分钟,不冲突)
+		if (getEndHour() == timeslot.getStartHour() && getEndMinute() <= timeslot.startMinute) {
+			return false;
+		}
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		return "Timeslot [memberId=" + memberId + ", dayOfWeek=" + dayOfWeek + ", startHour=" + startHour + ", startMinute=" + startMinute + ", endHour=" + endHour + ", endMinute=" + endMinute + "]";

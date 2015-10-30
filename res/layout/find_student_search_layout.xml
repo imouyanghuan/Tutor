@@ -40,6 +40,7 @@
             android:layout_marginStart="@dimen/dp_5"
             android:background="@drawable/delete_timeslot_btn_bg"
             android:contentDescription="@string/app_name"
+            android:padding="2dp"
             android:scaleType="fitXY"
             android:visibility="gone" />
 

@@ -249,10 +249,22 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 							}
 							int endHour = time.getEndHour();
 							int endMinute = time.getEndMinute();
+							String endM = "";
+							if (endMinute < 10) {
+								endM = "0" + endMinute;
+							} else {
+								endM = String.valueOf(endMinute);
+							}
 							int startHour = time.getStartHour();
 							int startMinute = time.getStartMinute();
-							timeStr = weekStr + " " + startHour + getString(R.string.hour) + startMinute + getString(R.string.minute) + " - " + endHour + getString(R.string.hour) + endMinute
-									+ getString(R.string.minute) + COM;
+							String startM = "";
+							if (startMinute < 10) {
+								startM = "0" + startMinute;
+							} else {
+								startM = String.valueOf(startMinute);
+							}
+							String COLON = ":";
+							timeStr = weekStr + " " + startHour + COLON + startM + " - " + endHour + COLON + endM + COM;
 						}
 						String searchKeyWork = keyword + courseName + areaName + genderName + timeStr;
 						if (searchKeyWork.length() > 2) {

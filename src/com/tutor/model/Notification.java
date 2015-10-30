@@ -1,12 +1,19 @@
 package com.tutor.model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 /**
  * @author bruce.chen
  * 
  *         2015-9-8
  */
-public class Notification {
+public class Notification implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6760904849402428963L;
 	// NotificationOrientation
 	public static final int ToBeMyStudent = 0;
 	public static final int ToBeMyTutor = 1;
@@ -27,7 +34,11 @@ public class Notification {
 	private String userName;
 	private String avatar;
 	private String createdTime;
-	private String id;
+	private int id;
+	private ArrayList<Timeslot> timeslots;
+	private String phone;
+	private String hkidNumber;
+	private String residentialAddress;
 
 	public int getSource() {
 		return source;
@@ -157,11 +168,43 @@ public class Notification {
 		this.createdTime = createdTime;
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
+	}
+
+	public ArrayList<Timeslot> getTimeslots() {
+		return timeslots;
+	}
+
+	public void setTimeslots(ArrayList<Timeslot> timeslots) {
+		this.timeslots = timeslots;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getHkidNumber() {
+		return hkidNumber;
+	}
+
+	public void setHkidNumber(String hkidNumber) {
+		this.hkidNumber = hkidNumber;
+	}
+
+	public String getResidentialAddress() {
+		return residentialAddress;
+	}
+
+	public void setResidentialAddress(String residentialAddress) {
+		this.residentialAddress = residentialAddress;
 	}
 }

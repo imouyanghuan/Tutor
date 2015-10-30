@@ -180,6 +180,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 		listView.setAdapter(adapter);
 	}
 
+	// TODO
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -190,6 +191,16 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 					}
 					if (null != userInfo) {
 						timeslot.setMemberId(userInfo.getId());
+					}
+					if (timeslots.size() > 0) {
+						// 检查冲突时间
+						for (Timeslot item : timeslots) {
+							if (item.isRepeat(timeslot)) {
+								// 有冲突.提示
+								toast(R.string.toast_timeslot_has_a_conflict);
+								return;
+							}
+						}
 					}
 					timeslots.add(timeslot);
 					adapter.refresh(timeslots);

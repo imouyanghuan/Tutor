@@ -29,5 +29,9 @@
     <color name="black_2">#8f41484e</color>
     <color name="gray_line">#edf0f5</color>
     <color name="red_dot">#e0491b</color>
+    <!-- 日历颜色 -->
+    <color name="grid_item_seleted">#008f00</color>
+    <color name="white">#fff</color>
+    <color name="dark_gray">#6fECEEF4</color>
 
 </resources>

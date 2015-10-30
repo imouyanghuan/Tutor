@@ -7,15 +7,10 @@
 
     <include layout="@layout/title_bar" />
 
-    <ScrollView
+    <com.tutor.ui.view.OverScrollView
         android:id="@id/ac_fill_personal_course_scrollview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/dp_20"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_20"
-        android:scrollbars="none" >
-    </ScrollView>
+        android:layout_height="match_parent" >
+    </com.tutor.ui.view.OverScrollView>
 
 </LinearLayout>

@@ -7,9 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
@@ -20,11 +24,12 @@ import com.tutor.model.AreaListResult;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
-import com.tutor.ui.view.AreaItemLayout;
+import com.tutor.ui.view.CustomExpandableListView;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.LogUtils;
 import com.tutor.util.ObjectHttpResponseHandler;
+import com.tutor.util.ViewHelper;
 
 /**
  * 选择地区
@@ -40,7 +45,7 @@ public class SelectAreaActivity extends BaseActivity {
 	private int role = -1;
 	private UserInfo userInfo;
 	private ArrayList<Area> areas;
-	private LinearLayout linearLayout;
+	private CustomExpandableListView expandableListView;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -84,7 +89,7 @@ public class SelectAreaActivity extends BaseActivity {
 				startActivity(intent);
 			}
 		});
-		linearLayout = getView(R.id.ac_fill_personal_info_ll_areas);
+		expandableListView = getView(R.id.area_item_expandableListView);
 	}
 
 	@Override
@@ -144,10 +149,8 @@ public class SelectAreaActivity extends BaseActivity {
 
 	private void setData(ArrayList<Area> areas) {
 		if (null != areas && 0 != areas.size()) {
-			for (Area area : areas) {
-				AreaItemLayout areaItemLayout = new AreaItemLayout(SelectAreaActivity.this, area);
-				linearLayout.addView(areaItemLayout);
-			}
+			AreaAdapter adapter = new AreaAdapter(this, areas);
+			expandableListView.setAdapter(adapter);
 		}
 	}
 
@@ -179,5 +182,108 @@ public class SelectAreaActivity extends BaseActivity {
 			return result;
 		}
 		return new int[] {};
+	}
+
+	class AreaAdapter extends BaseExpandableListAdapter {
+
+		private LayoutInflater inflater;
+		private ArrayList<Area> list;
+
+		public AreaAdapter(Context context, ArrayList<Area> list) {
+			inflater = LayoutInflater.from(context);
+			this.list = list;
+		}
+
+		@Override
+		public Area1 getChild(int arg0, int arg1) {
+			return getGroup(arg0).getResult().get(arg1);
+		}
+
+		@Override
+		public long getChildId(int arg0, int arg1) {
+			return arg1;
+		}
+
+		@Override
+		public int getChildrenCount(int arg0) {
+			return getGroup(arg0).getResult().size();
+		}
+
+		@Override
+		public Area getGroup(int arg0) {
+			return list.get(arg0);
+		}
+
+		@Override
+		public int getGroupCount() {
+			return list.size();
+		}
+
+		@Override
+		public long getGroupId(int arg0) {
+			return arg0;
+		}
+
+		@Override
+		public View getChildView(int arg0, int arg1, boolean arg2, View view, ViewGroup arg4) {
+			ChildHolder childHolder = null;
+			if (null == view) {
+				view = inflater.inflate(R.layout.course_item_layout, null);
+				childHolder = new ChildHolder();
+				childHolder.name = ViewHelper.get(view, R.id.course_item_gv_item_name);
+				childHolder.box = ViewHelper.get(view, R.id.course_item_gv_item_checkbox);
+				view.setTag(childHolder);
+			} else {
+				childHolder = (ChildHolder) view.getTag();
+			}
+			final Area1 area1 = getChild(arg0, arg1);
+			childHolder.name.setText(area1.getAddress());
+			childHolder.box.setChecked(area1.isChecked());
+			view.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View arg0) {
+					area1.setChecked(!area1.isChecked());
+					notifyDataSetChanged();
+				}
+			});
+			return view;
+		}
+
+		@Override
+		public View getGroupView(int arg0, boolean arg1, View view, ViewGroup arg3) {
+			GroupHolder groupHolder = null;
+			if (null == view) {
+				view = inflater.inflate(R.layout.course_grade_item, null);
+				groupHolder = new GroupHolder();
+				groupHolder.name = ViewHelper.get(view, R.id.course_grade_item_tv);
+				view.setTag(groupHolder);
+			} else {
+				groupHolder = (GroupHolder) view.getTag();
+			}
+			groupHolder.name.setText(getGroup(arg0).getName());
+			return view;
+		}
+
+		@Override
+		public boolean hasStableIds() {
+			return false;
+		}
+
+		@Override
+		public boolean isChildSelectable(int arg0, int arg1) {
+			return false;
+		}
+
+		private class GroupHolder {
+
+			public TextView name;
+		}
+
+		private class ChildHolder {
+
+			public CheckBox box;
+			public TextView name;
+		}
 	}
 }

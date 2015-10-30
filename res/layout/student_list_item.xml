@@ -70,6 +70,7 @@
                     android:id="@id/student_list_item_form"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="right"
                     android:layout_marginTop="@dimen/dp_2"
                     android:maxWidth="@dimen/dp_120"
                     android:singleLine="true"
@@ -79,6 +80,7 @@
                     android:id="@id/student_list_item_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="right"
                     android:layout_marginTop="@dimen/dp_8"
                     android:textColor="@color/black_line"
                     android:textSize="@dimen/sp_13" />

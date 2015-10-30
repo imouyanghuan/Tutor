@@ -34,19 +34,18 @@ public class TimeSlotDialog extends Dialog implements android.view.View.OnClickL
 		this(context, R.style.dialog);
 		this.callBack = callBack;
 		minutes = getContext().getResources().getStringArray(R.array.minutes);
-		if (hour == 0 && minute == 0) {
-			hourIndex = 7;
-			minuteIndex = 3;
-			return;
+		if (hour == 0) {
+			hourIndex = 8;
+		} else {
+			hourIndex = hour;
 		}
-		hourIndex = hour;
 		// 分
 		String minuteString = minute + "";
 		if (minute == 0) {
 			minuteString = 0 + minuteString;
 		}
 		for (int i = 0; i < minutes.length; i++) {
-			if (minutes[i].equals(minute + "")) {
+			if (minutes[i].equals(minuteString)) {
 				minuteIndex = i;
 				break;
 			}
@@ -95,8 +94,8 @@ public class TimeSlotDialog extends Dialog implements android.view.View.OnClickL
 				return tmpStr;
 			}
 		});
-		hourPicker.setMaxValue(23);
-		hourPicker.setMinValue(0);
+		hourPicker.setMaxValue(22);
+		hourPicker.setMinValue(8);
 		hourPicker.setValue(hourIndex);
 		// 分
 		minutePicker.setDisplayedValues(minutes);

@@ -328,7 +328,7 @@ public class ContactManager {
 	public boolean addFriend(String imId, String nickName) {
 		try {
 			XMPPConnection connection = TutorApplication.connectionManager.getConnection();
-			connection.getRoster().createEntry(imId, "", new String[] { "Friends" });
+			connection.getRoster().createEntry(imId + "@" + TutorApplication.connectionManager.getServiceName(), imId, null);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

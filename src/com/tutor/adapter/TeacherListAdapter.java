@@ -55,7 +55,7 @@ public class TeacherListAdapter extends TutorBaseAdapter<UserInfo> {
 		// 课程
 		String course = getCourse(t);
 		if (TextUtils.isEmpty(course)) {
-			course = mContext.getString(R.string.label_none_course);
+			course = "";
 		}
 		holder.setText(R.id.teacher_list_item_coures, course);
 		// 设置点击监听

@@ -33,8 +33,8 @@ public class TimeSlotAdapter extends TutorBaseAdapter<Timeslot> {
 
 	@Override
 	protected void convert(ViewHolder holder, Timeslot t, final int position) {
-		String startMinute = t.getStartMinute() + "";
-		String endMinute = t.getStartMinute() + "";
+		String startMinute = t.getStartMinute() + ""; 
+		String endMinute = t.getEndMinute() + "";
 		if (0 == t.getStartMinute()) {
 			startMinute = "0" + startMinute;
 		}

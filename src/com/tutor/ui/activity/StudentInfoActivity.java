@@ -48,7 +48,12 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 	private String imId;
 	private UserInfo userInfo;
 	private ImageView avatarImageView;
-	private TextView nickTextView, genderTextView, phoneTextView, gradeTextView, birthTextView, addressTextView, timeslotTip, courseTip, introduction;
+	private TextView nickTextView, genderTextView/* , phoneTextView */, gradeTextView, /*
+																					 * birthTextView
+																					 * ,
+																					 * addressTextView
+																					 * ,
+																					 */timeslotTip, courseTip, introduction;
 	private CustomListView timeListView, couresListView;
 	private String titleName;
 	private Button button;
@@ -89,7 +94,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		if (TextUtils.isEmpty(introductionString)) {
 			introduction.setText(introductionString);
 		} else {
-			introduction.setText("...");
+			introduction.setText("");
 		}
 		int genderStr;
 		if (userInfo.getGender() == null) {
@@ -101,20 +106,24 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		}
 		genderTextView.setText(genderStr);
 		// 电话号码
-		String phone = userInfo.getPhone();
-		if (TextUtils.isEmpty(phone)) {
-			phoneTextView.setText(R.string.label_unknow_phone);
-		} else {
-			phoneTextView.setText(phone);
-		}
+		// String phone = userInfo.getPhone();
+		// if (TextUtils.isEmpty(phone)) {
+		// phoneTextView.setText(R.string.label_unknow_phone);
+		// } else {
+		// phoneTextView.setText(phone);
+		// }
 		String gradeName = userInfo.getGradeName();
 		if (!TextUtils.isEmpty(gradeName)) {
 			gradeTextView.setText(gradeName);
 		} else {
-			gradeTextView.setText(getString(R.string.label_unknow_grade));
+			gradeTextView.setText("");
 		}
-		birthTextView.setText(TextUtils.isEmpty(userInfo.getBirth()) ? getString(R.string.label_unknow) : userInfo.getBirth().substring(0, 11));
-		addressTextView.setText(TextUtils.isEmpty(userInfo.getResidentialAddress()) ? getString(R.string.label_unknow_address) : userInfo.getResidentialAddress());
+		// birthTextView.setText(TextUtils.isEmpty(userInfo.getBirth()) ?
+		// getString(R.string.label_unknow) : userInfo.getBirth().substring(0,
+		// 11));
+		// addressTextView.setText(TextUtils.isEmpty(userInfo.getResidentialAddress())
+		// ? getString(R.string.label_unknow_address) :
+		// userInfo.getResidentialAddress());
 		// 时间段
 		ArrayList<Timeslot> timeslots = userInfo.getTimeslots();
 		if (timeslots != null && timeslots.size() > 0) {
@@ -174,9 +183,9 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		nickTextView = getView(R.id.tv_user_name);
 		genderTextView = getView(R.id.tv_gender);
 		gradeTextView = getView(R.id.tv_grade);
-		phoneTextView = getView(R.id.tv_phone);
-		birthTextView = getView(R.id.tv_birth);
-		addressTextView = getView(R.id.tv_address);
+		// phoneTextView = getView(R.id.tv_phone);
+		// birthTextView = getView(R.id.tv_birth);
+		// addressTextView = getView(R.id.tv_address);
 		timeListView = getView(R.id.lv_timeslot);
 		couresListView = getView(R.id.lv_coures);
 		timeslotTip = getView(R.id.tv_timeslot_tip);

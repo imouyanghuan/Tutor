@@ -105,8 +105,31 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_10"
                 android:visibility="visible" />
-
         </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/menu_item_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/menu_bg_selector"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_10" >
+
+        <ImageView
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/calender" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_3"
+            android:text="@string/label_time_table"
+            android:textColor="@color/menu_txt_color"
+            android:textSize="@dimen/sp_12" />
     </LinearLayout>
 
 </LinearLayout>

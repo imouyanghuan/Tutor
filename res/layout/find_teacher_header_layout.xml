@@ -75,6 +75,11 @@
             style="@style/find_teacher_tab"
             android:background="@drawable/find_teacher_tab_right"
             android:text="@string/btn_fragment_find_teacher_popularity" />
+        <RadioButton
+            android:id="@+id/fragment_find_teacher_rb3"
+            style="@style/find_teacher_tab"
+            android:background="@drawable/find_teacher_tab_right"
+            android:text="@string/btn_fragment_find_teacher_popularity" android:visibility="gone"/>
     </RadioGroup>
 
     <View

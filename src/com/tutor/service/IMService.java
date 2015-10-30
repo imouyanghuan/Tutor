@@ -10,7 +10,6 @@ import org.jivesoftware.smack.Roster.SubscriptionMode;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.XMPPConnection;
-import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
@@ -555,7 +554,7 @@ public class IMService extends Service {
 							connection.sendPacket(presence);
 						}
 					}
-				} catch (XMPPException e) {
+				} catch (Exception e) {
 					LogUtils.e("connection failed!" + e.toString());
 					reConnect(connection);
 				}

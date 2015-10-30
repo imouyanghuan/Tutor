@@ -38,7 +38,6 @@ import com.tutor.util.DateTimeUtil;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.LogUtils;
 import com.tutor.util.ObjectHttpResponseHandler;
-import com.tutor.util.StringUtils;
 
 /**
  * 完善資料界面
@@ -106,7 +105,9 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	@Override
 	protected void initView() {
 		TitleBar bar = getView(R.id.title_bar);
-		bar.initBack(this);
+		if (isEdit) {
+			bar.initBack(this);
+		}
 		bar.setTitleTextSize(20.0f);
 		if (isEdit) {
 			bar.setTitle(R.string.edit_personal_info);
@@ -251,18 +252,18 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 			return;
 		}
 		// hkid 教师才有
-		String hkid = hKidEditText.getEditableText().toString().trim();
+		//String hkid = hKidEditText.getEditableText().toString().trim();
 		if (Constants.General.ROLE_TUTOR == role) {
-			if (TextUtils.isEmpty(hkid)) {
-				toast(R.string.toast_hkid_isEmpty);
-				hKidEditText.requestFocus();
-				return;
-			}
-			if (!StringUtils.isHKID(hkid)) {
-				toast(R.string.toast_hkid_error);
-				hKidEditText.requestFocus();
-				return;
-			}
+//			if (TextUtils.isEmpty(hkid)) {
+//				toast(R.string.toast_hkid_isEmpty);
+//				hKidEditText.requestFocus();
+//				return;
+//			}
+//			if (!StringUtils.isHKID(hkid)) {
+//				toast(R.string.toast_hkid_error);
+//				hKidEditText.requestFocus();
+//				return;
+//			}
 		} else {
 			// 学生必须填写年级
 			if (gradeValue == -1) {
@@ -270,40 +271,40 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				return;
 			}
 		}
-		if (TextUtils.isEmpty(hkid)) {
-			hkid = "";
-		}
+//		if (TextUtils.isEmpty(hkid)) {
+//			hkid = "";
+//		}
 		// 电话号码
-		String phone = phoneEditText.getEditableText().toString().trim();
-		if (TextUtils.isEmpty(phone)) {
-			toast(R.string.toast_phone_isEmpty);
-			phoneEditText.requestFocus();
-			return;
-		}
-		if (!StringUtils.isHKPhone(phone)) {
-			toast(R.string.toast_phone_error);
-			phoneEditText.requestFocus();
-			return;
-		}
+		//String phone = phoneEditText.getEditableText().toString().trim();
+//		if (TextUtils.isEmpty(phone)) {
+//			toast(R.string.toast_phone_isEmpty);
+//			phoneEditText.requestFocus();
+//			return;
+//		}
+//		if (!StringUtils.isHKPhone(phone)) {
+//			toast(R.string.toast_phone_error);
+//			phoneEditText.requestFocus();
+//			return;
+//		}
 		// 地址
-		String address = addressEditText.getEditableText().toString().trim();
-		if (TextUtils.isEmpty(address)) {
-			toast(R.string.toast_address_isEmpty);
-			addressEditText.requestFocus();
-			return;
-		}
+		//String address = addressEditText.getEditableText().toString().trim();
+//		if (TextUtils.isEmpty(address)) {
+//			toast(R.string.toast_address_isEmpty);
+//			addressEditText.requestFocus();
+//			return;
+//		}
 		Intent intent = new Intent(this, SelectCourseActivity.class);
 		intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, isEdit);
 		if (!isEdit) {
 			userInfo = getUserInfo();
 		}
-		userInfo.setHkidNumber(hkid);
+		//userInfo.setHkidNumber(hkid);
 		userInfo.setUserName(name);
-		userInfo.setPhone(phone);
+		//userInfo.setPhone(phone);
 		userInfo.setGrade(gradeValue);
 		userInfo.setBirth(birth);
 		userInfo.setGender(sex);
-		userInfo.setResidentialAddress(address);
+		//userInfo.setResidentialAddress(address);
 		intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 		startActivity(intent);
 	}

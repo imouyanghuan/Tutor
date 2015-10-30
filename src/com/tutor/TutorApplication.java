@@ -147,6 +147,45 @@ public class TutorApplication extends Application {
 		return -1;
 	}
 
+	/**
+	 * 获取自己的HKID
+	 * 
+	 * @return
+	 */
+	public static String getHKID() {
+		Account account = accountDao.load("1");
+		if (null != account) {
+			return account.getHkidNumber();
+		}
+		return "";
+	}
+
+	/**
+	 * 获取自己的电话
+	 * 
+	 * @return
+	 */
+	public static String getPhoneNum() {
+		Account account = accountDao.load("1");
+		if (null != account) {
+			return account.getPhone();
+		}
+		return "";
+	}
+
+	/**
+	 * 获取自己的居住地址
+	 * 
+	 * @return
+	 */
+	public static String getResidentialAddress() {
+		Account account = accountDao.load("1");
+		if (null != account) {
+			return account.getResidentialAddress();
+		}
+		return "";
+	}
+
 	public static HashMap<String, String> getHeaders() {
 		HashMap<String, String> map = new HashMap<String, String>();
 		map.put("token", getToken());

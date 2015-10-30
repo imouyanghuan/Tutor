@@ -173,6 +173,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		getView(R.id.menu_item_notification).setOnClickListener(this);
 		getView(R.id.menu_item_bookmark).setOnClickListener(this);
 		getView(R.id.menu_item_chatlist).setOnClickListener(this);
+		getView(R.id.menu_item_calendar).setOnClickListener(this);
 		msgCount = getView(R.id.menu_item_tv_msgCount);
 		// tip
 		flTipFindStudent = getView(R.id.fl_tip_find_student);
@@ -333,6 +334,10 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 			case R.id.menu_item_chatlist:
 				Intent chatlist = new Intent(this, ChatListActivity.class);
 				startActivity(chatlist);
+				break;
+			case R.id.menu_item_calendar:
+				Intent calenderIntent = new Intent(this, TimeTableActivity.class);
+				startActivity(calenderIntent);
 				break;
 			case R.id.fl_tip_find_student:
 				flTipFindStudent.setVisibility(View.GONE);

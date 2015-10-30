@@ -13,6 +13,9 @@ public class Account {
     private Integer status;
     private String email;
     private String pswd;
+    private String phone;
+    private String hkidNumber;
+    private String residentialAddress;
     private String facebookId;
     private String imAccount;
     private String imPswd;
@@ -26,13 +29,16 @@ public class Account {
         this.id = id;
     }
 
-    public Account(String id, Integer memberId, Integer role, Integer status, String email, String pswd, String facebookId, String imAccount, String imPswd, String token, String createdTime) {
+    public Account(String id, Integer memberId, Integer role, Integer status, String email, String pswd, String phone, String hkidNumber, String residentialAddress, String facebookId, String imAccount, String imPswd, String token, String createdTime) {
         this.id = id;
         this.memberId = memberId;
         this.role = role;
         this.status = status;
         this.email = email;
         this.pswd = pswd;
+        this.phone = phone;
+        this.hkidNumber = hkidNumber;
+        this.residentialAddress = residentialAddress;
         this.facebookId = facebookId;
         this.imAccount = imAccount;
         this.imPswd = imPswd;
@@ -88,6 +94,30 @@ public class Account {
 
     public void setPswd(String pswd) {
         this.pswd = pswd;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getHkidNumber() {
+        return hkidNumber;
+    }
+
+    public void setHkidNumber(String hkidNumber) {
+        this.hkidNumber = hkidNumber;
+    }
+
+    public String getResidentialAddress() {
+        return residentialAddress;
+    }
+
+    public void setResidentialAddress(String residentialAddress) {
+        this.residentialAddress = residentialAddress;
     }
 
     public String getFacebookId() {
