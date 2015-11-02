@@ -125,9 +125,11 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		}
 		tvGender.setText(genderStr);
 		// major
-		// TextView tvMajor = getView(R.id.tv_major);
-		// tvMajor.setText(!TextUtils.isEmpty(userInfo.getMajor()) ?
-		// userInfo.getMajor() : getString(R.string.label_unknow_major));
+		TextView tvMajor = getView(R.id.tv_major);
+		tvMajor.setText(!TextUtils.isEmpty(userInfo.getMajor()) ? userInfo.getMajor() : "");
+		// graduate school
+		TextView tvGraduateSchool = getView(R.id.tv_graduate_school);
+		tvGraduateSchool.setText(!TextUtils.isEmpty(userInfo.getGraduateSchool()) ? userInfo.getGraduateSchool() : "");
 		// current education
 		LinearLayout llEducation = getView(R.id.ll_education);
 		if (TutorApplication.isCH()) {
@@ -216,13 +218,15 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 			public void onSuccess(AddBookmarkResult result) {
 				if (result.getStatusCode() == HttpURLConnection.HTTP_OK) {
 					toast(R.string.toast_add_to_bookmark_success);
+				} else if (result.getStatusCode() == HttpURLConnection.HTTP_INTERNAL_ERROR) {
+					toast(result.getMessage());
 				}
 			}
 		});
 	}
 
 	/**
-	 * 获取老师详细资料
+	 * 获取老师详细资料 
 	 * 
 	 * @param id
 	 */

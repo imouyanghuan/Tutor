@@ -111,7 +111,7 @@
     <string name="label_chat">聊天</string>
     <!-- button -->
     <string name="btn_role_student">尋找老師</string>
-    <string name="btn_role_tutor">加入2utor</string>
+    <string name="btn_role_tutor">尋找學生</string>
     <string name="btn_login_facebook">使用Facebook登錄</string>
     <string name="btn_login_email">使用郵箱登錄</string>
     <string name="btn_register_as_tutor">註冊成為老師</string>
@@ -195,7 +195,7 @@
     <string name="cancelled">取消</string>
     <string name="permission_not_granted">无法执行选定的操作,因为没有授予权限.</string>
     <string name="ok">確定</string>
-    <string name="hello_user">Hello %1$s!</string>
+    <string name="hello_user">Hello %1$s</string>
     <string name="success">成功</string>
     <string name="successfully_posted_post">提交 ID: %1$s</string>
     <string name="error">錯誤</string>
@@ -296,5 +296,11 @@
     <string name="label_label_address">"居住地址 : "</string>
     <string name="label_time">"時間 : "</string>
     <string name="label_required_info">如果接受邀請則需要填寫以下信息</string>
+    <string name="label_graduate_school">畢業學校:</string>
+    <!-- 2015-11-02 -->
+    <string name="label_you_still_do_not_have_any_students_yet">"你現在還沒有匹配的學生! "</string>
+    <string name="label_match_a_student_now">現在去匹配一個學生吧!</string>
+    <string name="label_you_still_do_not_have_any_tutors_yet">"你現在還沒有匹配的老師! "</string>
+    <string name="label_match_a_tutor_now">現在去匹配一個老師吧!</string>
 
 </resources>

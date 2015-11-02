@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 
@@ -39,6 +38,7 @@ import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.CheckTokenUtils;
+import com.tutor.util.DataCleanManager;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.JsonUtil;
 import com.tutor.util.LogUtils;
@@ -69,10 +69,19 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		int flag = getIntent().getIntExtra(Constants.IntentExtra.INTENT_EXTRA_TOKENINVALID, -1);
 		if (Constants.General.TOKEN_INVALID == flag) {
 			toastLong(getString(R.string.toast_token_invalid));
+			TutorApplication.isTokenInvalid = false;
 		}
 		setContentView(R.layout.activity_login);
 		initView();
 		initFacebook();
+		try {
+			Account account = TutorApplication.getAccountDao().load("1");
+			if (account != null && !TextUtils.isEmpty(account.getFacebookId())) {
+				com.facebook.login.LoginManager.getInstance().logOut();
+			}
+			// 删除配置数据
+			DataCleanManager.cleanSharedPreference(this, "com.facebook");
+		} catch (Exception e) {}
 	}
 
 	private void initFacebook() {
@@ -269,7 +278,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 								intent.setClass(LoginActivity.this, StudentMainActivity.class);
 							}
 							startActivity(intent);
-							TutorApplication.isTokenInvalid = false;
 							// 發廣播結束前面的activity
 							Intent finish = new Intent();
 							finish.setAction(Constants.Action.FINISH_LOGINACTIVITY);

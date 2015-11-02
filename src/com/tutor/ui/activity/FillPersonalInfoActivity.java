@@ -1,5 +1,8 @@
 package com.tutor.ui.activity;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.HttpURLConnection;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -9,7 +12,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -30,12 +37,15 @@ import com.tutor.adapter.CurrencysAdapter;
 import com.tutor.model.Account;
 import com.tutor.model.Currency;
 import com.tutor.model.CurrencyListResult;
+import com.tutor.model.UploadAvatarResult;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
+import com.tutor.ui.dialog.ChangeAvatarDialog;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.DateTimeUtil;
 import com.tutor.util.HttpHelper;
+import com.tutor.util.ImageUtils;
 import com.tutor.util.LogUtils;
 import com.tutor.util.ObjectHttpResponseHandler;
 
@@ -68,6 +78,13 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	/** 出生日期 */
 	private String birth;
 	private int gradeValue;
+	//
+	// 頭像對話框
+	private ChangeAvatarDialog dialog;
+	// 头像
+	private ImageView avatar;
+	// 保存拍照圖片uri
+	private Uri imageUri, zoomUri;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -121,6 +138,11 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				onsend();
 			}
 		});
+		avatar = getView(R.id.ac_fill_personal_info_iv_avatar);
+		avatar.setOnClickListener(this);
+		if (isEdit) {
+			avatar.setVisibility(View.GONE);
+		}
 		nameEditText = getView(R.id.ac_fill_personal_info_et_name);
 		hKidEditText = getView(R.id.ac_fill_personal_info_et_hkid);
 		phoneEditText = getView(R.id.ac_fill_personal_info_et_phone);
@@ -214,8 +236,129 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				}, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
 				datePickerDialog.show();
 				break;
+			case R.id.ac_fill_personal_info_iv_avatar:
+				// 上傳頭像
+				if (null == dialog) {
+					dialog = new ChangeAvatarDialog(this);
+				}
+				ImageUtils.clearChache();
+				// 初始化uri
+				String fileName = DateTimeUtil.getSystemDateTime(DateTimeUtil.FORMART_YMDHMS) + Constants.General.IMAGE_END;
+				imageUri = Uri.fromFile(new File(Constants.SDCard.getImageDir(), fileName));
+				dialog.setUri(imageUri);
+				dialog.show();
+				break;
 			default:
 				break;
+		}
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		switch (requestCode) {
+			case Constants.RequestResultCode.TAKE_PHOTO:
+				// 拍照回來
+				if (BaseActivity.RESULT_OK == resultCode && null != imageUri) {
+					// 更新圖庫
+					ImageUtils.updateGrally(this, imageUri);
+					// 啟動裁剪
+					startZoom(imageUri);
+				}
+				break;
+			case Constants.RequestResultCode.GALLERY:
+				// 圖庫選擇
+				if (BaseActivity.RESULT_OK == resultCode && null != data && null != data.getData()) {
+					// 啟動裁剪
+					startZoom(data.getData());
+				}
+				break;
+			case Constants.RequestResultCode.ZOOM:
+				// 裁剪完成
+				// 圖庫選擇
+				if (BaseActivity.RESULT_OK == resultCode && null != zoomUri) {
+					// 上傳頭像
+					String path = zoomUri.getPath();
+					if (!TextUtils.isEmpty(path)) {
+						File file = new File(path);
+						if (null != file && file.exists()) {
+							file = null;
+							upLoadAvatar(path);
+						}
+					}
+				}
+				break;
+		}
+	}
+
+	/**
+	 * 裁剪照片
+	 * 
+	 * @param data
+	 */
+	private void startZoom(Uri data) {
+		Intent intent = new Intent("com.android.camera.action.CROP");
+		intent.setDataAndType(data, "image/*");
+		// crop为true是设置在开启的intent中设置显示的view可以剪裁
+		intent.putExtra("crop", "true");
+		// aspectX aspectY 是宽高的比例
+		intent.putExtra("aspectX", 1);
+		intent.putExtra("aspectY", 1);
+		// outputX,outputY 是剪裁图片的宽高
+		intent.putExtra("outputX", 400);
+		intent.putExtra("outputY", 400);
+		// 保持缩放
+		intent.putExtra("scale", true);
+		String path = data.getPath();
+		String fileName = path.substring(path.lastIndexOf(File.separatorChar) + 1);
+		zoomUri = Uri.fromFile(new File(Constants.SDCard.getCacheDir(), fileName + Constants.General.IMAGE_END));
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, zoomUri);
+		intent.putExtra("return-data", false);
+		intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
+		intent.putExtra("noFaceDetection", true);
+		startActivityForResult(intent, Constants.RequestResultCode.ZOOM);
+	}
+
+	/**
+	 * 上传头像
+	 * 
+	 * @param path
+	 */
+	private void upLoadAvatar(String path) {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		// 先壓縮圖片
+		String newPath = Constants.SDCard.getCacheDir() + DateTimeUtil.getSystemDateTime(DateTimeUtil.FORMART_YMDHMS) + Constants.General.IMAGE_END;
+		if (ImageUtils.yaSuoImage(path, newPath, 400, 400)) {
+			File file = new File(newPath);
+			RequestParams params = new RequestParams();
+			try {
+				params.put("file", file, "form-data");
+				showDialogRes(R.string.uploading_avatar);
+				HttpHelper.post(this, ApiUrl.UPLOAD_AVATAR, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UploadAvatarResult>(UploadAvatarResult.class) {
+
+					@Override
+					public void onFailure(int status, String message) {
+						dismissDialog();
+						toast(R.string.toast_avatar_upload_fail);
+					}
+
+					@Override
+					public void onSuccess(UploadAvatarResult t) {
+						dismissDialog();
+						if (HttpURLConnection.HTTP_OK == t.getStatusCode()) {
+							ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + t.getResult());
+						} else {
+							toast(R.string.toast_avatar_upload_fail);
+						}
+					}
+				});
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				toast(R.string.toast_avatar_upload_fail);
+			}
 		}
 	}
 
@@ -252,18 +395,18 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 			return;
 		}
 		// hkid 教师才有
-		//String hkid = hKidEditText.getEditableText().toString().trim();
+		// String hkid = hKidEditText.getEditableText().toString().trim();
 		if (Constants.General.ROLE_TUTOR == role) {
-//			if (TextUtils.isEmpty(hkid)) {
-//				toast(R.string.toast_hkid_isEmpty);
-//				hKidEditText.requestFocus();
-//				return;
-//			}
-//			if (!StringUtils.isHKID(hkid)) {
-//				toast(R.string.toast_hkid_error);
-//				hKidEditText.requestFocus();
-//				return;
-//			}
+			// if (TextUtils.isEmpty(hkid)) {
+			// toast(R.string.toast_hkid_isEmpty);
+			// hKidEditText.requestFocus();
+			// return;
+			// }
+			// if (!StringUtils.isHKID(hkid)) {
+			// toast(R.string.toast_hkid_error);
+			// hKidEditText.requestFocus();
+			// return;
+			// }
 		} else {
 			// 学生必须填写年级
 			if (gradeValue == -1) {
@@ -271,40 +414,40 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				return;
 			}
 		}
-//		if (TextUtils.isEmpty(hkid)) {
-//			hkid = "";
-//		}
+		// if (TextUtils.isEmpty(hkid)) {
+		// hkid = "";
+		// }
 		// 电话号码
-		//String phone = phoneEditText.getEditableText().toString().trim();
-//		if (TextUtils.isEmpty(phone)) {
-//			toast(R.string.toast_phone_isEmpty);
-//			phoneEditText.requestFocus();
-//			return;
-//		}
-//		if (!StringUtils.isHKPhone(phone)) {
-//			toast(R.string.toast_phone_error);
-//			phoneEditText.requestFocus();
-//			return;
-//		}
+		// String phone = phoneEditText.getEditableText().toString().trim();
+		// if (TextUtils.isEmpty(phone)) {
+		// toast(R.string.toast_phone_isEmpty);
+		// phoneEditText.requestFocus();
+		// return;
+		// }
+		// if (!StringUtils.isHKPhone(phone)) {
+		// toast(R.string.toast_phone_error);
+		// phoneEditText.requestFocus();
+		// return;
+		// }
 		// 地址
-		//String address = addressEditText.getEditableText().toString().trim();
-//		if (TextUtils.isEmpty(address)) {
-//			toast(R.string.toast_address_isEmpty);
-//			addressEditText.requestFocus();
-//			return;
-//		}
+		// String address = addressEditText.getEditableText().toString().trim();
+		// if (TextUtils.isEmpty(address)) {
+		// toast(R.string.toast_address_isEmpty);
+		// addressEditText.requestFocus();
+		// return;
+		// }
 		Intent intent = new Intent(this, SelectCourseActivity.class);
 		intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, isEdit);
 		if (!isEdit) {
 			userInfo = getUserInfo();
 		}
-		//userInfo.setHkidNumber(hkid);
+		// userInfo.setHkidNumber(hkid);
 		userInfo.setUserName(name);
-		//userInfo.setPhone(phone);
+		// userInfo.setPhone(phone);
 		userInfo.setGrade(gradeValue);
 		userInfo.setBirth(birth);
 		userInfo.setGender(sex);
-		//userInfo.setResidentialAddress(address);
+		// userInfo.setResidentialAddress(address);
 		intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 		startActivity(intent);
 	}

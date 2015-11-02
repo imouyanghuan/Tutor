@@ -111,7 +111,7 @@
     <string name="label_chat">Chat</string>
     <!-- button -->
     <string name="btn_role_student">Find tutors</string>
-    <string name="btn_role_tutor">Join 2utor</string>
+    <string name="btn_role_tutor">Find Students</string>
     <string name="btn_login_facebook">Login With Facebook</string>
     <string name="btn_login_email">Login With Email</string>
     <string name="btn_register_as_tutor">Register As Tutor</string>
@@ -195,7 +195,7 @@
     <string name="cancelled">Cancelled</string>
     <string name="permission_not_granted">Unable to perform selected action because permissions were not granted.</string>
     <string name="ok">OK</string>
-    <string name="hello_user">Hello %1$s!</string>
+    <string name="hello_user">Hello %1$s</string>
     <string name="success">Success</string>
     <string name="successfully_posted_post">Post ID: %1$s</string>
     <string name="error">Error</string>
@@ -286,14 +286,21 @@
     <string name="label_accepted">Accepted</string>
     <string name="label_rejected">Rejected</string>
     <string name="label_time_table_detail">Time Table Detail</string>
-<string name="toast_timeslot_has_a_conflict">TimeSlot has a conflict</string>
-<string name="label_label_course">"Course : "</string>
-<string name="label_label_student">"Student : "</string>
-<string name="label_teacher">"Teacher : "</string>
-<string name="label_invite_people">"Invite People : "</string>
-<string name="label_label_frequency_of_lessons">"Frequency Of Lessons : "</string>
-<string name="label_label_price_per_hour">"Price Per Hour : "</string>
-<string name="label_label_address">"Residential Address : "</string>
-<string name="label_time">"Time : "</string>
-<string name="label_required_info">If you accept the invitation you need to fill in the following information</string>
+    <string name="toast_timeslot_has_a_conflict">TimeSlot has a conflict</string>
+    <string name="label_label_course">"Course : "</string>
+    <string name="label_label_student">"Student : "</string>
+    <string name="label_teacher">"Teacher : "</string>
+    <string name="label_invite_people">"Invite People : "</string>
+    <string name="label_label_frequency_of_lessons">"Frequency Of Lessons : "</string>
+    <string name="label_label_price_per_hour">"Price Per Hour : "</string>
+    <string name="label_label_address">"Residential Address : "</string>
+    <string name="label_time">"Time : "</string>
+    <string name="label_required_info">If you accept the invitation you need to fill in the following information</string>
+    <string name="label_graduate_school">Graduate School:</string>
+    <!-- 2015-11-02 -->
+    <string name="label_you_still_do_not_have_any_students_yet">"You still do not have any students yet! "</string>
+    <string name="label_match_a_student_now">Match a student now!</string>
+    <string name="label_you_still_do_not_have_any_tutors_yet">"You still do not have any tutors yet! "</string>
+    <string name="label_match_a_tutor_now">Match a tutor now!</string>
+
 </resources>

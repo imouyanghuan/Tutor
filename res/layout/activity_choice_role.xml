@@ -107,7 +107,8 @@
         android:layout_gravity="bottom"
         android:background="@drawable/choice_role_oe_btn_bg"
         android:gravity="center"
-        android:padding="@dimen/dp_10" android:visibility="gone">
+        android:padding="@dimen/dp_10"
+        android:visibility="gone" >
 
         <ImageView
             android:layout_width="wrap_content"

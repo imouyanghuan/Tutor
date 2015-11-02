@@ -8,6 +8,7 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.hk.tutor.R;
@@ -45,6 +46,7 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 	// 頁碼,每頁大小
 	private int pageIndex = 0, pageSize = 20;
 	private MatchStudentAdapter adapter;
+	private LinearLayout llNoMatch;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +60,8 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 	}
 
 	private void initView(View view) {
+		// 没有匹配的提示
+		llNoMatch = ViewHelper.get(view, R.id.ll_no_match);
 		listView = ViewHelper.get(view, R.id.fragment_find_student_lv);
 		// 設置可上拉加載和下拉刷新
 		listView.setMode(Mode.BOTH);
@@ -150,8 +154,13 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 								adapter.refresh(users);
 							}
 							if (0 == users.size()) {
-								toast(R.string.toast_without_mystudent);
+								// toast(R.string.toast_without_mystudent);
+								showNoMatch();
+							} else {
+								hideNoMatch();
 							}
+						} else {
+							showNoMatch();
 						}
 					} else {
 						toast(result.getMessage());
@@ -162,5 +171,20 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 				}
 			}
 		});
+	}
+
+	private void showNoMatch() {
+		listView.setVisibility(View.GONE);
+		llNoMatch.setVisibility(View.VISIBLE);
+	}
+
+	private void hideNoMatch() {
+		llNoMatch.setVisibility(View.GONE);
+		listView.setVisibility(View.VISIBLE);
+	}
+	
+	public void refresh() {
+		pageIndex = 0;
+		getStudentList(pageIndex, pageSize);
 	}
 }

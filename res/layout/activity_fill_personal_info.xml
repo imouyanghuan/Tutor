@@ -21,6 +21,14 @@
             android:paddingRight="@dimen/dp_10"
             android:paddingTop="@dimen/dp_20" >
 
+            <ImageView
+                android:id="@+id/ac_fill_personal_info_iv_avatar"
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="@dimen/dp_120"
+                android:contentDescription="@string/app_name"
+                android:scaleType="fitXY"
+                android:src="@drawable/avatar" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

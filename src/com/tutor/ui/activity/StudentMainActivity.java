@@ -141,6 +141,7 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 							ft.hide(currentFragment);
 							ft.show(teacherFragment);
 							ft.commit();
+							teacherFragment.refresh();
 							bar.setTitle(R.string.myteachers);
 							bar.setRightTextVisibility(false);
 							currentFragment = teacherFragment;
@@ -191,7 +192,9 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 			public void onClick(DialogInterface arg0, int arg1) {
 				Account account = TutorApplication.getAccountDao().load("1");
 				if (account != null && !TextUtils.isEmpty(account.getFacebookId())) {
-					LoginManager.getInstance().logOut();
+					try {
+						LoginManager.getInstance().logOut();
+					} catch (Exception e) {}
 				}
 				// TODO 调用api退出登录
 				TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);

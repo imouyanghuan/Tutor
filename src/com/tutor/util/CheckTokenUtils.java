@@ -18,13 +18,15 @@ public class CheckTokenUtils {
 		if (TutorApplication.isTokenInvalid) {
 			return;
 		}
-		TutorApplication.isTokenInvalid = true;
 		if (null != result && Constants.General.TOKEN_INVALID == result.getStatusCode()) {
 			if (-1 != TutorApplication.getRole()) {
+				TutorApplication.isTokenInvalid = true;
 				// token过期,发广播结束当前打开的界面
 				Intent intent = new Intent();
 				intent.setAction(Constants.Action.ACTION_TOKEN_INVALID);
 				TutorApplication.instance.sendBroadcast(intent);
+				// 更改配置信息
+				TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
 				// 跳转登录界面
 				Intent intent2 = new Intent(TutorApplication.instance, LoginActivity.class);
 				intent2.putExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, TutorApplication.getRole());
@@ -40,8 +42,8 @@ public class CheckTokenUtils {
 			return;
 		}
 		if (Constants.General.TOKEN_INVALID == status) {
-			TutorApplication.isTokenInvalid = true;
 			if (-1 != TutorApplication.getRole()) {
+				TutorApplication.isTokenInvalid = true;
 				// token过期,发广播结束当前打开的界面
 				Intent intent = new Intent();
 				intent.setAction(Constants.Action.ACTION_TOKEN_INVALID);
