@@ -10,16 +10,16 @@ package com.tutor.params;
 public class ApiUrl {
 
 	/** 即时通讯相关 */
-	// public static final String XMPP_HOST = "192.168.0.187";
-	// public static final int XMPP_PORT = 5222;
-	// public static final String XMPP_SERVERNAME = "vm-server4";
-	// 公网
-	public static final String XMPP_HOST = "54.255.164.232";
+	public static final String XMPP_HOST = "192.168.0.187";
 	public static final int XMPP_PORT = 5222;
-	public static final String XMPP_SERVERNAME = "win-iimo7nuvj0r";
+	public static final String XMPP_SERVERNAME = "vm-server4";
+	// 公网
+	// public static final String XMPP_HOST = "54.255.164.232";
+	// public static final int XMPP_PORT = 5222;
+	// public static final String XMPP_SERVERNAME = "win-iimo7nuvj0r";
 	// ------------------------------------------------------------------
 	/** api */
-	public static final String DOMAIN = "http://54.255.164.232/TutorApi/";
+	public static final String DOMAIN = "http://192.168.0.187:8081/Tutor/";
 	// http://192.168.0.187:8081/Tutor/ 本地
 	// http://54.255.164.232/TutorApi/
 	/** 用戶註冊 */
@@ -116,4 +116,6 @@ public class ApiUrl {
 	public static final String STUDY_ABROAD_IM_IDS = "api/v1/config/studyabroadIMids";
 	/** 时间表 */
 	public static final String TIME_TABLE = "api/v1/notification/timetables";
+	/** 时间表更新 */
+	public static final String TIME_TABLE_UPDATE = "api/v1/notification/timetables/%s";
 }

@@ -143,7 +143,7 @@ public abstract class BaseChatActivity extends BaseActivity {
 			imMessage.setFromUserName(title);
 			imMessage.setAvatar(toAvatar);
 			//
-			String toJid = TutorApplication.getAccountDao().load("1").getImAccount() + "@" + XMPPConnectionManager.getManager().getServiceName();
+			String toJid = TutorApplication.getAccountDao().load("1").getImAccount().toLowerCase() + "@" + XMPPConnectionManager.getManager().getServiceName();
 			imMessage.setToJid(toJid);
 			imMessage.setNoticeType(IMMessage.MESSAGE_TYPE_CHAT_MSG);
 			imMessage.setSendStatus(IMMessage.SEND_STATUS_SUCCESS);

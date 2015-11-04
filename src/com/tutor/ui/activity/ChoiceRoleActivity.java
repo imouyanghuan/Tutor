@@ -29,12 +29,12 @@ public class ChoiceRoleActivity extends BaseActivity {
 
 	@Override
 	protected void initView() {
-		final Intent intent = new Intent();
-		intent.setClass(ChoiceRoleActivity.this, LoginActivity.class);
 		getView(R.id.ac_choice_role_btn_student).setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.setClass(ChoiceRoleActivity.this, LoginActivity.class);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, Constants.General.ROLE_STUDENT);
 				startActivity(intent);
 			}
@@ -43,6 +43,8 @@ public class ChoiceRoleActivity extends BaseActivity {
 
 			@Override
 			public void onClick(View v) {
+				Intent intent = new Intent();
+				intent.setClass(ChoiceRoleActivity.this, LoginActivity.class);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, Constants.General.ROLE_TUTOR);
 				startActivity(intent);
 			}
@@ -51,7 +53,9 @@ public class ChoiceRoleActivity extends BaseActivity {
 
 			@Override
 			public void onClick(View v) {
-				toast(getString(R.string.overseas_education));
+				Intent intent = new Intent();
+				intent.setClass(ChoiceRoleActivity.this, StudentMainActivity.class);
+				startActivity(intent);
 			}
 		});
 	}

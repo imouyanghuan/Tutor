@@ -11,6 +11,7 @@ public class Page {
 	private int pageSize;
 	private int totalCount;
 	private int totalPages;
+	private int untreatedCount;
 	private boolean hasPreviousPage;
 	private boolean hasNextPage;
 
@@ -20,6 +21,14 @@ public class Page {
 
 	public void setPageIndex(int pageIndex) {
 		this.pageIndex = pageIndex;
+	}
+
+	public int getUntreatedCount() {
+		return untreatedCount;
+	}
+
+	public void setUntreatedCount(int untreatedCount) {
+		this.untreatedCount = untreatedCount;
 	}
 
 	public int getPageSize() {

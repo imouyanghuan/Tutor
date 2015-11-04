@@ -1,11 +1,13 @@
 package com.tutor.ui.activity;
 
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -17,9 +19,11 @@ import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.GridViewAdapter;
+import com.tutor.adapter.GridViewAdapter.OnTimeTableClickListener;
 import com.tutor.model.TimeTable;
 import com.tutor.model.TimeTableListResult;
 import com.tutor.params.ApiUrl;
+import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.HttpHelper;
@@ -76,6 +80,16 @@ public class TimeTableActivity extends BaseActivity implements OnItemClickListen
 		// 初始化适配器
 		mAdapter = new GridViewAdapter(this, (dm.widthPixels - 7) / 7);
 		mAdapter.setClanderData(0, 0, year_c, month_c, day_c);
+		mAdapter.setOnTimeTableClickListener(new OnTimeTableClickListener() {
+
+			@Override
+			public void onTimeTableClick(String week, ArrayList<TimeTable> timeTables) {
+				Intent intent = new Intent(TimeTableActivity.this, TimeTableDetailActivity.class);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_DAY_OF_WEEK, week);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE, (Serializable) timeTables);
+				startActivityForResult(intent, Constants.RequestResultCode.TIME_TABLE_REFRESH);
+			}
+		});
 		mGridView.setAdapter(mAdapter);
 	}
 
@@ -100,6 +114,7 @@ public class TimeTableActivity extends BaseActivity implements OnItemClickListen
 				if (t.getStatusCode() == HttpURLConnection.HTTP_OK) {
 					ArrayList<TimeTable> tempTimeTables = t.getResult();
 					if (tempTimeTables != null && tempTimeTables.size() > 0) {
+						timeTables.clear();
 						timeTables.addAll(tempTimeTables);
 						mAdapter.setTimeTableData(timeTables);
 						mAdapter.setClanderData(0, 0, year_c, month_c, day_c);
@@ -126,5 +141,14 @@ public class TimeTableActivity extends BaseActivity implements OnItemClickListen
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View v, int index, long arg3) {
 		mAdapter.setClickedItem(index);
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if (Constants.RequestResultCode.TIME_TABLE_REFRESH == resultCode) {
+			getTimeTable();
+		}
 	}
 }

@@ -48,7 +48,7 @@ public class IMMessageManager {
 		}
 		Account account = TutorApplication.getAccountDao().load("1");
 		if (null != account) {
-			currentIMAccount = account.getImAccount() + "@" + XMPPConnectionManager.getManager().getServiceName();
+			currentIMAccount = account.getImAccount().toLowerCase() + "@" + XMPPConnectionManager.getManager().getServiceName();
 		}
 		return imMessageManager;
 	}

@@ -302,5 +302,6 @@
     <string name="label_match_a_student_now">現在去匹配一個學生吧!</string>
     <string name="label_you_still_do_not_have_any_tutors_yet">"你現在還沒有匹配的老師! "</string>
     <string name="label_match_a_tutor_now">現在去匹配一個老師吧!</string>
+    <string name="label_nologin">您還沒登錄,需要登錄嗎?</string>
 
 </resources>

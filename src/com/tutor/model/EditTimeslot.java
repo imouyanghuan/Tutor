@@ -3,31 +3,21 @@ package com.tutor.model;
 import java.io.Serializable;
 
 /**
+ * 编辑时间段
+ * 
  * @author jerry.yao
  * 
- *         2015-10-28
+ *         2015-11-04
  */
-public class TimeTableDetail implements Serializable {
+public class EditTimeslot implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private int memberId;
 	private int dayOfWeek;
 	private int startHour;
 	private int startMinute;
 	private int endHour;
 	private int endMinute;
-	private String userName;
-	private String courseName;
-	// notification id
 	private int id;
-
-	public int getMemberId() {
-		return memberId;
-	}
-
-	public void setMemberId(int memberId) {
-		this.memberId = memberId;
-	}
 
 	public int getDayOfWeek() {
 		return dayOfWeek;
@@ -69,7 +59,7 @@ public class TimeTableDetail implements Serializable {
 		this.endMinute = endMinute;
 	}
 
-	public boolean isRepeat(TimeTableDetail timeslot) {
+	public boolean isRepeat(EditTimeslot timeslot) {
 		// 星期不同,不会冲突
 		if (getDayOfWeek() != timeslot.dayOfWeek) {
 			return false;
@@ -87,27 +77,6 @@ public class TimeTableDetail implements Serializable {
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "Timeslot [memberId=" + memberId + ", dayOfWeek=" + dayOfWeek + ", startHour=" + startHour + ", startMinute=" + startMinute + ", endHour=" + endHour + ", endMinute=" + endMinute + "]";
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getCourseName() {
-		return courseName;
-	}
-
-	public void setCourseName(String courseName) {
-		this.courseName = courseName;
 	}
 
 	public int getId() {

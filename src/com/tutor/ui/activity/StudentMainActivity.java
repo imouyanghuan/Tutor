@@ -21,12 +21,16 @@ import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
 import com.hk.tutor.R;
+import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.helper.SharePrefUtil;
 import com.tutor.TutorApplication;
 import com.tutor.im.IMMessageManager;
 import com.tutor.im.XMPPConnectionManager;
 import com.tutor.im.XmppManager;
 import com.tutor.model.Account;
+import com.tutor.model.NotificationListResult;
+import com.tutor.model.Page;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.service.IMService;
 import com.tutor.ui.fragment.BaseFragment;
@@ -35,7 +39,10 @@ import com.tutor.ui.fragment.student.MyFragment;
 import com.tutor.ui.fragment.student.MyTeacherFragment;
 import com.tutor.ui.fragment.student.OverseasEducationFragment;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.CheckTokenUtils;
+import com.tutor.util.HttpHelper;
 import com.tutor.util.ImageUtils;
+import com.tutor.util.ObjectHttpResponseHandler;
 import com.tutor.util.ScreenUtil;
 
 /**
@@ -63,14 +70,47 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 	/** fragment操作管理對象 */
 	private FragmentTransaction ft;
 	// 显示消息条数
-	private TextView msgCount;
+	private TextView msgCount, notificationCount;
 	private long count = 0;
+	// 是否是未登录的标识
+	private boolean isNoLogin;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		// Constants.Xmpp.isChatNotification = false;
 		TutorApplication.isMainActivity = true;
+		isNoLogin = (Boolean) TutorApplication.settingManager.readSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
+		if (!isNoLogin) {
+			setContentView(R.layout.activity_student_main);
+			bar = getView(R.id.title_bar);
+			bar.setTitle(R.string.study_abroad);
+			mRadioGroup = getView(R.id.ac_main_rg);
+			mRadioGroup.check(R.id.ac_main_rb2);
+			mRadioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+				@Override
+				public void onCheckedChanged(RadioGroup arg0, int arg1) {
+					switch (arg1) {
+						case R.id.ac_main_rb2:
+							break;
+						case R.id.ac_main_rb1:
+						case R.id.ac_main_rb3:
+						case R.id.ac_main_rb4:
+							mRadioGroup.check(R.id.ac_main_rb2);
+							showDialog();
+							break;
+					}
+				}
+			});
+			//
+			overseasEducationFragment = new OverseasEducationFragment();
+			ft = getSupportFragmentManager().beginTransaction();
+			ft.add(R.id.ac_main_content_fragment, overseasEducationFragment, "overseasEducationFragment");
+			ft.show(overseasEducationFragment);
+			ft.commit();
+			return;
+		}
 		mMenuDrawer = MenuDrawer.attach(this, MenuDrawer.Type.BEHIND, Position.LEFT, MenuDrawer.MENU_DRAG_WINDOW);
 		mMenuDrawer.setContentView(R.layout.activity_student_main);
 		mMenuDrawer.setMenuView(R.layout.menu_layout);
@@ -79,6 +119,22 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 		// 初始化fragment
 		initFragment();
 		new LoginImTask().execute();
+	}
+
+	private void showDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(R.string.tips);
+		builder.setMessage(R.string.label_nologin);
+		builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				finish();
+			}
+		});
+		builder.setNegativeButton(R.string.cancel, null);
+		AlertDialog dialog = builder.create();
+		dialog.show();
 	}
 
 	@Override
@@ -177,6 +233,7 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 		getView(R.id.menu_item_chatlist).setOnClickListener(this);
 		getView(R.id.menu_item_calendar).setOnClickListener(this);
 		msgCount = getView(R.id.menu_item_tv_msgCount);
+		notificationCount = getView(R.id.menu_item_tv_notification_Count);
 		flTipFindTutor = getView(R.id.fl_tip_find_tutor);
 		flTipFindTutor.setOnClickListener(this);
 	}
@@ -226,10 +283,56 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 	@Override
 	protected void onResume() {
 		super.onResume();
-		initMsgCount();
-		// 註冊廣播
-		IntentFilter filter = new IntentFilter(Constants.Action.ACTION_NEW_MESSAGE);
-		registerReceiver(receiver, filter);
+		if (isNoLogin) {
+			initMsgCount();
+			getSystemNotification();
+			// 註冊廣播
+			IntentFilter filter = new IntentFilter(Constants.Action.ACTION_NEW_MESSAGE);
+			registerReceiver(receiver, filter);
+		}
+	}
+
+	/**
+	 * 获取消息数量 Sent 0 Accept 1 Reject 2 Acknowle 3 All 4
+	 */
+	private void getSystemNotification() {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		showDialogRes(R.string.loading);
+		RequestParams params = new RequestParams();
+		params.put("pageIndex", "0");
+		params.put("pageSize", "1");
+		HttpHelper.get(this, ApiUrl.NOTIFICATIONLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<NotificationListResult>(NotificationListResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				if (0 == status) {
+					getSystemNotification();
+					return;
+				}
+				CheckTokenUtils.checkToken(status);
+				dismissDialog();
+			}
+
+			@Override
+			public void onSuccess(NotificationListResult result) {
+				CheckTokenUtils.checkToken(result);
+				dismissDialog();
+				if (null != result && 200 == result.getStatusCode()) {
+					Page page = result.getPage();
+					if (page != null) {
+						if (page.getUntreatedCount() > 0) {
+							notificationCount.setVisibility(View.VISIBLE);
+							notificationCount.setText("" + page.getUntreatedCount());
+						} else {
+							notificationCount.setVisibility(View.GONE);
+						}
+					}
+				}
+			}
+		});
 	}
 
 	/**
@@ -249,7 +352,9 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 	@Override
 	protected void onPause() {
 		super.onPause();
-		unregisterReceiver(receiver);
+		if (isNoLogin) {
+			unregisterReceiver(receiver);
+		}
 	}
 
 	BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -267,13 +372,15 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 
 	@Override
 	protected void onDestroy() {
-		// 斷開IM連接
-		XMPPConnectionManager.getManager().disconnect();
-		// 停止服務
-		Intent intent = new Intent(this, IMService.class);
-		stopService(intent);
-		// 清空缓存的图片
-		ImageUtils.clearChache();
+		if (isNoLogin) {
+			// 斷開IM連接
+			XMPPConnectionManager.getManager().disconnect();
+			// 停止服務
+			Intent intent = new Intent(this, IMService.class);
+			stopService(intent);
+			// 清空缓存的图片
+			ImageUtils.clearChache();
+		}
 		TutorApplication.isMainActivity = false;
 		// Constants.Xmpp.isChatNotification = true;
 		super.onDestroy();
@@ -295,26 +402,32 @@ public class StudentMainActivity extends BaseActivity implements OnClickListener
 	 */
 	@Override
 	public void onBackPressed() {
-		final int drawerState = mMenuDrawer.getDrawerState();
-		if (drawerState == MenuDrawer.STATE_OPEN || drawerState == MenuDrawer.STATE_OPENING) {
-			mMenuDrawer.closeMenu();
-			return;
-		}
-		long currentTime = System.currentTimeMillis();
-		if (currentTime - lastTime < 800) {
-			super.onBackPressed();
+		if (isNoLogin) {
+			final int drawerState = mMenuDrawer.getDrawerState();
+			if (drawerState == MenuDrawer.STATE_OPEN || drawerState == MenuDrawer.STATE_OPENING) {
+				mMenuDrawer.closeMenu();
+				return;
+			}
+			long currentTime = System.currentTimeMillis();
+			if (currentTime - lastTime < 800) {
+				super.onBackPressed();
+			} else {
+				lastTime = currentTime;
+				toast(R.string.toast_exit);
+			}
 		} else {
-			lastTime = currentTime;
-			toast(R.string.toast_exit);
+			super.onBackPressed();
 		}
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		final int drawerState = mMenuDrawer.getDrawerState();
-		if (drawerState == MenuDrawer.STATE_OPEN || drawerState == MenuDrawer.STATE_OPENING) {
-			mMenuDrawer.closeMenu();
+		if (isNoLogin) {
+			final int drawerState = mMenuDrawer.getDrawerState();
+			if (drawerState == MenuDrawer.STATE_OPEN || drawerState == MenuDrawer.STATE_OPENING) {
+				mMenuDrawer.closeMenu();
+			}
 		}
 	}
 

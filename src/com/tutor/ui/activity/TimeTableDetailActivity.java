@@ -9,9 +9,10 @@ import android.widget.ListView;
 
 import com.hk.tutor.R;
 import com.tutor.adapter.TimeTableAdapter;
+import com.tutor.adapter.TimeTableAdapter.OnEditBtnClickListener;
+import com.tutor.model.EditTimeslot;
 import com.tutor.model.TimeTable;
 import com.tutor.model.TimeTableDetail;
-import com.tutor.model.Timeslot;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
 
@@ -24,7 +25,6 @@ import com.tutor.ui.view.TitleBar;
  */
 public class TimeTableDetailActivity extends BaseActivity {
 
-	// private static String week[] = ;
 	private ArrayList<TimeTableDetail> timeTableDetails;
 	private String curDayOfWeek;
 	private String weeks[] = null;
@@ -48,18 +48,18 @@ public class TimeTableDetailActivity extends BaseActivity {
 		if (tables != null && tables.size() > 0) {
 			timeTableDetails = new ArrayList<TimeTableDetail>();
 			for (int i = 0; i < tables.size(); i++) {
-				ArrayList<Timeslot> timeslots = tables.get(i).getTimeslots();
+				ArrayList<EditTimeslot> timeslots = tables.get(i).getTimeslots();
 				if (timeslots != null && timeslots.size() > 0) {
 					for (int j = 0; j < timeslots.size(); j++) {
 						String dayOfWeek = weeks[timeslots.get(j).getDayOfWeek()];
 						if (curDayOfWeek.equalsIgnoreCase(dayOfWeek)) {
 							TimeTableDetail detail = new TimeTableDetail();
+							detail.setId(tables.get(i).getId());
 							detail.setCourseName(tables.get(i).getCourseName());
 							detail.setUserName(tables.get(i).getUserName());
 							detail.setDayOfWeek(timeslots.get(j).getDayOfWeek());
 							detail.setEndHour(timeslots.get(j).getEndHour());
 							detail.setEndMinute(timeslots.get(j).getEndMinute());
-							detail.setMemberId(timeslots.get(j).getMemberId());
 							detail.setStartHour(timeslots.get(j).getStartHour());
 							detail.setStartMinute(timeslots.get(j).getStartMinute());
 							timeTableDetails.add(detail);
@@ -84,5 +84,33 @@ public class TimeTableDetailActivity extends BaseActivity {
 		listView.setDividerHeight(0);
 		TimeTableAdapter timelineAdapter = new TimeTableAdapter(this, timeTableDetails);
 		listView.setAdapter(timelineAdapter);
+		// 编辑时间回调
+		timelineAdapter.setOnEditBtnClickListener(new OnEditBtnClickListener() {
+
+			@Override
+			public void onEditBtnClick(TimeTableDetail detail) {
+				int currentId = detail.getId();
+				ArrayList<TimeTableDetail> sameTimeTables = new ArrayList<TimeTableDetail>();
+				for (int i = 0; i < timeTableDetails.size(); i++) {
+					if (timeTableDetails.get(i).getId() == currentId) {
+						sameTimeTables.add(timeTableDetails.get(i));
+					}
+				}
+				Intent intent = new Intent(TimeTableDetailActivity.this, EditTimeTableActivity.class);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE_DETAIL, sameTimeTables);
+				startActivityForResult(intent, Constants.RequestResultCode.TIME_TABLE_DETAIL);
+			}
+		});
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == Constants.RequestResultCode.TIME_TABLE_DETAIL) {
+			// refresh UI
+			setResult(Constants.RequestResultCode.TIME_TABLE_REFRESH);
+			finish();
+		}
 	}
 }

@@ -67,6 +67,9 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 	/** 教育背景 */
 	private int eb;
 
+	// 是否编辑开始时间
+	private boolean isStrat;
+	private Timeslot timeslot = null;
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -180,7 +183,6 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 		listView.setAdapter(adapter);
 	}
 
-	// TODO
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
@@ -244,10 +246,6 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 				break;
 		}
 	}
-
-	// 是否编辑开始时间
-	private boolean isStrat;
-	private Timeslot timeslot = null;
 
 	@Override
 	public int onTimeSelected(String time, int hour, int minute) {

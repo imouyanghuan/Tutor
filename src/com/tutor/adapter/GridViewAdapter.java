@@ -1,6 +1,5 @@
 package com.tutor.adapter;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,7 +7,6 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +18,9 @@ import android.widget.Toast;
 
 import com.hk.tutor.R;
 import com.tutor.model.Clander;
+import com.tutor.model.EditTimeslot;
 import com.tutor.model.TimeTable;
 import com.tutor.model.TimeTableTag;
-import com.tutor.model.Timeslot;
-import com.tutor.params.Constants;
-import com.tutor.ui.activity.TimeTableDetailActivity;
 import com.tutor.util.LunarCalendar;
 import com.tutor.util.SpecialCalendar;
 
@@ -221,7 +217,7 @@ public class GridViewAdapter extends BaseAdapter {
 					}
 					if (timeTables != null && timeTables.size() > 0) {
 						for (int k = 0; k < timeTables.size(); k++) {
-							ArrayList<Timeslot> timeslots = timeTables.get(k).getTimeslots();
+							ArrayList<EditTimeslot> timeslots = timeTables.get(k).getTimeslots();
 							if (timeslots != null && timeslots.size() > 0) {
 								for (int m = 0; m < timeslots.size(); m++) {
 									for (int n = 0; n < tags.size(); n++) {
@@ -332,17 +328,16 @@ public class GridViewAdapter extends BaseAdapter {
 				for (TimeTableTag tag : tags) {
 					if (tag.isTag() && index == tag.getId()) {
 						for (int k = 0; k < timeTables.size(); k++) {
-							ArrayList<Timeslot> timeslots = timeTables.get(k).getTimeslots();
+							ArrayList<EditTimeslot> timeslots = timeTables.get(k).getTimeslots();
 							if (timeslots != null && timeslots.size() > 0) {
 								for (int m = 0; m < timeslots.size(); m++) {
 									for (int n = 0; n < tags.size(); n++) {
 										int dayOfWeek = timeslots.get(m).getDayOfWeek();
 										if (week[(1 + dayOfWeek) % 7].equals(tag.getWeek())) {
-											Intent intent = new Intent(context, TimeTableDetailActivity.class);
-											intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_DAY_OF_WEEK, week[(1 + dayOfWeek) % 7]);
-											intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE, (Serializable) timeTables);
-											context.startActivity(intent);
-											return;
+											if (onTimeTableClickListener != null) {
+												onTimeTableClickListener.onTimeTableClick(week[(1 + dayOfWeek) % 7], timeTables);
+												return;
+											}
 										}
 									}
 								}
@@ -367,5 +362,21 @@ public class GridViewAdapter extends BaseAdapter {
 	class ViewHelper {
 
 		TextView day;
+	}
+
+	public interface OnTimeTableClickListener {
+
+		public void onTimeTableClick(String week, ArrayList<TimeTable> timeTables);
+	}
+
+	public OnTimeTableClickListener onTimeTableClickListener;
+
+	/**
+	 * 点击time table 回调
+	 * 
+	 * @param onTimeTableClickListener
+	 */
+	public void setOnTimeTableClickListener(OnTimeTableClickListener onTimeTableClickListener) {
+		this.onTimeTableClickListener = onTimeTableClickListener;
 	}
 }

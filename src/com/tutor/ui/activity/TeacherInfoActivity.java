@@ -319,10 +319,10 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		// chat with student
 			case R.id.btn_chat_with_tutor:
 				if (!TextUtils.isEmpty(imId)) {
-					boolean isFriend = ContactManager.getManager().addFriend(imId, imId);
+					boolean isFriend = ContactManager.getManager().addFriend(imId.toLowerCase(), imId);
 					if (isFriend) {
 						Intent intent = new Intent(TeacherInfoActivity.this, ChatActivity.class);
-						intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId + "@" + XMPPConnectionManager.getManager().getServiceName());
+						intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId.toLowerCase() + "@" + XMPPConnectionManager.getManager().getServiceName());
 						intent.putExtra(Constants.General.NICKNAME, titleName);
 						intent.putExtra(Constants.General.AVATAR, ApiUrl.DOMAIN + userInfo.getAvatar());
 						startActivity(intent);

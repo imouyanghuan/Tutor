@@ -111,6 +111,10 @@ public final class Constants {
 		public static final int SURE_COURSES = 0x5;
 		/** 邀请状态 */
 		public static final int NOTIFICATION_STATUS = 0x6;
+		/** time table detail */
+		public static final int TIME_TABLE_DETAIL = 0x7;
+		/** time table */
+		public static final int TIME_TABLE_REFRESH = 0x8;
 	}
 
 	/**
@@ -173,6 +177,8 @@ public final class Constants {
 		public static final String INTENT_EXTRA_TIME_TABLE = "timetable";
 		/** day of week */
 		public static final String INTENT_EXTRA_DAY_OF_WEEK = "dayOfWeek";
+		/** time table detail */
+		public static final String INTENT_EXTRA_TIME_TABLE_DETAIL = "timeTableDetail";
 	}
 
 	/**

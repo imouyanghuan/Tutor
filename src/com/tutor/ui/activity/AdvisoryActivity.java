@@ -113,6 +113,10 @@ public class AdvisoryActivity extends BaseActivity implements OnClickListener, S
 		flToolbar = getView(R.id.fl_toolbar);
 		btnChat = getView(R.id.btn_chat_with_adviser);
 		btnChat.setOnClickListener(this);
+		boolean isLogin = (Boolean) TutorApplication.settingManager.readSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
+		if (!isLogin) {
+			btnChat.setVisibility(View.GONE);
+		}
 	}
 
 	/**

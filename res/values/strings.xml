@@ -29,12 +29,12 @@
     <string name="logining">Logining&#8230;</string>
     <string name="forget_password">Forgot password</string>
     <string name="registering">Registering</string>
-    <string name="register_cbtxt">Registration is agreed to the user agreement</string>
-    <string name="register_tip_tutor">Will be Register as Student/Parent when select Student/Parent at first</string>
-    <string name="register_tip_student">Will be Register as Tutor when select Tutor at first</string>
+    <string name="register_cbtxt">You have agreed to the user agreement after registration</string>
+    <string name="register_tip_tutor">Will be Register as a Student/Parent if selecting "Student/Parent" at first</string>
+    <string name="register_tip_student">Will be Register as Tutor if selecting "Tutor" at first</string>
     <string name="team_conditions">Team&amp;Conditions</string>
     <string name="fill_personal_info">Fill Personal Information</string>
-    <string name="edit_personal_info">Edit Personal Information</string>
+    <string name="edit_personal_info">Edit Your Person Information</string>
     <string name="add_timeslot">Add Timeslot</string>
     <string name="eb_1">Secondary School</string>
     <string name="eb_2">High School(DSC)</string>
@@ -92,14 +92,14 @@
     <string name="label_unknow_phone">Unknow Phone</string>
     <string name="label_unknow_address">Unknow Address</string>
     <string name="label_unknow">Unknow</string>
-    <string name="label_start">Start Time</string>
-    <string name="label_end">End Time</string>
+    <string name="label_start">Starting Time</string>
+    <string name="label_end">Ending Time</string>
     <string name="label_week">Week</string>
     <string name="lable_log_out">Are you sure log out?</string>
     <string name="label_nickname">Preferred Name:</string>
     <string name="label_school">School or University:</string>
     <string name="label_major">Major:</string>
-    <string name="label_tutor_experience">Tutor Experience:</string>
+    <string name="label_tutor_experience">Tutoring Experience:</string>
     <string name="label_experience_year">Year(s)</string>
     <string name="label_experience_year2">%sYear(s)</string>
     <string name="label_student">Student :</string>
@@ -110,14 +110,14 @@
     <string name="label_registration_time">Registration Time:</string>
     <string name="label_chat">Chat</string>
     <!-- button -->
-    <string name="btn_role_student">Find tutors</string>
+    <string name="btn_role_student">Find Tutors</string>
     <string name="btn_role_tutor">Find Students</string>
     <string name="btn_login_facebook">Login With Facebook</string>
     <string name="btn_login_email">Login With Email</string>
-    <string name="btn_register_as_tutor">Register As Tutor</string>
+    <string name="btn_register_as_tutor">Register As a Tutor</string>
     <string name="btn_register_as_student">Register As Student/Parent</string>
-    <string name="btn_fill_info_tutor">Submit&amp;Become A Tutor</string>
-    <string name="btn_fill_info_student">Submit&amp;Find A Tutor</string>
+    <string name="btn_fill_info_tutor">Submit&amp;Become a Tutor</string>
+    <string name="btn_fill_info_student">Submit&amp;Find a Tutor</string>
     <string name="btn_fragment_find_teacher_rating">Rating</string>
     <string name="btn_fragment_find_teacher_popularity">Popularity</string>
     <string name="btn_gallery">Gallery</string>
@@ -127,18 +127,19 @@
     <!-- hint -->
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
-    <string name="hint_old_password">Old password</string>
+    <string name="hint_confirm_password">Confirm Your Password</string>
+    <string name="hint_old_password">Previous Password</string>
     <string name="hint_new_password">New password</string>
-    <string name="hint_enter_nickname">Enter NickName</string>
-    <string name="hint_enter_school">Enter Degree or School</string>
-    <string name="hint_enter_major">Enter Major</string>
-    <string name="hint_enter_introduction">Enter Self Introduction&#8230;</string>
-    <string name="hint_enter_video_path">Enter Self Introduction Video Link</string>
+    <string name="hint_enter_nickname">Enter Your Preferred Name</string>
+    <string name="hint_enter_school">Enter Your Degree or School</string>
+    <string name="hint_enter_major">Enter Your Major</string>
+    <string name="hint_enter_introduction">Enter Your Self Introduction</string>
+    <string name="hint_enter_video_path">Enter Your Self Introduction Video Link</string>
     <string name="hint_0">0</string>
-    <string name="hint_search_student_keywords">Search Student By Condition</string>
-    <string name="hint_search_teacher_keywords">Search Tutor By Condition</string>
+    <string name="hint_search_student_keywords">Search Student by Conditions</string>
+    <string name="hint_search_teacher_keywords">Search Tutor by Conditions</string>
     <string name="hint_enter_grade">Enter Grade</string>
-    <string name="hint_enter_address">Enter Residential Address</string>
+    <string name="hint_enter_address">Enter Your Residential Address</string>
     <!-- toast -->
     <string name="toast_email_empty">Email Is Empty</string>
     <string name="toast_pswd_empty">Password Is Empty</string>
@@ -158,22 +159,22 @@
     <string name="toast_register_exist">User has existed</string>
     <string name="toast_avatar_upload">Upload Avatar Successed</string>
     <string name="toast_avatar_upload_fail">Upload Avatar Failed</string>
-    <string name="toast_no_timeslot">Please add timeslot</string>
+    <string name="toast_no_timeslot">Please add a timeslot</string>
     <string name="toast_name_isEmpty">Name is Empty</string>
     <string name="toast_hkid_isEmpty">HKID is Empty</string>
     <string name="toast_hkid_error">HKID format error</string>
     <string name="toast_phone_error">Phone Number format error</string>
     <string name="toast_phone_isEmpty">Phone Number is Empty</string>
-    <string name="toast_no_data">No Data</string>
-    <string name="toast_no_more_data">There is no more data</string>
+    <string name="toast_no_data">No more further content</string>
+    <string name="toast_no_more_data">No more further content</string>
     <string name="toast_netwrok_disconnected">Network Disconnected</string>
     <string name="toast_login_im_fail">IM Service does not Started</string>
     <string name="toast_no_match_student">No match student</string>
     <string name="toast_no_match_tutor">No match tutor</string>
     <string name="toast_not_select_cours">Please choice a Course at least</string>
     <string name="toast_not_select_area">Please choice an Area at least</string>
-    <string name="toast_endtime_behind_starttime">End time must be behind the start time</string>
-    <string name="toast_starttime_front_endtime">Start time must be in front of the end of time</string>
+    <string name="toast_endtime_behind_starttime">Ending time must be behind the start time</string>
+    <string name="toast_starttime_front_endtime">Starting Time must be in front of the end of time</string>
     <string name="toast_video_unplay">Video link or video format errors</string>
     <string name="toast_video_link_empety">Video link is empty</string>
     <string name="toast_token_invalid">Token expired, please login again</string>
@@ -181,11 +182,11 @@
     <string name="toast_forgetpswd_sendemail_success">A temporary password has been sent to your mailbox, please use the temporary password to log in as soon as possible after setting a new password!</string>
     <string name="toast_without_mytutor">Without Tutors</string>
     <string name="toast_price_empty">Price is empty</string>
-    <string name="toast_grade_noChoice">Please choice grade</string>
+    <string name="toast_grade_noChoice">Choose a Grade</string>
     <string name="toast_address_isEmpty">Address is empty</string>
 
     <!-- xmpp聊天相關 -->
-    <string name="new_message">New short message received</string>
+    <string name="new_message">You have got a new message</string>
     <string name="system_message">System message</string>
     <string name="add_friend_request">Add buddy request</string>
     <string name="add_friend_lable">Apply for add you as a friend</string>
@@ -214,9 +215,9 @@
     <string name="label_paly_video">Play Video</string>
     <string name="label_to_be_my_student">To Be My Student</string>
     <string name="label_student_name">Full Name</string>
-    <string name="label_subject_to_be_taught">Subject To Be Taught</string>
+    <string name="label_subject_to_be_taught">Subject to be Taught</string>
     <string name="label_frequency_of_lessons">Frequency Of Lessons</string>
-    <string name="label_price_per_hour">Price Per Hour</string>
+    <string name="label_price_per_hour">Price per hour</string>
     <string name="label_service_location">Service Location</string>
     <string name="toast_msg_cant_empty">Please input content</string>
     <string name="label_send">Send</string>
@@ -238,14 +239,14 @@
     <string name="label_punctuality">"Punctuality : "</string>
     <string name="label_communication_skill">"Communication Skill : "</string>
     <string name="label_rating">Rating</string>
-    <string name="label_please_input_your_comments_here">Enter Your Comments</string>
+    <string name="label_please_input_your_comments_here">Enter Your Comment</string>
     <string name="label_see_other_comments">See Other Comments</string>
-    <string name="label_your_comments">Your Comments:</string>
+    <string name="label_your_comments">Your Comment:</string>
     <string name="toast_rating_success">Rating success</string>
     <string name="label_other_comments">Other Comments</string>
     <string name="label_unknow_major">Unknow Major</string>
     <string name="label_unknow_grade">Unknow Grade</string>
-    <string name="chatlist">Chat</string>
+    <string name="chatlist">Chat List</string>
     <string name="tip_find_students">The default items by matching \n your personal info(Areas,Courses</string>
     <string name="tip_order_by_stars">Order by stars</string>
     <string name="tip_order_by_students_quantity">Order by students quantity</string>
@@ -256,7 +257,7 @@
     <string name="label_advisory_for_study_abroad">Study Tour</string>
     <string name="label_faq">FAQ</string>
     <string name="label_chat_with_adviser">Chat With Adviser</string>
-    <string name="label_isprivacy">IsPrivacy</string>
+    <string name="label_isprivacy">Private School Only</string>
     <string name="label_send_failed">Send failed</string>
     <string name="label_country">Country</string>
     <string name="label_confirm">Confirm</string>
@@ -264,16 +265,8 @@
     <string name="label_selection_grade">Grade</string>
     <string name="label_privacy">Privacy</string>
     <string name="label_non_provacy">Non-Provacy</string>
+
     <!-- 日历 -->
-    <string name="add_schedule">添加日程</string>
-    <string name="schedule_det">日程详情</string>
-    <string name="add">Add</string>
-    <string name="no_schedule_tip">您还没有任何的日程活动哦!赶快添加吧!</string>
-    <string name="today">今天</string>
-    <string name="back">返回</string>
-    <string name="save">保存</string>
-    <string name="schedule">日程</string>
-    <string name="yyyy_mm">YYYY年MM月</string>
     <string name="week1">Mon</string>
     <string name="week2">Tues</string>
     <string name="week3">Wed</string>
@@ -298,9 +291,13 @@
     <string name="label_required_info">If you accept the invitation you need to fill in the following information</string>
     <string name="label_graduate_school">Graduate School:</string>
     <!-- 2015-11-02 -->
-    <string name="label_you_still_do_not_have_any_students_yet">"You still do not have any students yet! "</string>
+    <string name="label_you_still_do_not_have_any_students_yet">"You still have not got any students yet!"</string>
     <string name="label_match_a_student_now">Match a student now!</string>
-    <string name="label_you_still_do_not_have_any_tutors_yet">"You still do not have any tutors yet! "</string>
+    <string name="label_you_still_do_not_have_any_tutors_yet">"You still have not got any tutors yet!"</string>
     <string name="label_match_a_tutor_now">Match a tutor now!</string>
+    <string name="label_edit_time_table">Edit Time Table</string>
+    <string name="label_edit">Edit</string>
+    <string name="label_nologin">You haven\'t login, need to log in?</string>
+    <string name="label_edit_failed">Edit failed</string>
 
 </resources>

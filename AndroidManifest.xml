@@ -8,11 +8,13 @@
         android:minSdkVersion="14"
         android:targetSdkVersion="23" />
     <!-- 访问网络和读取sdcard的权限 -->
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- Google Analytics required permissions -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <!-- Required 自定义用来收发消息的相关权限 -->
     <permission
         android:name="com.hk.tutor.permission.JPUSH_MESSAGE"
@@ -205,6 +207,9 @@
         <activity
             android:name="com.tutor.ui.activity.TimeTableDetailActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tutor.ui.activity.EditTimeTableActivity"
+            android:screenOrientation="portrait" />
         <!-- IM服务 -->
         <service android:name="com.tutor.service.IMService" >
         </service>
@@ -339,6 +344,43 @@
             android:name="JPUSH_APPKEY"
             android:value="e8c45ea2bf0722ea42a67fff" /> <!-- </>值来自开发者平台取得的AppKey my app id: 460090b6889e45231d06a7cb kevin id:2b62c434b29ddbdefc7972e6 -->
         <!-- JPush end -->
+
+
+        <!-- Add the following meta-data for devices running Google Play service. -->
+        <!-- <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" /> -->
+
+        <!--
+         Optionally, register AnalyticsReceiver and AnalyticsService to support background
+         dispatching on non-Google Play devices
+        -->
+        <receiver
+            android:name="com.google.android.gms.analytics.AnalyticsReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="com.google.android.gms.analytics.ANALYTICS_DISPATCH" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.google.android.gms.analytics.AnalyticsService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <!--
+           Optionally, register CampaignTrackingReceiver and CampaignTrackingService to enable
+           installation campaign reporting
+        -->
+        <receiver
+            android:name="com.google.android.gms.analytics.CampaignTrackingReceiver"
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
     </application>
 
 </manifest>

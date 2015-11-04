@@ -4,6 +4,8 @@ import java.util.List;
 
 import android.content.Context;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.hk.tutor.R;
@@ -18,7 +20,7 @@ public class TimeTableAdapter extends TutorBaseAdapter<TimeTableDetail> {
 	}
 
 	@Override
-	protected void convert(ViewHolder holder, TimeTableDetail detail, int position) {
+	protected void convert(ViewHolder holder, final TimeTableDetail detail, int position) {
 		TextView tvTime = holder.getView(R.id.tv_show_time);
 		int endMinute = detail.getEndMinute();
 		String endM = "";
@@ -40,6 +42,7 @@ public class TimeTableAdapter extends TutorBaseAdapter<TimeTableDetail> {
 		TextView tvCourse = holder.getView(R.id.tv_course);
 		tvCourse.setText(detail.getCourseName());
 		TextView tvTitleLabel = holder.getView(R.id.tv_title_label);
+		// adjust role
 		int role = TutorApplication.getRole();
 		if (role == Constants.General.ROLE_STUDENT) {
 			tvTitleLabel.setText(R.string.label_teacher);
@@ -56,5 +59,32 @@ public class TimeTableAdapter extends TutorBaseAdapter<TimeTableDetail> {
 		} else {
 			holder.getView(R.id.bottom_view).setVisibility(View.VISIBLE);
 		}
+		// edit time table
+		Button btnEdit = holder.getView(R.id.btn_edit);
+		btnEdit.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (onEditBtnClickListener != null) {
+					onEditBtnClickListener.onEditBtnClick(detail);
+				}
+			}
+		});
+	}
+
+	public interface OnEditBtnClickListener {
+
+		public void onEditBtnClick(TimeTableDetail detail);
+	}
+
+	private OnEditBtnClickListener onEditBtnClickListener;
+
+	/**
+	 * 编辑按钮回调
+	 * 
+	 * @param onEditBtnClickListener
+	 */
+	public void setOnEditBtnClickListener(OnEditBtnClickListener onEditBtnClickListener) {
+		this.onEditBtnClickListener = onEditBtnClickListener;
 	}
 }

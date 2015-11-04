@@ -125,7 +125,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		if (isEdit) {
 			bar.initBack(this);
 		}
-		bar.setTitleTextSize(20.0f);
+		bar.setTitleTextSize(18.0f);
 		if (isEdit) {
 			bar.setTitle(R.string.edit_personal_info);
 		} else {

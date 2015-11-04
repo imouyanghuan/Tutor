@@ -21,12 +21,16 @@ import android.widget.TextView;
 
 import com.facebook.login.LoginManager;
 import com.hk.tutor.R;
+import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.helper.SharePrefUtil;
 import com.tutor.TutorApplication;
 import com.tutor.im.IMMessageManager;
 import com.tutor.im.XMPPConnectionManager;
 import com.tutor.im.XmppManager;
 import com.tutor.model.Account;
+import com.tutor.model.NotificationListResult;
+import com.tutor.model.Page;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.service.IMService;
 import com.tutor.ui.fragment.BaseFragment;
@@ -35,7 +39,10 @@ import com.tutor.ui.fragment.teacher.MyFragment;
 import com.tutor.ui.fragment.teacher.MyStudentFragment;
 import com.tutor.ui.fragment.teacher.OverseasEducationFragment;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.CheckTokenUtils;
+import com.tutor.util.HttpHelper;
 import com.tutor.util.ImageUtils;
+import com.tutor.util.ObjectHttpResponseHandler;
 import com.tutor.util.ScreenUtil;
 
 /**
@@ -63,7 +70,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 	/** fragment操作管理對象 */
 	private FragmentTransaction ft;
 	// 顯示未讀消息
-	private TextView msgCount;
+	private TextView msgCount, notificationCount;
 	private long count = 0;
 
 	@Override
@@ -176,6 +183,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		getView(R.id.menu_item_chatlist).setOnClickListener(this);
 		getView(R.id.menu_item_calendar).setOnClickListener(this);
 		msgCount = getView(R.id.menu_item_tv_msgCount);
+		notificationCount = getView(R.id.menu_item_tv_notification_Count);
 		// tip
 		flTipFindStudent = getView(R.id.fl_tip_find_student);
 		flTipFindStudent.setOnClickListener(this);
@@ -232,6 +240,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 	protected void onResume() {
 		super.onResume();
 		initMsgCount();
+		getSystemNotification();
 		// 註冊廣播
 		IntentFilter filter = new IntentFilter(Constants.Action.ACTION_NEW_MESSAGE);
 		registerReceiver(receiver, filter);
@@ -257,6 +266,49 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 			msgCount.setText("");
 			msgCount.setVisibility(View.GONE);
 		}
+	}
+
+	/**
+	 * 获取消息数量 Sent 0 Accept 1 Reject 2 Acknowle 3 All 4
+	 */
+	private void getSystemNotification() {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		showDialogRes(R.string.loading);
+		RequestParams params = new RequestParams();
+		params.put("pageIndex", "0");
+		params.put("pageSize", "1");
+		HttpHelper.get(this, ApiUrl.NOTIFICATIONLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<NotificationListResult>(NotificationListResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				if (0 == status) {
+					getSystemNotification();
+					return;
+				}
+				CheckTokenUtils.checkToken(status);
+				dismissDialog();
+			}
+
+			@Override
+			public void onSuccess(NotificationListResult result) {
+				CheckTokenUtils.checkToken(result);
+				dismissDialog();
+				if (null != result && 200 == result.getStatusCode()) {
+					Page page = result.getPage();
+					if (page != null) {
+						if (page.getUntreatedCount() > 0) {
+							notificationCount.setVisibility(View.VISIBLE);
+							notificationCount.setText("" + page.getUntreatedCount());
+						} else {
+							notificationCount.setVisibility(View.GONE);
+						}
+					}
+				}
+			}
+		});
 	}
 
 	@Override

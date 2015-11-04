@@ -227,6 +227,10 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 		});
 		btnChat = getView(R.id.btn_chat_with_adviser);
 		btnChat.setOnClickListener(this);
+		boolean isLogin = (Boolean) TutorApplication.settingManager.readSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
+		if (!isLogin) {
+			btnChat.setVisibility(View.GONE);
+		}
 		getView(R.id.btn_confirm).setOnClickListener(this);
 	}
 
