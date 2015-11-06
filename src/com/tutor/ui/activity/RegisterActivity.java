@@ -133,6 +133,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 			model.setAccountType(role);
 			model.setFBOpenID("");
 			String im = role + email.replace("@", "").replace(".", "");
+			im = im.toLowerCase();
 			model.setIMID(im);
 			// JPush 获取到registerId e.g. 04050e77428
 			String registerId = JPushInterface.getRegistrationID(getApplicationContext());
@@ -142,7 +143,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 
 				@Override
 				public void gotResult(int arg0, String arg1, Set<String> arg2) {
-					//  Auto-generated method stub
+					// Auto-generated method stub
 				}
 			});
 			register(model);
@@ -237,6 +238,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 					}
 					switch (result.getResult().getStatus()) {
 						case Constants.Xmpp.REGISTER_SUCCESS:
+						case Constants.Xmpp.REGISTER_ACCOUNT_EXIST:
 							// 發廣播結束登錄界面
 							Intent finishLogin = new Intent();
 							finishLogin.setAction(Constants.Action.FINISH_LOGINACTIVITY);
@@ -261,9 +263,6 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 							intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, role);
 							startActivity(intent);
 							finishNoAnim();
-							break;
-						case Constants.Xmpp.REGISTER_ACCOUNT_EXIST:
-							toast(R.string.toast_register_exist);
 							break;
 						case Constants.Xmpp.REGISTER_ERROR:
 							toast(R.string.toast_register_fail);

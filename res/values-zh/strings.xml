@@ -127,6 +127,7 @@
     <!-- hint -->
     <string name="hint_email">郵箱</string>
     <string name="hint_password">密碼</string>
+    <string name="hint_confirm_password">確認密碼</string>
     <string name="hint_old_password">舊密碼</string>
     <string name="hint_new_password">新密碼</string>
     <string name="hint_enter_nickname">輸入暱稱</string>
@@ -265,22 +266,14 @@
     <string name="label_privacy">私立</string>
     <string name="label_non_provacy">非私立</string>
     <!-- 日历 -->
-    <string name="add_schedule">添加日程</string>
-    <string name="schedule_det">日程详情</string>
-    <string name="add">添加</string>
-    <string name="no_schedule_tip">您还没有任何的日程活动哦!赶快添加吧!</string>
-    <string name="today">今天</string>
-    <string name="back">返回</string>
-    <string name="save">保存</string>
-    <string name="schedule">日程</string>
     <string name="yyyy_mm">YYYY年MM月</string>
-    <string name="week1">周一</string>
-    <string name="week2">周二</string>
-    <string name="week3">周三</string>
-    <string name="week4">周四</string>
-    <string name="week5">周五</string>
-    <string name="week6">周六</string>
-    <string name="week7">周日</string>
+    <string name="week1">週一</string>
+    <string name="week2">週二</string>
+    <string name="week3">週三</string>
+    <string name="week4">週四</string>
+    <string name="week5">週五</string>
+    <string name="week6">週六</string>
+    <string name="week7">週日</string>
     <string name="label_time_table">時間表</string>
     <string name="label_invitation_detail">消息詳情</string>
     <string name="label_accepted">已接受</string>
@@ -303,5 +296,10 @@
     <string name="label_you_still_do_not_have_any_tutors_yet">"你現在還沒有匹配的老師! "</string>
     <string name="label_match_a_tutor_now">現在去匹配一個老師吧!</string>
     <string name="label_nologin">您還沒登錄,需要登錄嗎?</string>
+    <string name="label_edit_time_table">編輯時間表</string>
+    <string name="label_edit">編輯</string>
+    <string name="label_edit_failed">修改出錯</string>
+    <string name="label_appointment_time_slot_with_this_tutor">與該老師約定的時間段</string>
+    <string name="label_appointment_time_slot_with_this_student">與該學生約定的時間段</string>
 
 </resources>

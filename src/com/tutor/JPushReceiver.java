@@ -1,13 +1,34 @@
 package com.tutor;
 
+import java.net.HttpURLConnection;
+import java.util.Calendar;
+
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import cn.jpush.android.api.JPushInterface;
 
+import com.hk.tutor.R;
+import com.loopj.android.http.RequestParams;
+import com.tutor.im.IMMessageManager;
+import com.tutor.model.Avatar;
+import com.tutor.model.IMMessage;
+import com.tutor.model.UserInfo;
+import com.tutor.model.UserInfoResult;
+import com.tutor.params.ApiUrl;
+import com.tutor.params.Constants;
+import com.tutor.ui.activity.ChatListActivity;
 import com.tutor.ui.activity.SystemNotificationActivity;
+import com.tutor.util.DateTimeUtil;
+import com.tutor.util.HttpHelper;
+import com.tutor.util.JsonUtil;
+import com.tutor.util.LogUtils;
+import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
  * 自定义接收器
@@ -17,9 +38,11 @@ import com.tutor.ui.activity.SystemNotificationActivity;
 public class JPushReceiver extends BroadcastReceiver {
 
 	private static final String TAG = "JPush";
+	private Context mContext;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		this.mContext = context;
 		Bundle bundle = intent.getExtras();
 		Log.d(TAG, "[JPushReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
 		if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
@@ -28,7 +51,7 @@ public class JPushReceiver extends BroadcastReceiver {
 			// send the Registration Id to your server...
 		} else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
 			Log.d(TAG, "[JPushReceiver] 接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
-			// processCustomMessage(context, bundle);
+			processCustomMessage(context, bundle);
 		} else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
 			Log.d(TAG, "[JPushReceiver] 接收到推送下来的通知");
 			int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
@@ -36,11 +59,16 @@ public class JPushReceiver extends BroadcastReceiver {
 		} else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
 			Log.d(TAG, "[JPushReceiver] 用户点击打开了通知");
 			// 打开自定义的Activity 点击手机状态栏通知要跳转的页面
-			Intent i = new Intent(context, SystemNotificationActivity.class);
-			i.putExtras(bundle);
+			Intent openIntent = null;
+			if (TutorApplication.isChatMessage) {
+				openIntent = new Intent(context, ChatListActivity.class);
+			} else {
+				openIntent = new Intent(context, SystemNotificationActivity.class);
+			}
+			openIntent.putExtras(bundle);
 			// i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			context.startActivity(i);
+			openIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			context.startActivity(openIntent);
 		} else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {
 			Log.d(TAG, "[JPushReceiver] 用户收到到RICH PUSH CALLBACK: " + bundle.getString(JPushInterface.EXTRA_EXTRA));
 			// 在这里根据 JPushInterface.EXTRA_EXTRA 的内容处理代码，比如打开新的Activity，
@@ -67,25 +95,124 @@ public class JPushReceiver extends BroadcastReceiver {
 		}
 		return sb.toString();
 	}
+
 	// send msg to MainActivity
-	// private void processCustomMessage(Context context, Bundle bundle) {
-	// if (MainActivity.isForeground) {
-	// String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
-	// String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
-	// Intent msgIntent = new Intent(MainActivity.MESSAGE_RECEIVED_ACTION);
-	// msgIntent.putExtra(MainActivity.KEY_MESSAGE, message);
-	// if (!ExampleUtil.isEmpty(extras)) {
-	// try {
-	// JSONObject extraJson = new JSONObject(extras);
-	// if (null != extraJson && extraJson.length() > 0) {
-	// msgIntent.putExtra(MainActivity.KEY_EXTRAS, extras);
-	// }
-	// } catch (JSONException e) {
-	//
-	// }
-	//
-	// }
-	// context.sendBroadcast(msgIntent);
-	// }
-	// }
+	private void processCustomMessage(Context context, Bundle bundle) {
+		String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
+		LogUtils.e("message = " + message);
+		String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+		if (!TextUtils.isEmpty(extras)) {
+			TutorApplication.isChatMessage = extras.contains("true");
+			// TODO
+			if (TutorApplication.isChatMessage && !TextUtils.isEmpty(message)) {
+				IMMessage imMessage = JsonUtil.parseJStr2Object(IMMessage.class, message);
+				if (imMessage != null) {
+					saveMessage(imMessage);
+				}
+			}
+		} else {
+			TutorApplication.isChatMessage = false;
+		}
+		LogUtils.e("extras = " + extras);
+	}
+
+	private void saveMessage(IMMessage imMessage) {
+		// 時間
+		String time = DateTimeUtil.date2Str(Calendar.getInstance(), Constants.Xmpp.MS_FORMART);
+		// 來自于誰
+		String from = imMessage.getFromSubJid();
+		if (from.contains("/")) {
+			from = imMessage.getFromSubJid().split("/")[0];
+		}
+		// 發送給誰
+		String to = imMessage.getToJid();
+		if (to.contains("/")) {
+			String[] msgTos = to.split("/");
+			if (msgTos.length >= 2) {
+				to = to.split("/")[0];
+			}
+		}
+		String title = mContext.getString(R.string.new_message);
+		imMessage.setTitle(title);
+		imMessage.setTime(time);
+		imMessage.setNoticeTime(time);
+		imMessage.setFromSubJid(from);
+		imMessage.setToJid(to);
+		imMessage.setReadStatus(IMMessage.READ_STATUS_UNREAD);
+		imMessage.setMsgType(IMMessage.CHAT_MESSAGE_TYPE_RECEIVE);
+		imMessage.setNoticeSum(1);
+		imMessage.setNoticeType(IMMessage.MESSAGE_TYPE_CHAT_MSG);
+		int index = from.indexOf("@");
+		String imId = from.substring(0, index);
+		Avatar avatar = TutorApplication.getAvatarDao().load(imId);
+		if (avatar == null) {
+			this.imMessage = imMessage;
+			imid = imId;
+			handler.sendEmptyMessage(0);
+			return;
+		}
+		imMessage.setAvatar(avatar.getAvatar());
+		String name = avatar.getNickName();
+		if (TextUtils.isEmpty(name)) {
+			name = avatar.getUserName();
+			if (TextUtils.isEmpty(name)) {
+				name = "Adviser";
+			}
+		}
+		imMessage.setFromUserName(name);
+		IMMessageManager.getManager().sava(imMessage);
+	}
+
+	IMMessage imMessage;
+	String imid;
+	@SuppressLint("HandlerLeak")
+	Handler handler = new Handler() {
+
+		@Override
+		public void handleMessage(android.os.Message msg) {
+			getUserInfo(imMessage, imid);
+			super.handleMessage(msg);
+		}
+	};
+
+	private void getUserInfo(final IMMessage imMessage, final String imId) {
+		String url = String.format(ApiUrl.IM_GET_INFO, imId);
+		HttpHelper.get(TutorApplication.instance, url, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				// TODO Auto-generated method stub
+				LogUtils.e("-----status:" + status + ",message +" + message);
+			}
+
+			@Override
+			public void onSuccess(UserInfoResult info) {
+				if (info.getStatusCode() == HttpURLConnection.HTTP_OK) {
+					UserInfo userInfo = info.getResult();
+					Avatar avatar = new Avatar();
+					String avatarStr = "";
+					if (userInfo != null) {
+						avatarStr = ApiUrl.DOMAIN + userInfo.getAvatar();
+						avatar.setNickName(userInfo.getNickName());
+						avatar.setUserName(userInfo.getUserName());
+					} else {
+						avatarStr = "";
+						avatar.setNickName("");
+						avatar.setUserName("");
+					}
+					avatar.setAvatar(avatarStr);
+					avatar.setId(imId);
+					TutorApplication.getAvatarDao().insert(avatar);
+					imMessage.setAvatar(avatarStr);
+					String name = avatar.getNickName();
+					if (TextUtils.isEmpty(name)) {
+						name = avatar.getUserName();
+					}
+					imMessage.setFromUserName(name);
+					// 保存
+					IMMessageManager.getManager().sava(imMessage);
+				}
+			}
+		});
+	}
 }

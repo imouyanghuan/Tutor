@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.hk.tutor.R;
+import com.tutor.TutorApplication;
 import com.tutor.params.Constants;
 
 /**
@@ -24,6 +25,11 @@ public class ChoiceRoleActivity extends BaseActivity {
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.activity_choice_role);
+		int flag = getIntent().getIntExtra(Constants.IntentExtra.INTENT_EXTRA_TOKENINVALID, -1);
+		if (Constants.General.TOKEN_INVALID == flag) {
+			toastLong(getString(R.string.toast_token_invalid));
+			TutorApplication.isTokenInvalid = false;
+		}
 		initView();
 	}
 

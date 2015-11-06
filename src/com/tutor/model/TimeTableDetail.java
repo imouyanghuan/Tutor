@@ -7,7 +7,7 @@ import java.io.Serializable;
  * 
  *         2015-10-28
  */
-public class TimeTableDetail implements Serializable {
+public class TimeTableDetail implements Serializable, Comparable<TimeTableDetail> {
 
 	private static final long serialVersionUID = 1L;
 	private int memberId;
@@ -116,5 +116,15 @@ public class TimeTableDetail implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	@Override
+	public int compareTo(TimeTableDetail another) {
+		if (another.getStartHour() > getStartHour()) {
+			return -1;
+		} else if (another.getStartHour() < getStartHour()) {
+			return 1;
+		}
+		return 0;
 	}
 }

@@ -2,16 +2,10 @@ package com.tutor.service;
 
 import java.net.HttpURLConnection;
 import java.util.Calendar;
-import java.util.Collection;
 
 import org.jivesoftware.smack.PacketListener;
-import org.jivesoftware.smack.Roster;
-import org.jivesoftware.smack.Roster.SubscriptionMode;
-import org.jivesoftware.smack.RosterEntry;
-import org.jivesoftware.smack.RosterListener;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.filter.MessageTypeFilter;
-import org.jivesoftware.smack.filter.PacketFilter;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
@@ -27,6 +21,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Vibrator;
@@ -39,22 +34,19 @@ import com.tutor.TutorApplication;
 import com.tutor.im.ContactManager;
 import com.tutor.im.IMMessageManager;
 import com.tutor.im.XMPPConnectionManager;
+import com.tutor.im.XmppManager;
+import com.tutor.model.Account;
 import com.tutor.model.Avatar;
 import com.tutor.model.IMMessage;
-import com.tutor.model.User;
 import com.tutor.model.UserInfo;
 import com.tutor.model.UserInfoResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
-import com.tutor.ui.activity.ChatActivity;
 import com.tutor.ui.activity.ChatListActivity;
-import com.tutor.ui.activity.NoticeActivity;
-import com.tutor.ui.activity.SystemNotificationActivity;
 import com.tutor.util.DateTimeUtil;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.LogUtils;
 import com.tutor.util.ObjectHttpResponseHandler;
-import com.tutor.util.StringUtils;
 import com.tutor.util.UUIDUtils;
 
 /**
@@ -76,7 +68,6 @@ public class IMService extends Service {
 	private IMBroadCastReceive receive;
 	// XMPPConnect
 	private XMPPConnection connection;
-	private Roster roster;
 	// 震動
 	private Vibrator vibrator;
 	// private final static int SENSOR_SNAKE = 10;
@@ -92,87 +83,20 @@ public class IMService extends Service {
 		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 		receive = new IMBroadCastReceive();
 		registerReceiver(receive, filter);
-		// 初始化IM消息監聽
-		initIMMsgListener();
+	}
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		new LoginImTask().execute();
+		return super.onStartCommand(intent, START_STICKY, startId);
 	}
 
 	private void initIMMsgListener() {
 		connection = XMPPConnectionManager.getManager().getConnection();
-		// 系統消息
-		connection.addPacketListener(normalPacketListener, new MessageTypeFilter(Message.Type.normal));
 		// 聊天消息
 		connection.addPacketListener(chatPacketListener, new MessageTypeFilter(Message.Type.chat));
-		// 好友添加請求
-		PacketFilter filter = new PacketFilter() {
-
-			@Override
-			public boolean accept(Packet arg0) {
-				if (arg0 instanceof Presence) {
-					Presence presence = (Presence) arg0;
-					if (presence.getType().equals(Presence.Type.subscribe)) {
-						return true;
-					}
-				}
-				return false;
-			}
-		};
-		connection.addPacketListener(addSubscriptionListener, filter);
 	}
 
-	/**
-	 * 非聊天消息監聽
-	 */
-	private PacketListener normalPacketListener = new PacketListener() {
-
-		@Override
-		public void processPacket(Packet packet) {
-			Message message = (Message) packet;
-			if (null != message && Message.Type.normal == message.getType()) {
-				IMMessage imMessage = new IMMessage();
-				// 內容
-				String content = message.getBody();
-				LogUtils.d("接收到新消息-->" + content);
-				// 時間
-				String time = (String) message.getProperty(Constants.IntentExtra.INTENT_EXTRA_IMMESSAGE_TIME);
-				if (null == time) {
-					time = DateTimeUtil.date2Str(Calendar.getInstance(), Constants.Xmpp.MS_FORMART);
-				}
-				// id
-				String id = message.getPacketID();
-				if (TextUtils.isEmpty(id)) {
-					id = UUIDUtils.getID(6);
-				}
-				// 來自于誰
-				String from = message.getFrom().split("/")[0];
-				// 發送給誰
-				String to = message.getTo();
-				String title = getString(R.string.system_message);
-				imMessage.setId(id);
-				imMessage.setTitle(title);
-				imMessage.setContent(content);
-				imMessage.setTime(time);
-				imMessage.setNoticeTime(time);
-				imMessage.setFromSubJid(from);
-				imMessage.setToJid(to);
-				imMessage.setReadStatus(IMMessage.READ_STATUS_UNREAD);
-				imMessage.setMsgType(IMMessage.CHAT_MESSAGE_TYPE_RECEIVE);
-				imMessage.setNoticeSum(1);
-				imMessage.setNoticeType(IMMessage.MESSAGE_TYPE_SYS_MSG);
-				// 保存消息
-				long status = IMMessageManager.getManager().sava(imMessage);
-				if (-1 != status) {
-					// 發送廣播
-					Intent intent = new Intent(Constants.Action.ACTION_SYS_MSG);
-					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_IMMESSAGE_KEY, imMessage);
-					sendBroadcast(intent);
-					// 發送通知
-					if (Constants.Xmpp.isChatNotification) {
-						setNotiType(R.drawable.icon_notification, imMessage, SystemNotificationActivity.class);
-					}
-				}
-			}
-		}
-	};
 	/**
 	 * 聊天消息監聽
 	 */
@@ -252,7 +176,7 @@ public class IMService extends Service {
 					vibrator.vibrate(times, -1);
 					// 發送通知
 					if (Constants.Xmpp.isChatNotification) {
-						setNotiType(R.drawable.icon_notification, imMessage, ChatListActivity.class); // 暂时修改为聊天记录页面
+						setNotiType(R.drawable.icon_notification, imMessage, ChatListActivity.class);
 					}
 				}
 			}
@@ -276,8 +200,9 @@ public class IMService extends Service {
 
 			@Override
 			public void onFailure(int status, String message) {
-				// TODO Auto-generated method stub
-				LogUtils.e("-----status:" + status + ",message +" + message);
+				if (status == 0) {
+					getUserInfo(imMessage, imId);
+				}
 			}
 
 			@Override
@@ -316,7 +241,7 @@ public class IMService extends Service {
 						vibrator.vibrate(times, -1);
 						// 發送通知
 						if (Constants.Xmpp.isChatNotification) {
-							setNotiType(R.drawable.icon_notification, imMessage, ChatActivity.class);
+							setNotiType(R.drawable.icon_notification, imMessage, ChatListActivity.class);
 						}
 					}
 				}
@@ -324,182 +249,23 @@ public class IMService extends Service {
 		});
 	}
 
-	/**
-	 * 好友請求監聽
-	 */
-	private PacketListener addSubscriptionListener = new PacketListener() {
-
-		@Override
-		public void processPacket(Packet packet) {
-			try {
-				if ("".contains(packet.getFrom())) {
-					return;
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				return;
-			}
-			// 如果是自动接收所有请求，则回复一个添加信息
-			if (Roster.getDefaultSubscriptionMode().equals(SubscriptionMode.accept_all)) {
-				Presence presence = new Presence(Presence.Type.subscribe);
-				presence.setTo(packet.getFrom());
-				connection.sendPacket(presence);
-			} else {
-				// 發送通知
-				Message message = (Message) packet;
-				if (null != message) {
-					IMMessage imMessage = new IMMessage();
-					// 內容
-					String content = StringUtils.getUserNameByJid(packet.getFrom()) + getString(R.string.add_friend_lable);
-					LogUtils.d("接收到新消息-->" + content);
-					// 時間
-					String time = (String) message.getProperty(Constants.IntentExtra.INTENT_EXTRA_IMMESSAGE_TIME);
-					if (null == time) {
-						time = DateTimeUtil.date2Str(Calendar.getInstance(), Constants.Xmpp.MS_FORMART);
-					}
-					// id
-					String id = message.getPacketID();
-					if (TextUtils.isEmpty(id)) {
-						id = UUIDUtils.getID(6);
-					}
-					// 來自于誰
-					String from = message.getFrom().split("/")[0];
-					// 發送給誰
-					String to = message.getTo();
-					String title = getString(R.string.add_friend_request);
-					imMessage.setId(id);
-					imMessage.setTitle(title);
-					imMessage.setContent(content);
-					imMessage.setTime(time);
-					imMessage.setNoticeTime(time);
-					imMessage.setFromSubJid(from);
-					imMessage.setToJid(to);
-					imMessage.setReadStatus(IMMessage.READ_STATUS_UNREAD);
-					imMessage.setMsgType(IMMessage.CHAT_MESSAGE_TYPE_RECEIVE);
-					imMessage.setNoticeSum(1);
-					imMessage.setNoticeType(IMMessage.MESSAGE_TYPE_ADD_FRIEND);
-					// 保存消息
-					long status = IMMessageManager.getManager().sava(imMessage);
-					if (-1 != status) {
-						// 發送廣播
-						Intent intent = new Intent(Constants.Action.ACTION_ROSTER_SUBSCRIPTION);
-						intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_IMMESSAGE_KEY, imMessage);
-						sendBroadcast(intent);
-						// 發送通知
-						if (Constants.Xmpp.isChatNotification) {
-							setNotiType(R.drawable.icon_notification, imMessage, NoticeActivity.class);
-						}
-					}
-				}
-			}
-		}
-	};
-
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
 	}
 
 	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		initRoster();
-		return super.onStartCommand(intent, flags, startId);
-	}
-
-	/**
-	 * 初始化联系人 服务重启时，更新联系人列表
-	 */
-	private void initRoster() {
-		roster = connection.getRoster();
-		roster.removeRosterListener(rosterListener);
-		roster.addRosterListener(rosterListener);
-		if (ContactManager.getManager().init(connection)) {
-			Intent intent = new Intent();
-			intent.setAction(Constants.Action.ACTION_REFRESH_CONTACT);
-			sendBroadcast(intent);
-		}
-	}
-
-	private RosterListener rosterListener = new RosterListener() {
-
-		@Override
-		public void presenceChanged(Presence arg0) {
-			Intent intent = new Intent();
-			intent.setAction(Constants.Action.ACTION_ROSTER_PRESENCE_CHANGED);
-			String subscriber = arg0.getFrom().substring(0, arg0.getFrom().indexOf("/"));
-			RosterEntry entry = roster.getEntry(subscriber);
-			if (ContactManager.getManager().getContacters().containsKey(subscriber)) {
-				ContactManager.getManager().getContacters().remove(subscriber);
-				ContactManager.getManager().getContacters().put(subscriber, ContactManager.getManager().transEntryToUser(entry, roster));
-				// 将状态改变的user广播出去
-				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_KEY, ContactManager.getManager().getContacters().get(subscriber));
-			}
-			sendBroadcast(intent);
-		}
-
-		@Override
-		public void entriesUpdated(Collection<String> addresses) {
-			Intent intent = new Intent();
-			intent.setAction(Constants.Action.ACTION_ROSTER_UPDATED);
-			for (String address : addresses) {
-				// 获得状态改变的entry
-				RosterEntry userEntry = roster.getEntry(address);
-				User user = ContactManager.getManager().transEntryToUser(userEntry, roster);
-				if (ContactManager.getManager().getContacters().get(address) != null) {
-					// 将发生改变的用户更新到userManager
-					ContactManager.getManager().getContacters().remove(address);
-					ContactManager.getManager().getContacters().put(address, user);
-					// 这里发布的是更新前的user
-					// intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_KEY,
-					// ContactManager.getManager().getContacters().get(address));
-				}
-			}
-			sendBroadcast(intent);
-			// 用户更新，getEntries会更新
-			// roster.getUnfiledEntries中的entry不会更新
-		}
-
-		@Override
-		public void entriesDeleted(Collection<String> addresses) {
-			Intent intent = new Intent();
-			intent.setAction(Constants.Action.ACTION_ROSTER_DELETED);
-			for (String address : addresses) {
-				// User user = null;
-				if (ContactManager.getManager().getContacters().containsKey(address)) {
-					// user =
-					// ContactManager.getManager().getContacters().get(address);
-					ContactManager.getManager().getContacters().remove(address);
-				}
-				// intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_KEY,
-				// user);
-			}
-			sendBroadcast(intent);
-		}
-
-		@Override
-		public void entriesAdded(Collection<String> addresses) {
-			Intent intent = new Intent();
-			intent.setAction(Constants.Action.ACTION_ROSTER_ADDED);
-			for (String address : addresses) {
-				RosterEntry userEntry = roster.getEntry(address);
-				User user = ContactManager.getManager().transEntryToUser(userEntry, roster);
-				ContactManager.getManager().getContacters().put(address, user);
-				// intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_KEY,
-				// user);
-			}
-			sendBroadcast(intent);
-		}
-	};
-
-	@Override
 	public void onDestroy() {
 		// 註銷廣播接收器
 		unregisterReceiver(receive);
-		connection.removePacketListener(addSubscriptionListener);
-		connection.removePacketListener(chatPacketListener);
-		connection.removePacketListener(normalPacketListener);
-		ContactManager.getManager().destory();
+		if (connection != null && chatPacketListener != null) {
+			connection.removePacketListener(chatPacketListener);
+			ContactManager.getManager().destory();
+		}
 		super.onDestroy();
+		// 重启
+		Intent intent = new Intent(this, IMService.class);
+		startService(intent);
 	}
 
 	/**
@@ -594,7 +360,7 @@ public class IMService extends Service {
 		 * 创建新的Intent，作为点击Notification留言条时， 会运行的Activity
 		 */
 		Intent notifyIntent = new Intent(this, activity);
-		notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		notifyIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		if (null != message.getFromSubJid()) {
 			notifyIntent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, message.getFromSubJid());
 			notifyIntent.putExtra(Constants.General.NICKNAME, message.getFromUserName());
@@ -606,7 +372,7 @@ public class IMService extends Service {
 		Notification myNoti = new Notification();
 		/* 设置statusbar显示的icon */
 		myNoti.icon = iconId;
-		myNoti.flags = Notification.FLAG_AUTO_CANCEL;
+		myNoti.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_ONLY_ALERT_ONCE;
 		/* 设置statusbar显示的文字信息 */
 		myNoti.tickerText = message.getTitle();
 		/* 设置notification发生时同时发出默认声音 */
@@ -615,5 +381,39 @@ public class IMService extends Service {
 		myNoti.setLatestEventInfo(this, message.getTitle(), message.getContent(), appIntent);
 		/* 送出Notification */
 		notificationManager.notify(0, myNoti);
+	}
+
+	/**
+	 * 登录IM
+	 * 
+	 * 
+	 */
+	private class LoginImTask extends AsyncTask<Void, Void, Integer> {
+
+		@Override
+		protected Integer doInBackground(Void... params) {
+			if (TutorApplication.connectionManager.getConnection().isConnected()) {
+				TutorApplication.connectionManager.getConnection().disconnect();
+			}
+			// 執行登錄IM
+			Account account = TutorApplication.getAccountDao().load("1");
+			if (null != account) {
+				String accountsString = account.getImAccount();
+				String pswd = account.getImPswd();
+				return XmppManager.getInstance().login(accountsString, pswd);
+			}
+			return Constants.Xmpp.LOGIN_ERROR;
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) {
+			super.onPostExecute(result);
+			if (result == Constants.Xmpp.LOGIN_SECCESS) {
+				// 初始化IM消息監聽
+				initIMMsgListener();
+			} else {
+				new LoginImTask().execute();
+			}
+		}
 	}
 }

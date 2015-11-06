@@ -6,11 +6,8 @@ import java.util.Locale;
 import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-
 import cn.jpush.android.api.JPushInterface;
 
-//import com.google.android.gms.analytics.GoogleAnalytics;
-//import com.google.android.gms.analytics.Tracker;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -25,6 +22,8 @@ import com.tutor.model.DaoSession;
 import com.tutor.model.IMMessageDao;
 import com.tutor.params.Constants;
 import com.tutor.util.SettingManager;
+//import com.google.android.gms.analytics.GoogleAnalytics;
+//import com.google.android.gms.analytics.Tracker;
 
 /**
  * 程序的入口,在这里做一些初始化的操作
@@ -48,18 +47,19 @@ public class TutorApplication extends Application {
 	public static boolean isTokenInvalid = false;
 	/** xmpp连接管理对象 */
 	public static XMPPConnectionManager connectionManager;
-//	public static GoogleAnalytics analytics;
-//	public static Tracker tracker;
-//	private static String GOOGLE_TRACKER_ID = "UA-69608349-1";
-//
-//	public static GoogleAnalytics analytics() {
-//		return analytics;
-//	}
-//
-//	public static Tracker tracker() {
-//		return tracker;
-//	}
+	public static boolean isChatMessage;
 
+	// public static GoogleAnalytics analytics;
+	// public static Tracker tracker;
+	// private static String GOOGLE_TRACKER_ID = "UA-69608349-1";
+	//
+	// public static GoogleAnalytics analytics() {
+	// return analytics;
+	// }
+	//
+	// public static Tracker tracker() {
+	// return tracker;
+	// }
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -76,26 +76,26 @@ public class TutorApplication extends Application {
 		// 初始化 JPush
 		JPushInterface.init(this);
 		// 初始化谷歌分析工具
-		//initGoogleAnalytics();
+		// initGoogleAnalytics();
 	}
 
-//	private void initGoogleAnalytics() {
-//		analytics = GoogleAnalytics.getInstance(this);
-//		analytics.setLocalDispatchPeriod(3600); // 每小时调度一次
-//		tracker = analytics.newTracker(GOOGLE_TRACKER_ID); // Replace with
-//															// actual
-//															// tracker/property
-//															// Id
-//		// Provide unhandled exceptions reports. Do that first after creating
-//		// the tracker
-//		tracker.enableExceptionReporting(true);
-//		// Enable Remarketing, Demographics & Interests reports
-//		// https://developers.google.com/analytics/devguides/collection/android/display-features
-//		tracker.enableAdvertisingIdCollection(true);
-//		// Enable automatic activity tracking for your app
-//		tracker.enableAutoActivityTracking(true);
-//	}
-
+	// private void initGoogleAnalytics() {
+	// analytics = GoogleAnalytics.getInstance(this);
+	// analytics.setLocalDispatchPeriod(3600); // 每小时调度一次
+	// tracker = analytics.newTracker(GOOGLE_TRACKER_ID); // Replace with
+	// // actual
+	// // tracker/property
+	// // Id
+	// // Provide unhandled exceptions reports. Do that first after creating
+	// // the tracker
+	// tracker.enableExceptionReporting(true);
+	// // Enable Remarketing, Demographics & Interests reports
+	// //
+	// https://developers.google.com/analytics/devguides/collection/android/display-features
+	// tracker.enableAdvertisingIdCollection(true);
+	// // Enable automatic activity tracking for your app
+	// tracker.enableAutoActivityTracking(true);
+	// }
 	private void initDao() {
 		OpenHelper helper = new DaoMaster.DevOpenHelper(this, Constants.General.DBNAME, null);
 		db = helper.getWritableDatabase();

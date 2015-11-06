@@ -61,6 +61,7 @@ public class UserInfo implements Serializable {
 	private ArrayList<Course> courses;
 	private ArrayList<Area> areas;
 	private ArrayList<Timeslot> timeslots;
+	private ArrayList<Timeslot> appointmentTimeslots;
 	private boolean isMatched;
 	private String gradeName;
 
@@ -377,5 +378,13 @@ public class UserInfo implements Serializable {
 
 	public void setGradeName(String gradeName) {
 		this.gradeName = gradeName;
+	}
+
+	public ArrayList<Timeslot> getAppointmentTimeslots() {
+		return appointmentTimeslots;
+	}
+
+	public void setAppointmentTimeslots(ArrayList<Timeslot> appointmentTimeslots) {
+		this.appointmentTimeslots = appointmentTimeslots;
 	}
 }

@@ -104,7 +104,9 @@ public class TimeTableActivity extends BaseActivity implements OnItemClickListen
 					return;
 				}
 				dismissDialog();
-				CheckTokenUtils.checkToken(status);
+				if(CheckTokenUtils.checkToken(status)){
+					return;
+				}
 				toast(R.string.toast_server_error);
 			}
 

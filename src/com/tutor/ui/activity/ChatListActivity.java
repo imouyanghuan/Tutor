@@ -10,11 +10,13 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import com.hk.tutor.R;
+import com.tutor.TutorApplication;
 import com.tutor.adapter.NotificationAdapter;
 import com.tutor.adapter.NotificationAdapter.OnDeleteItemClickListener;
 import com.tutor.im.IMMessageManager;
@@ -58,9 +60,33 @@ public class ChatListActivity extends BaseActivity {
 	};
 
 	@Override
+	public void onBackPressed() {
+		if (!TutorApplication.isMainActivity) {
+			Intent intent = null;
+			if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+				intent = new Intent(this, StudentMainActivity.class);
+			} else {
+				intent = new Intent(this, TeacherMainActivity.class);
+			}
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+			this.finish();
+		} else {
+			super.onBackPressed();
+		}
+	}
+
+	@Override
 	protected void initView() {
 		TitleBar bar = getView(R.id.title_bar);
-		bar.initBack(this);
+		// bar.initBack(this);
+		bar.setBackBtnClick(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				onBackPressed();
+			}
+		});
 		bar.setTitle(R.string.chatlist);
 		lvChatList = getView(R.id.lv_notifications);
 		mAdapter = new NotificationAdapter(ChatListActivity.this, messages);

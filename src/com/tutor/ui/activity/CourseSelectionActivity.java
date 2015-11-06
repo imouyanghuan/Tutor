@@ -90,7 +90,9 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 					return;
 				}
 				dismissDialog();
-				CheckTokenUtils.checkToken(status);
+				if(CheckTokenUtils.checkToken(status)){
+					return;
+				}
 				toast(R.string.toast_server_error);
 			}
 
@@ -125,7 +127,9 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 					return;
 				}
 				dismissDialog();
-				CheckTokenUtils.checkToken(status);
+				if(CheckTokenUtils.checkToken(status)){
+					return;
+				}
 				toast(R.string.toast_server_error);
 			}
 
@@ -160,7 +164,9 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 					return;
 				}
 				dismissDialog();
-				CheckTokenUtils.checkToken(status);
+				if(CheckTokenUtils.checkToken(status)){
+					return;
+				}
 				toast(R.string.toast_server_error);
 			}
 

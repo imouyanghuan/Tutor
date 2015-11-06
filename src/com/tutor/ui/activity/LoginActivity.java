@@ -66,11 +66,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		if (-1 == role) {
 			throw new IllegalArgumentException("role is error(-1)");
 		}
-		int flag = getIntent().getIntExtra(Constants.IntentExtra.INTENT_EXTRA_TOKENINVALID, -1);
-		if (Constants.General.TOKEN_INVALID == flag) {
-			toastLong(getString(R.string.toast_token_invalid));
-			TutorApplication.isTokenInvalid = false;
-		}
 		setContentView(R.layout.activity_login);
 		initView();
 		initFacebook();
@@ -182,6 +177,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		model.setAccountType(role);
 		model.setFBOpenID("");
 		String im = role + emailString.replace("@", "").replace(".", "");
+		im = im.toLowerCase();
 		model.setIMID(im);
 		login(model);
 	}
@@ -203,7 +199,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 			return;
 		}
 		// 设置别名
-		JPushInterface.setAlias(getApplicationContext(), model.getIMID(), new TagAliasCallback() {
+		String imId = model.getIMID();
+		JPushInterface.setAlias(getApplicationContext(), imId, new TagAliasCallback() {
 
 			@Override
 			public void gotResult(int arg0, String arg1, Set<String> arg2) {
@@ -318,7 +315,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 					go2FillInfo(id);
 					return;
 				}
-				CheckTokenUtils.checkToken(status);
+				if(CheckTokenUtils.checkToken(status)){
+					return;
+				}
 				toast(R.string.toast_server_error);
 			}
 
@@ -389,6 +388,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 					model.setAccountType(role);
 					model.setFBOpenID(id);
 					String im = role + getString(R.string.app_name) + id;
+					im = im.toLowerCase();
 					model.setIMID(im);
 					// JPush register id
 					String registerId = JPushInterface.getRegistrationID(getApplicationContext());

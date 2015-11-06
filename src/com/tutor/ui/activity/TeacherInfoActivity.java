@@ -51,10 +51,12 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 	private String imId;
 	private UserInfo userInfo;
 	private String titleName;
-	private CustomListView timeListView, couresListView;
+	private CustomListView timeListView, couresListView, lvAppointmentTimeslot;
 	private TextView timeslotTip, courseTip, introduction;
 	private Button btnRateTutor, btnPlayVideo;
 	private Button btnToBeMyTutor;
+	private LinearLayout llAppointmentTimeslot;
+	private LinearLayout llIntroduction;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -173,7 +175,13 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		// ? getString(R.string.label_unknow_address) :
 		// userInfo.getResidentialAddress());
 		timeListView = getView(R.id.lv_timeslot);
+		timeListView.setFocusable(false);
+		// match time slot
+		llAppointmentTimeslot = getView(R.id.ll_appointment_timeslot);
+		lvAppointmentTimeslot = getView(R.id.lv_appointment_timeslot);
+		lvAppointmentTimeslot.setFocusable(false);
 		couresListView = getView(R.id.lv_coures);
+		couresListView.setFocusable(false);
 		timeslotTip = getView(R.id.tv_timeslot_tip);
 		courseTip = getView(R.id.tv_course_tip);
 		//
@@ -193,6 +201,7 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		// } else {
 		// tvCurEducationStatus.setText(getString(R.string.label_graduated));
 		// }
+		llIntroduction = getView(R.id.ll_self_introduction);
 		introduction = getView(R.id.tv_self_introduction);
 	}
 
@@ -226,7 +235,7 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 	}
 
 	/**
-	 * 获取老师详细资料 
+	 * 获取老师详细资料
 	 * 
 	 * @param id
 	 */
@@ -242,7 +251,9 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 					return;
 				}
 				dismissDialog();
-				CheckTokenUtils.checkToken(status);
+				if (CheckTokenUtils.checkToken(status)) {
+					return;
+				}
 				toast(R.string.toast_server_error);
 			}
 
@@ -271,10 +282,12 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 			btnToBeMyTutor.setEnabled(true);
 		}
 		String introductionString = userInfo.getIntroduction();
-		if (TextUtils.isEmpty(introductionString)) {
+		if (!TextUtils.isEmpty(introductionString)) {
 			introduction.setText(introductionString);
+			llIntroduction.setVisibility(View.VISIBLE);
 		} else {
 			introduction.setText("");
+			llIntroduction.setVisibility(View.GONE);
 		}
 		String introductionVideoString = userInfo.getIntroductionVideo();
 		if (TextUtils.isEmpty(introductionVideoString)) {
@@ -282,7 +295,7 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		} else {
 			btnPlayVideo.setEnabled(true);
 		}
-		// 时间段
+		// 可接受时间段
 		ArrayList<Timeslot> timeslots = userInfo.getTimeslots();
 		if (timeslots != null && timeslots.size() > 0) {
 			TimeSlotAdapter timeSlotAdapter = new TimeSlotAdapter(this, timeslots, false);
@@ -290,6 +303,17 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		} else {
 			timeListView.setVisibility(View.GONE);
 			timeslotTip.setVisibility(View.VISIBLE);
+		}
+		if (userInfo.isMatched()) {
+			// 匹配的时间段
+			ArrayList<Timeslot> appointmentTimeslots = userInfo.getAppointmentTimeslots();
+			if (appointmentTimeslots != null && appointmentTimeslots.size() > 0) {
+				TimeSlotAdapter appointmentTimeslotsAdapter = new TimeSlotAdapter(this, appointmentTimeslots, false);
+				lvAppointmentTimeslot.setAdapter(appointmentTimeslotsAdapter);
+				llAppointmentTimeslot.setVisibility(View.VISIBLE);
+			}
+		} else {
+			llAppointmentTimeslot.setVisibility(View.GONE);
 		}
 		// 课程
 		ArrayList<Course> courses = userInfo.getCourses();

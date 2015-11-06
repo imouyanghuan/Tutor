@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -26,7 +25,6 @@ import com.mssky.mobile.helper.SharePrefUtil;
 import com.tutor.TutorApplication;
 import com.tutor.im.IMMessageManager;
 import com.tutor.im.XMPPConnectionManager;
-import com.tutor.im.XmppManager;
 import com.tutor.model.Account;
 import com.tutor.model.NotificationListResult;
 import com.tutor.model.Page;
@@ -85,7 +83,9 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		initView();
 		// 初始化fragment
 		initFragment();
-		new LoginImTask().execute();
+		// 登錄成功,開啟服務
+		Intent intent = new Intent(this, IMService.class);
+		startService(intent);
 	}
 
 	@Override
@@ -207,6 +207,8 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 					}
 				}
 				// TODO 请求退出登录api
+				// 斷開IM連接
+				XMPPConnectionManager.getManager().disconnect();
 				TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
 				Intent intent = new Intent(TeacherMainActivity.this, ChoiceRoleActivity.class);
 				startActivity(intent);
@@ -276,7 +278,6 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 			toast(R.string.toast_netwrok_disconnected);
 			return;
 		}
-		showDialogRes(R.string.loading);
 		RequestParams params = new RequestParams();
 		params.put("pageIndex", "0");
 		params.put("pageSize", "1");
@@ -289,13 +290,11 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 					return;
 				}
 				CheckTokenUtils.checkToken(status);
-				dismissDialog();
 			}
 
 			@Override
 			public void onSuccess(NotificationListResult result) {
 				CheckTokenUtils.checkToken(result);
-				dismissDialog();
 				if (null != result && 200 == result.getStatusCode()) {
 					Page page = result.getPage();
 					if (page != null) {
@@ -332,15 +331,15 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 
 	@Override
 	protected void onDestroy() {
-		// 斷開IM連接
-		XMPPConnectionManager.getManager().disconnect();
-		// 停止服務
-		Intent intent = new Intent(this, IMService.class);
-		stopService(intent);
+		// // 斷開IM連接
+		// XMPPConnectionManager.getManager().disconnect();
+		// // 停止服務
+		// Intent intent = new Intent(this, IMService.class);
+		// stopService(intent);
+		// Constants.Xmpp.isChatNotification = true;
 		// 清空缓存的图片
 		ImageUtils.clearChache();
 		TutorApplication.isMainActivity = false;
-		// Constants.Xmpp.isChatNotification = true;
 		super.onDestroy();
 	}
 
@@ -402,38 +401,6 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 				break;
 			default:
 				break;
-		}
-	}
-
-	/**
-	 * 登录IM
-	 * 
-	 * 
-	 */
-	private class LoginImTask extends AsyncTask<Void, Void, Integer> {
-
-		@Override
-		protected Integer doInBackground(Void... params) {
-			// 執行登錄IM
-			Account account = TutorApplication.getAccountDao().load("1");
-			if (null != account) {
-				String accountsString = account.getImAccount();
-				String pswd = account.getImPswd();
-				return XmppManager.getInstance().login(accountsString, pswd);
-			}
-			return 0;
-		}
-
-		@Override
-		protected void onPostExecute(Integer result) {
-			super.onPostExecute(result);
-			if (result == Constants.Xmpp.LOGIN_SECCESS) {
-				// 登錄成功,開啟服務
-				Intent intent = new Intent(TeacherMainActivity.this, IMService.class);
-				startService(intent);
-			} else {
-				new LoginImTask().execute();
-			}
 		}
 	}
 }

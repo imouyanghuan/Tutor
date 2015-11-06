@@ -177,6 +177,8 @@ public final class Constants {
 		public static final String INTENT_EXTRA_TIME_TABLE = "timetable";
 		/** day of week */
 		public static final String INTENT_EXTRA_DAY_OF_WEEK = "dayOfWeek";
+		/** time table list */
+		public static final String INTENT_EXTRA_TIME_TABLE_LIST = "timeTableList";
 		/** time table detail */
 		public static final String INTENT_EXTRA_TIME_TABLE_DETAIL = "timeTableDetail";
 	}

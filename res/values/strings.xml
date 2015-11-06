@@ -299,5 +299,7 @@
     <string name="label_edit">Edit</string>
     <string name="label_nologin">You haven\'t login, need to log in?</string>
     <string name="label_edit_failed">Edit failed</string>
+    <string name="label_appointment_time_slot_with_this_tutor">Appointment Time Slot with this Tutor</string>
+    <string name="label_appointment_time_slot_with_this_student">Appointment Time Slot with this Student</string>
 
 </resources>

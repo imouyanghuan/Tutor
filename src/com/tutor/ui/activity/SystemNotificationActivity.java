@@ -57,22 +57,46 @@ public class SystemNotificationActivity extends BaseActivity implements OnClickL
 	}
 
 	@Override
+	public void onBackPressed() {
+		if (!TutorApplication.isMainActivity) {
+			Intent intent = null;
+			if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+				intent = new Intent(this, StudentMainActivity.class);
+			} else {
+				intent = new Intent(this, TeacherMainActivity.class);
+			}
+			startActivity(intent);
+			this.finish();
+		} else {
+			super.onBackPressed();
+		}
+	}
+
+	@Override
 	protected void initView() {
 		flTipNotification = getView(R.id.fl_tip_notification);
 		flTipNotification.setOnClickListener(this);
 		TitleBar bar = getView(R.id.title_bar);
-		bar.initBack(this);
+		// bar.initBack(this);
+		bar.setBackBtnClick(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				onBackPressed();
+			}
+		});
 		bar.setTitle(R.string.sys_notification);
 		lvNotification = getView(R.id.lv_notifications);
 		mAdapter = new SysNotificationAdapter(SystemNotificationActivity.this, messages);
 		// 接受
-//		mAdapter.setOnAcceptItemClickListener(new OnAcceptItemClickListener() {
-//
-//			@Override
-//			public void onClick(int status, int notificationId) {
-//				acceptOrReject(status, notificationId);
-//			}
-//		});
+		// mAdapter.setOnAcceptItemClickListener(new OnAcceptItemClickListener()
+		// {
+		//
+		// @Override
+		// public void onClick(int status, int notificationId) {
+		// acceptOrReject(status, notificationId);
+		// }
+		// });
 		// 拒绝
 		mAdapter.setOnRejectItemClickListener(new OnRejectItemClickListener() {
 

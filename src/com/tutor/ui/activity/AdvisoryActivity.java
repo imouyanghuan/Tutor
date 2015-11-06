@@ -136,7 +136,9 @@ public class AdvisoryActivity extends BaseActivity implements OnClickListener, S
 					return;
 				}
 				dismissDialog();
-				CheckTokenUtils.checkToken(status);
+				if(CheckTokenUtils.checkToken(status)){
+					return;
+				}
 				toast(R.string.toast_server_error);
 			}
 

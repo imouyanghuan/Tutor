@@ -115,8 +115,11 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 	 * 
 	 */
 	private void getStudentList(final int pageIndex, final int pageSize) {
+		if (!isAdded()) {
+			return;
+		}
 		if (!HttpHelper.isNetworkConnected(getActivity())) {
-			toast(R.string.toast_netwrok_disconnected);
+			toast(getString(R.string.toast_netwrok_disconnected));
 			return;
 		}
 		RequestParams params = new RequestParams();
@@ -130,7 +133,9 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 					getStudentList(pageIndex, pageSize);
 					return;
 				}
-				CheckTokenUtils.checkToken(status);
+				if (CheckTokenUtils.checkToken(status)) {
+					return;
+				}
 				toast(R.string.toast_server_error);
 			}
 
@@ -182,7 +187,7 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 		llNoMatch.setVisibility(View.GONE);
 		listView.setVisibility(View.VISIBLE);
 	}
-	
+
 	public void refresh() {
 		pageIndex = 0;
 		getStudentList(pageIndex, pageSize);

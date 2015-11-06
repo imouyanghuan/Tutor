@@ -70,7 +70,7 @@ public class IMMessageManager {
 				db.executeDeleteWithoutDetachingEntities();
 			}
 		}
-		return imMessageDao.insert(message);
+		return imMessageDao.insertOrReplace(message);
 	}
 
 	/**

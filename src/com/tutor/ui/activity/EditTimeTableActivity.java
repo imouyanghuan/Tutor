@@ -51,12 +51,16 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 	/** 保存時間 */
 	private Button saveTime;
 	private ArrayList<EditTimeslot> timeslots;
+	private ArrayList<EditTimeslot> otherTimeslots;
 	private EditTimeslot timeslot = null;
 	/** 时间段列表 */
-	private CustomListView listView;
+	private CustomListView listView, lvOthers;
 	private EditTimeSlotAdapter adapter;
+	private EditTimeSlotAdapter otherAdapter;
 	// 是否编辑开始时间
 	private boolean isStrat;
+	private ArrayList<TimeTableDetail> otherTimetable;
+	ArrayList<EditTimeslot> allTime = new ArrayList<EditTimeslot>();
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -82,6 +86,8 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 		if (details == null) {
 			return;
 		}
+		// 同一个人 但不是今天的时间段
+		otherTimetable = (ArrayList<TimeTableDetail>) intent.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE_LIST);
 		timeslots = new ArrayList<EditTimeslot>();
 		for (int i = 0; i < details.size(); i++) {
 			EditTimeslot timeslot = new EditTimeslot();
@@ -93,6 +99,20 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 			timeslot.setStartHour(detail.getStartHour());
 			timeslot.setStartMinute(detail.getStartMinute());
 			timeslots.add(timeslot);
+		}
+		if (otherTimetable != null && otherTimetable.size() > 0) {
+			otherTimeslots = new ArrayList<EditTimeslot>();
+			for (int i = 0; i < otherTimetable.size(); i++) {
+				EditTimeslot timeslot = new EditTimeslot();
+				TimeTableDetail detail = otherTimetable.get(i);
+				timeslot.setId(detail.getId());
+				timeslot.setDayOfWeek(detail.getDayOfWeek());
+				timeslot.setEndHour(detail.getEndHour());
+				timeslot.setEndMinute(detail.getEndMinute());
+				timeslot.setStartHour(detail.getStartHour());
+				timeslot.setStartMinute(detail.getStartMinute());
+				otherTimeslots.add(timeslot);
+			}
 		}
 		initView();
 	}
@@ -124,6 +144,10 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 		listView = getView(R.id.ac_fill_personal_info_timeslot_lv);
 		adapter = new EditTimeSlotAdapter(this, timeslots, true);
 		listView.setAdapter(adapter);
+		// 其他时间段
+		lvOthers = getView(R.id.other_timeslot_lv);
+		otherAdapter = new EditTimeSlotAdapter(this, otherTimeslots, false);
+		lvOthers.setAdapter(otherAdapter);
 		// 保存
 		getView(R.id.btn_save).setOnClickListener(this);
 	}
@@ -136,9 +160,14 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 					if (null == timeslots) {
 						timeslots = new ArrayList<EditTimeslot>();
 					}
-					if (timeslots.size() > 0) {
+					allTime.clear();
+					allTime.addAll(timeslots);
+					if (otherTimeslots != null) {
+						allTime.addAll(otherTimeslots);
+					}
+					if (allTime.size() > 0) {
 						// 检查冲突时间
-						for (EditTimeslot item : timeslots) {
+						for (EditTimeslot item : allTime) {
 							if (item.isRepeat(timeslot)) {
 								// 有冲突.提示
 								toast(R.string.toast_timeslot_has_a_conflict);
@@ -197,9 +226,16 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 	 * 保存修改
 	 */
 	private void saveTimeTable() {
-		if (timeslots != null && timeslots.size() > 0) {
+		allTime.clear();
+		if(timeslots != null){
+			allTime.addAll(timeslots);			
+		}
+		if (otherTimeslots != null) {
+			allTime.addAll(otherTimeslots);
+		}
+		if (allTime != null && allTime.size() > 0) {
 			EditTime eidt = new EditTime();
-			eidt.setTimeslots(timeslots);
+			eidt.setTimeslots(allTime);
 			String body = JsonUtil.parseObject2Str(eidt);
 			StringEntity entity = null;
 			try {
@@ -212,14 +248,21 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 
 				@Override
 				public void onFailure(int status, String message) {
+					if (status == 0) {
+						saveTimeTable();
+						return;
+					}
 					toast(R.string.label_edit_failed);
 				}
 
 				@Override
 				public void onSuccess(EditProfileResult result) {
 					if (result.getStatusCode() == HttpURLConnection.HTTP_OK) {
+						toast(R.string.toast_save_successed);
 						setResult(Constants.RequestResultCode.TIME_TABLE_DETAIL);
 						EditTimeTableActivity.this.finish();
+					} else if (result.getStatusCode() == 500) {
+						toast(result.getMessage());
 					}
 				}
 			});

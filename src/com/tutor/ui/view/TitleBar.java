@@ -90,6 +90,21 @@ public class TitleBar extends FrameLayout {
 		}
 	}
 
+	/**
+	 * 返回键点击
+	 * 
+	 * @param clickListener
+	 */
+	public void setBackBtnClick(OnClickListener clickListener) {
+		if (null != lefTextView) {
+			lefTextView.setVisibility(View.INVISIBLE);
+		}
+		if (left != null) {
+			left.setVisibility(View.VISIBLE);
+			left.setOnClickListener(clickListener);
+		}
+	}
+
 	public void setLeftText(int resId, OnClickListener clickListener) {
 		if (null != left) {
 			left.setVisibility(View.INVISIBLE);

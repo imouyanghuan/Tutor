@@ -125,7 +125,9 @@ public class MyTeacherFragment extends BaseFragment implements OnRefreshListener
 					getStudentList(pageIndex, pageSize);
 					return;
 				}
-				CheckTokenUtils.checkToken(status);
+				if(CheckTokenUtils.checkToken(status)){
+					return;
+				}
 				toast(R.string.toast_server_error);
 			}
 

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.hk.tutor.R;
@@ -54,9 +55,11 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 																					 * addressTextView
 																					 * ,
 																					 */timeslotTip, courseTip, introduction;
-	private CustomListView timeListView, couresListView;
+	private CustomListView timeListView, couresListView, lvAppointmentTimeslot;
 	private String titleName;
 	private Button button;
+	private LinearLayout llAppointmentTimeslot;
+	private LinearLayout llIntroduction;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -91,10 +94,12 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 			button.setEnabled(true);
 		}
 		String introductionString = userInfo.getIntroduction();
-		if (TextUtils.isEmpty(introductionString)) {
+		if (!TextUtils.isEmpty(introductionString)) {
 			introduction.setText(introductionString);
+			llIntroduction.setVisibility(View.VISIBLE);
 		} else {
 			introduction.setText("");
+			llIntroduction.setVisibility(View.GONE);
 		}
 		int genderStr;
 		if (userInfo.getGender() == null) {
@@ -124,7 +129,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		// addressTextView.setText(TextUtils.isEmpty(userInfo.getResidentialAddress())
 		// ? getString(R.string.label_unknow_address) :
 		// userInfo.getResidentialAddress());
-		// 时间段
+		// 可接受的时间段
 		ArrayList<Timeslot> timeslots = userInfo.getTimeslots();
 		if (timeslots != null && timeslots.size() > 0) {
 			TimeSlotAdapter timeSlotAdapter = new TimeSlotAdapter(this, timeslots, false);
@@ -132,6 +137,17 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		} else {
 			timeListView.setVisibility(View.GONE);
 			timeslotTip.setVisibility(View.VISIBLE);
+		}
+		if (userInfo.isMatched()) {
+			// 匹配的时间段
+			ArrayList<Timeslot> appointmentTimeslots = userInfo.getAppointmentTimeslots();
+			if (appointmentTimeslots != null && appointmentTimeslots.size() > 0) {
+				TimeSlotAdapter appointmentTimeslotsAdapter = new TimeSlotAdapter(this, appointmentTimeslots, false);
+				lvAppointmentTimeslot.setAdapter(appointmentTimeslotsAdapter);
+				llAppointmentTimeslot.setVisibility(View.VISIBLE);
+			}
+		} else {
+			llAppointmentTimeslot.setVisibility(View.GONE);
 		}
 		// 课程
 		ArrayList<Course> courses = userInfo.getCourses();
@@ -186,13 +202,21 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		// phoneTextView = getView(R.id.tv_phone);
 		// birthTextView = getView(R.id.tv_birth);
 		// addressTextView = getView(R.id.tv_address);
+		// match time slot
+		llAppointmentTimeslot = getView(R.id.ll_appointment_timeslot);
+		lvAppointmentTimeslot = getView(R.id.lv_appointment_timeslot);
+		lvAppointmentTimeslot.setFocusable(false);
 		timeListView = getView(R.id.lv_timeslot);
+		timeListView.setFocusable(false);
 		couresListView = getView(R.id.lv_coures);
+		couresListView.setFocusable(false);
 		timeslotTip = getView(R.id.tv_timeslot_tip);
 		courseTip = getView(R.id.tv_course_tip);
 		nickTextView.setText(titleName);
 		avatarImageView = getView(R.id.iv_avatar);
 		ImageUtils.loadImage(avatarImageView, ApiUrl.DOMAIN + userInfo.getAvatar());
+		// self introduction
+		llIntroduction = getView(R.id.ll_self_introduction);
 		introduction = getView(R.id.tv_self_introduction);
 	}
 
@@ -275,7 +299,9 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 					return;
 				}
 				dismissDialog();
-				CheckTokenUtils.checkToken(status);
+				if (CheckTokenUtils.checkToken(status)) {
+					return;
+				}
 				toast(R.string.toast_server_error);
 			}
 
