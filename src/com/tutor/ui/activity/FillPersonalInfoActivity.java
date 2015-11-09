@@ -116,7 +116,9 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		}
 		setContentView(R.layout.activity_fill_personal_info);
 		initView();
-		getGrades();
+		if (role == Constants.General.ROLE_STUDENT) {
+			getGrades();
+		}
 	}
 
 	@Override
@@ -193,7 +195,13 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		birthEditText.setText(birth.substring(0, 11));
 		if (isEdit) {
 			if (null != userInfo) {
-				nameEditText.setText(userInfo.getUserName());
+				String name = userInfo.getUserName();
+				if (!TextUtils.isEmpty(name)) {
+					nameEditText.setText(name);
+					nameEditText.setSelection(name.length());
+				} else {
+					nameEditText.setText("");
+				}
 				hKidEditText.setText(userInfo.getHkidNumber());
 				phoneEditText.setText(userInfo.getPhone());
 				addressEditText.setText(userInfo.getResidentialAddress());

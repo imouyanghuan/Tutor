@@ -130,7 +130,15 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 		TextView tvRole = getView(R.id.tv_role);
 		tvRole.setText(details.get(0).getUserName());
 		TextView tvCourse = getView(R.id.tv_course);
-		tvCourse.setText(details.get(0).getCourseName());
+		String courseName = details.get(0).getCourseName();
+		String p = "Primary School";
+		String s = "Secondary School";
+		if (courseName.contains(p)) {
+			courseName = courseName.replace(p, "P.");
+		} else if (courseName.contains(s)) {
+			courseName = courseName.replace(s, "S.");
+		}
+		tvCourse.setText(courseName);		
 		// time slot
 		weekTextView = getView(R.id.ac_fill_personal_time_tv_week);
 		weekTextView.setOnClickListener(this);

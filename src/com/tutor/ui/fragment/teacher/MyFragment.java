@@ -158,7 +158,8 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 		nickName.setText(!TextUtils.isEmpty(profile.getNickName()) ? profile.getNickName() : "");
 		school.setText(!TextUtils.isEmpty(profile.getGraduateSchool()) ? profile.getGraduateSchool() : "");
 		major.setText(!TextUtils.isEmpty(profile.getMajor()) ? profile.getMajor() : "");
-		year.setText(profile.getExprience() + "");
+		int expYear = profile.getExprience();
+		year.setText((expYear > 0 ? String.valueOf(expYear) : ""));
 		introduction.setText(!TextUtils.isEmpty(profile.getIntroduction()) ? profile.getIntroduction() : "");
 		videoLink.setText(!TextUtils.isEmpty(profile.getIntroductionVideo()) ? profile.getIntroductionVideo() : "");
 		educationStatus.check(Constants.General.STUDYING == profile.getEducationStatus() ? R.id.fragment_my_rb_studying : R.id.fragment_my_rb_graduated);

@@ -26,7 +26,7 @@ import com.tutor.util.ImageUtils;
 public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 
 	public MatchStudentAdapter(Context mContext, List<UserInfo> mData) {
-		super(mContext, mData, R.layout.student_list_item);
+		super(mContext, mData, R.layout.student_list_item2);
 	}
 
 	public void refresh(List<UserInfo> mData) {
@@ -50,7 +50,6 @@ public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 		// } else {
 		// holder.setText(R.id.student_list_item_area, "");
 		// }
-		holder.getView(R.id.student_list_item_area).setVisibility(View.GONE);
 		String gradeName = t.getGradeName();
 		if (!TextUtils.isEmpty(gradeName)) {
 			holder.setText(R.id.student_list_item_form, gradeName);

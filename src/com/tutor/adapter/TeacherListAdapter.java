@@ -29,7 +29,7 @@ import com.tutor.util.ImageUtils;
 public class TeacherListAdapter extends TutorBaseAdapter<UserInfo> {
 
 	public TeacherListAdapter(Context mContext, List<UserInfo> mData) {
-		super(mContext, mData, R.layout.teacher_list_item);
+		super(mContext, mData, R.layout.teacher_list_item2);
 	}
 
 	public void refresh(List<UserInfo> mData) {
@@ -81,7 +81,13 @@ public class TeacherListAdapter extends TutorBaseAdapter<UserInfo> {
 						ArrayList<CourseItem2> item2s = item1.getResult();
 						if (null != item2s && item2s.size() > 0) {
 							for (CourseItem2 item2 : item2s) {
-								sb.append(item2.getType() + "-" + item2.getSubType() + "-" + item2.getCourseName() + ",");
+								String courseType = item2.getType();
+								if (courseType.contains("Primary School")) {
+									courseType = "P.";
+								} else if (courseType.contains("Secondary School")) {
+									courseType = "S.";
+								}
+								sb.append(courseType + "-" + item2.getSubType() + "-" + item2.getCourseName() + ",");
 							}
 						}
 					}

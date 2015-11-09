@@ -69,14 +69,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		setContentView(R.layout.activity_login);
 		initView();
 		initFacebook();
-		try {
-			Account account = TutorApplication.getAccountDao().load("1");
-			if (account != null && !TextUtils.isEmpty(account.getFacebookId())) {
-				com.facebook.login.LoginManager.getInstance().logOut();
-			}
-			// 删除配置数据
-			DataCleanManager.cleanSharedPreference(this, "com.facebook");
-		} catch (Exception e) {}
 	}
 
 	private void initFacebook() {
@@ -90,6 +82,18 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		filter.addAction(Constants.Action.FINISH_LOGINACTIVITY);
 		registerReceiver(receiver, filter);
 		super.onStart();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		try {
+			com.facebook.login.LoginManager.getInstance().logOut();
+		} catch (Exception e) {}
+		try {
+			// 删除配置数据
+			DataCleanManager.cleanSharedPreference(this, "com.facebook");
+		} catch (Exception e) {}
 	}
 
 	@Override
@@ -315,7 +319,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 					go2FillInfo(id);
 					return;
 				}
-				if(CheckTokenUtils.checkToken(status)){
+				if (CheckTokenUtils.checkToken(status)) {
 					return;
 				}
 				toast(R.string.toast_server_error);

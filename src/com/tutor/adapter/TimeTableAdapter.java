@@ -40,7 +40,15 @@ public class TimeTableAdapter extends TutorBaseAdapter<TimeTableDetail> {
 		TextView tvUserName = holder.getView(R.id.tv_title);
 		tvUserName.setText(detail.getUserName());
 		TextView tvCourse = holder.getView(R.id.tv_course);
-		tvCourse.setText(detail.getCourseName());
+		String courseName = detail.getCourseName();
+		String p = "Primary School";
+		String s = "Secondary School";
+		if (courseName.contains(p)) {
+			courseName = courseName.replace(p, "P.");
+		} else if (courseName.contains(s)) {
+			courseName = courseName.replace(s, "S.");
+		}
+		tvCourse.setText(courseName);
 		TextView tvTitleLabel = holder.getView(R.id.tv_title_label);
 		// adjust role
 		int role = TutorApplication.getRole();

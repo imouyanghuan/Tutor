@@ -45,7 +45,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/sp_20" />
+                        android:textSize="@dimen/sp_16" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -70,7 +70,7 @@
                             android:layout_marginLeft="@dimen/dp_5"
                             android:layout_marginStart="@dimen/dp_5"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/sp_15" />
+                            android:textSize="@dimen/sp_13" />
                     </LinearLayout>
 
                     <TextView
@@ -113,7 +113,7 @@
                             android:layout_marginLeft="@dimen/dp_5"
                             android:layout_marginStart="@dimen/dp_5"
                             android:textColor="@color/black"
-                            android:textSize="@dimen/sp_15" />
+                            android:textSize="@dimen/sp_13" />
                     </LinearLayout>
 
                     <LinearLayout
