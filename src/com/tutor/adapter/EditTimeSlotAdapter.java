@@ -8,31 +8,31 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import com.hk.tutor.R;
-import com.tutor.model.EditTimeslot;
+import com.tutor.model.TimeTableDetail;
 
 /**
  * @author bruce.chen
  * 
  *         2015-9-14
  */
-public class EditTimeSlotAdapter extends TutorBaseAdapter<EditTimeslot> {
+public class EditTimeSlotAdapter extends TutorBaseAdapter<TimeTableDetail> {
 
 	private boolean delete;
 	private String[] weeks;
 
-	public EditTimeSlotAdapter(Context mContext, List<EditTimeslot> mData, boolean delete) {
+	public EditTimeSlotAdapter(Context mContext, List<TimeTableDetail> mData, boolean delete) {
 		super(mContext, mData, R.layout.timeslot_list_item);
 		this.delete = delete;
 		weeks = mContext.getResources().getStringArray(R.array.weeks);
 	}
 
-	public void refresh(List<EditTimeslot> mData) {
+	public void refresh(List<TimeTableDetail> mData) {
 		this.mList = mData;
 		notifyDataSetChanged();
 	}
 
 	@Override
-	protected void convert(ViewHolder holder, EditTimeslot t, final int position) {
+	protected void convert(ViewHolder holder, TimeTableDetail t, final int position) {
 		String startMinute = t.getStartMinute() + "";
 		String endMinute = t.getEndMinute() + "";
 		if (0 == t.getStartMinute()) {

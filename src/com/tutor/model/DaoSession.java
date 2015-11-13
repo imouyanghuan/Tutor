@@ -20,10 +20,12 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig accountDaoConfig;
     private final DaoConfig iMMessageDaoConfig;
     private final DaoConfig avatarDaoConfig;
+    private final DaoConfig logDaoConfig;
 
     private final AccountDao accountDao;
     private final IMMessageDao iMMessageDao;
     private final AvatarDao avatarDao;
+    private final LogDao logDao;
 
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -38,19 +40,25 @@ public class DaoSession extends AbstractDaoSession {
         avatarDaoConfig = daoConfigMap.get(AvatarDao.class).clone();
         avatarDaoConfig.initIdentityScope(type);
 
+        logDaoConfig = daoConfigMap.get(LogDao.class).clone();
+        logDaoConfig.initIdentityScope(type);
+
         accountDao = new AccountDao(accountDaoConfig, this);
         iMMessageDao = new IMMessageDao(iMMessageDaoConfig, this);
         avatarDao = new AvatarDao(avatarDaoConfig, this);
+        logDao = new LogDao(logDaoConfig, this);
 
         registerDao(Account.class, accountDao);
         registerDao(IMMessage.class, iMMessageDao);
         registerDao(Avatar.class, avatarDao);
+        registerDao(Log.class, logDao);
     }
     
     public void clear() {
         accountDaoConfig.getIdentityScope().clear();
         iMMessageDaoConfig.getIdentityScope().clear();
         avatarDaoConfig.getIdentityScope().clear();
+        logDaoConfig.getIdentityScope().clear();
     }
 
     public AccountDao getAccountDao() {
@@ -63,6 +71,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public AvatarDao getAvatarDao() {
         return avatarDao;
+    }
+
+    public LogDao getLogDao() {
+        return logDao;
     }
 
 }

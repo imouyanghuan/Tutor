@@ -13,8 +13,13 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
 
+import android.content.Context;
+import android.os.AsyncTask;
+
 import com.tutor.TutorApplication;
+import com.tutor.model.Account;
 import com.tutor.model.User;
+import com.tutor.params.Constants;
 import com.tutor.util.StringUtils;
 
 /**
@@ -325,14 +330,64 @@ public class ContactManager {
 	 * @param imId
 	 * @param nickName
 	 */
-	public boolean addFriend(String imId, String nickName) {
+	public boolean addFriend(Context context, String imId, String nickName) {
 		try {
 			XMPPConnection connection = TutorApplication.connectionManager.getConnection();
 			connection.getRoster().createEntry(imId + "@" + TutorApplication.connectionManager.getServiceName(), imId, null);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			if (e.getMessage().contains("Not logged in to server")) {
+				imLogin();
+			}
 		}
 		return false;
+	}
+
+	private void imLogin() {
+		// 執行登錄IM
+		Account account = TutorApplication.getAccountDao().load("1");
+		if (null != account) {
+			String accountsString = account.getImAccount();
+			String pswd = account.getImPswd();
+			new LoginImTask(accountsString, pswd).execute();
+		}
+	}
+
+	/**
+	 * 登录IM
+	 * 
+	 * 
+	 */
+	private class LoginImTask extends AsyncTask<Void, Void, Integer> {
+
+		private String accountsString;
+		private String pswd;
+
+		public LoginImTask(String accountsString, String pswd) {
+			this.accountsString = accountsString;
+			this.pswd = pswd;
+		}
+
+		@Override
+		protected Integer doInBackground(Void... params) {
+			if (TutorApplication.connectionManager.getConnection().isConnected()) {
+				TutorApplication.connectionManager.getConnection().disconnect();
+			}
+			return XmppManager.getInstance().login(accountsString, pswd);
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) {
+			super.onPostExecute(result);
+			if (result == Constants.Xmpp.LOGIN_SECCESS) {
+				// TODO
+			} else {
+				if (result == Constants.Xmpp.LOGIN_ERROR_ACCOUNT_PASS) {
+					pswd = pswd.replaceFirst("t", "T");
+				}
+				new LoginImTask(accountsString, pswd).execute();
+			}
+		}
 	}
 }

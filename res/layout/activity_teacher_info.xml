@@ -440,6 +440,7 @@
                     android:divider="@null"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
+                    android:listSelector="@color/transparent"
                     android:visibility="visible" />
 
                 <TextView

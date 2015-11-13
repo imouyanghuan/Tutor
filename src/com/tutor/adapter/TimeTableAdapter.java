@@ -3,6 +3,7 @@ package com.tutor.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -17,6 +18,11 @@ public class TimeTableAdapter extends TutorBaseAdapter<TimeTableDetail> {
 
 	public TimeTableAdapter(Context mContext, List<TimeTableDetail> mData) {
 		super(mContext, mData, R.layout.listview_item);
+	}
+
+	public void refresh(List<TimeTableDetail> newData) {
+		this.mList = newData;
+		notifyDataSetChanged();
 	}
 
 	@Override
@@ -43,10 +49,12 @@ public class TimeTableAdapter extends TutorBaseAdapter<TimeTableDetail> {
 		String courseName = detail.getCourseName();
 		String p = "Primary School";
 		String s = "Secondary School";
-		if (courseName.contains(p)) {
-			courseName = courseName.replace(p, "P.");
-		} else if (courseName.contains(s)) {
-			courseName = courseName.replace(s, "S.");
+		if (!TextUtils.isEmpty(courseName)) {
+			if (courseName.contains(p)) {
+				courseName = courseName.replace(p, "P.");
+			} else if (courseName.contains(s)) {
+				courseName = courseName.replace(s, "S.");
+			}
 		}
 		tvCourse.setText(courseName);
 		TextView tvTitleLabel = holder.getView(R.id.tv_title_label);

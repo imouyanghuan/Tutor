@@ -291,7 +291,7 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 				String imId = config.getText();
 				String adviserName = config.getAlias();
 				if (!TextUtils.isEmpty(imId)) {
-					boolean isFriend = ContactManager.getManager().addFriend(imId, imId);
+					boolean isFriend = ContactManager.getManager().addFriend(CourseSelectionActivity.this,imId, imId);
 					if (isFriend) {
 						Intent intent = new Intent(CourseSelectionActivity.this, ChatActivity.class);
 						intent.putExtra(Constants.General.IS_FROM_COURSE_SELECTION, true);

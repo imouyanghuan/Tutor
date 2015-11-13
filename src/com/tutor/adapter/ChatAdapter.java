@@ -3,6 +3,7 @@ package com.tutor.adapter;
 import java.util.List;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -52,6 +53,19 @@ public class ChatAdapter extends TutorBaseAdapter<IMMessage> {
 		TextView time = holder.getView(R.id.chat_item_tv_time);
 		// 头像
 		CircleImageView avatarReceive = holder.getView(R.id.chat_item_civ_receive);
+		avatarReceive.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				String imId = t.getFromSubJid();
+				if (!TextUtils.isEmpty(imId)) {
+					imId = imId.substring(0, imId.indexOf("@"));
+				}
+				if (onReceiveAvatarClickListener != null) {
+					onReceiveAvatarClickListener.onClick(imId);
+				}
+			}
+		});
 		CircleImageView avatarSend = holder.getView(R.id.chat_item_civ_send);
 		// 消息
 		TextView receiveTv = holder.getView(R.id.chat_item_tv_receive);
@@ -79,7 +93,8 @@ public class ChatAdapter extends TutorBaseAdapter<IMMessage> {
 		} else if (IMMessage.CHAT_MESSAGE_TYPE_SEND == t.getMsgType()) {
 			receiveLayout.setVisibility(View.GONE);
 			sendLayout.setVisibility(View.VISIBLE);
-//			ImageUtils.loadImage(avatarSend, "drawable://" + R.drawable.def_avatar);
+			// ImageUtils.loadImage(avatarSend, "drawable://" +
+			// R.drawable.def_avatar);
 			// 加载头像
 			ImageUtils.loadImage(avatarSend, ApiUrl.DOMAIN + ApiUrl.GET_OTHER_AVATAR + TutorApplication.getMemberId());
 			sendTv.setText(t.getContent());
@@ -94,5 +109,17 @@ public class ChatAdapter extends TutorBaseAdapter<IMMessage> {
 	public interface OnReSendListener {
 
 		public void onReSend(IMMessage message);
+	}
+
+	public interface OnReceiveAvatarClickListener {
+
+		public void onClick(String imId);
+	}
+
+	public OnReceiveAvatarClickListener onReceiveAvatarClickListener;
+
+	// 他人头像点击
+	public void setOnReceiveAvatarClickListener(OnReceiveAvatarClickListener onReceiveAvatarClickListener) {
+		this.onReceiveAvatarClickListener = onReceiveAvatarClickListener;
 	}
 }

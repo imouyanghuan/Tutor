@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.hk.tutor.R;
+import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.ui.view.PullToRefreshBase;
 import com.mssky.mobile.ui.view.PullToRefreshBase.Mode;
 import com.mssky.mobile.ui.view.PullToRefreshBase.OnRefreshListener;
@@ -27,9 +28,12 @@ import com.mssky.mobile.ui.view.PullToRefreshListView;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.ChatAdapter;
 import com.tutor.adapter.ChatAdapter.OnReSendListener;
+import com.tutor.adapter.ChatAdapter.OnReceiveAvatarClickListener;
 import com.tutor.model.EditProfileResult;
 import com.tutor.model.IMMessage;
 import com.tutor.model.LogChat;
+import com.tutor.model.UserInfo;
+import com.tutor.model.UserInfoResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
@@ -84,6 +88,15 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 		lvChat.setShowIndicator(false);
 		adapter = new ChatAdapter(this, getMessages());
 		adapter.setReSendListener(this);
+		adapter.setOnReceiveAvatarClickListener(new OnReceiveAvatarClickListener() {
+
+			@Override
+			public void onClick(String imId) {
+				if (imId.startsWith("0", 0) || imId.startsWith("1", 0)) {
+					getUserInfo(imId);
+				}
+			}
+		});
 		// 设置对方的头像
 		if (!TextUtils.isEmpty(toAvatar)) {
 			adapter.setToAvatar(toAvatar);
@@ -165,7 +178,6 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 		@Override
 		public void onReceive(Context arg0, Intent intent) {
 			String acion = intent.getAction();
-			System.out.println(acion);
 			if (!Constants.Action.ACTION_ROSTER_PRESENCE_CHANGED.equals(acion)) {
 				return;
 			}
@@ -247,6 +259,35 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 					LogUtils.e("Is Log Success?--------> " + isLog);
 				} else {
 					toast(result.getMessage());
+				}
+			}
+		});
+	}
+
+	private void getUserInfo(final String imId) {
+		String url = String.format(ApiUrl.IM_GET_INFO, imId);
+		HttpHelper.get(TutorApplication.instance, url, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				// TODO Auto-generated method stub
+				LogUtils.e("-----status:" + status + ",message +" + message);
+			}
+
+			@Override
+			public void onSuccess(UserInfoResult info) {
+				if (info.getStatusCode() == HttpURLConnection.HTTP_OK) {
+					UserInfo userInfo = info.getResult();
+					if (userInfo.getId() > 0) {
+						Intent intent = null;
+						if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+							intent = new Intent(ChatActivity.this, TeacherInfoActivity.class);
+						} else {
+							intent = new Intent(ChatActivity.this, StudentInfoActivity.class);
+						}
+						intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
+						startActivity(intent);
+					}
 				}
 			}
 		});

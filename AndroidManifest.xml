@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hk.tutor"
-    android:versionCode="5"
+    android:versionCode="7"
     android:versionName="1.4" >
 
     <uses-sdk
@@ -44,11 +44,7 @@
         android:icon="@drawable/icon"
         android:label="@string/tutor"
         android:theme="@style/AppTheme" >
-        <receiver android:name="com.tutor.service.BootCompleteReceiver" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
+
         <!-- 啟動頁 -->
         <activity
             android:name="com.tutor.ui.activity.WelcomeActivity"
@@ -132,6 +128,7 @@
         <!-- 聊天頁面 -->
         <activity
             android:name="com.tutor.ui.activity.ChatActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden" >
         </activity>
@@ -219,6 +216,13 @@
         <!-- IM服务 -->
         <service android:name="com.tutor.service.IMService" >
         </service>
+
+        <receiver android:name="com.tutor.service.BootCompleteReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
         <!-- facebook -->
         <activity
             android:name="com.facebook.FacebookActivity"

@@ -301,5 +301,7 @@
     <string name="label_edit_failed">修改出錯</string>
     <string name="label_appointment_time_slot_with_this_tutor">與該老師約定的時間段</string>
     <string name="label_appointment_time_slot_with_this_student">與該學生約定的時間段</string>
+    <string name="unusual_exception">很抱歉，程式出現異常，即將關閉.</string>
+    <string name="chat_service_not_available">聊天服務暫時不可用, 請稍後再試</string>
 
 </resources>

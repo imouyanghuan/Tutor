@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Vibrator;
@@ -34,8 +33,6 @@ import com.tutor.TutorApplication;
 import com.tutor.im.ContactManager;
 import com.tutor.im.IMMessageManager;
 import com.tutor.im.XMPPConnectionManager;
-import com.tutor.im.XmppManager;
-import com.tutor.model.Account;
 import com.tutor.model.Avatar;
 import com.tutor.model.IMMessage;
 import com.tutor.model.UserInfo;
@@ -83,11 +80,20 @@ public class IMService extends Service {
 		filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
 		receive = new IMBroadCastReceive();
 		registerReceiver(receive, filter);
+		
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		new LoginImTask().execute();
+		// 初始化IM消息監聽
+		initIMMsgListener();
+//		// 執行登錄IM
+//		Account account = TutorApplication.getAccountDao().load("1");
+//		if (null != account) {
+//			String accountsString = account.getImAccount();
+//			String pswd = account.getImPswd();
+//			new LoginImTask(accountsString, pswd).execute();
+//		}
 		return super.onStartCommand(intent, START_STICKY, startId);
 	}
 
@@ -383,37 +389,42 @@ public class IMService extends Service {
 		notificationManager.notify(0, myNoti);
 	}
 
-	/**
-	 * 登录IM
-	 * 
-	 * 
-	 */
-	private class LoginImTask extends AsyncTask<Void, Void, Integer> {
-
-		@Override
-		protected Integer doInBackground(Void... params) {
-			if (TutorApplication.connectionManager.getConnection().isConnected()) {
-				TutorApplication.connectionManager.getConnection().disconnect();
-			}
-			// 執行登錄IM
-			Account account = TutorApplication.getAccountDao().load("1");
-			if (null != account) {
-				String accountsString = account.getImAccount();
-				String pswd = account.getImPswd();
-				return XmppManager.getInstance().login(accountsString, pswd);
-			}
-			return Constants.Xmpp.LOGIN_ERROR;
-		}
-
-		@Override
-		protected void onPostExecute(Integer result) {
-			super.onPostExecute(result);
-			if (result == Constants.Xmpp.LOGIN_SECCESS) {
-				// 初始化IM消息監聽
-				initIMMsgListener();
-			} else {
-				new LoginImTask().execute();
-			}
-		}
-	}
+//	/**
+//	 * 登录IM
+//	 * 
+//	 * 
+//	 */
+//	private class LoginImTask extends AsyncTask<Void, Void, Integer> {
+//
+//		private String accountsString;
+//		private String pswd;
+//
+//		public LoginImTask(String accountsString, String pswd) {
+//			this.accountsString = accountsString;
+//			this.pswd = pswd;
+//		}
+//
+//		@Override
+//		protected Integer doInBackground(Void... params) {
+//			if (TutorApplication.connectionManager.getConnection().isConnected()) {
+//				TutorApplication.connectionManager.getConnection().disconnect();
+//				return XmppManager.getInstance().login(accountsString, pswd);
+//			}
+//			return Constants.Xmpp.LOGIN_ERROR;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(Integer result) {
+//			super.onPostExecute(result);
+//			if (result == Constants.Xmpp.LOGIN_SECCESS) {
+//				// 初始化IM消息監聽
+//				initIMMsgListener();
+//			} else {
+//				if (result == Constants.Xmpp.LOGIN_ERROR_ACCOUNT_PASS) {
+//					pswd = pswd.replaceFirst("t", "T");
+//				}
+//				new LoginImTask(accountsString, pswd).execute();
+//			}
+//		}
+//	}
 }

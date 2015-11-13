@@ -239,8 +239,13 @@ public class IMMessageManager {
 	 * @return
 	 */
 	public Long getUnReadNoticeCount() {
-		QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
-		return qb.where(Properties.ReadStatus.eq("" + IMMessage.READ_STATUS_UNREAD), Properties.ToJid.eq(currentIMAccount)).count();
+		try {
+			QueryBuilder<IMMessage> qb = imMessageDao.queryBuilder();
+			return qb.where(Properties.ReadStatus.eq("" + IMMessage.READ_STATUS_UNREAD), Properties.ToJid.eq(currentIMAccount)).count();
+		} catch (Exception e) {
+			 
+		}
+		return 0l;
 	}
 
 	/**

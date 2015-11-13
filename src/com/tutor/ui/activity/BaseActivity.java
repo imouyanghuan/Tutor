@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.hk.tutor.R;
 import com.tutor.params.Constants;
+import com.tutor.util.ScreenManager;
 
 /**
  * BaseActivity 其他activity繼承自該類
@@ -34,6 +35,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
+		ScreenManager.getScreenManager().addActivity(this);
 		receiver = new MyBroadcastReceiver();
 		// 注册广播
 		IntentFilter filter = new IntentFilter();
@@ -56,6 +58,7 @@ public abstract class BaseActivity extends FragmentActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		ScreenManager.getScreenManager().removeActivity(this);
 		// 注销广播
 		unregisterReceiver(receiver);
 	}

@@ -5,6 +5,9 @@ import java.util.Locale;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import cn.jpush.android.api.JPushInterface;
 
@@ -20,7 +23,10 @@ import com.tutor.model.DaoMaster;
 import com.tutor.model.DaoMaster.OpenHelper;
 import com.tutor.model.DaoSession;
 import com.tutor.model.IMMessageDao;
+import com.tutor.model.LogDao;
 import com.tutor.params.Constants;
+import com.tutor.util.DataCleanManager;
+import com.tutor.util.HanderException;
 import com.tutor.util.SettingManager;
 //
 //import com.google.android.gms.analytics.GoogleAnalytics;
@@ -42,32 +48,33 @@ public class TutorApplication extends Application {
 	private static AccountDao accountDao;
 	private static IMMessageDao imMessageDao;
 	private static AvatarDao avatarDao;
+	private static LogDao logDao;
 	private static SQLiteDatabase db;
 	//
 	public static TutorApplication instance;
 	public static boolean isTokenInvalid = false;
 	/** xmpp连接管理对象 */
 	public static XMPPConnectionManager connectionManager;
-	public static boolean isChatMessage;
-//	public static GoogleAnalytics analytics;
-//	public static Tracker tracker;
-//	private static String GOOGLE_TRACKER_ID = "UA-69608349-1";
-//
-//	public static GoogleAnalytics analytics() {
-//		return analytics;
-//	}
-//
-//	public static Tracker tracker() {
-//		return tracker;
-//	}
+	public static int jPushMessageType;
+	public static boolean isTimeTableMessage;
 
-//	@Override
-//	protected void attachBaseContext(Context base) {
-//		// TODO Auto-generated method stub
-//		super.attachBaseContext(base);
-//		MultiDex.install(this);
-//	}
-
+	// public static GoogleAnalytics analytics;
+	// public static Tracker tracker;
+	// private static String GOOGLE_TRACKER_ID = "UA-69608349-1";
+	//
+	// public static GoogleAnalytics analytics() {
+	// return analytics;
+	// }
+	//
+	// public static Tracker tracker() {
+	// return tracker;
+	// }
+	// @Override
+	// protected void attachBaseContext(Context base) {
+	// // TODO Auto-generated method stub
+	// super.attachBaseContext(base);
+	// MultiDex.install(this);
+	// }
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -76,6 +83,13 @@ public class TutorApplication extends Application {
 		DEBUG = true;
 		// 配置工具類
 		settingManager = SettingManager.getInstance(this, Constants.SharedPreferences.NAME);
+		int oldVersionCode = (Integer) settingManager.readSetting(Constants.SharedPreferences.VERSIONCODE, -1);
+		int versionCode = getVersionCode(instance);
+		if (oldVersionCode == -1 || versionCode != oldVersionCode) {
+			settingManager.deleteAll();
+			DataCleanManager.cleanAllFiles(instance);
+			settingManager.writeSetting(Constants.SharedPreferences.VERSIONCODE, versionCode);
+		}
 		connectionManager = XMPPConnectionManager.getManager();
 		initDao();
 		initImageLoader(this);
@@ -83,28 +97,39 @@ public class TutorApplication extends Application {
 		JPushInterface.setDebugMode(true);
 		// 初始化 JPush
 		JPushInterface.init(this);
+		HanderException.getInstance().init(this, null);
 		// 初始化谷歌分析工具
-		//initGoogleAnalytics();
+		// initGoogleAnalytics();
 	}
 
-//	private void initGoogleAnalytics() {
-//		analytics = GoogleAnalytics.getInstance(this);
-//		analytics.setLocalDispatchPeriod(3600); // 每小时调度一次
-//		tracker = analytics.newTracker(GOOGLE_TRACKER_ID); // Replace with
-//		// actual
-//		// tracker/property
-//		// Id
-//		// Provide unhandled exceptions reports. Do that first after creating
-//		// the tracker
-//		tracker.enableExceptionReporting(true);
-//		// Enable Remarketing, Demographics & Interests reports
-//		//
-//		https: // developers.google.com/analytics/devguides/collection/android/display-features
-//		tracker.enableAdvertisingIdCollection(true);
-//		// Enable automatic activity tracking for your app
-//		tracker.enableAutoActivityTracking(true);
-//	}
+	public int getVersionCode(Context activity) {
+		String pName = activity.getPackageName();
+		int versionCode = -1;
+		try {
+			PackageInfo pinfo = activity.getPackageManager().getPackageInfo(pName, PackageManager.GET_CONFIGURATIONS);
+			versionCode = pinfo.versionCode;
+		} catch (NameNotFoundException e) {}
+		return versionCode;
+	}
 
+	// private void initGoogleAnalytics() {
+	// analytics = GoogleAnalytics.getInstance(this);
+	// analytics.setLocalDispatchPeriod(3600); // 每小时调度一次
+	// tracker = analytics.newTracker(GOOGLE_TRACKER_ID); // Replace with
+	// // actual
+	// // tracker/property
+	// // Id
+	// // Provide unhandled exceptions reports. Do that first after creating
+	// // the tracker
+	// tracker.enableExceptionReporting(true);
+	// // Enable Remarketing, Demographics & Interests reports
+	// //
+	// https: //
+	// developers.google.com/analytics/devguides/collection/android/display-features
+	// tracker.enableAdvertisingIdCollection(true);
+	// // Enable automatic activity tracking for your app
+	// tracker.enableAutoActivityTracking(true);
+	// }
 	private void initDao() {
 		OpenHelper helper = new DaoMaster.DevOpenHelper(this, Constants.General.DBNAME, null);
 		db = helper.getWritableDatabase();
@@ -113,6 +138,7 @@ public class TutorApplication extends Application {
 		accountDao = daoSession.getAccountDao();
 		imMessageDao = daoSession.getIMMessageDao();
 		avatarDao = daoSession.getAvatarDao();
+		logDao = daoSession.getLogDao();
 	}
 
 	/**
@@ -146,6 +172,10 @@ public class TutorApplication extends Application {
 
 	public static SQLiteDatabase getDatabase() {
 		return db;
+	}
+
+	public static LogDao getLogDao() {
+		return logDao;
 	}
 
 	/**

@@ -18,8 +18,8 @@ import android.widget.Toast;
 
 import com.hk.tutor.R;
 import com.tutor.model.Clander;
-import com.tutor.model.EditTimeslot;
 import com.tutor.model.TimeTable;
+import com.tutor.model.TimeTableDetail;
 import com.tutor.model.TimeTableTag;
 import com.tutor.util.LunarCalendar;
 import com.tutor.util.SpecialCalendar;
@@ -217,7 +217,7 @@ public class GridViewAdapter extends BaseAdapter {
 					}
 					if (timeTables != null && timeTables.size() > 0) {
 						for (int k = 0; k < timeTables.size(); k++) {
-							ArrayList<EditTimeslot> timeslots = timeTables.get(k).getTimeslots();
+							ArrayList<TimeTableDetail> timeslots = timeTables.get(k).getTimeslots();
 							if (timeslots != null && timeslots.size() > 0) {
 								for (int m = 0; m < timeslots.size(); m++) {
 									for (int n = 0; n < tags.size(); n++) {
@@ -328,7 +328,7 @@ public class GridViewAdapter extends BaseAdapter {
 				for (TimeTableTag tag : tags) {
 					if (tag.isTag() && index == tag.getId()) {
 						for (int k = 0; k < timeTables.size(); k++) {
-							ArrayList<EditTimeslot> timeslots = timeTables.get(k).getTimeslots();
+							ArrayList<TimeTableDetail> timeslots = timeTables.get(k).getTimeslots();
 							if (timeslots != null && timeslots.size() > 0) {
 								for (int m = 0; m < timeslots.size(); m++) {
 									for (int n = 0; n < tags.size(); n++) {

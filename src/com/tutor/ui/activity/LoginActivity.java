@@ -13,6 +13,7 @@ import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
@@ -30,6 +31,7 @@ import com.tutor.TutorApplication;
 import com.tutor.im.XmppManager;
 import com.tutor.model.Account;
 import com.tutor.model.CheckExistResult;
+import com.tutor.model.EditProfileResult;
 import com.tutor.model.LoginResponseResult;
 import com.tutor.model.RegisterInfoResult;
 import com.tutor.model.RegisterLoginModel;
@@ -203,7 +205,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 			return;
 		}
 		// 设置别名
-		String imId = model.getIMID();
+		final String imId = model.getIMID();
 		JPushInterface.setAlias(getApplicationContext(), imId, new TagAliasCallback() {
 
 			@Override
@@ -255,6 +257,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 							account.setResidentialAddress(result.getResult().getResidentialAddress());
 							// add end
 							TutorApplication.getAccountDao().insertOrReplace(account);
+							// 检查imid是否存在
+							checkIMIDisExit(imId);
 							// 临时密码登录的需要去设置新密码
 							if (2 == result.getResult().getStatus()) {
 								Intent i = new Intent(LoginActivity.this, ChangePasswordActivity.class);
@@ -294,6 +298,30 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 			e.printStackTrace();
 			toast(R.string.toast_login_failed);
 		}
+	}
+
+	private void checkIMIDisExit(final String imId) {
+		RequestParams params = new RequestParams();
+		params.put("imid", imId);
+		HttpHelper.get(this, ApiUrl.IM_ID_VALID, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				// TODO Auto-generated method stub
+				Log.e("Tutor", "IM ID校验失败： --------");
+			}
+
+			@Override
+			public void onSuccess(EditProfileResult result) {
+				if (result.getResult()) {
+					// 存在
+					Log.e("Tutor", "IM ID是否存在： " + result.getResult());
+				} else {
+					// 不存在
+					new RegisterImIDTask(imId).execute();
+				}
+			}
+		});
 	}
 
 	/**
@@ -535,6 +563,33 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 					toast(result.getMessage());
 					break;
 			}
+		}
+	}
+
+	/**
+	 * 註冊IM id異步任務
+	 * 
+	 * @author bruce.chen
+	 * 
+	 */
+	class RegisterImIDTask extends AsyncTask<Void, Void, Integer> {
+
+		String imId;
+
+		public RegisterImIDTask(String imId) {
+			this.imId = imId;
+		}
+
+		@Override
+		protected Integer doInBackground(Void... params) {
+			// 註冊IM
+			int status = XmppManager.getInstance().register(imId, imId);
+			return status;
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) {
+			super.onPostExecute(result);
 		}
 	}
 }

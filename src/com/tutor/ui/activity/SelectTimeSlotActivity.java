@@ -382,7 +382,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 		Intent finish = new Intent();
 		finish.setAction(Constants.Action.FINISH_LOGINACTIVITY);
 		sendBroadcast(finish);
-	}
+	} 
 
 	/**
 	 * 提信息任务

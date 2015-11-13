@@ -57,6 +57,10 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 	private Button btnToBeMyTutor;
 	private LinearLayout llAppointmentTimeslot;
 	private LinearLayout llIntroduction;
+	private TextView tvStudentCount;
+	private RatingBar rating;
+	private TextView tvMajor;
+	private TextView tvGraduateSchool;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -127,10 +131,10 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		}
 		tvGender.setText(genderStr);
 		// major
-		TextView tvMajor = getView(R.id.tv_major);
+		tvMajor = getView(R.id.tv_major);
 		tvMajor.setText(!TextUtils.isEmpty(userInfo.getMajor()) ? userInfo.getMajor() : "");
 		// graduate school
-		TextView tvGraduateSchool = getView(R.id.tv_graduate_school);
+		tvGraduateSchool = getView(R.id.tv_graduate_school);
 		tvGraduateSchool.setText(!TextUtils.isEmpty(userInfo.getGraduateSchool()) ? userInfo.getGraduateSchool() : "");
 		// current education
 		LinearLayout llEducation = getView(R.id.ll_education);
@@ -162,10 +166,10 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		// userInfo.getExprience());
 		// tvExperience.setText(experience);
 		// student count
-		TextView tvStudentCount = getView(R.id.tv_student_count);
+		tvStudentCount = getView(R.id.tv_student_count);
 		tvStudentCount.setText(String.valueOf(userInfo.getStudentCount()));
 		// rating
-		RatingBar rating = getView(R.id.ratingBar);
+		rating = getView(R.id.ratingBar);
 		rating.setRating(userInfo.getRatingGrade());
 		ImageView ivAvatar = getView(R.id.iv_avatar);
 		ImageUtils.loadImage(ivAvatar, ApiUrl.DOMAIN + userInfo.getAvatar());
@@ -295,6 +299,12 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		} else {
 			btnPlayVideo.setEnabled(true);
 		}
+		// add by jerry on 11/13 学生数和评分: 传过来的userInfo有可能没有这个字段
+		tvStudentCount.setText(String.valueOf(userInfo.getStudentCount()));
+		rating.setRating(userInfo.getRatingGrade());
+		tvMajor.setText(!TextUtils.isEmpty(userInfo.getMajor()) ? userInfo.getMajor() : "");
+		tvGraduateSchool.setText(!TextUtils.isEmpty(userInfo.getGraduateSchool()) ? userInfo.getGraduateSchool() : "");
+		// add end
 		// 可接受时间段
 		ArrayList<Timeslot> timeslots = userInfo.getTimeslots();
 		if (timeslots != null && timeslots.size() > 0) {
@@ -343,13 +353,16 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		// chat with student
 			case R.id.btn_chat_with_tutor:
 				if (!TextUtils.isEmpty(imId)) {
-					boolean isFriend = ContactManager.getManager().addFriend(imId.toLowerCase(), imId);
+					boolean isFriend = ContactManager.getManager().addFriend(TeacherInfoActivity.this, imId.toLowerCase(), imId);
 					if (isFriend) {
 						Intent intent = new Intent(TeacherInfoActivity.this, ChatActivity.class);
 						intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_MESSAGE_TO, imId.toLowerCase() + "@" + XMPPConnectionManager.getManager().getServiceName());
 						intent.putExtra(Constants.General.NICKNAME, titleName);
 						intent.putExtra(Constants.General.AVATAR, ApiUrl.DOMAIN + userInfo.getAvatar());
 						startActivity(intent);
+					} else {
+						// toast
+						toast(R.string.chat_service_not_available);
 					}
 				}
 				break;

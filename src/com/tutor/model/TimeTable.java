@@ -11,7 +11,7 @@ public class TimeTable implements Serializable {
 	private static final long serialVersionUID = -5902748325489255305L;
 	private String userName;
 	private String courseName;
-	private ArrayList<EditTimeslot> timeslots;
+	private ArrayList<TimeTableDetail> timeslots;
 	// notification id
 	private int id;
 
@@ -39,11 +39,11 @@ public class TimeTable implements Serializable {
 		this.id = id;
 	}
 
-	public ArrayList<EditTimeslot> getTimeslots() {
+	public ArrayList<TimeTableDetail> getTimeslots() {
 		return timeslots;
 	}
 
-	public void setTimeslots(ArrayList<EditTimeslot> timeslots) {
+	public void setTimeslots(ArrayList<TimeTableDetail> timeslots) {
 		this.timeslots = timeslots;
 	}
 }

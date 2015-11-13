@@ -311,8 +311,13 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 
 			@Override
 			public void onSuccess(UserListResult result) {
-				CheckTokenUtils.checkToken(result);
-				setData(result);
+				ArrayList<UserInfo> info = result.getResult();
+				if (info != null && info.size() > 0) {
+					CheckTokenUtils.checkToken(result);
+					setData(result);
+				} else {
+					getSearchStudent(pageIndex, pageSize);
+				}
 			}
 		});
 	}

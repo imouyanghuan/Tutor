@@ -1,5 +1,7 @@
 package com.tutor.ui.activity;
 
+import java.util.Set;
+
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
 import android.app.AlertDialog;
@@ -8,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
@@ -17,6 +20,8 @@ import android.widget.FrameLayout;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 
 import com.facebook.login.LoginManager;
 import com.hk.tutor.R;
@@ -25,6 +30,7 @@ import com.mssky.mobile.helper.SharePrefUtil;
 import com.tutor.TutorApplication;
 import com.tutor.im.IMMessageManager;
 import com.tutor.im.XMPPConnectionManager;
+import com.tutor.im.XmppManager;
 import com.tutor.model.Account;
 import com.tutor.model.NotificationListResult;
 import com.tutor.model.Page;
@@ -83,11 +89,68 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		initView();
 		// 初始化fragment
 		initFragment();
-		// 登錄成功,開啟服務
-		Intent intent = new Intent(this, IMService.class);
-		startService(intent);
+		
+		imLogin();
 	}
 
+	private void imLogin() {
+		// 執行登錄IM
+		Account account = TutorApplication.getAccountDao().load("1");
+		if (null != account) {
+			String accountsString = account.getImAccount();
+			String pswd = account.getImPswd();
+			new LoginImTask(accountsString, pswd).execute();
+			
+			// 设置别名
+			JPushInterface.setAlias(getApplicationContext(), account.getImAccount(), new TagAliasCallback() {
+
+				@Override
+				public void gotResult(int arg0, String arg1, Set<String> arg2) {
+					// TODO Auto-generated method stub
+				}
+			});
+		}
+	}
+
+	/**
+	 * 登录IM
+	 * 
+	 * 
+	 */
+	private class LoginImTask extends AsyncTask<Void, Void, Integer> {
+
+		private String accountsString;
+		private String pswd;
+
+		public LoginImTask(String accountsString, String pswd) {
+			this.accountsString = accountsString;
+			this.pswd = pswd;
+		}
+
+		@Override
+		protected Integer doInBackground(Void... params) {
+			if (TutorApplication.connectionManager.getConnection().isConnected()) {
+				TutorApplication.connectionManager.getConnection().disconnect();
+			}
+			return XmppManager.getInstance().login(accountsString, pswd);
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) {
+			super.onPostExecute(result);
+			if (result == Constants.Xmpp.LOGIN_SECCESS) {
+				// 登錄成功,開啟服務
+				Intent intent = new Intent(TeacherMainActivity.this, IMService.class);
+				startService(intent);
+			} else {
+				if (result == Constants.Xmpp.LOGIN_ERROR_ACCOUNT_PASS) {
+					pswd = pswd.replaceFirst("t", "T");
+				}
+				new LoginImTask(accountsString, pswd).execute();
+			}
+		}
+	}
+	
 	@Override
 	protected void initView() {
 		bar = getView(R.id.title_bar);
@@ -209,6 +272,8 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 				// TODO 请求退出登录api
 				// 斷開IM連接
 				XMPPConnectionManager.getManager().disconnect();
+				// 停止Push服务
+				JPushInterface.stopPush(TeacherMainActivity.this);
 				TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
 				Intent intent = new Intent(TeacherMainActivity.this, ChoiceRoleActivity.class);
 				startActivity(intent);

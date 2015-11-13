@@ -136,7 +136,7 @@ public class AdvisoryActivity extends BaseActivity implements OnClickListener, S
 					return;
 				}
 				dismissDialog();
-				if(CheckTokenUtils.checkToken(status)){
+				if (CheckTokenUtils.checkToken(status)) {
 					return;
 				}
 				toast(R.string.toast_server_error);
@@ -196,7 +196,7 @@ public class AdvisoryActivity extends BaseActivity implements OnClickListener, S
 				String imId = config.getText();
 				String adviserName = config.getAlias();
 				if (!TextUtils.isEmpty(imId)) {
-					boolean isFriend = ContactManager.getManager().addFriend(imId, imId);
+					boolean isFriend = ContactManager.getManager().addFriend(AdvisoryActivity.this, imId, imId);
 					if (isFriend) {
 						Intent intent = new Intent(AdvisoryActivity.this, ChatActivity.class);
 						intent.putExtra(Constants.General.IS_FROM_COURSE_SELECTION, true);

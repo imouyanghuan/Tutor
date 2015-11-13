@@ -13,13 +13,13 @@ import java.util.ArrayList;
 public class EditTime implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private ArrayList<EditTimeslot> timeslots;
+	private ArrayList<TimeTableDetail> timeslots;
 
-	public ArrayList<EditTimeslot> getTimeslots() {
+	public ArrayList<TimeTableDetail> getTimeslots() {
 		return timeslots;
 	}
 
-	public void setTimeslots(ArrayList<EditTimeslot> timeslots) {
+	public void setTimeslots(ArrayList<TimeTableDetail> timeslots) {
 		this.timeslots = timeslots;
 	}
 }

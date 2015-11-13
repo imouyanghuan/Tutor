@@ -21,6 +21,7 @@ import com.tutor.TutorApplication;
 import com.tutor.adapter.GridViewAdapter;
 import com.tutor.adapter.GridViewAdapter.OnTimeTableClickListener;
 import com.tutor.model.TimeTable;
+import com.tutor.model.TimeTableDetail;
 import com.tutor.model.TimeTableListResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
@@ -80,6 +81,11 @@ public class TimeTableActivity extends BaseActivity implements OnItemClickListen
 		// 初始化适配器
 		mAdapter = new GridViewAdapter(this, (dm.widthPixels - 7) / 7);
 		mAdapter.setClanderData(0, 0, year_c, month_c, day_c);
+		if (TutorApplication.isCH()) {
+			titleBar.setTitle(getString(R.string.yyyy_mm).replace("YYYY", mAdapter.getShowYear()).replace("MM", mAdapter.getShowMonth()));
+		} else {
+			titleBar.setTitle(mAdapter.getShowYear() + " - " + mAdapter.getShowMonth());
+		}
 		mAdapter.setOnTimeTableClickListener(new OnTimeTableClickListener() {
 
 			@Override
@@ -104,7 +110,7 @@ public class TimeTableActivity extends BaseActivity implements OnItemClickListen
 					return;
 				}
 				dismissDialog();
-				if(CheckTokenUtils.checkToken(status)){
+				if (CheckTokenUtils.checkToken(status)) {
 					return;
 				}
 				toast(R.string.toast_server_error);
@@ -118,6 +124,17 @@ public class TimeTableActivity extends BaseActivity implements OnItemClickListen
 					if (tempTimeTables != null && tempTimeTables.size() > 0) {
 						timeTables.clear();
 						timeTables.addAll(tempTimeTables);
+						for(int i = 0; i < timeTables.size(); i++){
+							String courseName = timeTables.get(i).getCourseName();
+							String userName = timeTables.get(i).getUserName();
+							ArrayList<TimeTableDetail> timeTableDetails = timeTables.get(i).getTimeslots();
+							if(timeTableDetails != null && timeTableDetails.size() > 0){
+								for(int j = 0; j < timeTableDetails.size(); j++){
+									timeTableDetails.get(j).setCourseName(courseName);
+									timeTableDetails.get(j).setUserName(userName);
+								}
+							}
+						}
 						mAdapter.setTimeTableData(timeTables);
 						mAdapter.setClanderData(0, 0, year_c, month_c, day_c);
 					}

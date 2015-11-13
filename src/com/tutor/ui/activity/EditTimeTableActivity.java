@@ -21,7 +21,6 @@ import com.tutor.TutorApplication;
 import com.tutor.adapter.EditTimeSlotAdapter;
 import com.tutor.model.EditProfileResult;
 import com.tutor.model.EditTime;
-import com.tutor.model.EditTimeslot;
 import com.tutor.model.TimeTableDetail;
 import com.tutor.model.UpdateNotification;
 import com.tutor.params.ApiUrl;
@@ -45,22 +44,26 @@ import com.tutor.util.ObjectHttpResponseHandler;
  */
 public class EditTimeTableActivity extends BaseActivity implements OnClickListener, onTimeSelectedCallBack, OnWeekSelectedCallback {
 
-	private ArrayList<TimeTableDetail> details;
+	private ArrayList<TimeTableDetail> sameTimeTable;
 	int curStatus = -1;
 	private TextView weekTextView, startTimeTextView, endTimeTextView;
 	/** 保存時間 */
 	private Button saveTime;
-	private ArrayList<EditTimeslot> timeslots;
-	private ArrayList<EditTimeslot> otherTimeslots;
-	private EditTimeslot timeslot = null;
+	// private ArrayList<EditTimeslot> sameTimeslots;
+	// private ArrayList<EditTimeslot> otherTimeslots;
+	private TimeTableDetail timeslot = null;
 	/** 时间段列表 */
-	private CustomListView listView, lvOthers;
-	private EditTimeSlotAdapter adapter;
+	private CustomListView lvSameDay, lvOtherDay;
+	private EditTimeSlotAdapter sameAdapter;
 	private EditTimeSlotAdapter otherAdapter;
 	// 是否编辑开始时间
 	private boolean isStrat;
 	private ArrayList<TimeTableDetail> otherTimetable;
-	ArrayList<EditTimeslot> allTime = new ArrayList<EditTimeslot>();
+	ArrayList<TimeTableDetail> allTime = new ArrayList<TimeTableDetail>();
+	private String courseName;
+	private String userName;
+	private int curTimeTableId;
+	private int curWeek;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -82,38 +85,12 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 		if (intent == null) {
 			return;
 		}
-		details = (ArrayList<TimeTableDetail>) intent.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE_DETAIL);
-		if (details == null) {
+		sameTimeTable = (ArrayList<TimeTableDetail>) intent.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE_DETAIL);
+		if (sameTimeTable == null || sameTimeTable.size() <= 0) {
 			return;
 		}
 		// 同一个人 但不是今天的时间段
 		otherTimetable = (ArrayList<TimeTableDetail>) intent.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE_LIST);
-		timeslots = new ArrayList<EditTimeslot>();
-		for (int i = 0; i < details.size(); i++) {
-			EditTimeslot timeslot = new EditTimeslot();
-			TimeTableDetail detail = details.get(i);
-			timeslot.setId(detail.getId());
-			timeslot.setDayOfWeek(detail.getDayOfWeek());
-			timeslot.setEndHour(detail.getEndHour());
-			timeslot.setEndMinute(detail.getEndMinute());
-			timeslot.setStartHour(detail.getStartHour());
-			timeslot.setStartMinute(detail.getStartMinute());
-			timeslots.add(timeslot);
-		}
-		if (otherTimetable != null && otherTimetable.size() > 0) {
-			otherTimeslots = new ArrayList<EditTimeslot>();
-			for (int i = 0; i < otherTimetable.size(); i++) {
-				EditTimeslot timeslot = new EditTimeslot();
-				TimeTableDetail detail = otherTimetable.get(i);
-				timeslot.setId(detail.getId());
-				timeslot.setDayOfWeek(detail.getDayOfWeek());
-				timeslot.setEndHour(detail.getEndHour());
-				timeslot.setEndMinute(detail.getEndMinute());
-				timeslot.setStartHour(detail.getStartHour());
-				timeslot.setStartMinute(detail.getStartMinute());
-				otherTimeslots.add(timeslot);
-			}
-		}
 		initView();
 	}
 
@@ -128,9 +105,12 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 			tvRoleLabel.setText(R.string.label_label_student);
 		}
 		TextView tvRole = getView(R.id.tv_role);
-		tvRole.setText(details.get(0).getUserName());
+		curTimeTableId = sameTimeTable.get(0).getId();
+		curWeek = sameTimeTable.get(0).getDayOfWeek();
+		userName = sameTimeTable.get(0).getUserName();
+		tvRole.setText(userName);
 		TextView tvCourse = getView(R.id.tv_course);
-		String courseName = details.get(0).getCourseName();
+		courseName = sameTimeTable.get(0).getCourseName();
 		String p = "Primary School";
 		String s = "Secondary School";
 		if (courseName.contains(p)) {
@@ -138,7 +118,7 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 		} else if (courseName.contains(s)) {
 			courseName = courseName.replace(s, "S.");
 		}
-		tvCourse.setText(courseName);		
+		tvCourse.setText(courseName);
 		// time slot
 		weekTextView = getView(R.id.ac_fill_personal_time_tv_week);
 		weekTextView.setOnClickListener(this);
@@ -149,13 +129,13 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 		saveTime = getView(R.id.ac_fill_personal_info_btn_save_timeslot);
 		saveTime.setOnClickListener(this);
 		// 时间段列表
-		listView = getView(R.id.ac_fill_personal_info_timeslot_lv);
-		adapter = new EditTimeSlotAdapter(this, timeslots, true);
-		listView.setAdapter(adapter);
+		lvSameDay = getView(R.id.ac_fill_personal_info_timeslot_lv);
+		sameAdapter = new EditTimeSlotAdapter(this, sameTimeTable, true);
+		lvSameDay.setAdapter(sameAdapter);
 		// 其他时间段
-		lvOthers = getView(R.id.other_timeslot_lv);
-		otherAdapter = new EditTimeSlotAdapter(this, otherTimeslots, false);
-		lvOthers.setAdapter(otherAdapter);
+		lvOtherDay = getView(R.id.other_timeslot_lv);
+		otherAdapter = new EditTimeSlotAdapter(this, otherTimetable, false);
+		lvOtherDay.setAdapter(otherAdapter);
 		// 保存
 		getView(R.id.btn_save).setOnClickListener(this);
 	}
@@ -165,17 +145,17 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 		switch (v.getId()) {
 			case R.id.ac_fill_personal_info_btn_save_timeslot:
 				if (null != timeslot) {
-					if (null == timeslots) {
-						timeslots = new ArrayList<EditTimeslot>();
+					if (null == sameTimeTable) {
+						sameTimeTable = new ArrayList<TimeTableDetail>();
 					}
 					allTime.clear();
-					allTime.addAll(timeslots);
-					if (otherTimeslots != null) {
-						allTime.addAll(otherTimeslots);
+					allTime.addAll(sameTimeTable);
+					if (otherTimetable != null) {
+						allTime.addAll(otherTimetable);
 					}
 					if (allTime.size() > 0) {
 						// 检查冲突时间
-						for (EditTimeslot item : allTime) {
+						for (TimeTableDetail item : allTime) {
 							if (item.isRepeat(timeslot)) {
 								// 有冲突.提示
 								toast(R.string.toast_timeslot_has_a_conflict);
@@ -183,8 +163,12 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 							}
 						}
 					}
-					timeslots.add(timeslot);
-					adapter.refresh(timeslots);
+					// 新增的timeslot 得添加课程名称和当前用户
+					timeslot.setId(curTimeTableId);
+					timeslot.setCourseName(courseName);
+					timeslot.setUserName(userName);
+					sameTimeTable.add(timeslot);
+					sameAdapter.refresh(sameTimeTable);
 					saveTime.setEnabled(false);
 					weekTextView.setText("");
 					startTimeTextView.setText("");
@@ -235,13 +219,18 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 	 */
 	private void saveTimeTable() {
 		allTime.clear();
-		if(timeslots != null){
-			allTime.addAll(timeslots);			
+		if (sameTimeTable != null) {
+			allTime.addAll(sameTimeTable);
 		}
-		if (otherTimeslots != null) {
-			allTime.addAll(otherTimeslots);
+		if (otherTimetable != null) {
+			allTime.addAll(otherTimetable);
 		}
 		if (allTime != null && allTime.size() > 0) {
+			if (!HttpHelper.isNetworkConnected(this)) {
+				toast(R.string.toast_netwrok_disconnected);
+				return;
+			}
+			showDialogRes(R.string.loading);
 			EditTime eidt = new EditTime();
 			eidt.setTimeslots(allTime);
 			String body = JsonUtil.parseObject2Str(eidt);
@@ -251,9 +240,10 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
-			String url = String.format(ApiUrl.TIME_TABLE_UPDATE, details.get(0).getId());
+			String url = String.format(ApiUrl.TIME_TABLE_UPDATE, curTimeTableId);
 			HttpHelper.put(this, url, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
+				// private ArrayList<TimeTableDetail> sameDayTimeTable;
 				@Override
 				public void onFailure(int status, String message) {
 					if (status == 0) {
@@ -267,11 +257,16 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 				public void onSuccess(EditProfileResult result) {
 					if (result.getStatusCode() == HttpURLConnection.HTTP_OK) {
 						toast(R.string.toast_save_successed);
-						setResult(Constants.RequestResultCode.TIME_TABLE_DETAIL);
+						// 过滤是同一天的再把结果返回
+						Intent intent = new Intent();
+						intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE_LIST, allTime);
+						intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE_WEEK, curWeek);
+						setResult(Constants.RequestResultCode.TIME_TABLE_DETAIL, intent);
 						EditTimeTableActivity.this.finish();
 					} else if (result.getStatusCode() == 500) {
 						toast(result.getMessage());
 					}
+					dismissDialog();
 				}
 			});
 		} else {
@@ -312,7 +307,7 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 	@Override
 	public int onTimeSelected(String time, int hour, int minute) {
 		if (null == timeslot) {
-			timeslot = new EditTimeslot();
+			timeslot = new TimeTableDetail();
 		}
 		if (isStrat) {
 			// 在编辑开始时间的时候已经编辑好了结束时间,需要检查开始时间是否在结束时间之前
@@ -392,7 +387,7 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 	@Override
 	public void onWeekSelected(int index, String value) {
 		if (null == timeslot) {
-			timeslot = new EditTimeslot();
+			timeslot = new TimeTableDetail();
 		}
 		timeslot.setDayOfWeek(index);
 		weekTextView.setText(value);

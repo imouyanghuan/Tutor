@@ -1,5 +1,6 @@
 package com.tutor.ui.activity;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -9,13 +10,19 @@ import android.text.TextUtils;
 import android.widget.ListView;
 
 import com.hk.tutor.R;
+import com.loopj.android.http.RequestParams;
+import com.tutor.TutorApplication;
 import com.tutor.adapter.TimeTableAdapter;
 import com.tutor.adapter.TimeTableAdapter.OnEditBtnClickListener;
-import com.tutor.model.EditTimeslot;
 import com.tutor.model.TimeTable;
 import com.tutor.model.TimeTableDetail;
+import com.tutor.model.TimeTableListResult;
+import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.CheckTokenUtils;
+import com.tutor.util.HttpHelper;
+import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
  * 詳情界面
@@ -30,6 +37,9 @@ public class TimeTableDetailActivity extends BaseActivity {
 	private String curDayOfWeek;
 	private String weeks[] = null;
 	private ArrayList<TimeTable> tables;
+	private TimeTableAdapter timeTableAdapter;
+	private ArrayList<TimeTableDetail> otherTimeTableDetails;
+	private ArrayList<TimeTableDetail> sameTimeTables;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -48,9 +58,10 @@ public class TimeTableDetailActivity extends BaseActivity {
 		curDayOfWeek = intent.getStringExtra(Constants.IntentExtra.INTENT_EXTRA_DAY_OF_WEEK);
 		tables = (ArrayList<TimeTable>) intent.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE);
 		if (tables != null && tables.size() > 0) {
+			// 同一天的所有数据
 			timeTableDetails = new ArrayList<TimeTableDetail>();
 			for (int i = 0; i < tables.size(); i++) {
-				ArrayList<EditTimeslot> timeslots = tables.get(i).getTimeslots();
+				ArrayList<TimeTableDetail> timeslots = tables.get(i).getTimeslots();
 				if (timeslots != null && timeslots.size() > 0) {
 					for (int j = 0; j < timeslots.size(); j++) {
 						String dayOfWeek = weeks[timeslots.get(j).getDayOfWeek()];
@@ -85,17 +96,16 @@ public class TimeTableDetailActivity extends BaseActivity {
 		ListView listView = (ListView) this.findViewById(R.id.listview);
 		listView.setDividerHeight(0);
 		Collections.sort(timeTableDetails);
-		TimeTableAdapter timelineAdapter = new TimeTableAdapter(this, timeTableDetails);
-		listView.setAdapter(timelineAdapter);
+		timeTableAdapter = new TimeTableAdapter(this, timeTableDetails);
+		listView.setAdapter(timeTableAdapter);
 		// 编辑时间回调
-		timelineAdapter.setOnEditBtnClickListener(new OnEditBtnClickListener() {
-
-			private ArrayList<TimeTableDetail> otherTimeTableDetails;
+		timeTableAdapter.setOnEditBtnClickListener(new OnEditBtnClickListener() {
 
 			@Override
 			public void onEditBtnClick(TimeTableDetail detail) {
 				int currentId = detail.getId();
-				ArrayList<TimeTableDetail> sameTimeTables = new ArrayList<TimeTableDetail>();
+				// 同一个人的数据
+				sameTimeTables = new ArrayList<TimeTableDetail>();
 				for (int i = 0; i < timeTableDetails.size(); i++) {
 					if (timeTableDetails.get(i).getId() == currentId) {
 						sameTimeTables.add(timeTableDetails.get(i));
@@ -107,10 +117,10 @@ public class TimeTableDetailActivity extends BaseActivity {
 					for (int i = 0; i < tables.size(); i++) {
 						TimeTable table = tables.get(i);
 						if (table.getId() == currentId) {
-							ArrayList<EditTimeslot> timeSlots = table.getTimeslots();
+							ArrayList<TimeTableDetail> timeSlots = table.getTimeslots();
 							if (timeSlots != null && timeSlots.size() > 0) {
 								for (int j = 0; j < timeSlots.size(); j++) {
-									EditTimeslot editTime = timeSlots.get(j);
+									TimeTableDetail editTime = timeSlots.get(j);
 									if (!weeks[editTime.getDayOfWeek()].equalsIgnoreCase(curDayOfWeek)) {
 										TimeTableDetail otherDetail = new TimeTableDetail();
 										otherDetail.setId(table.getId());
@@ -126,27 +136,6 @@ public class TimeTableDetailActivity extends BaseActivity {
 								}
 							}
 						}
-						// ArrayList<EditTimeslot> timeslots =
-						// tables.get(i).getTimeslots();
-						// if (timeslots != null && timeslots.size() > 0) {
-						// for (int j = 0; j < timeslots.size(); j++) {
-						// String dayOfWeek =
-						// weeks[timeslots.get(j).getDayOfWeek()];
-						// if (!curDayOfWeek.equalsIgnoreCase(dayOfWeek) &&
-						// timeslots.get(i).getId() == currentId) {
-						// TimeTableDetail otherDetail = new TimeTableDetail();
-						// otherDetail.setId(tables.get(i).getId());
-						// otherDetail.setCourseName(tables.get(i).getCourseName());
-						// otherDetail.setUserName(tables.get(i).getUserName());
-						// otherDetail.setDayOfWeek(timeslots.get(j).getDayOfWeek());
-						// otherDetail.setEndHour(timeslots.get(j).getEndHour());
-						// otherDetail.setEndMinute(timeslots.get(j).getEndMinute());
-						// otherDetail.setStartHour(timeslots.get(j).getStartHour());
-						// otherDetail.setStartMinute(timeslots.get(j).getStartMinute());
-						// otherTimeTableDetails.add(otherDetail);
-						// }
-						// }
-						// }
 					}
 				}
 				Intent intent = new Intent(TimeTableDetailActivity.this, EditTimeTableActivity.class);
@@ -157,14 +146,66 @@ public class TimeTableDetailActivity extends BaseActivity {
 		});
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == Constants.RequestResultCode.TIME_TABLE_DETAIL) {
 			// refresh UI
+			if (data == null) {
+				return;
+			}
+			// 已经修改过的同一个人的所有time table
+			ArrayList<TimeTableDetail> editedTimeTableDetail = (ArrayList<TimeTableDetail>) data.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE_LIST);
+			int currentWeek = data.getIntExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE_WEEK, -1);
+			if (editedTimeTableDetail != null && editedTimeTableDetail.size() > 0) {
+				timeTableDetails.clear();
+				for (int i = 0; i < editedTimeTableDetail.size(); i++) {
+					if (editedTimeTableDetail.get(i).getDayOfWeek() == currentWeek) {
+						timeTableDetails.add(editedTimeTableDetail.get(i));
+					}
+				}
+				Collections.sort(timeTableDetails);
+				timeTableAdapter.refresh(timeTableDetails);
+				getTimeTable();
+			} else {
+				timeTableAdapter.refresh(null);
+			}
 			setResult(Constants.RequestResultCode.TIME_TABLE_REFRESH);
-			finish();
 		}
+	}
+
+	private void getTimeTable() {
+		RequestParams params = new RequestParams();
+		HttpHelper.get(this, ApiUrl.TIME_TABLE, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<TimeTableListResult>(TimeTableListResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				if (0 == status) {
+					getTimeTable();
+					return;
+				}
+				dismissDialog();
+				if (CheckTokenUtils.checkToken(status)) {
+					return;
+				}
+				toast(R.string.toast_server_error);
+			}
+
+			@Override
+			public void onSuccess(TimeTableListResult t) {
+				dismissDialog();
+				if (t.getStatusCode() == HttpURLConnection.HTTP_OK) {
+					ArrayList<TimeTable> tempTimeTables = t.getResult();
+					if (tempTimeTables != null && tempTimeTables.size() > 0) {
+						tables.clear();
+						tables.addAll(tempTimeTables);
+					}
+				} else {
+					toast(t.getMessage());
+				}
+			}
+		});
 	}
 }

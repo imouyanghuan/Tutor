@@ -24,6 +24,7 @@ import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.activity.ChatListActivity;
 import com.tutor.ui.activity.SystemNotificationActivity;
+import com.tutor.ui.activity.TimeTableActivity;
 import com.tutor.util.DateTimeUtil;
 import com.tutor.util.HttpHelper;
 import com.tutor.util.JsonUtil;
@@ -45,6 +46,10 @@ public class JPushReceiver extends BroadcastReceiver {
 		this.mContext = context;
 		Bundle bundle = intent.getExtras();
 		Log.d(TAG, "[JPushReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
+		/**
+		 * 处理time table信息
+		 */
+		processTimeTableMessage(context, bundle);
 		if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
 			String regId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);
 			Log.d(TAG, "[JPushReceiver] 接收Registration Id : " + regId);
@@ -60,8 +65,10 @@ public class JPushReceiver extends BroadcastReceiver {
 			Log.d(TAG, "[JPushReceiver] 用户点击打开了通知");
 			// 打开自定义的Activity 点击手机状态栏通知要跳转的页面
 			Intent openIntent = null;
-			if (TutorApplication.isChatMessage) {
+			if (TutorApplication.jPushMessageType == Constants.General.JPUSH_MESSAGE_TYPE_CHAT) {
 				openIntent = new Intent(context, ChatListActivity.class);
+			} else if (TutorApplication.isTimeTableMessage) {
+				openIntent = new Intent(context, TimeTableActivity.class);
 			} else {
 				openIntent = new Intent(context, SystemNotificationActivity.class);
 			}
@@ -96,24 +103,38 @@ public class JPushReceiver extends BroadcastReceiver {
 		return sb.toString();
 	}
 
-	// send msg to MainActivity
+	// Process Custom Message
 	private void processCustomMessage(Context context, Bundle bundle) {
 		String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
-		LogUtils.e("message = " + message);
 		String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+		LogUtils.e("processCustomMessage extras = " + extras);
 		if (!TextUtils.isEmpty(extras)) {
-			TutorApplication.isChatMessage = extras.contains("true");
-			// TODO
-			if (TutorApplication.isChatMessage && !TextUtils.isEmpty(message)) {
-				IMMessage imMessage = JsonUtil.parseJStr2Object(IMMessage.class, message);
-				if (imMessage != null) {
-					saveMessage(imMessage);
+			if (extras.contains("isChat")) {
+				// 1
+				TutorApplication.jPushMessageType = Constants.General.JPUSH_MESSAGE_TYPE_CHAT;
+				if (!TextUtils.isEmpty(message)) {
+					IMMessage imMessage = JsonUtil.parseJStr2Object(IMMessage.class, message);
+					if (imMessage != null) {
+						saveMessage(imMessage);
+					}
 				}
+			} else {
+				// 0
+				TutorApplication.jPushMessageType = Constants.General.JPUSH_MESSAGE_TYPE_NOTIFICATION;
 			}
 		} else {
-			TutorApplication.isChatMessage = false;
+			// 0
+			TutorApplication.jPushMessageType = Constants.General.JPUSH_MESSAGE_TYPE_NOTIFICATION;
 		}
-		LogUtils.e("extras = " + extras);
+	}
+
+	// Process Time Table Message
+	private void processTimeTableMessage(Context context, Bundle bundle) {
+		String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
+		LogUtils.e("processTimeTableMessage extras = " + extras);
+		if (!TextUtils.isEmpty(extras)) {
+			TutorApplication.isTimeTableMessage = extras.contains("time");
+		}
 	}
 
 	private void saveMessage(IMMessage imMessage) {

@@ -71,6 +71,10 @@ public final class Constants {
 		public static final String COUNTRY_VALUE = "countryValue";
 		public static final String COUNTRY_NAME = "countryName";
 		public static final String IS_PRIVACY = "isPrivacy";
+		// JPush message type
+		public static final int JPUSH_MESSAGE_TYPE_NOTIFICATION = 0;
+		public static final int JPUSH_MESSAGE_TYPE_CHAT = 1;
+		public static final int JPUSH_MESSAGE_TYPE_TIME_TABLE = 2;
 	}
 
 	/**
@@ -89,6 +93,8 @@ public final class Constants {
 		public static final String SP_ROLE = "role";
 		/** 在線狀態 */
 		public static final String SP_IS_ONLINE = "is_online";
+		/** 版本号 */
+		public static final String VERSIONCODE = "version.code";
 	}
 
 	/**
@@ -181,6 +187,8 @@ public final class Constants {
 		public static final String INTENT_EXTRA_TIME_TABLE_LIST = "timeTableList";
 		/** time table detail */
 		public static final String INTENT_EXTRA_TIME_TABLE_DETAIL = "timeTableDetail";
+		/** time table current week */
+		public static final String INTENT_EXTRA_TIME_TABLE_WEEK = "timeTableWeek";
 	}
 
 	/**

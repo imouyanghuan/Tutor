@@ -1,5 +1,10 @@
 package com.tutor.ui.activity;
 
+import java.io.UnsupportedEncodingException;
+
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
+
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,15 +17,20 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import cn.jpush.android.api.InstrumentedActivity;
+import cn.jpush.android.api.JPushInterface;
 
 import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.tutor.TutorApplication;
+import com.tutor.model.EditProfileResult;
+import com.tutor.model.Log;
 import com.tutor.model.VersionUpDate;
 import com.tutor.model.VersionUpDateResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.util.HttpHelper;
+import com.tutor.util.JsonUtil;
+import com.tutor.util.LogUtils;
 import com.tutor.util.ObjectHttpResponseHandler;
 import com.tutor.util.ToastUtil;
 
@@ -40,7 +50,37 @@ public class WelcomeActivity extends InstrumentedActivity {
 		setContentView(R.layout.activity_welcome);
 		// 檢查版本更新
 		checkVersion();
+		// 发送错误日志
+		sendLog();
 		handler.sendEmptyMessageDelayed(0, Constants.General.WELCOME_DELAY);
+		JPushInterface.init(this);
+	}
+
+	private void sendLog() {
+		Log log = TutorApplication.getLogDao().load(1l);
+		if (log == null) {
+			return;
+		}
+		String body = JsonUtil.parseObject2Str(log);
+		StringEntity entity = null;
+		try {
+			entity = new StringEntity(body, HTTP.UTF_8);
+			HttpHelper.post(this, ApiUrl.LOG, null, entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+
+				@Override
+				public void onFailure(int status, String message) {
+					LogUtils.d(status + "   " + message);
+				}
+
+				@Override
+				public void onSuccess(EditProfileResult t) {
+					LogUtils.d(t.toString());
+					TutorApplication.getLogDao().deleteByKey(1l);
+				}
+			});
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void checkVersion() {
