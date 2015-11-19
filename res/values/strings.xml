@@ -303,5 +303,8 @@
     <string name="label_appointment_time_slot_with_this_student">Appointment Time Slot with this Student</string>
     <string name="unusual_exception">Sorry, the program appears unusual, be about to exit.</string>
     <string name="chat_service_not_available">Chat service not available, please try again later</string>
+    <string name="label_provide_voluntary_tutoring">Provide Voluntary Tutoring</string>
+    <string name="label_note">*By ticking this check box, you have agreed to disclose your contact details to our non-profit voluntary tutoring organisation partners</string>
+    <string name="label_activity_detail">Activity Detail</string>
 
 </resources>

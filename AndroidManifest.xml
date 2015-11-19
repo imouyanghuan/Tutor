@@ -213,6 +213,9 @@
         <activity
             android:name="com.tutor.ui.activity.EditTimeTableActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tutor.ui.activity.ActivitiesDetailActivity"
+            android:screenOrientation="portrait" />
         <!-- IM服务 -->
         <service android:name="com.tutor.service.IMService" >
         </service>

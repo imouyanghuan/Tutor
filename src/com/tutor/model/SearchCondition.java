@@ -22,6 +22,7 @@ public class SearchCondition implements Serializable {
 	private int gender;
 	private String genderName;
 	private String searchKeyword;
+	private boolean isVoluntaryTutoring;
 
 
 	public Timeslot getTimeslot() {
@@ -90,5 +91,15 @@ public class SearchCondition implements Serializable {
 	
 	public void setAreaValue(int areaValue) {
 		this.areaValue = areaValue;
+	}
+
+	
+	public boolean isVoluntaryTutoring() {
+		return isVoluntaryTutoring;
+	}
+
+	
+	public void setVoluntaryTutoring(boolean isVoluntaryTutoring) {
+		this.isVoluntaryTutoring = isVoluntaryTutoring;
 	}
 }

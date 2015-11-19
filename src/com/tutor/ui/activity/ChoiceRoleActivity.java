@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import cn.jpush.android.api.JPushInterface;
+
 import com.hk.tutor.R;
 import com.tutor.TutorApplication;
 import com.tutor.params.Constants;
@@ -64,6 +66,13 @@ public class ChoiceRoleActivity extends BaseActivity {
 				startActivity(intent);
 			}
 		});
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		JPushInterface.resumePush(ChoiceRoleActivity.this);
 	}
 
 	@Override

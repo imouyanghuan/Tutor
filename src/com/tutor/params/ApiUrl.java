@@ -122,4 +122,6 @@ public class ApiUrl {
 	public static final String IM_ID_VALID = "api/v1/members/im/exist";
 	/** 记录日志信息 */
 	public static final String LOG = "api/v1/log/loginfo";
+	/** 获取活动(按月,1-12) */
+	public static final String ACTIVITIES = "api/v1/notification/activities";
 }

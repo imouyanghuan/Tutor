@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -104,6 +105,8 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 	private boolean isFromTeacher;
 	private LinearLayout llGender;
 	private FrameLayout flTipSearch;
+	private LinearLayout llIsVoluntary;
+	private CheckBox cbIsVoluntary;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -128,6 +131,7 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 			@Override
 			public void onClick(View v) {
 				SearchCondition condition = new SearchCondition();
+				condition.setVoluntaryTutoring(cbIsVoluntary.isChecked());
 				condition.setAreaValue(areaValue);
 				String areaName = "";
 				if (!curCity.equals(getString(R.string.label_please_choose))) {
@@ -163,6 +167,14 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 				SearchConditionsActivity.this.finish();
 			}
 		});
+		// 是否义务补习
+		llIsVoluntary = getView(R.id.ll_isVoluntary);
+		cbIsVoluntary = getView(R.id.cb_is_voluntary);
+		TextView tvNote = getView(R.id.tv_note);
+		if (TutorApplication.getRole() != Constants.General.ROLE_TUTOR) {
+			tvNote.setVisibility(View.GONE);
+			llIsVoluntary.setVisibility(View.VISIBLE);
+		}
 		llGender = getView(R.id.ll_gender);
 		// tip
 		flTipSearch = getView(R.id.fl_tip_search);

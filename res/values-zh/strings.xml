@@ -303,5 +303,8 @@
     <string name="label_appointment_time_slot_with_this_student">與該學生約定的時間段</string>
     <string name="unusual_exception">很抱歉，程式出現異常，即將關閉.</string>
     <string name="chat_service_not_available">聊天服務暫時不可用, 請稍後再試</string>
+    <string name="label_provide_voluntary_tutoring">願意義工補習</string>
+    <string name="label_note">*您同意披露自己的聯系方式給我們的非牟利志願機構伙伴</string>
+    <string name="label_activity_detail">活動詳情</string>
 
 </resources>

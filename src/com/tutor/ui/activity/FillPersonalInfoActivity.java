@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -144,6 +145,12 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		avatar.setOnClickListener(this);
 		if (isEdit) {
 			avatar.setVisibility(View.GONE);
+		}
+		// 是否义务补习
+		llIsVoluntary = getView(R.id.ll_isVoluntary);
+		cbIsVoluntary = getView(R.id.cb_is_voluntary);
+		if (role == Constants.General.ROLE_TUTOR) {
+			llIsVoluntary.setVisibility(View.VISIBLE);
 		}
 		nameEditText = getView(R.id.ac_fill_personal_info_et_name);
 		hKidEditText = getView(R.id.ac_fill_personal_info_et_hkid);
@@ -393,6 +400,8 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 			}
 		}
 	};
+	private LinearLayout llIsVoluntary;
+	private CheckBox cbIsVoluntary;
 
 	private void onsend() {
 		// 昵称
@@ -455,6 +464,8 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		userInfo.setGrade(gradeValue);
 		userInfo.setBirth(birth);
 		userInfo.setGender(sex);
+		userInfo.setVoluntaryTutoring(cbIsVoluntary.isChecked());
+		LogUtils.e("cbIsVoluntary ==================== " + cbIsVoluntary.isChecked());
 		// userInfo.setResidentialAddress(address);
 		intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 		startActivity(intent);

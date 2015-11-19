@@ -64,6 +64,7 @@ public class UserInfo implements Serializable {
 	private ArrayList<Timeslot> appointmentTimeslots;
 	private boolean isMatched;
 	private String gradeName;
+	private boolean isVoluntaryTutoring;
 
 	public String getHkidNumber() {
 		return hkidNumber;
@@ -386,5 +387,13 @@ public class UserInfo implements Serializable {
 
 	public void setAppointmentTimeslots(ArrayList<Timeslot> appointmentTimeslots) {
 		this.appointmentTimeslots = appointmentTimeslots;
+	}
+
+	public boolean isVoluntaryTutoring() {
+		return isVoluntaryTutoring;
+	}
+
+	public void setVoluntaryTutoring(boolean isVoluntaryTutoring) {
+		this.isVoluntaryTutoring = isVoluntaryTutoring;
 	}
 }

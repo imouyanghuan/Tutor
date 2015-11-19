@@ -1,27 +1,40 @@
 package com.tutor.adapter;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.WindowManager.LayoutParams;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.hk.tutor.R;
+import com.tutor.model.ActivityFlag;
+import com.tutor.model.ActivityModel;
+import com.tutor.model.ActivityWithWeek;
 import com.tutor.model.Clander;
 import com.tutor.model.TimeTable;
 import com.tutor.model.TimeTableDetail;
 import com.tutor.model.TimeTableTag;
+import com.tutor.params.Constants;
+import com.tutor.ui.activity.ActivitiesDetailActivity;
 import com.tutor.util.LunarCalendar;
+import com.tutor.util.ScreenUtil;
 import com.tutor.util.SpecialCalendar;
 
 /**
@@ -29,6 +42,7 @@ import com.tutor.util.SpecialCalendar;
  * @version 创建时间：2014-8-5 下午6:30:35
  * @see 类说明 :适配器
  */
+@SuppressLint("SimpleDateFormat")
 public class GridViewAdapter extends BaseAdapter {
 
 	private LayoutInflater lif;
@@ -49,14 +63,16 @@ public class GridViewAdapter extends BaseAdapter {
 	private String week_c;// 当前日期是星期几
 	private static String week[] = null;
 	// 系统当前时间
-	@SuppressLint("SimpleDateFormat")
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d");
+	private SimpleDateFormat sdfAcitivity = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	private String sysDate = "";
-	private String sys_year = "";
-	private String sys_month = "";
-	private String sys_day = "";
+	private String curYear = "";
+	private String curMonth = "";
+	private String curDay = "";
 	private Context context;
 	private ArrayList<TimeTable> timeTables;
+	private ArrayList<ActivityModel> activities;
+	private ArrayList<ActivityFlag> flags;
 
 	/**
 	 * 构造器
@@ -80,9 +96,9 @@ public class GridViewAdapter extends BaseAdapter {
 	private void initSysData() {
 		Date date = new Date();
 		sysDate = sdf.format(date); // 当期日期
-		sys_year = sysDate.split("-")[0];
-		sys_month = sysDate.split("-")[1];
-		sys_day = sysDate.split("-")[2];
+		curYear = sysDate.split("-")[0];
+		curMonth = sysDate.split("-")[1];
+		curDay = sysDate.split("-")[2];
 	}
 
 	/**
@@ -96,35 +112,96 @@ public class GridViewAdapter extends BaseAdapter {
 	}
 
 	/**
-	 * 在实例化本类对象之后,必须先调用此方法来初始化本类中的成员变量
+	 * 设置activity 数据
+	 * 
+	 * @param activities
 	 */
-	public void setClanderData(int jumpMonth, int jumpYear, int year_c, int month_c, int day_c) {// （jumpMonth为滑动的次数，每滑动一次就增加一月或减一月）
+	public void setActivityData(ArrayList<ActivityModel> activities, int year, int month) {
+		this.activities = activities;
+		notifyDataSetChanged();
+		getActivities(year, month);
+	}
+
+	// 获取标记活动
+	@SuppressWarnings("deprecation")
+	private void getActivities(int year, int month) {
 		initSysData();
-		int stepYear = year_c + jumpYear;
-		int stepMonth = month_c + jumpMonth;
-		if (stepMonth > 0) {
-			// 往下一个月滑动
-			if (stepMonth % 12 == 0) {
-				stepYear = year_c + stepMonth / 12 - 1;
-				stepMonth = 12;
-			} else {
-				stepYear = year_c + stepMonth / 12;
-				stepMonth = stepMonth % 12;
+		isLeapyear = sc.isLeapYear(year); // 是否为闰年
+		daysOfMonth = sc.getDaysOfMonth(isLeapyear, month); // 某月的总天数
+		dayOfWeek = sc.getWeekdayOfMonth(year, month); // 某月第一天为星期几
+		lastDaysOfMonth = sc.getDaysOfMonth(isLeapyear, month - 1); // 上一个月的总天数
+		dayNumber.clear();
+		int j = 1;
+		String lunarDay = ""; // 农历
+		// 得到当前月的所有日程日期(这些日期需要标记)
+		flags = new ArrayList<ActivityFlag>();
+		for (int i = 0; i < dayNumberSize; i++) {
+			Clander clander = new Clander();
+			if (i < dayOfWeek) { // 前一个月
+				int temp = lastDaysOfMonth - dayOfWeek + 1;
+				lunarDay = lc.getLunarDate(year, month - 1, temp + i, false);
+				clander.setDay(temp + i);
+				clander.setLunarDay(lunarDay);
+				dayNumber.add(clander);
+			} else if (i < daysOfMonth + dayOfWeek) { // 本月
+				int day = i - dayOfWeek + 1; // 得到的日期
+				// 把当前position加入到flag里面
+				ActivityFlag flag = new ActivityFlag();
+				flag.setId(i);
+				flag.setDay(day);
+				flags.add(flag);
+				// ///////////////////////////
+				lunarDay = lc.getLunarDate(year, month, i - dayOfWeek + 1, false);
+				clander.setDay(i - dayOfWeek + 1);
+				clander.setLunarDay(lunarDay);
+				clander.setLunarDay2(lc.getLunarDate(year, month, i - dayOfWeek + 1, true));
+				//
+				// 标记本月的日程
+				clander.setLeapyear(isLeapyear);
+				clander.setYear(year);
+				clander.setMonth(month);
+				clander.setAnimalsYear(lc.animalsYear(year));
+				clander.setLeapMonth(lc.leapMonth == 0 ? "" : String.valueOf(lc.leapMonth));
+				clander.setCyclical(lc.cyclical(year));
+				clander.setLunarYear(lc.getYear());
+				clander.setLunarMonth(lc.getLunarMonth());
+				dayNumber.add(clander);
+			} else { // 下一个月
+				lunarDay = lc.getLunarDate(year, month + 1, j, false);
+				clander.setDay(j);
+				clander.setLunarDay(lunarDay);
+				dayNumber.add(clander);
+				j++;
 			}
-		} else {
-			// 往上一个月滑动
-			stepYear = year_c - 1 + stepMonth / 12;
-			stepMonth = stepMonth % 12 + 12;
+			clander = null;
 		}
-		getCalendar(stepYear, stepMonth);
+		if (activities != null && activities.size() > 0) {
+			for (int i = 0; i < activities.size(); i++) {
+				String heldDate = activities.get(i).getHeldDate();
+				Date date = null;
+				try {
+					date = sdfAcitivity.parse(heldDate);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				int curDay = date.getDate();
+				if (flags != null && flags.size() > 0) {
+					for (int f = 0; f < flags.size(); f++) {
+						int day = flags.get(f).getDay();
+						if (day == curDay) {
+							flags.get(f).setFlag(true);
+							flags.get(f).setActivityModel(activities.get(i));
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 
 	// 得到某年的某月的天数且这月的第一天是星期几
 	public void getCalendar(int year, int month) {
-		if (year > 2049 || year < 1901) {
-			Toast.makeText(context, "所选的年份超过了范围!", Toast.LENGTH_LONG).show();
-			return;
-		}
+		initSysData();
 		isLeapyear = sc.isLeapYear(year); // 是否为闰年
 		daysOfMonth = sc.getDaysOfMonth(isLeapyear, month); // 某月的总天数
 		dayOfWeek = sc.getWeekdayOfMonth(year, month); // 某月第一天为星期几
@@ -152,10 +229,12 @@ public class GridViewAdapter extends BaseAdapter {
 				clander.setDay(i - dayOfWeek + 1);
 				clander.setLunarDay(lunarDay);
 				clander.setLunarDay2(lc.getLunarDate(year, month, i - dayOfWeek + 1, true));
-				// 对于当前月才去标记当前日期
-				if (sys_year.equals(String.valueOf(year)) && sys_month.equals(String.valueOf(month)) && sys_day.equals(day)) {
+				//
+				// 当前日期
+				if (curYear.equals(String.valueOf(year)) && curMonth.equals(String.valueOf(month)) && curDay.equals(day)) {
 					week_c = week[i % 7]; // 31
 					tags.clear();
+					// 把当前日期所在的一周都加入到tags里面
 					tags.add(new TimeTableTag(i, week_c, false));
 					switch (i % 7) {
 						case 0:
@@ -222,6 +301,7 @@ public class GridViewAdapter extends BaseAdapter {
 								for (int m = 0; m < timeslots.size(); m++) {
 									for (int n = 0; n < tags.size(); n++) {
 										int dayOfWeek = timeslots.get(m).getDayOfWeek();
+										// 如果时间段里面的星期和标记里面的星期一致，则标记为true
 										if (week[(dayOfWeek + 1) % 7].equals(tags.get(n).getWeek())) {
 											tags.get(n).setTag(true);
 										}
@@ -269,13 +349,14 @@ public class GridViewAdapter extends BaseAdapter {
 
 	@SuppressLint("InflateParams")
 	@Override
-	public View getView(int arg0, View view, ViewGroup arg2) {
+	public View getView(final int arg0, View view, ViewGroup arg2) {
 		ViewHelper helper = null;
 		if (view == null) {
 			helper = new ViewHelper();
 			view = lif.inflate(R.layout.clander_gridview_item, null);
 			view.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, width));
 			helper.day = (TextView) view.findViewById(R.id.clander_gridview_item_tv_day);
+			helper.ibNote = (ImageView) view.findViewById(R.id.ib_note);
 			view.setTag(helper);
 		} else {
 			helper = (ViewHelper) view.getTag();
@@ -283,24 +364,7 @@ public class GridViewAdapter extends BaseAdapter {
 		helper.day.setText(dayNumber.get(arg0).getDay() + "");
 		// 设置背景
 		if (arg0 < daysOfMonth + dayOfWeek && arg0 >= dayOfWeek) { // 当前月的信息
-			/*
-			 * if (arg0 == currentFlag) {// 当前
-			 * view.setBackgroundResource(R.drawable.current_day_bgc); } else
-			 */// if (arg0 == clickedData && arg0 != currentFlag) {// 点击并不是当前
-				// view.setBackgroundColor(res.getColor(R.color.grid_item_seleted));
-			// } else {
 			view.setBackgroundColor(res.getColor(R.color.btn_normal));
-			// }
-			// helper.lunar.setTextColor(res.getColor(R.color.white));
-			// 设置周六周日日期的字体颜色为红色
-			// if (arg0 % 7 == 0 || arg0 % 7 == 6)
-			// {
-			// helper.day.setTextColor(res.getColor(R.color.red));
-			// }
-			// else
-			// {
-			// helper.day.setTextColor(res.getColor(R.color.white));
-			// }
 			helper.day.setTextColor(res.getColor(R.color.white));
 		} else { // 其他月
 					// 背景灰色
@@ -308,10 +372,112 @@ public class GridViewAdapter extends BaseAdapter {
 			// 字体白色
 			helper.day.setTextColor(res.getColor(R.color.dark_gray));
 		}
+		view.setOnClickListener(null);
+		final ActivityWithWeek aww = new ActivityWithWeek(false);
+		// 已经被标记，并且当前position和标记的position一致，设置其背景颜色为黄色
 		if (tags != null && tags.size() > 0) {
 			for (TimeTableTag tag : tags) {
 				if (tag.isTag() && arg0 == tag.getId()) {
 					view.setBackgroundColor(res.getColor(R.color.yellow_normal));
+					aww.setYellow(true);
+					Loop: for (int k = 0; k < timeTables.size(); k++) {
+						ArrayList<TimeTableDetail> timeslots = timeTables.get(k).getTimeslots();
+						if (timeslots != null && timeslots.size() > 0) {
+							for (TimeTableDetail detail : timeslots) {
+								int dayOfWeek = detail.getDayOfWeek();
+								if (week[(1 + dayOfWeek) % 7].equals(tag.getWeek())) {
+									aww.setTimeTables(timeTables);
+									aww.setWeek(week[(1 + dayOfWeek) % 7]);
+									break Loop;
+								}
+							}
+						}
+					}
+					view.setOnClickListener(new OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							if (onTimeTableClickListener != null) {
+								onTimeTableClickListener.onTimeTableClick(aww.getWeek(), aww.getTimeTables());
+							}
+						}
+					});
+					break;
+				}
+			}
+		}
+		// 已经被标记，并且当前position和标记的position一致，显示小旗子
+		if (flags != null && flags.size() > 0) {
+			for (final ActivityFlag flag : flags) {
+				if (flag.isFlag() && arg0 == flag.getId()) {
+					helper.ibNote.setVisibility(View.VISIBLE);
+					if (aww.isYellow()) {
+						//
+						view.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								final AlertDialog mAlertDialog = new AlertDialog.Builder(context).create();
+								mAlertDialog.show();
+								Window mWindow = mAlertDialog.getWindow();
+								mWindow.setContentView(R.layout.layout_time_table_sheet);
+								mWindow.setGravity(Gravity.BOTTOM);
+								mWindow.setLayout(ScreenUtil.getSW(context), LayoutParams.WRAP_CONTENT);
+								// time table
+								mWindow.findViewById(R.id.btn_time_table).setOnClickListener(new OnClickListener() {
+
+									@Override
+									public void onClick(View v) {
+										//
+										if (onTimeTableClickListener != null) {
+											onTimeTableClickListener.onTimeTableClick(aww.getWeek(), aww.getTimeTables());
+										}
+										mAlertDialog.cancel();
+									}
+								});
+								// activitiew
+								mWindow.findViewById(R.id.btn_activities).setOnClickListener(new OnClickListener() {
+
+									@Override
+									public void onClick(View v) {
+										if (activities != null) {
+											int today = flag.getDay();
+											Intent intent = new Intent(context, ActivitiesDetailActivity.class);
+											intent.putExtra(Constants.General.ACTIVITIES, activities);
+											intent.putExtra(Constants.General.TODAY, today);
+											intent.putExtra(Constants.General.MONTH, curMonth);
+											intent.putExtra(Constants.General.YEAR, curYear);
+											context.startActivity(intent);
+										}
+										mAlertDialog.cancel();
+									}
+								});
+								// 取消
+								mWindow.findViewById(R.id.btn_cancel).setOnClickListener(new OnClickListener() {
+
+									@Override
+									public void onClick(View v) {
+										mAlertDialog.cancel();
+									}
+								});
+							}
+						});
+					} else {
+						view.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								int today = flag.getDay();
+								Intent intent = new Intent(context, ActivitiesDetailActivity.class);
+								intent.putExtra(Constants.General.ACTIVITIES, activities);
+								intent.putExtra(Constants.General.TODAY, today);
+								intent.putExtra(Constants.General.MONTH, curMonth);
+								intent.putExtra(Constants.General.YEAR, curYear);
+								context.startActivity(intent);
+							}
+						});
+					}
+					break;
 				}
 			}
 		}
@@ -322,35 +488,36 @@ public class GridViewAdapter extends BaseAdapter {
 		this.notifyDataSetChanged();
 	}
 
-	public void setClickedItem(int index) {
-		if (index < daysOfMonth + dayOfWeek && index >= dayOfWeek) {// 只有本月的可以点击
-			if (tags != null && tags.size() > 0) {
-				for (TimeTableTag tag : tags) {
-					if (tag.isTag() && index == tag.getId()) {
-						for (int k = 0; k < timeTables.size(); k++) {
-							ArrayList<TimeTableDetail> timeslots = timeTables.get(k).getTimeslots();
-							if (timeslots != null && timeslots.size() > 0) {
-								for (int m = 0; m < timeslots.size(); m++) {
-									for (int n = 0; n < tags.size(); n++) {
-										int dayOfWeek = timeslots.get(m).getDayOfWeek();
-										if (week[(1 + dayOfWeek) % 7].equals(tag.getWeek())) {
-											if (onTimeTableClickListener != null) {
-												onTimeTableClickListener.onTimeTableClick(week[(1 + dayOfWeek) % 7], timeTables);
-												return;
-											}
-										}
-									}
-								}
-							}
-						}
-						break;
-					}
-				}
-			}
-			this.notifyDataSetChanged();
-		}
-	}
-
+	// public void setClickedItem(int index) {
+	// // if (index < daysOfMonth + dayOfWeek && index >= dayOfWeek) {//
+	// 只有本月的可以点击
+	// // if (tags != null && tags.size() > 0) {
+	// // for (TimeTableTag tag : tags) {
+	// // if (tag.isTag() && index == tag.getId()) {
+	// for (int k = 0; k < timeTables.size(); k++) {
+	// ArrayList<TimeTableDetail> timeslots = timeTables.get(k).getTimeslots();
+	// if (timeslots != null && timeslots.size() > 0) {
+	// for (int m = 0; m < timeslots.size(); m++) {
+	// // for (int n = 0; n < tags.size(); n++) {
+	// int dayOfWeek = timeslots.get(m).getDayOfWeek();
+	// if (week[(1 + dayOfWeek) % 7].equals(tag.getWeek())) {
+	// if (onTimeTableClickListener != null) {
+	// onTimeTableClickListener.onTimeTableClick(week[(1 + dayOfWeek) % 7],
+	// timeTables);
+	// return;
+	// }
+	// }
+	// // }
+	// }
+	// }
+	// }
+	// // break;
+	// // }
+	// // }
+	// // }
+	// //this.notifyDataSetChanged();
+	// // }
+	// }
 	public String getShowYear() {
 		return dayNumber.get(dayOfWeek).getYear() + "";
 	}
@@ -362,6 +529,7 @@ public class GridViewAdapter extends BaseAdapter {
 	class ViewHelper {
 
 		TextView day;
+		ImageView ibNote;
 	}
 
 	public interface OnTimeTableClickListener {

@@ -7,24 +7,24 @@
     android:padding="@dimen/dp_40" >
 
     <Button
-        android:id="@id/change_avatar_btn1"
+        android:id="@+id/btn_time_table"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/login_btn_facebook_bg"
-        android:text="@string/btn_take_photo"
+        android:text="Time Table"
         android:textColor="@color/white" />
 
     <Button
-        android:id="@id/change_avatar_btn2"
+        android:id="@+id/btn_activities"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
         android:background="@drawable/login_btn_facebook_bg"
-        android:text="@string/btn_gallery"
+        android:text="Activities"
         android:textColor="@color/white" />
 
     <Button
-        android:id="@id/change_avatar_btn_cancel"
+        android:id="@+id/btn_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"

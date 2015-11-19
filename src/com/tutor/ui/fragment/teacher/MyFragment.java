@@ -314,7 +314,11 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 		userInfo.setNickName(nickName.getEditableText().toString().trim());
 		userInfo.setGraduateSchool(school.getEditableText().toString().trim());
 		userInfo.setMajor(major.getEditableText().toString().trim());
-		userInfo.setExprience(Integer.parseInt(year.getEditableText().toString()));
+		if (!TextUtils.isEmpty(year.getEditableText())) {
+			userInfo.setExprience(Integer.parseInt(year.getEditableText().toString()));
+		} else {
+			userInfo.setExprience(0);
+		}
 		userInfo.setIntroduction(introduction.getEditableText().toString().trim());
 		userInfo.setIntroductionVideo(videoLink.getEditableText().toString().trim());
 		userInfo.setEducationStatus(es);

@@ -262,7 +262,8 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 							String COLON = ":";
 							timeStr = weekStr + " " + startHour + COLON + startM + " - " + endHour + COLON + endM + COM;
 						}
-						String searchKeyWork = keyword + courseName + areaName + genderName + timeStr;
+						String voluntaryTutor = (condition.isVoluntaryTutoring() ? getString(R.string.label_provide_voluntary_tutoring) : "") + COM;
+						String searchKeyWork = keyword + courseName + areaName + genderName + timeStr + voluntaryTutor;
 						if (searchKeyWork.length() > 2) {
 							editText.setText(searchKeyWork.substring(0, (searchKeyWork.length() - 2)));
 						} else {

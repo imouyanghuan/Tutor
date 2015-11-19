@@ -1,5 +1,6 @@
 package com.tutor.ui.activity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import net.simonvt.menudrawer.MenuDrawer;
@@ -21,7 +22,6 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import cn.jpush.android.api.JPushInterface;
-import cn.jpush.android.api.TagAliasCallback;
 
 import com.facebook.login.LoginManager;
 import com.hk.tutor.R;
@@ -89,7 +89,6 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		initView();
 		// 初始化fragment
 		initFragment();
-		
 		imLogin();
 	}
 
@@ -100,15 +99,14 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 			String accountsString = account.getImAccount();
 			String pswd = account.getImPswd();
 			new LoginImTask(accountsString, pswd).execute();
-			
-			// 设置别名
-			JPushInterface.setAlias(getApplicationContext(), account.getImAccount(), new TagAliasCallback() {
-
-				@Override
-				public void gotResult(int arg0, String arg1, Set<String> arg2) {
-					// TODO Auto-generated method stub
-				}
-			});
+			// 设置别名和tag
+			Set<String> tags = new HashSet<String>();
+			if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+				tags.add(Constants.General.JPUSH_TAG_STUDENT);
+			} else {
+				tags.add(Constants.General.JPUSH_TAG_TUTOR);
+			}
+			JPushInterface.setAliasAndTags(TeacherMainActivity.this, account.getImAccount(), tags);
 		}
 	}
 
@@ -150,7 +148,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 			}
 		}
 	}
-	
+
 	@Override
 	protected void initView() {
 		bar = getView(R.id.title_bar);
@@ -311,6 +309,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		// 註冊廣播
 		IntentFilter filter = new IntentFilter(Constants.Action.ACTION_NEW_MESSAGE);
 		registerReceiver(receiver, filter);
+		JPushInterface.resumePush(TeacherMainActivity.this);
 	}
 
 	@Override

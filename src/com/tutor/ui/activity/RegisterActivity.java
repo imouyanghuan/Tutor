@@ -2,6 +2,7 @@ package com.tutor.ui.activity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.http.entity.StringEntity;
@@ -20,9 +21,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
 import cn.jpush.android.api.JPushInterface;
-import cn.jpush.android.api.TagAliasCallback;
 
 import com.hk.tutor.R;
 import com.mssky.mobile.helper.ValidatorHelper;
@@ -138,14 +137,14 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 			// JPush 获取到registerId e.g. 04050e77428
 			String registerId = JPushInterface.getRegistrationID(getApplicationContext());
 			model.setjRegistrationID(registerId);
-			// 设置别名
-			JPushInterface.setAlias(getApplicationContext(), im, new TagAliasCallback() {
-
-				@Override
-				public void gotResult(int arg0, String arg1, Set<String> arg2) {
-					// Auto-generated method stub
-				}
-			});
+			// 设置别名和tag
+			Set<String> tags = new HashSet<String>();
+			if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+				tags.add(Constants.General.JPUSH_TAG_STUDENT);
+			} else {
+				tags.add(Constants.General.JPUSH_TAG_TUTOR);
+			}
+			JPushInterface.setAliasAndTags(RegisterActivity.this, im, tags);
 			register(model);
 		} else if (R.id.ac_register_tv_team == v.getId()) {
 			TeamConditionsDialog dialog = new TeamConditionsDialog(this);

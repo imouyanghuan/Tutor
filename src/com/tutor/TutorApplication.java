@@ -101,7 +101,6 @@ public class TutorApplication extends Application {
 		// 初始化谷歌分析工具
 		// initGoogleAnalytics();
 	}
-
 	public int getVersionCode(Context activity) {
 		String pName = activity.getPackageName();
 		int versionCode = -1;
