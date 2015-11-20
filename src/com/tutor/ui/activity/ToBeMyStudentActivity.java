@@ -71,17 +71,23 @@ public class ToBeMyStudentActivity extends BaseActivity implements OnItemSelecte
 	private TextView hKidRequired;
 	private String hkId;
 	private String replaceId;
+	private int broadCastId;
 
 	@Override
 	protected void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
 		setContentView(R.layout.activity_to_be_my_student);
-		userInfo = (UserInfo) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO);
+		Intent intent = getIntent();
+		if (intent == null) {
+			return;
+		}
+		userInfo = (UserInfo) intent.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO);
 		if (null == userInfo) {
 			finish();
 			return;
 		}
 		accountType = userInfo.getAccountType();
+		broadCastId = intent.getIntExtra(Constants.General.BROADCAST_ID, -1);
 		initView();
 		// 获取币种
 		showDialogRes(R.string.loading);
@@ -308,6 +314,7 @@ public class ToBeMyStudentActivity extends BaseActivity implements OnItemSelecte
 			priceEditText.requestFocus();
 			return;
 		}
+		notification.setBroadcastId(broadCastId);
 		notification.setPhone(phone);
 		notification.setResidentialAddress(myAddress);
 		notification.setTimeslots(timeslots);

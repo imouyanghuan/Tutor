@@ -22,6 +22,7 @@ import com.tutor.adapter.TimeSlotAdapter;
 import com.tutor.im.ContactManager;
 import com.tutor.im.XMPPConnectionManager;
 import com.tutor.model.AddBookmarkResult;
+import com.tutor.model.BroadCastModel;
 import com.tutor.model.Course;
 import com.tutor.model.CourseItem1;
 import com.tutor.model.CourseItem2;
@@ -60,6 +61,8 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 	private Button button;
 	private LinearLayout llAppointmentTimeslot;
 	private LinearLayout llIntroduction;
+	private TitleBar bar;
+	private int broadCastId = -1;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -74,20 +77,56 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 			return;
 		}
 		userInfo = (UserInfo) intent.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO);
-		if (userInfo == null) {
-			return;
+		if (userInfo != null) {
+			id = userInfo.getId();
+			// imId = userInfo.getImid();
+		} else {
+			BroadCastModel broadCastModel = (BroadCastModel) intent.getSerializableExtra(Constants.General.BROADCAST_MODEL);
+			if (broadCastModel != null) {
+				id = broadCastModel.getMemberId();
+				// 通过tag广播的id
+				broadCastId = broadCastModel.getBroadcastId();
+			}
 		}
-		id = userInfo.getId();
-		imId = userInfo.getImid();
 		initView();
-		showDialogRes(R.string.loading);
 		getDetails();
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (!TutorApplication.isMainActivity) {
+			Intent intent = null;
+			if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+				intent = new Intent(this, StudentMainActivity.class);
+			} else {
+				intent = new Intent(this, TeacherMainActivity.class);
+			}
+			startActivity(intent);
+			this.finish();
+		} else {
+			super.onBackPressed();
+		}
 	}
 
 	private void setData() {
 		if (userInfo == null) {
 			return;
 		}
+		// title
+		titleName = userInfo.getNickName();
+		if (TextUtils.isEmpty(titleName)) {
+			titleName = userInfo.getUserName();
+			if (TextUtils.isEmpty(titleName)) {
+				titleName = "Student Info";
+			}
+		}
+		bar.setTitle(titleName);
+		// nick name
+		nickTextView.setText(titleName);
+		// im id
+		imId = userInfo.getImid();
+		// avatar
+		ImageUtils.loadImage(avatarImageView, ApiUrl.DOMAIN + userInfo.getAvatar());
 		if (userInfo.isMatched()) {
 			button.setEnabled(false);
 		} else {
@@ -173,16 +212,23 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 
 	@Override
 	protected void initView() {
-		TitleBar bar = getView(R.id.title_bar);
-		titleName = userInfo.getNickName();
-		if (TextUtils.isEmpty(titleName)) {
-			titleName = userInfo.getUserName();
-			if (TextUtils.isEmpty(titleName)) {
-				titleName = "Student Info";
+		bar = getView(R.id.title_bar);
+		// titleName = userInfo.getNickName();
+		// if (TextUtils.isEmpty(titleName)) {
+		// titleName = userInfo.getUserName();
+		// if (TextUtils.isEmpty(titleName)) {
+		// titleName = "Student Info";
+		// }
+		// }
+		// bar.setTitle(titleName);
+		// bar.initBack(this);
+		bar.setBackBtnClick(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				onBackPressed();
 			}
-		}
-		bar.setTitle(titleName);
-		bar.initBack(this);
+		});
 		bar.setRightButton(R.drawable.selector_like, new OnClickListener() {
 
 			@Override
@@ -212,9 +258,9 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		couresListView.setFocusable(false);
 		timeslotTip = getView(R.id.tv_timeslot_tip);
 		courseTip = getView(R.id.tv_course_tip);
-		nickTextView.setText(titleName);
 		avatarImageView = getView(R.id.iv_avatar);
-		ImageUtils.loadImage(avatarImageView, ApiUrl.DOMAIN + userInfo.getAvatar());
+		// ImageUtils.loadImage(avatarImageView, ApiUrl.DOMAIN +
+		// userInfo.getAvatar());
 		// self introduction
 		llIntroduction = getView(R.id.ll_self_introduction);
 		introduction = getView(R.id.tv_self_introduction);
@@ -243,6 +289,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 			case R.id.btn_to_be_my_student:
 				if (null != userInfo) {
 					Intent intent = new Intent(StudentInfoActivity.this, ToBeMyStudentActivity.class);
+					intent.putExtra(Constants.General.BROADCAST_ID, broadCastId);
 					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 					startActivity(intent);
 				}
@@ -291,6 +338,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 	 * @param id
 	 */
 	private void getDetails() {
+		showDialogRes(R.string.loading);
 		RequestParams params = new RequestParams();
 		params.put("memberId", id);
 		HttpHelper.get(this, ApiUrl.STUDENTINFO, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {

@@ -39,6 +39,8 @@ public class Notification implements Serializable {
 	private String phone;
 	private String hkidNumber;
 	private String residentialAddress;
+	// 广播id
+	private int broadcastId;
 
 	public int getSource() {
 		return source;
@@ -206,5 +208,13 @@ public class Notification implements Serializable {
 
 	public void setResidentialAddress(String residentialAddress) {
 		this.residentialAddress = residentialAddress;
+	}
+
+	public int getBroadcastId() {
+		return broadcastId;
+	}
+
+	public void setBroadcastId(int broadcastId) {
+		this.broadcastId = broadcastId;
 	}
 }

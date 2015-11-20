@@ -110,7 +110,7 @@ public class BookmarkAdapter extends BaseSwipeAdapter {
 		if (!TextUtils.isEmpty(userInfo.getResidentialAddress())) {
 			msg.setText(userInfo.getResidentialAddress());
 		} else {
-			msg.setText(R.string.label_none_area);
+			msg.setText("");
 		}
 		String createTime = userInfo.getCreatedTime();
 		if (TextUtils.isEmpty(createTime)) {

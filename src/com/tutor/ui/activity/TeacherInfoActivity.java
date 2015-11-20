@@ -24,6 +24,7 @@ import com.tutor.adapter.TimeSlotAdapter;
 import com.tutor.im.ContactManager;
 import com.tutor.im.XMPPConnectionManager;
 import com.tutor.model.AddBookmarkResult;
+import com.tutor.model.BroadCastModel;
 import com.tutor.model.Course;
 import com.tutor.model.CourseItem1;
 import com.tutor.model.CourseItem2;
@@ -61,6 +62,12 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 	private RatingBar rating;
 	private TextView tvMajor;
 	private TextView tvGraduateSchool;
+	private TitleBar bar;
+	private TextView tvGender;
+	private ImageView ivAvatar;
+	private TextView tvEducation;
+	private int broadCastId = -1;
+	private TextView tvNickName;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -75,29 +82,62 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 			return;
 		}
 		userInfo = (UserInfo) intent.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO);
-		if (userInfo == null) {
-			return;
+		if (userInfo != null) {
+			id = userInfo.getId();
+			// imId = userInfo.getImid();
+		} else {
+			BroadCastModel broadCastModel = (BroadCastModel) intent.getSerializableExtra(Constants.General.BROADCAST_MODEL);
+			if (broadCastModel != null) {
+				id = broadCastModel.getMemberId();
+				// 通过tag广播的id
+				broadCastId = broadCastModel.getBroadcastId();
+			}
 		}
-		id = userInfo.getId();
-		// 聊天id
-		imId = userInfo.getImid();
+		// if (userInfo == null) {
+		// return;
+		// }
+		// id = userInfo.getId();
+		// // 聊天id
+		// imId = userInfo.getImid();
 		initView();
-		showDialogRes(R.string.loading);
 		getDetails();
 	}
 
 	@Override
-	protected void initView() {
-		TitleBar bar = getView(R.id.title_bar);
-		titleName = userInfo.getNickName();
-		if (TextUtils.isEmpty(titleName)) {
-			titleName = userInfo.getUserName();
-			if (TextUtils.isEmpty(titleName)) {
-				titleName = "Teacher Info";
+	public void onBackPressed() {
+		if (!TutorApplication.isMainActivity) {
+			Intent intent = null;
+			if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+				intent = new Intent(this, StudentMainActivity.class);
+			} else {
+				intent = new Intent(this, TeacherMainActivity.class);
 			}
+			startActivity(intent);
+			this.finish();
+		} else {
+			super.onBackPressed();
 		}
-		bar.setTitle(titleName);
-		bar.initBack(this);
+	}
+
+	@Override
+	protected void initView() {
+		bar = getView(R.id.title_bar);
+		// titleName = userInfo.getNickName();
+		// if (TextUtils.isEmpty(titleName)) {
+		// titleName = userInfo.getUserName();
+		// if (TextUtils.isEmpty(titleName)) {
+		// titleName = "Teacher Info";
+		// }
+		// }
+		// bar.setTitle(titleName);
+		// bar.initBack(this);
+		bar.setBackBtnClick(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				onBackPressed();
+			}
+		});
 		bar.setRightButton(R.drawable.selector_like, new OnClickListener() {
 
 			@Override
@@ -117,25 +157,26 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		btnPlayVideo = getView(R.id.btn_play_video);
 		btnPlayVideo.setOnClickListener(this);
 		// nick
-		TextView tvNick = getView(R.id.tv_user_name);
-		tvNick.setText(titleName);
+		tvNickName = getView(R.id.tv_user_name);
 		// gender
-		TextView tvGender = getView(R.id.tv_gender);
-		int genderStr;
-		if (userInfo.getGender() == null) {
-			genderStr = R.string.label_ignore1;
-		} else if (Constants.General.MALE == userInfo.getGender()) {
-			genderStr = R.string.label_male;
-		} else {
-			genderStr = R.string.label_female;
-		}
-		tvGender.setText(genderStr);
+		tvGender = getView(R.id.tv_gender);
+		// int genderStr;
+		// if (userInfo.getGender() == null) {
+		// genderStr = R.string.label_ignore1;
+		// } else if (Constants.General.MALE == userInfo.getGender()) {
+		// genderStr = R.string.label_male;
+		// } else {
+		// genderStr = R.string.label_female;
+		// }
+		// tvGender.setText(genderStr);
 		// major
 		tvMajor = getView(R.id.tv_major);
-		tvMajor.setText(!TextUtils.isEmpty(userInfo.getMajor()) ? userInfo.getMajor() : "");
+		// tvMajor.setText(!TextUtils.isEmpty(userInfo.getMajor()) ?
+		// userInfo.getMajor() : "");
 		// graduate school
 		tvGraduateSchool = getView(R.id.tv_graduate_school);
-		tvGraduateSchool.setText(!TextUtils.isEmpty(userInfo.getGraduateSchool()) ? userInfo.getGraduateSchool() : "");
+		// tvGraduateSchool.setText(!TextUtils.isEmpty(userInfo.getGraduateSchool())
+		// ? userInfo.getGraduateSchool() : "");
 		// current education
 		LinearLayout llEducation = getView(R.id.ll_education);
 		if (TutorApplication.isCH()) {
@@ -143,22 +184,22 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		} else {
 			llEducation.setOrientation(LinearLayout.VERTICAL);
 		}
-		TextView tvEducation = getView(R.id.tv_education);
-		int curEducation = userInfo.getEducationDegree();
-		switch (curEducation) {
-			case 0:
-				tvEducation.setText(getString(R.string.eb_1));
-				break;
-			case 1:
-				tvEducation.setText(getString(R.string.eb_2));
-				break;
-			case 2:
-				tvEducation.setText(getString(R.string.eb_3));
-				break;
-			case 3:
-				tvEducation.setText(getString(R.string.eb_4));
-				break;
-		}
+		tvEducation = getView(R.id.tv_education);
+		// int curEducation = userInfo.getEducationDegree();
+		// switch (curEducation) {
+		// case 0:
+		// tvEducation.setText(getString(R.string.eb_1));
+		// break;
+		// case 1:
+		// tvEducation.setText(getString(R.string.eb_2));
+		// break;
+		// case 2:
+		// tvEducation.setText(getString(R.string.eb_3));
+		// break;
+		// case 3:
+		// tvEducation.setText(getString(R.string.eb_4));
+		// break;
+		// }
 		// experience
 		// TextView tvExperience = getView(R.id.tv_tutor_experience);
 		// String experience =
@@ -167,12 +208,12 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		// tvExperience.setText(experience);
 		// student count
 		tvStudentCount = getView(R.id.tv_student_count);
-		tvStudentCount.setText(String.valueOf(userInfo.getStudentCount()));
+		// tvStudentCount.setText(String.valueOf(userInfo.getStudentCount()));
 		// rating
 		rating = getView(R.id.ratingBar);
-		rating.setRating(userInfo.getRatingGrade());
-		ImageView ivAvatar = getView(R.id.iv_avatar);
-		ImageUtils.loadImage(ivAvatar, ApiUrl.DOMAIN + userInfo.getAvatar());
+		// rating.setRating(userInfo.getRatingGrade());
+		ivAvatar = getView(R.id.iv_avatar);
+		// ImageUtils.loadImage(ivAvatar, ApiUrl.DOMAIN + userInfo.getAvatar());
 		// address
 		// TextView tvAddress = getView(R.id.tv_address);
 		// tvAddress.setText(TextUtils.isEmpty(userInfo.getResidentialAddress())
@@ -244,6 +285,7 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 	 * @param id
 	 */
 	private void getDetails() {
+		showDialogRes(R.string.loading);
 		RequestParams params = new RequestParams();
 		params.put("memberId", id);
 		HttpHelper.get(this, ApiUrl.TUTORINFO, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
@@ -277,6 +319,55 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 	private void setData() {
 		if (userInfo == null) {
 			return;
+		}
+		// im id
+		imId = userInfo.getImid();
+		// title
+		titleName = userInfo.getNickName();
+		if (TextUtils.isEmpty(titleName)) {
+			titleName = userInfo.getUserName();
+			if (TextUtils.isEmpty(titleName)) {
+				titleName = "Teacher Info";
+			}
+		}
+		bar.setTitle(titleName);
+		// nick name
+		tvNickName.setText(titleName);
+		// gender
+		int genderStr;
+		if (userInfo.getGender() == null) {
+			genderStr = R.string.label_ignore1;
+		} else if (Constants.General.MALE == userInfo.getGender()) {
+			genderStr = R.string.label_male;
+		} else {
+			genderStr = R.string.label_female;
+		}
+		tvGender.setText(genderStr);
+		// major
+		tvMajor.setText(!TextUtils.isEmpty(userInfo.getMajor()) ? userInfo.getMajor() : "");
+		// graduate school
+		tvGraduateSchool.setText(!TextUtils.isEmpty(userInfo.getGraduateSchool()) ? userInfo.getGraduateSchool() : "");
+		// student count
+		tvStudentCount.setText(String.valueOf(userInfo.getStudentCount()));
+		// rating
+		rating.setRating(userInfo.getRatingGrade());
+		// avatar
+		ImageUtils.loadImage(ivAvatar, ApiUrl.DOMAIN + userInfo.getAvatar());
+		// current education
+		int curEducation = userInfo.getEducationDegree();
+		switch (curEducation) {
+			case 0:
+				tvEducation.setText(getString(R.string.eb_1));
+				break;
+			case 1:
+				tvEducation.setText(getString(R.string.eb_2));
+				break;
+			case 2:
+				tvEducation.setText(getString(R.string.eb_3));
+				break;
+			case 3:
+				tvEducation.setText(getString(R.string.eb_4));
+				break;
 		}
 		if (userInfo.isMatched()) {
 			btnRateTutor.setEnabled(true);
@@ -366,10 +457,11 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 					}
 				}
 				break;
-			// to be my student
+			// to be my tutor
 			case R.id.btn_to_be_my_tutor:
 				if (null != userInfo) {
 					Intent intent = new Intent(TeacherInfoActivity.this, ToBeMyStudentActivity.class);
+					intent.putExtra(Constants.General.BROADCAST_ID, broadCastId);
 					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 					startActivity(intent);
 				}

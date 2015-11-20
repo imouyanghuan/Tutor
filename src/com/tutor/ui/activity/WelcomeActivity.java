@@ -1,6 +1,7 @@
 package com.tutor.ui.activity;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
@@ -13,6 +14,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -128,6 +130,8 @@ public class WelcomeActivity extends InstrumentedActivity {
 
 						@Override
 						public void onClick(DialogInterface arg0, int arg1) {
+							Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(versionUpDate.getUrl()));
+							startActivity(intent);
 							WelcomeActivity.this.finish();
 						}
 					});

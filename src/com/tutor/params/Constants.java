@@ -75,6 +75,7 @@ public final class Constants {
 		public static final int JPUSH_MESSAGE_TYPE_NOTIFICATION = 0;
 		public static final int JPUSH_MESSAGE_TYPE_CHAT = 1;
 		public static final int JPUSH_MESSAGE_TYPE_TIME_TABLE = 2;
+		public static final int JPUSH_MESSAGE_TYPE_BROADCAST = 3;
 		public static final String ACTIVITIES = "activities";
 		public static final String TODAY = "today";
 		public static final String MONTH = "month";
@@ -82,6 +83,8 @@ public final class Constants {
 		
 		public static final String JPUSH_TAG_TUTOR = "2utor1";
 		public static final String JPUSH_TAG_STUDENT = "2utor0";
+		public static final String BROADCAST_MODEL = "broadCastModel";
+		public static final String BROADCAST_ID = "broadCastId";
 	}
 
 	/**

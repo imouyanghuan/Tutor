@@ -17,13 +17,16 @@ import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.tutor.im.IMMessageManager;
 import com.tutor.model.Avatar;
+import com.tutor.model.BroadCastModel;
 import com.tutor.model.IMMessage;
 import com.tutor.model.UserInfo;
 import com.tutor.model.UserInfoResult;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.ui.activity.ChatListActivity;
+import com.tutor.ui.activity.StudentInfoActivity;
 import com.tutor.ui.activity.SystemNotificationActivity;
+import com.tutor.ui.activity.TeacherInfoActivity;
 import com.tutor.ui.activity.TimeTableActivity;
 import com.tutor.util.DateTimeUtil;
 import com.tutor.util.HttpHelper;
@@ -40,6 +43,7 @@ public class JPushReceiver extends BroadcastReceiver {
 
 	private static final String TAG = "JPush";
 	private Context mContext;
+	private BroadCastModel broadCastModel;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -47,16 +51,16 @@ public class JPushReceiver extends BroadcastReceiver {
 		Bundle bundle = intent.getExtras();
 		Log.d(TAG, "[JPushReceiver] onReceive - " + intent.getAction() + ", extras: " + printBundle(bundle));
 		/**
-		 * 处理time table信息
+		 * 处理time table和分组发送信息
 		 */
-		processTimeTableMessage(context, bundle);
+		processTimeTableAndTagsMessage(context, bundle);
 		if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
 			String regId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);
 			Log.d(TAG, "[JPushReceiver] 接收Registration Id : " + regId);
 			// send the Registration Id to your server...
 		} else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
 			Log.d(TAG, "[JPushReceiver] 接收到推送下来的自定义消息: " + bundle.getString(JPushInterface.EXTRA_MESSAGE));
-			processCustomMessage(context, bundle);
+			processChatAndNotificationMessage(context, bundle);
 		} else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
 			Log.d(TAG, "[JPushReceiver] 接收到推送下来的通知");
 			int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
@@ -67,7 +71,15 @@ public class JPushReceiver extends BroadcastReceiver {
 			Intent openIntent = null;
 			if (TutorApplication.jPushMessageType == Constants.General.JPUSH_MESSAGE_TYPE_CHAT) {
 				openIntent = new Intent(context, ChatListActivity.class);
-			} else if (TutorApplication.isTimeTableMessage) {
+			} else if (TutorApplication.jPushMessageType == Constants.General.JPUSH_MESSAGE_TYPE_BROADCAST) {
+				// 如果当前登录的是学生：则跳转到老师详情，如果登录的老师：则跳转到学生详情
+				if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+					openIntent = new Intent(context, TeacherInfoActivity.class);
+				} else {
+					openIntent = new Intent(context, StudentInfoActivity.class);
+				}
+				openIntent.putExtra(Constants.General.BROADCAST_MODEL, broadCastModel);
+			} else if (TutorApplication.jPushMessageType == Constants.General.JPUSH_MESSAGE_TYPE_TIME_TABLE) {
 				openIntent = new Intent(context, TimeTableActivity.class);
 			} else {
 				openIntent = new Intent(context, SystemNotificationActivity.class);
@@ -103,8 +115,8 @@ public class JPushReceiver extends BroadcastReceiver {
 		return sb.toString();
 	}
 
-	// Process Custom Message
-	private void processCustomMessage(Context context, Bundle bundle) {
+	// process Chat And Notification Message
+	private void processChatAndNotificationMessage(Context context, Bundle bundle) {
 		String message = bundle.getString(JPushInterface.EXTRA_MESSAGE);
 		String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
 		LogUtils.e("processCustomMessage extras = " + extras);
@@ -118,6 +130,9 @@ public class JPushReceiver extends BroadcastReceiver {
 						saveMessage(imMessage);
 					}
 				}
+			} else if (extras.contains("broadcastId")) {
+				// 按照tag推送
+				TutorApplication.jPushMessageType = Constants.General.JPUSH_MESSAGE_TYPE_BROADCAST;
 			} else {
 				// 0
 				TutorApplication.jPushMessageType = Constants.General.JPUSH_MESSAGE_TYPE_NOTIFICATION;
@@ -128,12 +143,25 @@ public class JPushReceiver extends BroadcastReceiver {
 		}
 	}
 
-	// Process Time Table Message
-	private void processTimeTableMessage(Context context, Bundle bundle) {
+	// process TimeTable And Tags Message
+	private void processTimeTableAndTagsMessage(Context context, Bundle bundle) {
 		String extras = bundle.getString(JPushInterface.EXTRA_EXTRA);
-		LogUtils.e("processTimeTableMessage extras = " + extras);
+		LogUtils.e("processTimeTableAndTagsMessage extras = " + extras);
 		if (!TextUtils.isEmpty(extras)) {
-			TutorApplication.isTimeTableMessage = extras.contains("time");
+			broadCastModel = JsonUtil.parseJStr2Object(BroadCastModel.class, extras);
+			if (extras.contains("time")) {
+				// 2
+				TutorApplication.jPushMessageType = Constants.General.JPUSH_MESSAGE_TYPE_TIME_TABLE;
+			} else if (extras.contains("broadcastId")) {
+				// 3 按照tag推送
+				TutorApplication.jPushMessageType = Constants.General.JPUSH_MESSAGE_TYPE_BROADCAST;
+			} else {
+				// 0
+				TutorApplication.jPushMessageType = Constants.General.JPUSH_MESSAGE_TYPE_NOTIFICATION;
+			}
+		} else {
+			// 0
+			TutorApplication.jPushMessageType = Constants.General.JPUSH_MESSAGE_TYPE_NOTIFICATION;
 		}
 	}
 
