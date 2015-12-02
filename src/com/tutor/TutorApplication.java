@@ -80,7 +80,7 @@ public class TutorApplication extends Application {
 		super.onCreate();
 		instance = this;
 		// TODO 打包发布时请将DEBUG设为false
-		DEBUG = false;
+		DEBUG = true;
 		// 配置工具類
 		settingManager = SettingManager.getInstance(this, Constants.SharedPreferences.NAME);
 		int oldVersionCode = (Integer) settingManager.readSetting(Constants.SharedPreferences.VERSIONCODE, -1);
@@ -94,7 +94,7 @@ public class TutorApplication extends Application {
 		initDao();
 		initImageLoader(this);
 		// 设置开启日志,发布时请关闭日志
-		JPushInterface.setDebugMode(false);
+		JPushInterface.setDebugMode(true);
 		// 初始化 JPush
 		JPushInterface.init(this);
 		HanderException.getInstance().init(this, null);

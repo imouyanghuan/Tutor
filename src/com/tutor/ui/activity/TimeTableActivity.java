@@ -7,16 +7,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.GridView;
 
 import com.hk.tutor.R;
@@ -51,12 +47,14 @@ public class TimeTableActivity extends BaseActivity {
 	// 适配器
 	private GridViewAdapter mAdapter;
 	// ------------------------------------------------------
+	private int jumpMonth = 0; // 每次滑动，增加或减去一个月,默认为0(即显示当前月)
+	private int jumpYear = 0; // 滑动跨越一年，则增加或者减去一年,默认为0(即当前年)
 	private int curYear = 0; // 当前--年
 	private int curMonth = 0;// 当前--月
 	private int curDay = 0;// 当前--日
 	private String currentDate = ""; // 当前日期
 	private ArrayList<TimeTable> timeTables = new ArrayList<TimeTable>();
-	private AlertDialog mAlertDialog;
+	private float downX;
 
 	/**
 	 * 构造函数: 获取系统的当前时间
@@ -87,64 +85,14 @@ public class TimeTableActivity extends BaseActivity {
 		getTimeTable();
 		// 获取活动
 		getActivities();
-		// 初始化适配器
-		mAdapter = new GridViewAdapter(this, (dm.widthPixels - 7) / 7);
-		// mAdapter.setClanderData(0, 0, curYear, curMonth, curDay);
-		mAdapter.getCalendar(curYear, curMonth);
-		if (TutorApplication.isCH()) {
-			titleBar.setTitle(getString(R.string.yyyy_mm).replace("YYYY", mAdapter.getShowYear()).replace("MM", mAdapter.getShowMonth()));
-		} else {
-			titleBar.setTitle(mAdapter.getShowYear() + " - " + mAdapter.getShowMonth());
-		}
-		mGridView.setAdapter(mAdapter);
-		mAdapter.setOnTimeTableClickListener(new OnTimeTableClickListener() {
-
-			@Override
-			public void onTimeTableClick(String week, ArrayList<TimeTable> timeTables) {
-				Intent intent = new Intent(TimeTableActivity.this, TimeTableDetailActivity.class);
-				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_DAY_OF_WEEK, week);
-				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE, (Serializable) timeTables);
-				startActivityForResult(intent, Constants.RequestResultCode.TIME_TABLE_REFRESH);
-				// chooseTimeTableOrActivities();
-			}
-		});
-	}
-
-	private void chooseTimeTableOrActivities() {
-		mAlertDialog = new AlertDialog.Builder(TimeTableActivity.this).create();
-		mAlertDialog.show();
-		Window mWindow = mAlertDialog.getWindow();
-		mWindow.setContentView(R.layout.layout_time_table_sheet);
-		mWindow.setGravity(Gravity.BOTTOM);
-		// 点击选择本地图片
-		mWindow.findViewById(R.id.btn_time_table).setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				//
-			}
-		});
-		// 拍照片
-		mWindow.findViewById(R.id.btn_activities).setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				//
-			}
-		});
-		// 取消
-		mWindow.findViewById(R.id.btn_cancel).setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				mAlertDialog.cancel();
-			}
-		});
 	}
 
 	private void getActivities() {
 		RequestParams params = new RequestParams();
-		params.put("month", curMonth);
+		final int month = Integer.parseInt(mAdapter.getShowMonth());
+		final int year = Integer.parseInt(mAdapter.getShowYear());
+		params.put("month", month);
+		params.put("year", year);
 		HttpHelper.get(this, ApiUrl.ACTIVITIES, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<ActivityListResult>(ActivityListResult.class) {
 
 			@Override
@@ -155,9 +103,10 @@ public class TimeTableActivity extends BaseActivity {
 			@Override
 			public void onSuccess(ActivityListResult result) {
 				ArrayList<ActivityModel> activities = result.getResult();
-				if (activities != null && activities.size() > 0) {
-					mAdapter.setActivityData(activities, curYear, curMonth);
-				}
+				mAdapter.setActivityData(activities, curYear, month);
+				// if (activities != null && activities.size() > 0) {
+				//
+				// }
 			}
 		});
 	}
@@ -199,7 +148,8 @@ public class TimeTableActivity extends BaseActivity {
 							}
 						}
 						mAdapter.setTimeTableData(timeTables);
-						mAdapter.getCalendar(curYear, curMonth);
+						mAdapter.setClanderData(0, 0, curYear, curMonth, curDay);
+						// mAdapter.getCalendar(curYear, curMonth);
 					}
 					if (TutorApplication.isCH()) {
 						titleBar.setTitle(getString(R.string.yyyy_mm).replace("YYYY", mAdapter.getShowYear()).replace("MM", mAdapter.getShowMonth()));
@@ -217,6 +167,34 @@ public class TimeTableActivity extends BaseActivity {
 		titleBar = getView(R.id.title_bar);
 		titleBar.initBack(this);
 		mGridView = getView(R.id.clander_main_gridView);
+		// 初始化适配器
+		mAdapter = new GridViewAdapter(this, (dm.widthPixels - 7) / 7);
+		mAdapter.setClanderData(0, 0, curYear, curMonth, curDay);
+		// mAdapter.getCalendar(curYear, curMonth);
+		if (TutorApplication.isCH()) {
+			titleBar.setTitle(getString(R.string.yyyy_mm).replace("YYYY", mAdapter.getShowYear()).replace("MM", mAdapter.getShowMonth()));
+		} else {
+			titleBar.setTitle(mAdapter.getShowYear() + " - " + mAdapter.getShowMonth());
+		}
+		mGridView.setAdapter(mAdapter);
+		mAdapter.setOnTimeTableClickListener(new OnTimeTableClickListener() {
+
+			@Override
+			public void onTimeTableClick(String week, ArrayList<TimeTable> timeTables) {
+				Intent intent = new Intent(TimeTableActivity.this, TimeTableDetailActivity.class);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_DAY_OF_WEEK, week);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_TIME_TABLE, (Serializable) timeTables);
+				startActivityForResult(intent, Constants.RequestResultCode.TIME_TABLE_REFRESH);
+				// chooseTimeTableOrActivities();
+			}
+		});
+		mGridView.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				return onTouchEvent(event);
+			}
+		});
 	}
 
 	@Override
@@ -226,5 +204,70 @@ public class TimeTableActivity extends BaseActivity {
 		if (Constants.RequestResultCode.TIME_TABLE_REFRESH == resultCode) {
 			getTimeTable();
 		}
+	}
+
+	// 刷新title
+	private void setTextCurrentYM() {
+		if (TutorApplication.isCH()) {
+			titleBar.setTitle(getString(R.string.yyyy_mm).replace("YYYY", mAdapter.getShowYear()).replace("MM", mAdapter.getShowMonth()));
+		} else {
+			titleBar.setTitle(mAdapter.getShowYear() + " - " + mAdapter.getShowMonth());
+		}
+	}
+
+	/**
+	 * 上一月
+	 */
+	private void lastMonth() {
+		jumpMonth--;
+		mAdapter.setClanderData(jumpMonth, jumpYear, curYear, curMonth, curDay);
+		mAdapter.upData();
+		setTextCurrentYM();
+		getActivities();
+	}
+
+	/**
+	 * 下一月
+	 */
+	private void nextMonth() {
+		jumpMonth++;
+		mAdapter.setClanderData(jumpMonth, jumpYear, curYear, curMonth, curDay);
+		mAdapter.upData();
+		setTextCurrentYM();
+		getActivities();
+	}
+
+	boolean isNextMonth = false;
+	boolean isLastMonth = false;
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		switch (event.getAction()) {
+			case MotionEvent.ACTION_DOWN:
+				downX = event.getX();
+				break;
+			default:
+				break;
+			case MotionEvent.ACTION_MOVE:
+				if (event.getX() - downX > 120) {
+					isNextMonth = false;
+					isLastMonth = true;
+				} else if (event.getX() - downX < -120) {
+					isNextMonth = true;
+					isLastMonth = false;
+				} else {
+					isNextMonth = false;
+					isLastMonth = false;
+				}
+				break;
+			case MotionEvent.ACTION_UP:
+				if (isNextMonth) {
+					nextMonth();
+				} else if (isLastMonth) {
+					lastMonth();
+				}
+				break;
+		}
+		return true;
 	}
 }

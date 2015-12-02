@@ -1,7 +1,6 @@
 package com.tutor.ui.activity;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;

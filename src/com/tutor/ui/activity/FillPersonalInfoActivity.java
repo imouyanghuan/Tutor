@@ -101,6 +101,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 			birth = BIRTH;
 			gradeValue = -1;
 		} else {
+			isVoluntaryTutoring = getIntent().getBooleanExtra(Constants.IntentExtra.INTENT_EXTRA_IS_VOLUNTARY_TUTORING, false);
 			userInfo = (UserInfo) getIntent().getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO);
 			if (null != userInfo) {
 				role = userInfo.getAccountType();
@@ -149,6 +150,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		// 是否义务补习
 		llIsVoluntary = getView(R.id.ll_isVoluntary);
 		cbIsVoluntary = getView(R.id.cb_is_voluntary);
+		cbIsVoluntary.setChecked(isVoluntaryTutoring);
 		if (role == Constants.General.ROLE_TUTOR) {
 			llIsVoluntary.setVisibility(View.VISIBLE);
 		}
@@ -402,6 +404,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	};
 	private LinearLayout llIsVoluntary;
 	private CheckBox cbIsVoluntary;
+	private boolean isVoluntaryTutoring;
 
 	private void onsend() {
 		// 昵称

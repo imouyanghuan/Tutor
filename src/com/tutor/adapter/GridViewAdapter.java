@@ -73,6 +73,8 @@ public class GridViewAdapter extends BaseAdapter {
 	private ArrayList<TimeTable> timeTables;
 	private ArrayList<ActivityModel> activities;
 	private ArrayList<ActivityFlag> flags;
+	private String activityYear;
+	private String activityMonth;
 
 	/**
 	 * 构造器
@@ -118,13 +120,15 @@ public class GridViewAdapter extends BaseAdapter {
 	 */
 	public void setActivityData(ArrayList<ActivityModel> activities, int year, int month) {
 		this.activities = activities;
-		notifyDataSetChanged();
+		// notifyDataSetChanged();
 		getActivities(year, month);
 	}
 
 	// 获取标记活动
 	@SuppressWarnings("deprecation")
 	private void getActivities(int year, int month) {
+		this.activityYear = String.valueOf(year);
+		this.activityMonth = String.valueOf(month);
 		initSysData();
 		isLeapyear = sc.isLeapYear(year); // 是否为闰年
 		daysOfMonth = sc.getDaysOfMonth(isLeapyear, month); // 某月的总天数
@@ -149,6 +153,7 @@ public class GridViewAdapter extends BaseAdapter {
 				ActivityFlag flag = new ActivityFlag();
 				flag.setId(i);
 				flag.setDay(day);
+				flag.setFlag(false);
 				flags.add(flag);
 				// ///////////////////////////
 				lunarDay = lc.getLunarDate(year, month, i - dayOfWeek + 1, false);
@@ -184,6 +189,7 @@ public class GridViewAdapter extends BaseAdapter {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
+				// 拿到活动的日期
 				int curDay = date.getDate();
 				if (flags != null && flags.size() > 0) {
 					for (int f = 0; f < flags.size(); f++) {
@@ -197,11 +203,36 @@ public class GridViewAdapter extends BaseAdapter {
 				}
 			}
 		}
+		notifyDataSetChanged();
+	}
+
+	/**
+	 * 在实例化本类对象之后,必须先调用此方法来初始化本类中的成员变量
+	 */
+	public void setClanderData(int jumpMonth, int jumpYear, int year_c, int month_c, int day_c) {// （jumpMonth为滑动的次数，每滑动一次就增加一月或减一月）
+		initSysData();
+		int stepYear = year_c + jumpYear;
+		int stepMonth = month_c + jumpMonth;
+		if (stepMonth > 0) {
+			// 往下一个月滑动
+			if (stepMonth % 12 == 0) {
+				stepYear = year_c + stepMonth / 12 - 1;
+				stepMonth = 12;
+			} else {
+				stepYear = year_c + stepMonth / 12;
+				stepMonth = stepMonth % 12;
+			}
+		} else {
+			// 往上一个月滑动
+			stepYear = year_c - 1 + stepMonth / 12;
+			stepMonth = stepMonth % 12 + 12;
+		}
+		getCalendar(stepYear, stepMonth);
 	}
 
 	// 得到某年的某月的天数且这月的第一天是星期几
 	public void getCalendar(int year, int month) {
-		initSysData();
+		// initSysData();
 		isLeapyear = sc.isLeapYear(year); // 是否为闰年
 		daysOfMonth = sc.getDaysOfMonth(isLeapyear, month); // 某月的总天数
 		dayOfWeek = sc.getWeekdayOfMonth(year, month); // 某月第一天为星期几
@@ -375,34 +406,36 @@ public class GridViewAdapter extends BaseAdapter {
 		view.setOnClickListener(null);
 		final ActivityWithWeek aww = new ActivityWithWeek(false);
 		// 已经被标记，并且当前position和标记的position一致，设置其背景颜色为黄色
-		if (tags != null && tags.size() > 0) {
-			for (TimeTableTag tag : tags) {
-				if (tag.isTag() && arg0 == tag.getId()) {
-					view.setBackgroundColor(res.getColor(R.color.yellow_normal));
-					aww.setYellow(true);
-					Loop: for (int k = 0; k < timeTables.size(); k++) {
-						ArrayList<TimeTableDetail> timeslots = timeTables.get(k).getTimeslots();
-						if (timeslots != null && timeslots.size() > 0) {
-							for (TimeTableDetail detail : timeslots) {
-								int dayOfWeek = detail.getDayOfWeek();
-								if (week[(1 + dayOfWeek) % 7].equals(tag.getWeek())) {
-									aww.setTimeTables(timeTables);
-									aww.setWeek(week[(1 + dayOfWeek) % 7]);
-									break Loop;
+		if (curYear.equals(activityYear) && curMonth.equals(activityMonth)) {
+			if (tags != null && tags.size() > 0) {
+				for (TimeTableTag tag : tags) {
+					if (tag.isTag() && arg0 == tag.getId()) {
+						view.setBackgroundColor(res.getColor(R.color.yellow_normal));
+						aww.setYellow(true);
+						Loop: for (int k = 0; k < timeTables.size(); k++) {
+							ArrayList<TimeTableDetail> timeslots = timeTables.get(k).getTimeslots();
+							if (timeslots != null && timeslots.size() > 0) {
+								for (TimeTableDetail detail : timeslots) {
+									int dayOfWeek = detail.getDayOfWeek();
+									if (week[(1 + dayOfWeek) % 7].equals(tag.getWeek())) {
+										aww.setTimeTables(timeTables);
+										aww.setWeek(week[(1 + dayOfWeek) % 7]);
+										break Loop;
+									}
 								}
 							}
 						}
-					}
-					view.setOnClickListener(new OnClickListener() {
+						view.setOnClickListener(new OnClickListener() {
 
-						@Override
-						public void onClick(View v) {
-							if (onTimeTableClickListener != null) {
-								onTimeTableClickListener.onTimeTableClick(aww.getWeek(), aww.getTimeTables());
+							@Override
+							public void onClick(View v) {
+								if (onTimeTableClickListener != null) {
+									onTimeTableClickListener.onTimeTableClick(aww.getWeek(), aww.getTimeTables());
+								}
 							}
-						}
-					});
-					break;
+						});
+						break;
+					}
 				}
 			}
 		}
@@ -445,8 +478,8 @@ public class GridViewAdapter extends BaseAdapter {
 											Intent intent = new Intent(context, ActivitiesDetailActivity.class);
 											intent.putExtra(Constants.General.ACTIVITIES, activities);
 											intent.putExtra(Constants.General.TODAY, today);
-											intent.putExtra(Constants.General.MONTH, curMonth);
-											intent.putExtra(Constants.General.YEAR, curYear);
+											intent.putExtra(Constants.General.MONTH, getShowMonth());
+											intent.putExtra(Constants.General.YEAR, getShowYear());
 											context.startActivity(intent);
 										}
 										mAlertDialog.cancel();
@@ -471,15 +504,19 @@ public class GridViewAdapter extends BaseAdapter {
 								Intent intent = new Intent(context, ActivitiesDetailActivity.class);
 								intent.putExtra(Constants.General.ACTIVITIES, activities);
 								intent.putExtra(Constants.General.TODAY, today);
-								intent.putExtra(Constants.General.MONTH, curMonth);
-								intent.putExtra(Constants.General.YEAR, curYear);
+								intent.putExtra(Constants.General.MONTH, getShowMonth());
+								intent.putExtra(Constants.General.YEAR, getShowYear());
 								context.startActivity(intent);
 							}
 						});
 					}
 					break;
+				} else {
+					helper.ibNote.setVisibility(View.GONE);
 				}
 			}
+		} else {
+			helper.ibNote.setVisibility(View.GONE);
 		}
 		return view;
 	}

@@ -2,18 +2,21 @@ package com.tutor.ui.activity;
 
 import java.net.HttpURLConnection;
 
-import org.apache.http.protocol.HTTP;
-
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.TextUtils;
-import android.webkit.WebView;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.tutor.TutorApplication;
-import com.tutor.model.StringResult;
+import com.tutor.adapter.FAQAdapter;
+import com.tutor.model.FAQListResult;
+import com.tutor.model.FAQModel;
 import com.tutor.params.ApiUrl;
+import com.tutor.params.Constants;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.CheckTokenUtils;
 import com.tutor.util.HttpHelper;
@@ -26,29 +29,30 @@ import com.tutor.util.ObjectHttpResponseHandler;
  */
 public class FAQActivity extends BaseActivity {
 
-	private WebView webView;
+	private ListView lvFaq;
+	private FAQAdapter faqAdapter;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		setContentView(R.layout.activity_faq);
 		initView();
-		showDialogRes(R.string.loading);
-		getFAQ();
+		getFAQList();
 	}
 
-	private void getFAQ() {
+	private void getFAQList() {
 		if (!HttpHelper.isNetworkConnected(this)) {
 			toast(R.string.toast_netwrok_disconnected);
 			dismissDialog();
 			return;
 		}
-		HttpHelper.get(this, ApiUrl.STUDY_ABROAD_FAQ, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<StringResult>(StringResult.class) {
+		showDialogRes(R.string.loading);
+		HttpHelper.get(this, ApiUrl.STUDY_ABROAD_FAQ, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<FAQListResult>(FAQListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
 				if (0 == status) {
-					getFAQ();
+					getFAQList();
 					return;
 				}
 				dismissDialog();
@@ -56,16 +60,11 @@ public class FAQActivity extends BaseActivity {
 			}
 
 			@Override
-			public void onSuccess(StringResult t) {
+			public void onSuccess(FAQListResult result) {
 				dismissDialog();
-				if (HttpURLConnection.HTTP_OK == t.getStatusCode() && !TextUtils.isEmpty(t.getResult())) {
-					try {
-						webView.loadDataWithBaseURL("about:blank", Html.fromHtml(t.getResult()).toString(), "text/html", HTTP.UTF_8, null);
-					} catch (OutOfMemoryError e) {
-						e.printStackTrace();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+				if (HttpURLConnection.HTTP_OK == result.getStatusCode() && result.getResult() != null) {
+					faqAdapter = new FAQAdapter(FAQActivity.this, result.getResult());
+					lvFaq.setAdapter(faqAdapter);
 				}
 			}
 		});
@@ -76,7 +75,18 @@ public class FAQActivity extends BaseActivity {
 		TitleBar bar = getView(R.id.title_bar);
 		bar.initBack(this);
 		bar.setTitle(R.string.label_faq);
-		webView = getView(R.id.webview);
-		webView.getSettings().setDefaultTextEncodingName(HTTP.UTF_8);
+		lvFaq = getView(R.id.lv_faq);
+		lvFaq.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				FAQModel faqModel = faqAdapter.getItem(position);
+				if (faqModel != null) {
+					Intent intent = new Intent(FAQActivity.this, FAQDetailActivity.class);
+					intent.putExtra(Constants.General.FAQ_MODEL, faqModel);
+					startActivity(intent);
+				}
+			}
+		});
 	}
 }

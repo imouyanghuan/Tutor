@@ -80,11 +80,11 @@ public final class Constants {
 		public static final String TODAY = "today";
 		public static final String MONTH = "month";
 		public static final String YEAR = "year";
-		
 		public static final String JPUSH_TAG_TUTOR = "2utor1";
 		public static final String JPUSH_TAG_STUDENT = "2utor0";
 		public static final String BROADCAST_MODEL = "broadCastModel";
 		public static final String BROADCAST_ID = "broadCastId";
+		public static final String FAQ_MODEL = "faqModel";
 	}
 
 	/**
@@ -199,6 +199,8 @@ public final class Constants {
 		public static final String INTENT_EXTRA_TIME_TABLE_DETAIL = "timeTableDetail";
 		/** time table current week */
 		public static final String INTENT_EXTRA_TIME_TABLE_WEEK = "timeTableWeek";
+		/** 是否可以义务补习 */
+		public static final String INTENT_EXTRA_IS_VOLUNTARY_TUTORING = "isVoluntaryTutoring";
 	}
 
 	/**

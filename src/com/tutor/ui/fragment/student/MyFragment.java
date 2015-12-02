@@ -125,7 +125,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 					getData();
 					return;
 				}
-				if(CheckTokenUtils.checkToken(status)){
+				if (CheckTokenUtils.checkToken(status)) {
 					return;
 				}
 				toast(R.string.toast_server_error);
@@ -135,8 +135,6 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 			public void onSuccess(UserInfoResult t) {
 				if (null != t.getResult()) {
 					setData(t.getResult());
-				} else {
-					toast(R.string.toast_server_error);
 				}
 			}
 		});
@@ -343,7 +341,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 					@Override
 					public void onFailure(int status, String message) {
 						dismissDialog();
-						if(CheckTokenUtils.checkToken(status)){
+						if (CheckTokenUtils.checkToken(status)) {
 							return;
 						}
 						toast(R.string.toast_avatar_upload_fail);

@@ -81,6 +81,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	private UserInfo userInfo;
 	private int es;
 	private String rTime;
+	private boolean isVoluntaryTutoring;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_teacher_my, container, false);
@@ -144,6 +145,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	 * @param profile
 	 */
 	private void setData(UserInfo profile) {
+		isVoluntaryTutoring = profile.isVoluntaryTutoring();
 		userInfo = profile;
 		userName.setText(!TextUtils.isEmpty(profile.getUserName()) ? profile.getUserName() : "Tutor" + profile.getId());
 		int genderStr;
@@ -221,6 +223,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 				Intent intent = new Intent();
 				intent.setClass(getActivity(), FillPersonalInfoActivity.class);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, true);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_IS_VOLUNTARY_TUTORING, isVoluntaryTutoring);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 				startActivity(intent);
 				break;
@@ -463,8 +466,6 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 			public void onSuccess(UserInfoResult t) {
 				if (null != t.getResult()) {
 					setData(t.getResult());
-				} else {
-					toast(getString(R.string.toast_server_error));
 				}
 			}
 		});
