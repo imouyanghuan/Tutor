@@ -18,6 +18,7 @@ import com.mssky.mobile.ui.zlistview.ZSwipeItem;
 import com.tutor.model.BookmarkModel;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
+import com.tutor.params.Constants;
 import com.tutor.util.ImageUtils;
 
 /**
@@ -95,12 +96,15 @@ public class BookmarkAdapter extends BaseSwipeAdapter {
 			}
 		});
 		UserInfo userInfo = getItem(position).getMemberModel();
+		if (userInfo == null) {
+			return;
+		}
 		// 头像
 		if (TextUtils.isEmpty(userInfo.getAvatar())) {
-			ImageUtils.loadImage(imgAvatar, "drawable://" + R.drawable.avatar);
+			ImageUtils.loadImage(imgAvatar, "drawable://" + R.drawable.avatar, userInfo.getGender() != null ? userInfo.getGender() : Constants.General.MALE);
 		} else {
 			String path = ApiUrl.DOMAIN + userInfo.getAvatar();
-			ImageUtils.loadImage(imgAvatar, path);
+			ImageUtils.loadImage(imgAvatar, path, userInfo.getGender() != null ? userInfo.getGender() : Constants.General.MALE);
 		}
 		if (!TextUtils.isEmpty(userInfo.getNickName())) {
 			msgNickName.setText(userInfo.getNickName());
@@ -112,10 +116,12 @@ public class BookmarkAdapter extends BaseSwipeAdapter {
 		} else {
 			msg.setText("");
 		}
+		// 时间
 		String createTime = userInfo.getCreatedTime();
 		if (TextUtils.isEmpty(createTime)) {
 			time.setText("");
-		} else {
+		} else if (createTime.length() > 11) {
+			createTime = createTime.substring(0, 11);
 			time.setText(createTime);
 		}
 	}

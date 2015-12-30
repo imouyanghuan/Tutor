@@ -97,6 +97,8 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	 */
 	private void setData(UserInfo profile) {
 		userInfo = profile;
+		// 加载头像
+		ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + ApiUrl.GET_OTHER_AVATAR + TutorApplication.getMemberId(), userInfo.getGender() != null ? userInfo.getGender() : Constants.General.MALE);
 		userName.setText(!TextUtils.isEmpty(profile.getUserName()) ? profile.getUserName() : "Tutor" + profile.getId());
 		int genderStr;
 		if (profile.getGender() == null) {
@@ -117,7 +119,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	private void getData() {
 		RequestParams params = new RequestParams();
 		params.put("memberId", TutorApplication.getMemberId());
-		HttpHelper.get(getActivity(), ApiUrl.STUDENTINFO, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.STUDENTINFO, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -128,7 +130,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 				if (CheckTokenUtils.checkToken(status)) {
 					return;
 				}
-				toast(R.string.toast_server_error);
+				// toast(R.string.toast_server_error);
 			}
 
 			@Override
@@ -154,7 +156,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 		LogUtils.d(json);
 		try {
 			StringEntity entity = new StringEntity(json, HTTP.UTF_8);
-			HttpHelper.put(getActivity(), ApiUrl.STUDENTPROFILE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+			HttpHelper.getHelper().put(ApiUrl.STUDENTPROFILE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {
@@ -197,8 +199,9 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	private void initView(View view) {
 		avatar = ViewHelper.get(view, R.id.fragment_my_iv_avatar);
 		avatar.setOnClickListener(this);
-		// 加载头像
-		ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + ApiUrl.GET_OTHER_AVATAR + TutorApplication.getMemberId());
+		// // 加载头像
+		// ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + ApiUrl.GET_OTHER_AVATAR
+		// + TutorApplication.getMemberId());
 		//
 		userName = ViewHelper.get(view, R.id.fragment_my_tv_username);
 		gender = ViewHelper.get(view, R.id.fragment_my_tv_gender);
@@ -336,7 +339,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 			try {
 				params.put("file", file, "form-data");
 				showDialogRes(R.string.uploading_avatar);
-				HttpHelper.post(getActivity(), ApiUrl.UPLOAD_AVATAR, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UploadAvatarResult>(UploadAvatarResult.class) {
+				HttpHelper.getHelper().post(ApiUrl.UPLOAD_AVATAR, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UploadAvatarResult>(UploadAvatarResult.class) {
 
 					@Override
 					public void onFailure(int status, String message) {
@@ -352,7 +355,10 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 						dismissDialog();
 						CheckTokenUtils.checkToken(t);
 						if (HttpURLConnection.HTTP_OK == t.getStatusCode()) {
-							ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + t.getResult());
+							ImageUtils.clearChache();
+							ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + t.getResult(), userInfo.getGender() != null ? userInfo.getGender() : Constants.General.MALE);
+							// 把新头像设置进userInfo model(解决上传完头像马上编辑信息bug) 12/9
+							userInfo.setAvatar(t.getResult());
 						} else {
 							toast(R.string.toast_avatar_upload_fail);
 						}

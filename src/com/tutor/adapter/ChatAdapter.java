@@ -15,6 +15,7 @@ import com.mssky.mobile.ui.view.CircleImageView;
 import com.tutor.TutorApplication;
 import com.tutor.model.IMMessage;
 import com.tutor.params.ApiUrl;
+import com.tutor.params.Constants;
 import com.tutor.util.ImageUtils;
 
 public class ChatAdapter extends TutorBaseAdapter<IMMessage> {
@@ -86,7 +87,7 @@ public class ChatAdapter extends TutorBaseAdapter<IMMessage> {
 		if (IMMessage.CHAT_MESSAGE_TYPE_RECEIVE == t.getMsgType()) {
 			sendLayout.setVisibility(View.GONE);
 			receiveLayout.setVisibility(View.VISIBLE);
-			ImageUtils.loadImage(avatarReceive, toAvatar);
+			ImageUtils.loadImage(avatarReceive, toAvatar, Constants.General.MALE);
 			// ImageUtils.loadImage(avatarReceive, "drawable://" +
 			// R.drawable.def_avatar);
 			receiveTv.setText(t.getContent());
@@ -96,7 +97,7 @@ public class ChatAdapter extends TutorBaseAdapter<IMMessage> {
 			// ImageUtils.loadImage(avatarSend, "drawable://" +
 			// R.drawable.def_avatar);
 			// 加载头像
-			ImageUtils.loadImage(avatarSend, ApiUrl.DOMAIN + ApiUrl.GET_OTHER_AVATAR + TutorApplication.getMemberId());
+			ImageUtils.loadImage(avatarSend, ApiUrl.DOMAIN + ApiUrl.GET_OTHER_AVATAR + TutorApplication.getMemberId(), Constants.General.MALE);
 			sendTv.setText(t.getContent());
 			if (IMMessage.SEND_STATUS_SUCCESS == t.getSendStatus()) {
 				status.setVisibility(View.GONE);

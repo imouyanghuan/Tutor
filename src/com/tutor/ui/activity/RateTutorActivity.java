@@ -68,14 +68,27 @@ public class RateTutorActivity extends BaseActivity implements OnClickListener {
 	protected void initView() {
 		// 头像和昵称
 		ImageView ivAvatar = getView(R.id.iv_avatar);
-		ImageUtils.loadImage(ivAvatar, ApiUrl.DOMAIN + userInfo.getAvatar());
+		ImageUtils.loadImage(ivAvatar, ApiUrl.DOMAIN + userInfo.getAvatar(), userInfo.getGender() != null ? userInfo.getGender() : Constants.General.MALE);
 		TextView tvUserName = getView(R.id.tv_user_name);
 		etComment = getView(R.id.et_comment);
 		// rate
 		rbTeachingContent = getView(R.id.rate_teaching_content);
 		rbAttitudeAndPatience = getView(R.id.rate_attitude_and_patience);
+		TextView tvAttitudeAndPatience = getView(R.id.tv_attitude_and_patience);
 		rbPunctuality = getView(R.id.rate_punctuality);
+		TextView tvPunctuality = getView(R.id.tv_punctuality);
 		rbCommunicationSkill = getView(R.id.rate_communication_skill);
+		TextView tvCommunicationSkill = getView(R.id.tv_communication_skill);
+		if (userInfo.getAccountType() == Constants.General.ROLE_TUTOR) {
+			tvAttitudeAndPatience.setText(R.string.label_attitude_and_patience);
+			tvPunctuality.setText(R.string.label_punctuality);
+			tvCommunicationSkill.setText(R.string.label_communication_skill);
+		} else if (userInfo.getAccountType() == Constants.General.ROLE_TUITION_SCHOOL) {
+			tvAttitudeAndPatience.setText(R.string.label_quality_of_tutors);
+			tvPunctuality.setText(R.string.label_learning_environment);
+			tvCommunicationSkill.setVisibility(View.GONE);
+			rbCommunicationSkill.setVisibility(View.GONE);
+		}
 		String nickName = userInfo.getNickName();
 		if (TextUtils.isEmpty(nickName)) {
 			nickName = userInfo.getUserName();
@@ -89,10 +102,17 @@ public class RateTutorActivity extends BaseActivity implements OnClickListener {
 		TitleBar bar = getView(R.id.title_bar);
 		bar.setTitle(R.string.label_rating);
 		bar.initBack(this);
-		bar.setRightText(R.string.btn_save, new OnClickListener() {
+		bar.setRightText(R.string.label_rate, new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+				if (rbTeachingContent.getRating() == 0 && rbAttitudeAndPatience.getRating() == 0 && rbPunctuality.getRating() == 0 && rbCommunicationSkill.getRating() == 0) {
+					toast(R.string.toast_please_add_rating);
+					return;
+				} else if (etComment.getText().toString().length() <= 0) {
+					toast(R.string.toast_please_enter_comment);
+					return;
+				}
 				// save
 				if (userInfo != null) {
 					saveRating(userInfo.getId());
@@ -111,17 +131,28 @@ public class RateTutorActivity extends BaseActivity implements OnClickListener {
 			return;
 		}
 		RatingModel rating = new RatingModel();
+		String url = "";
+		if (userInfo.getAccountType() == Constants.General.ROLE_TUTOR) {
+			url = String.format(ApiUrl.RATING, String.valueOf(tutorId));
+			// rate
+			rating.setAttributeAndPatienceGrade((int) rbAttitudeAndPatience.getRating());
+			rating.setPunctualityGrade((int) rbPunctuality.getRating());
+			rating.setCommunicationSkillGrade((int) rbCommunicationSkill.getRating());
+		} else if (userInfo.getAccountType() == Constants.General.ROLE_TUITION_SCHOOL) {
+			url = String.format(ApiUrl.RATING_TUITION_CENTER, String.valueOf(tutorId));
+			// 评分
+			rating.setQualityOfTutors((int) rbAttitudeAndPatience.getRating());
+			rating.setLearningEnvironment((int) rbPunctuality.getRating());
+		}
+		// rating.setUserName("");
+		// rating.setNickName("");
 		rating.setTeachingContentGrade((int) rbTeachingContent.getRating());
-		rating.setAttributeAndPatienceGrade((int) rbAttitudeAndPatience.getRating());
-		rating.setPunctualityGrade((int) rbPunctuality.getRating());
-		rating.setCommunicationSkillGrade((int) rbCommunicationSkill.getRating());
 		rating.setAvatar(ApiUrl.DOMAIN + ApiUrl.GET_OTHER_AVATAR + TutorApplication.getMemberId());
 		rating.setComment(etComment.getText().toString().trim());
 		String content = JsonUtil.parseObject2Str(rating);
-		String url = String.format(ApiUrl.RATING, String.valueOf(tutorId));
 		try {
 			StringEntity entity = new StringEntity(content, HTTP.UTF_8);
-			HttpHelper.post(this, url, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<AddBookmarkResult>(AddBookmarkResult.class) {
+			HttpHelper.getHelper().post(url, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<AddBookmarkResult>(AddBookmarkResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {
@@ -132,6 +163,7 @@ public class RateTutorActivity extends BaseActivity implements OnClickListener {
 				public void onSuccess(AddBookmarkResult result) {
 					if (result.getStatusCode() == HttpURLConnection.HTTP_OK) {
 						toast(R.string.toast_rating_success);
+						RateTutorActivity.this.finish();
 					}
 				}
 			});
@@ -143,17 +175,12 @@ public class RateTutorActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		// chat with tutor
-			case R.id.btn_chat_with_tutor:
-				break;
-			// to be my tutor
-			case R.id.btn_to_be_my_tutor:
-				break;
-			// see other comments
+		// see other comments
 			case R.id.btn_other_comments:
 				if (userInfo != null) {
 					Intent intent = new Intent(RateTutorActivity.this, RateCommentListActivity.class);
 					intent.putExtra(Constants.General.TUTOR_ID, userInfo.getId());
+					intent.putExtra("role", userInfo.getAccountType());
 					startActivity(intent);
 				}
 				break;

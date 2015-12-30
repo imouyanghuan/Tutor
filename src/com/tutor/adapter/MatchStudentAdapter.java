@@ -38,7 +38,7 @@ public class MatchStudentAdapter extends TutorBaseAdapter<UserInfo> {
 	protected void convert(ViewHolder holder, final UserInfo t, int position) {
 		ImageView avatar = holder.getView(R.id.student_list_item_avatar);
 		String path = ApiUrl.DOMAIN + t.getAvatar();
-		ImageUtils.loadImage(avatar, path);
+		ImageUtils.loadImage(avatar, path,t.getGender() != null ? t.getGender() : Constants.General.MALE);
 		if (!TextUtils.isEmpty(t.getNickName())) {
 			holder.setText(R.id.student_list_item_nick, t.getNickName());
 		} else if (!TextUtils.isEmpty(t.getUserName())) {

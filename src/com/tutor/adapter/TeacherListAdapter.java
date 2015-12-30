@@ -1,6 +1,5 @@
 package com.tutor.adapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
@@ -12,9 +11,6 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 
 import com.hk.tutor.R;
-import com.tutor.model.Course;
-import com.tutor.model.CourseItem1;
-import com.tutor.model.CourseItem2;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
@@ -40,7 +36,7 @@ public class TeacherListAdapter extends TutorBaseAdapter<UserInfo> {
 	@Override
 	protected void convert(ViewHolder holder, final UserInfo t, int position) {
 		ImageView avatar = holder.getView(R.id.teacher_list_item_avatar);
-		ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + t.getAvatar());
+		ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + t.getAvatar(), t.getGender() != null ? t.getGender() : Constants.General.MALE);
 		// 昵称
 		String nick = t.getNickName();
 		if (TextUtils.isEmpty(nick)) {
@@ -52,12 +48,16 @@ public class TeacherListAdapter extends TutorBaseAdapter<UserInfo> {
 		ratingBar.setRating(t.getRatingGrade());
 		// 学生数量
 		holder.setText(R.id.teacher_list_item_studentNumber, String.format(mContext.getResources().getString(R.string.student_count), t.getStudentCount() + ""));
-		// 课程
-		String course = getCourse(t);
-		if (TextUtils.isEmpty(course)) {
-			course = "";
+		// 老师专业
+		holder.setText(R.id.teacher_list_item_coures, !TextUtils.isEmpty(t.getMajor()) ? t.getMajor() : "");
+		// 是否认证
+		if (t.isCertified()) {
+			holder.getView(R.id.ll_is_cer).setVisibility(View.VISIBLE);
+		} else {
+			holder.getView(R.id.ll_is_cer).setVisibility(View.INVISIBLE);
 		}
-		holder.setText(R.id.teacher_list_item_coures, course);
+		// 关注度
+		holder.setText(R.id.tv_follow_count, t.getFollowCount());
 		// 设置点击监听
 		holder.getView(R.id.teacher_list_item_layout).setOnClickListener(new OnClickListener() {
 
@@ -68,36 +68,5 @@ public class TeacherListAdapter extends TutorBaseAdapter<UserInfo> {
 				mContext.startActivity(intent);
 			}
 		});
-	}
-
-	private String getCourse(UserInfo t) {
-		StringBuffer sb = new StringBuffer();
-		ArrayList<Course> courses = t.getCourses();
-		if (null != courses && courses.size() > 0) {
-			for (Course course : courses) {
-				ArrayList<CourseItem1> item1s = course.getResult();
-				if (null != item1s && item1s.size() > 0) {
-					for (CourseItem1 item1 : item1s) {
-						ArrayList<CourseItem2> item2s = item1.getResult();
-						if (null != item2s && item2s.size() > 0) {
-							for (CourseItem2 item2 : item2s) {
-								String courseType = item2.getType();
-								if (courseType.contains("Primary School")) {
-									courseType = "P.";
-								} else if (courseType.contains("Secondary School")) {
-									courseType = "S.";
-								}
-								sb.append(courseType + "-" + item2.getSubType() + "-" + item2.getCourseName() + ",");
-							}
-						}
-					}
-				}
-			}
-			// 去掉最后一个逗号
-			if (sb.length() > 0) {
-				sb.delete(sb.length() - 1, sb.length());
-			}
-		}
-		return sb.toString();
 	}
 }

@@ -11,7 +11,7 @@
         android:background="@color/gray_light"
         android:padding="@dimen/dp_3"
         android:textColor="@color/btn_press"
-        android:textSize="@dimen/sp_20" />
+        android:textSize="@dimen/sp_18" />
 
     <com.tutor.ui.view.CustomExpandableListView
         android:id="@+id/course_item_expandableListView"

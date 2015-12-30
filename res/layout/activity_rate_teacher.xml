@@ -25,21 +25,18 @@
 
                 <ImageView
                     android:id="@+id/iv_avatar"
-                    android:layout_width="140dp"
-                    android:layout_height="140dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/avatar"
+                    android:layout_width="125dp"
+                    android:layout_height="125dp"
                     android:scaleType="fitXY" />
 
                 <TextView
                     android:id="@+id/tv_user_name"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="Abby Chan"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="top"
+                    android:layout_marginLeft="15dp"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/sp_22" />
+                    android:textSize="@dimen/sp_16" />
             </LinearLayout>
 
             <LinearLayout
@@ -62,19 +59,17 @@
                         android:layout_gravity="center"
                         android:text="@string/label_teaching_content"
                         android:textColor="@color/gray_text"
-                        android:textSize="@dimen/sp_15" />
-
-                    <!-- style="?android:attr/ratingBarStyleSmall" -->
+                        android:textSize="@dimen/sp_14" />
 
                     <RatingBar
                         android:id="@+id/rate_teaching_content"
-                        style="@style/ratingBar_big"
+                        style="@style/ratingBar"
                         android:layout_width="wrap_content"
-                        android:layout_height="22dp"
+                        android:layout_height="18dp"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
                         android:numStars="5"
-                        android:rating="5"
+                        android:rating="0"
                         android:stepSize="1" />
                 </RelativeLayout>
 
@@ -86,24 +81,23 @@
                     android:orientation="horizontal" >
 
                     <TextView
+                        android:id="@+id/tv_attitude_and_patience"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/label_attitude_and_patience"
                         android:textColor="@color/gray_text"
-                        android:textSize="@dimen/sp_15" />
-
-                    <!-- style="?android:attr/ratingBarStyleSmall" -->
+                        android:textSize="@dimen/sp_14" />
 
                     <RatingBar
                         android:id="@+id/rate_attitude_and_patience"
-                        style="@style/ratingBar_big"
+                        style="@style/ratingBar"
                         android:layout_width="wrap_content"
-                        android:layout_height="22dp"
+                        android:layout_height="18dp"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
                         android:numStars="5"
-                        android:rating="5"
+                        android:rating="0"
                         android:stepSize="1" />
                 </RelativeLayout>
 
@@ -115,24 +109,23 @@
                     android:orientation="horizontal" >
 
                     <TextView
+                        android:id="@+id/tv_punctuality"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/label_punctuality"
                         android:textColor="@color/gray_text"
-                        android:textSize="@dimen/sp_15" />
-
-                    <!-- style="?android:attr/ratingBarStyleSmall" -->
+                        android:textSize="@dimen/sp_14" />
 
                     <RatingBar
                         android:id="@+id/rate_punctuality"
-                        style="@style/ratingBar_big"
+                        style="@style/ratingBar"
                         android:layout_width="wrap_content"
-                        android:layout_height="22dp"
+                        android:layout_height="18dp"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
                         android:numStars="5"
-                        android:rating="5"
+                        android:rating="0"
                         android:stepSize="1" />
                 </RelativeLayout>
 
@@ -144,24 +137,23 @@
                     android:orientation="horizontal" >
 
                     <TextView
+                        android:id="@+id/tv_communication_skill"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:text="@string/label_communication_skill"
                         android:textColor="@color/gray_text"
-                        android:textSize="@dimen/sp_15" />
-
-                    <!-- style="?android:attr/ratingBarStyleSmall" -->
+                        android:textSize="@dimen/sp_14" />
 
                     <RatingBar
                         android:id="@+id/rate_communication_skill"
-                        style="@style/ratingBar_big"
+                        style="@style/ratingBar"
                         android:layout_width="wrap_content"
-                        android:layout_height="22dp"
+                        android:layout_height="18dp"
                         android:layout_alignParentRight="true"
                         android:layout_gravity="center_vertical"
                         android:numStars="5"
-                        android:rating="5"
+                        android:rating="0"
                         android:stepSize="1" />
                 </RelativeLayout>
 
@@ -174,7 +166,8 @@
                     android:textColor="@color/gray_text"
                     android:textSize="@dimen/sp_14" />
 
-                <EditText android:id="@+id/et_comment"
+                <EditText
+                    android:id="@+id/et_comment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_15"

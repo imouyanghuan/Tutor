@@ -82,7 +82,7 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 			return;
 		}
 		RequestParams params = new RequestParams();
-		HttpHelper.get(this, ApiUrl.STUDY_ABROAD_GRADES, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AbroadConfigListResult>(AbroadConfigListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.STUDY_ABROAD_GRADES, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AbroadConfigListResult>(AbroadConfigListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -90,7 +90,7 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 					return;
 				}
 				dismissDialog();
-				if(CheckTokenUtils.checkToken(status)){
+				if (CheckTokenUtils.checkToken(status)) {
 					return;
 				}
 				toast(R.string.toast_server_error);
@@ -119,7 +119,7 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 			return;
 		}
 		RequestParams params = new RequestParams();
-		HttpHelper.get(this, ApiUrl.STUDY_ABROAD_STATES, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AbroadConfigListResult>(AbroadConfigListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.STUDY_ABROAD_STATES, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AbroadConfigListResult>(AbroadConfigListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -127,7 +127,7 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 					return;
 				}
 				dismissDialog();
-				if(CheckTokenUtils.checkToken(status)){
+				if (CheckTokenUtils.checkToken(status)) {
 					return;
 				}
 				toast(R.string.toast_server_error);
@@ -156,7 +156,7 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 			return;
 		}
 		RequestParams params = new RequestParams();
-		HttpHelper.get(this, ApiUrl.STUDY_ABROAD_IM_IDS, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AbroadConfigListResult>(AbroadConfigListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.STUDY_ABROAD_IM_IDS, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AbroadConfigListResult>(AbroadConfigListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -164,7 +164,7 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 					return;
 				}
 				dismissDialog();
-				if(CheckTokenUtils.checkToken(status)){
+				if (CheckTokenUtils.checkToken(status)) {
 					return;
 				}
 				toast(R.string.toast_server_error);
@@ -272,17 +272,16 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 		int itemCount = adapter.getCount();
 		final PopupWindow popupWindow = new PopupWindow(view);
 		popupWindow.setFocusable(true);
-		int itemWidth = ScreenUtil.getSW(this);
+		int itemWidth = ScreenUtil.getSW(this) - ScreenUtil.dip2Px(CourseSelectionActivity.this, 40) * 2;
 		int itemHeight = ScreenUtil.dip2Px(CourseSelectionActivity.this, 40) * itemCount;
-		int btnHeight = ScreenUtil.dip2Px(CourseSelectionActivity.this, 45);
 		// 设置SelectPicPopupWindow弹出窗体的宽
-		popupWindow.setWidth(itemWidth / 2);
+		popupWindow.setWidth(itemWidth);
 		// 设置SelectPicPopupWindow弹出窗体的高
 		popupWindow.setHeight(itemHeight);
 		// 点击“返回Back”也能使其消失
 		popupWindow.setOutsideTouchable(true);
 		popupWindow.setBackgroundDrawable(new ColorDrawable(R.color.white));
-		popupWindow.showAsDropDown(btnChat, itemWidth / 2, -(itemHeight + btnHeight));
+		popupWindow.showAsDropDown(btnChat, 0, 0);
 		lvAdviser.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -291,7 +290,7 @@ public class CourseSelectionActivity extends BaseActivity implements OnClickList
 				String imId = config.getText();
 				String adviserName = config.getAlias();
 				if (!TextUtils.isEmpty(imId)) {
-					boolean isFriend = ContactManager.getManager().addFriend(CourseSelectionActivity.this,imId, imId);
+					boolean isFriend = ContactManager.getManager().addFriend(CourseSelectionActivity.this, imId, imId);
 					if (isFriend) {
 						Intent intent = new Intent(CourseSelectionActivity.this, ChatActivity.class);
 						intent.putExtra(Constants.General.IS_FROM_COURSE_SELECTION, true);

@@ -128,7 +128,7 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 		} else {
 			url = ApiUrl.BOOTMARK_GET_STUDENT_LIST;
 		}
-		HttpHelper.get(this, url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<BookmarkStudentListResult>(BookmarkStudentListResult.class) {
+		HttpHelper.getHelper().get(url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<BookmarkStudentListResult>(BookmarkStudentListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -174,7 +174,7 @@ public class BookmarkActivity extends BaseActivity implements OnRefreshListener<
 		} else {
 			url = String.format(ApiUrl.BOOTMARK_REMOVE_STUDENT, bookmarkId);
 		}
-		HttpHelper.get(this, url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<RemoveBookmarkResult>(RemoveBookmarkResult.class) {
+		HttpHelper.getHelper().get(url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<RemoveBookmarkResult>(RemoveBookmarkResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {

@@ -1,110 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
     android:background="@color/title_bar_bg_color"
     android:gravity="center_horizontal"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/dp_35"
     android:paddingLeft="@dimen/dp_40"
     android:paddingRight="@dimen/dp_40" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/dp_30"
-        android:gravity="center_horizontal"
-        android:orientation="vertical" >
+        android:layout_marginTop="90dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/welcome_logo" />
+
+    <LinearLayout
+        android:id="@+id/ll_choice_role"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/choice_role_tutor_btn_bg"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <TextView android:id="@+id/tv_role"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/label_please_select_a_role"
+            android:textColor="@color/white"            android:textSize="@dimen/sp_17" />
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/welcome_logo" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_25"
-            android:text="@string/label_role_student"
-            android:textColor="@color/choicerole_txt_color"
-            android:textSize="@dimen/sp_15" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.1dp"
-            android:background="@drawable/choice_role_line1" />
-
-        <LinearLayout
-            android:id="@id/ac_choice_role_btn_student"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_15"
-            android:background="@drawable/choice_role_student_btn_bg"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="@dimen/dp_10" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_5"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/choice_role_ic_search" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/btn_role_student"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_20" />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_15"
-            android:text="@string/label_role_tutor"
-            android:textColor="@color/choicerole_txt_color"
-            android:textSize="@dimen/sp_15" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.1dp"
-            android:background="@drawable/choice_role_line2" />
-
-        <LinearLayout
-            android:id="@id/ac_choice_role_btn_tutor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_15"
-            android:background="@drawable/choice_role_tutor_btn_bg"
-            android:gravity="center"
-            android:padding="@dimen/dp_10" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_5"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/choice_role_ic_tutor" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/btn_role_tutor"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_20" />
-        </LinearLayout>
+            android:id="@+id/iv_select"
+            android:layout_width="20dp"
+            android:layout_height="10dp"
+            android:layout_margin="@dimen/dp_5"
+            android:contentDescription="@string/app_name" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@id/ac_choice_role_btn_oe"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_gravity="bottom"
+        android:layout_marginTop="48dp"
         android:background="@drawable/choice_role_oe_btn_bg"
         android:gravity="center"
         android:padding="@dimen/dp_10"
@@ -123,7 +65,131 @@
             android:gravity="center"
             android:text="@string/overseas_education"
             android:textColor="@color/choice_role_oe_txt_color"
+            android:textSize="@dimen/sp_17" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_25"
+        android:text="@string/label_role_student"
+        android:textColor="@color/choicerole_txt_color"
+        android:textSize="@dimen/sp_15"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@drawable/choice_role_line1"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@id/ac_choice_role_btn_student"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/dp_15"
+        android:background="@drawable/choice_role_student_btn_bg"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/dp_10"
+        android:visibility="gone" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_5"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/choice_role_ic_search" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/btn_role_student"
+            android:textColor="@color/white"
             android:textSize="@dimen/sp_20" />
     </LinearLayout>
 
-</FrameLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_15"
+        android:text="@string/label_role_tutor"
+        android:textColor="@color/choicerole_txt_color"
+        android:textSize="@dimen/sp_15"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@drawable/choice_role_line2"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@id/ac_choice_role_btn_tutor"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/dp_15"
+        android:background="@drawable/choice_role_tutor_btn_bg"
+        android:gravity="center"
+        android:padding="@dimen/dp_10"
+        android:visibility="gone" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dp_5"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/choice_role_ic_tutor" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/btn_role_tutor"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_20" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_15"
+        android:text="@string/label_tutorial_school"
+        android:textColor="@color/choicerole_txt_color"
+        android:textSize="@dimen/sp_15"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="@drawable/choice_role_line2"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@id/ac_choice_role_btn_tutor"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/dp_15"
+        android:background="@drawable/choice_role_tutorial_school_btn_bg"
+        android:gravity="center"
+        android:padding="@dimen/dp_10"
+        android:visibility="gone" >
+
+        <ImageView
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:layout_margin="@dimen/dp_5"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/tutorail_school_normal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/label_tutorial_school"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_20" />
+    </LinearLayout>
+
+</LinearLayout>

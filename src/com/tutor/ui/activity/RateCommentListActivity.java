@@ -9,13 +9,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ListView;
 
 import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.ui.view.PullToRefreshBase;
 import com.mssky.mobile.ui.view.PullToRefreshBase.Mode;
-import com.mssky.mobile.ui.view.PullToRefreshBase.OnRefreshListener;
+import com.mssky.mobile.ui.view.PullToRefreshBase.OnRefreshListener2;
 import com.mssky.mobile.ui.view.PullToRefreshListView;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.RateCommentsAdapter;
@@ -43,6 +42,7 @@ public class RateCommentListActivity extends BaseActivity implements OnClickList
 	private int pageSize = 20;
 	private boolean hasNextPage;
 	private int tutorId;
+	private int role;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -61,8 +61,11 @@ public class RateCommentListActivity extends BaseActivity implements OnClickList
 		if (tutorId != -1) {
 			getRateComments(tutorId);
 		}
+		role = intent.getIntExtra("role", Constants.General.ROLE_TUTOR);
+		mAdapter.setRole(role);
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected void initView() {
 		TitleBar bar = getView(R.id.title_bar);
@@ -70,13 +73,19 @@ public class RateCommentListActivity extends BaseActivity implements OnClickList
 		bar.initBack(this);
 		// comments listview
 		lvComments = getView(R.id.lv_comments);
-		lvComments.setMode(Mode.PULL_FROM_END);
+		lvComments.setMode(Mode.BOTH);
 		mAdapter = new RateCommentsAdapter(this, rateComments);
 		lvComments.setAdapter(mAdapter);
-		lvComments.setOnRefreshListener(new OnRefreshListener<ListView>() {
+		lvComments.setOnRefreshListener(new OnRefreshListener2() {
 
 			@Override
-			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+			public void onPullDownToRefresh(PullToRefreshBase refreshView) {
+				pageIndex = 1;
+				getRateComments(tutorId);
+			}
+
+			@Override
+			public void onPullUpToRefresh(PullToRefreshBase refreshView) {
 				pageIndex++;
 				if (hasNextPage) {
 					getRateComments(tutorId);
@@ -107,7 +116,7 @@ public class RateCommentListActivity extends BaseActivity implements OnClickList
 		params.put("pageIndex", pageIndex);
 		params.put("pageSize", pageSize);
 		String url = String.format(ApiUrl.RATING_COMMENT_LIST, String.valueOf(tutorId));
-		HttpHelper.get(this, url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<RatingModelResult>(RatingModelResult.class) {
+		HttpHelper.getHelper().get(url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<RatingModelResult>(RatingModelResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -131,16 +140,5 @@ public class RateCommentListActivity extends BaseActivity implements OnClickList
 	}
 
 	@Override
-	public void onClick(View v) {
-		switch (v.getId()) {
-		// chat with tutor
-			case R.id.btn_chat_with_tutor:
-				break;
-			// to be my tutor
-			case R.id.btn_to_be_my_tutor:
-				break;
-			default:
-				break;
-		}
-	}
+	public void onClick(View v) {}
 }

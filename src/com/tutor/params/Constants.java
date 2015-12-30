@@ -31,6 +31,8 @@ public final class Constants {
 		public static final int ROLE_STUDENT = 0X0;
 		/** 老師 */
 		public static final int ROLE_TUTOR = 0X1;
+		/** 补习社 */
+		public static final int ROLE_TUITION_SCHOOL = 0X2;
 		/** 男 */
 		public static final int MALE = 0x0;
 		/** 女 */
@@ -85,6 +87,10 @@ public final class Constants {
 		public static final String BROADCAST_MODEL = "broadCastModel";
 		public static final String BROADCAST_ID = "broadCastId";
 		public static final String FAQ_MODEL = "faqModel";
+		public static final String IS_FROM_TO_BY_MY_STUDENT_ACTIVITY = "isFromToBeMyStudent";
+		public static final String IS_NOTIFICATION = "isNotification";
+		public static final String BLOG_ID = "blogId";
+		public static final String IS_FROM_FACEBOOK = "isFromFacebook";
 	}
 
 	/**
@@ -201,6 +207,8 @@ public final class Constants {
 		public static final String INTENT_EXTRA_TIME_TABLE_WEEK = "timeTableWeek";
 		/** 是否可以义务补习 */
 		public static final String INTENT_EXTRA_IS_VOLUNTARY_TUTORING = "isVoluntaryTutoring";
+		/** 博客信息 */
+		public static final String INTENT_EXTRA_BLOG = "blog";
 	}
 
 	/**

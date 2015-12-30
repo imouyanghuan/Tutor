@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <include layout="@layout/title_bar" />
+
+    <com.tutor.ui.view.OverScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <com.tutor.ui.view.CustomGridView
+            android:id="@+id/gv_area"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/gray_line"
+            android:dividerHeight="@dimen/line_height"
+            android:footerDividersEnabled="true"
+            android:headerDividersEnabled="true"
+            android:numColumns="2" />
+    </com.tutor.ui.view.OverScrollView>
+
+</LinearLayout>

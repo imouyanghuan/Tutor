@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import com.hk.tutor.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tutor.params.Constants;
 
 /**
  * @author bruce.chen
@@ -37,10 +38,11 @@ public class ImageUtils {
 
 	private static ImageLoader imageLoader = ImageLoader.getInstance();
 	private static DisplayImageOptions options;
+	private static DisplayImageOptions.Builder builder;
 	static {
-		if (options == null) {
-			options = new DisplayImageOptions.Builder().showImageOnLoading(R.drawable.avatar).showImageForEmptyUri(R.drawable.avatar).showImageOnFail(R.drawable.avatar).cacheInMemory(true)
-					.cacheOnDisc(true).considerExifParams(true).bitmapConfig(Bitmap.Config.RGB_565).build();
+		if (builder == null) {
+			builder = new DisplayImageOptions.Builder();
+			builder.cacheInMemory(true).cacheOnDisc(true).considerExifParams(true).bitmapConfig(Bitmap.Config.RGB_565);
 		}
 	}
 
@@ -50,11 +52,17 @@ public class ImageUtils {
 	 * @param imageView
 	 * @param photourl
 	 */
-	public static void loadImage(ImageView imageView, String photourl) {
+	public static void loadImage(ImageView imageView, String photourl, int gender) {
 		try {
+			if (gender == Constants.General.FEMALE) {
+				builder.showImageForEmptyUri(R.drawable.female).showImageOnFail(R.drawable.female).showImageOnLoading(R.drawable.female);
+			} else {
+				builder.showImageForEmptyUri(R.drawable.male).showImageOnFail(R.drawable.male).showImageOnLoading(R.drawable.male);
+			}
+			options = builder.build();
 			imageLoader.displayImage(photourl, imageView, options);
 		} catch (OutOfMemoryError e) {
-			imageView.setBackgroundResource(R.drawable.avatar);
+			imageView.setBackgroundResource(R.drawable.male);
 		}
 	}
 

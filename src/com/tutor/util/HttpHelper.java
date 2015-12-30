@@ -19,13 +19,25 @@ import com.tutor.params.ApiUrl;
  */
 public class HttpHelper {
 
+	private Context context;
+	private static HttpHelper helper;
 	/** 默认请求超时时间 15s */
 	protected static int httpConnectTimeOut = 30 * 1000;
-	private static AsyncHttpClient client;
-	static {
+	private AsyncHttpClient client;
+
+	public static void init(Context context) {
+		helper = new HttpHelper(context);
+	}
+
+	private HttpHelper(Context contex) {
+		this.context = contex;
 		client = new AsyncHttpClient();
 		client.setConnectTimeout(httpConnectTimeOut);
 		client.setResponseTimeout(httpConnectTimeOut);
+	}
+
+	public static HttpHelper getHelper() {
+		return helper;
 	}
 
 	/**
@@ -38,7 +50,7 @@ public class HttpHelper {
 	 * @param responseHandler
 	 *            响应监听
 	 */
-	public static <T> void post(Context context, String url, HashMap<String, String> headers, RequestParams params, ObjectHttpResponseHandler<T> responseHandler) {
+	public <T> void post(String url, HashMap<String, String> headers, RequestParams params, ObjectHttpResponseHandler<T> responseHandler) {
 		addHeader(headers);
 		LogUtils.d(url);
 		client.post(ApiUrl.DOMAIN + url, params, responseHandler);
@@ -53,7 +65,7 @@ public class HttpHelper {
 	 * @param entity
 	 * @param responseHandler
 	 */
-	public static <T> void post(Context context, String url, HashMap<String, String> headers, HttpEntity entity, ObjectHttpResponseHandler<T> responseHandler) {
+	public <T> void post(String url, HashMap<String, String> headers, HttpEntity entity, ObjectHttpResponseHandler<T> responseHandler) {
 		addHeader(headers);
 		LogUtils.d(url);
 		client.post(context, ApiUrl.DOMAIN + url, null, entity, "application/json", responseHandler);
@@ -69,7 +81,7 @@ public class HttpHelper {
 	 * @param responseHandler
 	 *            响应监听
 	 */
-	public static <T> void get(Context context, String url, HashMap<String, String> headers, RequestParams params, ObjectHttpResponseHandler<T> responseHandler) {
+	public <T> void get(String url, HashMap<String, String> headers, RequestParams params, ObjectHttpResponseHandler<T> responseHandler) {
 		addHeader(headers);
 		LogUtils.d(url);
 		client.get(context, ApiUrl.DOMAIN + url, params, responseHandler);
@@ -85,7 +97,7 @@ public class HttpHelper {
 	 * @param responseHandler
 	 *            响应监听
 	 */
-	public static <T> void put(Context context, String url, HashMap<String, String> headers, RequestParams params, ObjectHttpResponseHandler<T> responseHandler) {
+	public <T> void put(String url, HashMap<String, String> headers, RequestParams params, ObjectHttpResponseHandler<T> responseHandler) {
 		addHeader(headers);
 		LogUtils.d(url);
 		client.put(context, ApiUrl.DOMAIN + url, params, responseHandler);
@@ -101,7 +113,7 @@ public class HttpHelper {
 	 * @param responseHandler
 	 *            响应监听
 	 */
-	public static <T> void put(Context context, String url, HashMap<String, String> headers, HttpEntity entity, ObjectHttpResponseHandler<T> responseHandler) {
+	public <T> void put(String url, HashMap<String, String> headers, HttpEntity entity, ObjectHttpResponseHandler<T> responseHandler) {
 		addHeader(headers);
 		LogUtils.d(url);
 		client.put(context, ApiUrl.DOMAIN + url, null, entity, "application/json", responseHandler);
@@ -112,7 +124,7 @@ public class HttpHelper {
 	 * 
 	 * @param headers
 	 */
-	private static void addHeader(HashMap<String, String> headers) {
+	private void addHeader(HashMap<String, String> headers) {
 		if (null == client) {
 			return;
 		}

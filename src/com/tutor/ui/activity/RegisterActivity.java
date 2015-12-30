@@ -96,13 +96,16 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 		} else if (Constants.General.ROLE_STUDENT == role) {
 			registerButton.setText(R.string.btn_register_as_student);
 			tipTextView.setText(R.string.register_tip_student);
+		} else if (Constants.General.ROLE_TUITION_SCHOOL == role) {
+			registerButton.setText(R.string.btn_register_as_tuition_entre);
+			tipTextView.setText("");
 		}
 	}
 
 	@Override
 	public void onClick(View v) {
+		// 註冊
 		if (v.getId() == R.id.ac_register_btn_register) {
-			// 註冊
 			String email = emailEditText.getEditableText().toString().trim();
 			if (TextUtils.isEmpty(email)) {
 				toast(R.string.toast_email_empty);
@@ -147,6 +150,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 			JPushInterface.setAliasAndTags(RegisterActivity.this, im, tags);
 			register(model);
 		} else if (R.id.ac_register_tv_team == v.getId()) {
+			// 同意协议
 			TeamConditionsDialog dialog = new TeamConditionsDialog(this);
 			dialog.show();
 		}
@@ -166,7 +170,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 		String content = JsonUtil.parseObject2Str(model);
 		try {
 			StringEntity entity = new StringEntity(content, HTTP.UTF_8);
-			HttpHelper.post(this, ApiUrl.REGISTER, null, entity, new ObjectHttpResponseHandler<RegisterInfoResult>(RegisterInfoResult.class) {
+			HttpHelper.getHelper().post(ApiUrl.REGISTER, null, entity, new ObjectHttpResponseHandler<RegisterInfoResult>(RegisterInfoResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {
@@ -259,6 +263,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 							// 進入完善资料
 							Intent intent = new Intent();
 							intent.setClass(RegisterActivity.this, FillPersonalInfoActivity.class);
+							intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, result.getResult());
 							intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, role);
 							startActivity(intent);
 							finishNoAnim();

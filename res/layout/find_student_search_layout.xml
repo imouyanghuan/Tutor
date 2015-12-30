@@ -16,7 +16,7 @@
         <EditText
             android:id="@id/fragment_find_student_et"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:background="@drawable/editview_bg"
             android:clickable="true"
             android:ellipsize="end"

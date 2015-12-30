@@ -25,8 +25,8 @@
 
         <ImageView
             android:id="@+id/iv_course_select"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_centerVertical="true"
             android:background="@drawable/course_selection"
             android:contentDescription="@string/app_name" />
@@ -40,7 +40,7 @@
             android:layout_toRightOf="@id/iv_course_select"
             android:text="@string/label_course_selection"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_15" />
 
         <ImageView
             android:layout_width="10dp"
@@ -85,7 +85,7 @@
             android:layout_toRightOf="@id/iv_faq"
             android:text="@string/label_faq"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_15" />
 
         <ImageView
             android:layout_width="10dp"
@@ -114,8 +114,8 @@
 
         <ImageView
             android:id="@+id/iv_advisory"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/dp_15"
             android:background="@drawable/sharing"
@@ -130,7 +130,7 @@
             android:layout_toRightOf="@id/iv_advisory"
             android:text="@string/label_advisory_for_study_abroad"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_15" />
 
         <ImageView
             android:layout_width="10dp"

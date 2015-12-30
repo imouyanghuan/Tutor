@@ -95,7 +95,7 @@ public class ToBeMyStudentActivity extends BaseActivity implements OnItemSelecte
 	}
 
 	private void getCurrencys() {
-		HttpHelper.get(this, ApiUrl.CURRENCYS, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<CurrencyListResult>(CurrencyListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.CURRENCYS, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<CurrencyListResult>(CurrencyListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -165,12 +165,14 @@ public class ToBeMyStudentActivity extends BaseActivity implements OnItemSelecte
 		if (!TextUtils.isEmpty(username)) {
 			nickEditText.setSelection(username.length());
 		}
+		//课程点击
 		courseTextView.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(ToBeMyStudentActivity.this, SureCourseActivity.class);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, userInfo.getAccountType());
+				intent.putExtra(Constants.General.IS_FROM_TO_BY_MY_STUDENT_ACTIVITY, true);
 				startActivityForResult(intent, Constants.RequestResultCode.SURE_COURSES);
 			}
 		});
@@ -361,7 +363,7 @@ public class ToBeMyStudentActivity extends BaseActivity implements OnItemSelecte
 			} else {
 				url = ApiUrl.TO_BE_MY_TUTOR;
 			}
-			HttpHelper.post(this, url, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+			HttpHelper.getHelper().post(url, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {
@@ -377,7 +379,7 @@ public class ToBeMyStudentActivity extends BaseActivity implements OnItemSelecte
 				public void onSuccess(EditProfileResult t) {
 					dismissDialog();
 					if (HttpURLConnection.HTTP_OK == t.getStatusCode() && t.getResult()) {
-						toast(R.string.success);
+						toast(R.string.label_invite_success);
 						finish();
 					} else {
 						toast(t.getMessage());

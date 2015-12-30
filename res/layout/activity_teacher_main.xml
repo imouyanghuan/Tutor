@@ -42,10 +42,10 @@
                     android:orientation="horizontal" >
 
                     <RadioButton
-                        android:id="@id/ac_main_rb2"
+                        android:id="@id/ac_main_rb4"
                         style="@style/main_tab"
-                        android:drawableTop="@drawable/tab_oe_selector"
-                        android:text="@string/study_abroad" />
+                        android:drawableTop="@drawable/tab_blog_selector"
+                        android:text="@string/label_blog" />
 
                     <RadioButton
                         android:id="@id/ac_main_rb1"
@@ -58,13 +58,21 @@
                         android:id="@id/ac_main_rb3"
                         style="@style/main_tab"
                         android:drawableTop="@drawable/tab_my_ts_selector"
-                        android:text="@string/mystudents" />
+                        android:text="@string/mystudents"
+                        android:visibility="visible" />
 
                     <RadioButton
-                        android:id="@id/ac_main_rb4"
+                        android:id="@id/ac_main_rb2"
                         style="@style/main_tab"
-                        android:drawableTop="@drawable/tab_mp_selector"
-                        android:text="@string/my" />
+                        android:drawableTop="@drawable/tab_oe_selector"
+                        android:text="@string/study_abroad" />
+
+                    <RadioButton
+                        android:id="@+id/ac_main_rb5"
+                        style="@style/main_tab"
+                        android:drawableTop="@drawable/tab_tutorail_school_selector"
+                        android:text="@string/label_tutorial_school"
+                        android:visibility="gone" />
                 </RadioGroup>
             </LinearLayout>
         </LinearLayout>

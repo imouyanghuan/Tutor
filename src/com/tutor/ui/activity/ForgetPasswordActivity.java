@@ -68,7 +68,7 @@ public class ForgetPasswordActivity extends BaseActivity implements OnClickListe
 	private void sendEmail() {
 		RequestParams params = new RequestParams();
 		params.put("userName", email);
-		HttpHelper.get(this, ApiUrl.FORGET_PASSWORD, null, params, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.FORGET_PASSWORD, null, params, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {

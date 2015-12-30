@@ -1,6 +1,7 @@
 package com.tutor.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * 搜索条件model
@@ -15,6 +16,7 @@ public class SearchCondition implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private int courseValue;
+	private int[] courseValues;
 	private String courseName;
 	private int areaValue;
 	private String areaName;
@@ -23,7 +25,12 @@ public class SearchCondition implements Serializable {
 	private String genderName;
 	private String searchKeyword;
 	private boolean isVoluntaryTutoring;
-
+	private boolean isCertified;
+	// 补习社服务年级和地区
+	private int serviceGradeValue;
+	private ArrayList<Integer> areaValues;
+	private int gradeValue;
+	private String gradeName;
 
 	public Timeslot getTimeslot() {
 		return timeslot;
@@ -73,33 +80,79 @@ public class SearchCondition implements Serializable {
 		this.searchKeyword = searchKeyword;
 	}
 
-	
 	public int getCourseValue() {
 		return courseValue;
 	}
 
-	
 	public void setCourseValue(int courseValue) {
 		this.courseValue = courseValue;
 	}
 
-	
 	public int getAreaValue() {
 		return areaValue;
 	}
 
-	
 	public void setAreaValue(int areaValue) {
 		this.areaValue = areaValue;
 	}
 
-	
 	public boolean isVoluntaryTutoring() {
 		return isVoluntaryTutoring;
 	}
 
-	
 	public void setVoluntaryTutoring(boolean isVoluntaryTutoring) {
 		this.isVoluntaryTutoring = isVoluntaryTutoring;
+	}
+
+	public int[] getCourseValues() {
+		return courseValues;
+	}
+
+	public void setCourseValues(int[] courseValues) {
+		this.courseValues = courseValues;
+	}
+
+	public int getGradeValue() {
+		return gradeValue;
+	}
+
+	public void setGradeValue(int gradeValue) {
+		this.gradeValue = gradeValue;
+	}
+
+	public String getGradeName() {
+		return gradeName;
+	}
+
+	public void setGradeName(String gradeName) {
+		this.gradeName = gradeName;
+	}
+
+	public boolean isCertified() {
+		return isCertified;
+	}
+
+	public void setCertified(boolean isCertified) {
+		this.isCertified = isCertified;
+	}
+
+	
+	public int getServiceGradeValue() {
+		return serviceGradeValue;
+	}
+
+	
+	public void setServiceGradeValue(int serviceGradeValue) {
+		this.serviceGradeValue = serviceGradeValue;
+	}
+
+	
+	public ArrayList<Integer> getAreaValues() {
+		return areaValues;
+	}
+
+	
+	public void setAreaValues(ArrayList<Integer> areaValues) {
+		this.areaValues = areaValues;
 	}
 }

@@ -125,7 +125,7 @@ public class MyStudentFragment extends BaseFragment implements OnRefreshListener
 		RequestParams params = new RequestParams();
 		params.put("pageIndex", pageIndex);
 		params.put("pageSize", pageSize);
-		HttpHelper.get(getActivity(), ApiUrl.MYSTUDENTLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.MYSTUDENTLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {

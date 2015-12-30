@@ -34,6 +34,8 @@ public class UserInfo implements Serializable {
 	private int educationStatus;
 	private String major;
 	private String introductionVideo;
+	private boolean isCertified; // 是否已经认证
+	private String followCount;     // 关注度
 	// 学生字段
 	private int grade;
 	// 教师和学生都有的字段
@@ -65,6 +67,11 @@ public class UserInfo implements Serializable {
 	private boolean isMatched;
 	private String gradeName;
 	private boolean isVoluntaryTutoring;
+	// 补习社服务年级
+	private ArrayList<Integer> serviceGradeValues;
+	private ArrayList<ServiceGrade> serviceGrades;
+	// 补习社联系邮箱
+	private String contactEmail;
 
 	public String getHkidNumber() {
 		return hkidNumber;
@@ -395,5 +402,49 @@ public class UserInfo implements Serializable {
 
 	public void setVoluntaryTutoring(boolean isVoluntaryTutoring) {
 		this.isVoluntaryTutoring = isVoluntaryTutoring;
+	}
+
+	public ArrayList<Integer> getServiceGradeValues() {
+		return serviceGradeValues;
+	}
+
+	public void setServiceGradeValues(ArrayList<Integer> serviceGradeValues) {
+		this.serviceGradeValues = serviceGradeValues;
+	}
+
+	public String getContactEmail() {
+		return contactEmail;
+	}
+
+	public void setContactEmail(String contactEmail) {
+		this.contactEmail = contactEmail;
+	}
+
+	public ArrayList<ServiceGrade> getServiceGrades() {
+		return serviceGrades;
+	}
+
+	public void setServiceGrades(ArrayList<ServiceGrade> serviceGrades) {
+		this.serviceGrades = serviceGrades;
+	}
+
+	
+	public boolean isCertified() {
+		return isCertified;
+	}
+
+	
+	public void setCertified(boolean isCertified) {
+		this.isCertified = isCertified;
+	}
+
+	
+	public String getFollowCount() {
+		return followCount;
+	}
+
+	
+	public void setFollowCount(String followCount) {
+		this.followCount = followCount;
 	}
 }

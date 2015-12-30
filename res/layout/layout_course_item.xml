@@ -16,7 +16,9 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:paddingBottom="@dimen/dp_5"
-        android:paddingTop="@dimen/dp_5" >
+        android:paddingTop="@dimen/dp_5"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_14" >
     </TextView>
 
 </RelativeLayout>

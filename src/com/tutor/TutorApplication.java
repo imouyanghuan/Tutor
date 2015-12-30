@@ -11,6 +11,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import cn.jpush.android.api.JPushInterface;
 
+import com.facebook.FacebookSdk;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -27,6 +28,7 @@ import com.tutor.model.LogDao;
 import com.tutor.params.Constants;
 import com.tutor.util.DataCleanManager;
 import com.tutor.util.HanderException;
+import com.tutor.util.HttpHelper;
 import com.tutor.util.SettingManager;
 //
 //import com.google.android.gms.analytics.GoogleAnalytics;
@@ -98,6 +100,9 @@ public class TutorApplication extends Application {
 		// 初始化 JPush
 		JPushInterface.init(this);
 		HanderException.getInstance().init(this, null);
+		//初始化Facebook
+		FacebookSdk.sdkInitialize(getApplicationContext());
+		HttpHelper.init(getApplicationContext());
 		// 初始化谷歌分析工具
 		// initGoogleAnalytics();
 	}

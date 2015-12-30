@@ -36,6 +36,7 @@ import com.tutor.model.CourseItem1;
 import com.tutor.model.CourseItem2;
 import com.tutor.model.CourseListResult;
 import com.tutor.model.SearchCondition;
+import com.tutor.model.SubjectModel;
 import com.tutor.model.Timeslot;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
@@ -88,10 +89,10 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 	// 是否编辑开始时间
 	private boolean isStrat;
 	// 课程value
-	private int courseValue = -1;
-	private String curSchool = "";
-	private String curGrade = "";
-	private String curCourse = "";
+	// private int courseValue = -1;
+	// private String curSchool = "";
+	// private String curGrade = "";
+	// private String curCourse = "";
 	// 区域value
 	private int areaValue = -1;
 	private String curCity = "";
@@ -107,6 +108,10 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 	private FrameLayout flTipSearch;
 	private LinearLayout llIsVoluntary;
 	private CheckBox cbIsVoluntary;
+	private TextView courseTextView;
+	private int[] courseValues;
+	private LinearLayout llIsCertified;
+	private CheckBox cbIsCertified;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -130,8 +135,10 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 
 			@Override
 			public void onClick(View v) {
+				// 保存
 				SearchCondition condition = new SearchCondition();
 				condition.setVoluntaryTutoring(cbIsVoluntary.isChecked());
+				condition.setCertified(cbIsCertified.isChecked());
 				condition.setAreaValue(areaValue);
 				String areaName = "";
 				if (!curCity.equals(getString(R.string.label_please_choose))) {
@@ -140,10 +147,10 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 					areaName = "";
 				}
 				condition.setAreaName(areaName);
-				condition.setCourseValue(courseValue);
+				condition.setCourseValues(courseValues);
 				String courseName = "";
-				if (!curSchool.equals(getString(R.string.label_please_choose))) {
-					courseName = curSchool + curGrade + curCourse;
+				if (!courseTextView.getText().toString().equals(getString(R.string.label_please_choose_course))) {
+					courseName = courseTextView.getText().toString();
 				} else {
 					courseName = "";
 				}
@@ -167,13 +174,29 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 				SearchConditionsActivity.this.finish();
 			}
 		});
+		// 选择课程
+		courseTextView = getView(R.id.et_course);
+		courseTextView.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(SearchConditionsActivity.this, SureCourseActivity.class);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ROLE, TutorApplication.getRole());
+				intent.putExtra(Constants.General.IS_FROM_TO_BY_MY_STUDENT_ACTIVITY, false);
+				startActivityForResult(intent, Constants.RequestResultCode.SURE_COURSES);
+			}
+		});
 		// 是否义务补习
 		llIsVoluntary = getView(R.id.ll_isVoluntary);
 		cbIsVoluntary = getView(R.id.cb_is_voluntary);
+		// 是否已经通过认证
+		llIsCertified = getView(R.id.ll_is_certified);
+		cbIsCertified = getView(R.id.cb_is_certified);
 		TextView tvNote = getView(R.id.tv_note);
 		if (TutorApplication.getRole() != Constants.General.ROLE_TUTOR) {
 			tvNote.setVisibility(View.GONE);
 			llIsVoluntary.setVisibility(View.VISIBLE);
+			llIsCertified.setVisibility(View.VISIBLE);
 		}
 		llGender = getView(R.id.ll_gender);
 		// tip
@@ -243,6 +266,81 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 		}
 	}
 
+	@Override
+	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+		super.onActivityResult(arg0, arg1, arg2);
+		if (arg0 == Constants.RequestResultCode.SURE_COURSES && arg1 == RESULT_OK && null != arg2) {
+			if (TutorApplication.getRole() == Constants.General.ROLE_TUTOR) {
+				// 老师搜索
+				setTutorData(arg2);
+			} else {
+				setData(arg2);
+			}
+		}
+	}
+
+	private void setTutorData(Intent arg2) {
+		@SuppressWarnings("unchecked")
+		ArrayList<SubjectModel> data = (ArrayList<SubjectModel>) arg2.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_COURSESLIST);
+		if (data == null || data.size() == 0) {
+			courseValues = null;
+			courseTextView.setText("");
+		} else {
+			// courseValues = new int[data.size()];
+			courseTextView.setText(getTutorShowCourse(data));
+		}
+	}
+
+	private String getTutorShowCourse(ArrayList<SubjectModel> subjectModels) {
+		StringBuffer sb = new StringBuffer();
+		ArrayList<Integer> selectedCourseValuses = new ArrayList<Integer>();
+		for (int i = 0; i < subjectModels.size(); i++) {
+			ArrayList<Integer> courseValuses = subjectModels.get(i).getCourseValues();
+			for (int j = 0; j < courseValuses.size(); j++) {
+				selectedCourseValuses.add(courseValuses.get(j));
+			}
+			sb.append(subjectModels.get(i).getName() + ", ");
+		}
+		int size = selectedCourseValuses.size();
+		courseValues = new int[size];
+		for (int i = 0; i < size; i++) {
+			courseValues[i] = selectedCourseValuses.get(i);
+		}
+		// 去掉最后一个逗号
+		if (sb.length() > 2) {
+			sb.delete(sb.length() - 2, sb.length());
+		}
+		return sb.toString();
+	}
+
+	private void setData(Intent arg2) {
+		@SuppressWarnings("unchecked")
+		ArrayList<CourseItem2> data = (ArrayList<CourseItem2>) arg2.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_COURSESLIST);
+		if (data == null || data.size() == 0) {
+			courseValues = null;
+			courseTextView.setText("");
+		} else {
+			courseValues = new int[data.size()];
+			courseTextView.setText(getShowCourse(data));
+		}
+	}
+
+	private String getShowCourse(ArrayList<CourseItem2> courses) {
+		StringBuffer sb = new StringBuffer();
+		if (null != courses && courses.size() > 0) {
+			for (int i = 0; i < courses.size(); i++) {
+				CourseItem2 item2 = courses.get(i);
+				courseValues[i] = item2.getValue();
+				sb.append(item2.getType() + "-" + item2.getSubType() + "-" + item2.getCourseName() + ",");
+			}
+		}
+		// 去掉最后一个逗号
+		if (sb.length() > 0) {
+			sb.delete(sb.length() - 1, sb.length());
+		}
+		return sb.toString();
+	}
+
 	/**
 	 * 获取选择课程列表
 	 */
@@ -252,7 +350,7 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 			return;
 		}
 		showDialogRes(R.string.loading);
-		HttpHelper.get(this, ApiUrl.COURSELIST, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<CourseListResult>(CourseListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.COURSELIST, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<CourseListResult>(CourseListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -292,7 +390,7 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 			toast(R.string.toast_netwrok_disconnected);
 			return;
 		}
-		HttpHelper.get(this, ApiUrl.AREALIST, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<AreaListResult>(AreaListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.AREALIST, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<AreaListResult>(AreaListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -418,101 +516,109 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 		spCourse.setAdapter(courseAdapter);
 		spCourse.setSelection(0, true);
 		// 学校下拉框监听
-		spSchool.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				curSchool = schoolAdapter.getItem(position).getName();
-				if (curSchool.equals(getString(R.string.label_please_choose))) {
-					clearGrade();
-					clearCourse();
-					spGrade.setVisibility(View.GONE);
-					spCourse.setVisibility(View.GONE);
-					return;
-				} else {
-					spGrade.setVisibility(View.VISIBLE);
-					spCourse.setVisibility(View.VISIBLE);
-				}
-				if (schools == null || schools.size() <= 0) {
-					return;
-				}
-				for (int i = 0; i < schools.size(); i++) {
-					String course = schools.get(i).getName();
-					if (!course.equalsIgnoreCase(curSchool) || curSchool.equals(getString(R.string.label_please_choose))) {
-						continue;
-					}
-					ArrayList<CourseItem1> courseItem = schools.get(i).getResult();
-					clearGrade();
-					grades.addAll(courseItem);
-					gradeAdapter.notifyDataSetChanged();
-					spGrade.setSelection(0, true);
-					break;
-				}
-				curGrade = gradeAdapter.getItem(0).getName();
-				curCourse = gradeAdapter.getItem(0).getResult().get(0).getCourseName();
-				if (grades != null && grades.size() > 0) {
-					for (int i = 0; i < grades.size(); i++) {
-						String grade = grades.get(i).getName();
-						if (grade.equalsIgnoreCase(curGrade)) {
-							ArrayList<CourseItem2> courseItem2 = grades.get(i).getResult();
-							clearCourse();
-							courses.addAll(courseItem2);
-							courseAdapter.notifyDataSetChanged();
-							spCourse.setSelection(0, true);
-							break;
-						}
-					}
-				}
-				courseValue = getCourseValue();
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {}
-		});
+		// spSchool.setOnItemSelectedListener(new
+		// AdapterView.OnItemSelectedListener() {
+		//
+		// @Override
+		// public void onItemSelected(AdapterView<?> arg0, View arg1, int
+		// position, long arg3) {
+		// curSchool = schoolAdapter.getItem(position).getName();
+		// if (curSchool.equals(getString(R.string.label_please_choose))) {
+		// clearGrade();
+		// clearCourse();
+		// spGrade.setVisibility(View.GONE);
+		// spCourse.setVisibility(View.GONE);
+		// return;
+		// } else {
+		// spGrade.setVisibility(View.VISIBLE);
+		// spCourse.setVisibility(View.VISIBLE);
+		// }
+		// if (schools == null || schools.size() <= 0) {
+		// return;
+		// }
+		// for (int i = 0; i < schools.size(); i++) {
+		// String course = schools.get(i).getName();
+		// if (!course.equalsIgnoreCase(curSchool) ||
+		// curSchool.equals(getString(R.string.label_please_choose))) {
+		// continue;
+		// }
+		// ArrayList<CourseItem1> courseItem = schools.get(i).getResult();
+		// clearGrade();
+		// grades.addAll(courseItem);
+		// gradeAdapter.notifyDataSetChanged();
+		// spGrade.setSelection(0, true);
+		// break;
+		// }
+		// curGrade = gradeAdapter.getItem(0).getName();
+		// curCourse =
+		// gradeAdapter.getItem(0).getResult().get(0).getCourseName();
+		// if (grades != null && grades.size() > 0) {
+		// for (int i = 0; i < grades.size(); i++) {
+		// String grade = grades.get(i).getName();
+		// if (grade.equalsIgnoreCase(curGrade)) {
+		// ArrayList<CourseItem2> courseItem2 = grades.get(i).getResult();
+		// clearCourse();
+		// courses.addAll(courseItem2);
+		// courseAdapter.notifyDataSetChanged();
+		// spCourse.setSelection(0, true);
+		// break;
+		// }
+		// }
+		// }
+		// courseValue = getCourseValue();
+		// }
+		//
+		// @Override
+		// public void onNothingSelected(AdapterView<?> arg0) {}
+		// });
 		// 年级下拉监听
-		spGrade.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				curGrade = gradeAdapter.getItem(position).getName();
-				if (grades != null && grades.size() > 0) {
-					for (int i = 0; i < grades.size(); i++) {
-						String grade = grades.get(i).getName();
-						if (grade.equalsIgnoreCase(curGrade)) {
-							ArrayList<CourseItem2> courseItem2 = grades.get(i).getResult();
-							if (courses != null && courses.size() > 0) {
-								courses.clear();
-							}
-							courses.addAll(courseItem2);
-							courseAdapter.notifyDataSetChanged();
-							spCourse.setSelection(0, true);
-							break;
-						}
-					}
-				}
-				curCourse = courseAdapter.getItem(0).getCourseName();
-				courseValue = getCourseValue();
-				// toast(curSchool + curGrade + curCourse + "id:" +
-				// courseValue);
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {}
-		});
+		// spGrade.setOnItemSelectedListener(new
+		// AdapterView.OnItemSelectedListener() {
+		//
+		// @Override
+		// public void onItemSelected(AdapterView<?> arg0, View arg1, int
+		// position, long arg3) {
+		// curGrade = gradeAdapter.getItem(position).getName();
+		// if (grades != null && grades.size() > 0) {
+		// for (int i = 0; i < grades.size(); i++) {
+		// String grade = grades.get(i).getName();
+		// if (grade.equalsIgnoreCase(curGrade)) {
+		// ArrayList<CourseItem2> courseItem2 = grades.get(i).getResult();
+		// if (courses != null && courses.size() > 0) {
+		// courses.clear();
+		// }
+		// courses.addAll(courseItem2);
+		// courseAdapter.notifyDataSetChanged();
+		// spCourse.setSelection(0, true);
+		// break;
+		// }
+		// }
+		// }
+		// curCourse = courseAdapter.getItem(0).getCourseName();
+		// courseValue = getCourseValue();
+		// // toast(curSchool + curGrade + curCourse + "id:" +
+		// // courseValue);
+		// }
+		//
+		// @Override
+		// public void onNothingSelected(AdapterView<?> arg0) {}
+		// });
 		// 课程下拉监听
-		spCourse.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int position, long arg3) {
-				curCourse = courseAdapter.getItem(position).getCourseName();
-				courseValue = getCourseValue();
-				// toast(curSchool + curGrade + curCourse + "id:" +
-				// courseValue);
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {}
-		});
+		// spCourse.setOnItemSelectedListener(new
+		// AdapterView.OnItemSelectedListener() {
+		//
+		// @Override
+		// public void onItemSelected(AdapterView<?> arg0, View arg1, int
+		// position, long arg3) {
+		// curCourse = courseAdapter.getItem(position).getCourseName();
+		// courseValue = getCourseValue();
+		// // toast(curSchool + curGrade + curCourse + "id:" +
+		// // courseValue);
+		// }
+		//
+		// @Override
+		// public void onNothingSelected(AdapterView<?> arg0) {}
+		// });
 	}
 
 	/**
@@ -520,40 +626,39 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 	 * 
 	 * @return
 	 */
-	public int getCourseValue() {
-		if (schools == null || schools.size() <= 0) {
-			return -1;
-		}
-		for (int i = 0; i < schools.size(); i++) {
-			String school = schools.get(i).getName();
-			if (!school.equalsIgnoreCase(curSchool)) {
-				continue;
-			}
-			ArrayList<CourseItem1> grades = schools.get(i).getResult();
-			if (grades == null || grades.size() <= 0) {
-				return -1;
-			}
-			for (int j = 0; j < grades.size(); j++) {
-				String grade = grades.get(j).getName();
-				if (!grade.equalsIgnoreCase(curGrade)) {
-					continue;
-				}
-				ArrayList<CourseItem2> courses = grades.get(j).getResult();
-				if (courses == null || courses.size() <= 0) {
-					return -1;
-				}
-				for (int k = 0; k < courses.size(); k++) {
-					String course = courses.get(k).getCourseName();
-					if (course.equalsIgnoreCase(curCourse)) {
-						courseValue = courses.get(k).getValue();
-						break;
-					}
-				}
-			}
-		}
-		return courseValue;
-	}
-
+	// public int getCourseValue() {
+	// if (schools == null || schools.size() <= 0) {
+	// return -1;
+	// }
+	// for (int i = 0; i < schools.size(); i++) {
+	// String school = schools.get(i).getName();
+	// if (!school.equalsIgnoreCase(curSchool)) {
+	// continue;
+	// }
+	// ArrayList<CourseItem1> grades = schools.get(i).getResult();
+	// if (grades == null || grades.size() <= 0) {
+	// return -1;
+	// }
+	// for (int j = 0; j < grades.size(); j++) {
+	// String grade = grades.get(j).getName();
+	// if (!grade.equalsIgnoreCase(curGrade)) {
+	// continue;
+	// }
+	// ArrayList<CourseItem2> courses = grades.get(j).getResult();
+	// if (courses == null || courses.size() <= 0) {
+	// return -1;
+	// }
+	// for (int k = 0; k < courses.size(); k++) {
+	// String course = courses.get(k).getCourseName();
+	// if (course.equalsIgnoreCase(curCourse)) {
+	// courseValue = courses.get(k).getValue();
+	// break;
+	// }
+	// }
+	// }
+	// }
+	// return courseValue;
+	// }
 	/**
 	 * 获取区域value
 	 * 
@@ -728,18 +833,17 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 		}
 	}
 
-	private void clearCourse() {
-		if (courses != null && courses.size() > 0) {
-			courses.clear();
-		}
-	}
-
-	private void clearGrade() {
-		if (grades != null && grades.size() > 0) {
-			grades.clear();
-		}
-	}
-
+	// private void clearCourse() {
+	// if (courses != null && courses.size() > 0) {
+	// courses.clear();
+	// }
+	// }
+	//
+	// private void clearGrade() {
+	// if (grades != null && grades.size() > 0) {
+	// grades.clear();
+	// }
+	// }
 	private void clearCountry() {
 		if (countrys != null && countrys.size() > 0) {
 			countrys.clear();

@@ -93,7 +93,7 @@ public class TimeTableActivity extends BaseActivity {
 		final int year = Integer.parseInt(mAdapter.getShowYear());
 		params.put("month", month);
 		params.put("year", year);
-		HttpHelper.get(this, ApiUrl.ACTIVITIES, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<ActivityListResult>(ActivityListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.ACTIVITIES, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<ActivityListResult>(ActivityListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -113,7 +113,7 @@ public class TimeTableActivity extends BaseActivity {
 
 	private void getTimeTable() {
 		RequestParams params = new RequestParams();
-		HttpHelper.get(this, ApiUrl.TIME_TABLE, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<TimeTableListResult>(TimeTableListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.TIME_TABLE, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<TimeTableListResult>(TimeTableListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {

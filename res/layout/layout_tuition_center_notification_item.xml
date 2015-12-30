@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.mssky.mobile.ui.zlistview.ZSwipeItem xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <LinearLayout
+        android:id="@+id/ll_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/tv_accept"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:background="@color/gray"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/label_accept"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_reject"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:background="#e0491b"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/label_reject"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:background="@color/red_dot"
+            android:clickable="true"
+            android:gravity="center"
+            android:text="@string/delete"
+            android:textColor="@color/white"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <include layout="@layout/student_list_item2" />
+
+</com.mssky.mobile.ui.zlistview.ZSwipeItem>

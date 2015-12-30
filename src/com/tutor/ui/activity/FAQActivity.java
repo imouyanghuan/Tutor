@@ -47,7 +47,7 @@ public class FAQActivity extends BaseActivity {
 			return;
 		}
 		showDialogRes(R.string.loading);
-		HttpHelper.get(this, ApiUrl.STUDY_ABROAD_FAQ, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<FAQListResult>(FAQListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.STUDY_ABROAD_FAQ, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<FAQListResult>(FAQListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {

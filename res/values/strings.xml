@@ -60,8 +60,8 @@
     <string name="label_avatar">Avatar:</string>
     <string name="label_hkid_number">HKID Number</string>
     <string name="label_phone">Phone Number</string>
-    <string name="label_gender">Gender:</string>
-    <string name="label_grade">Grade:</string>
+    <string name="label_gender">Gender: </string>
+    <string name="label_grade">Grade: </string>
     <string name="label_birth">Date of Birth:</string>
     <string name="label_birthday">Birth:</string>
     <string name="label_address">Residential Address</string>
@@ -80,7 +80,7 @@
     <string name="label_add_timeslot">Add Timeslot</string>
     <string name="label_edit_timeslot">Edit Timeslot</string>
     <string name="label_education_background">Education Background</string>
-    <string name="label_education_background2">Current Education :</string>
+    <string name="label_education_background2">Current Education: </string>
     <string name="label_education_status">Education Status:</string>
     <string name="label_teaching_couress">Teaching Couress</string>
     <string name="label_interested_couress">Interested Couress</string>
@@ -98,11 +98,11 @@
     <string name="lable_log_out">Are you sure log out?</string>
     <string name="label_nickname">Preferred Name:</string>
     <string name="label_school">School or University:</string>
-    <string name="label_major">Major:</string>
+    <string name="label_major">Major: </string>
     <string name="label_tutor_experience">Tutoring Experience:</string>
     <string name="label_experience_year">Year(s)</string>
     <string name="label_experience_year2">%sYear(s)</string>
-    <string name="label_student">Student :</string>
+    <string name="label_student">Student: </string>
     <string name="label_self_introduction">Self Introduction(Optional):</string>
     <string name="label_self_introduction1">Self Introduction</string>
     <string name="label_self_introduction_video">Self Introduction Video(Optional):</string>
@@ -114,7 +114,7 @@
     <string name="btn_role_tutor">Find Students</string>
     <string name="btn_login_facebook">Login With Facebook</string>
     <string name="btn_login_email">Login With Email</string>
-    <string name="btn_register_as_tutor">Register As a Tutor</string>
+    <string name="btn_register_as_tutor">Register As Tutor</string>
     <string name="btn_register_as_student">Register As Student/Parent</string>
     <string name="btn_fill_info_tutor">Submit&amp;Become a Tutor</string>
     <string name="btn_fill_info_student">Submit&amp;Find a Tutor</string>
@@ -289,7 +289,7 @@
     <string name="label_label_address">"Residential Address : "</string>
     <string name="label_time">"Time : "</string>
     <string name="label_required_info">If you accept the invitation you need to fill in the following information</string>
-    <string name="label_graduate_school">Graduate School:</string>
+    <string name="label_graduate_school">Graduate School: </string>
     <!-- 2015-11-02 -->
     <string name="label_you_still_do_not_have_any_students_yet">"You still have not got any students yet!"</string>
     <string name="label_match_a_student_now">Match a student now!</string>
@@ -304,7 +304,52 @@
     <string name="unusual_exception">Sorry, the program appears unusual, be about to exit.</string>
     <string name="chat_service_not_available">Chat service not available, please try again later</string>
     <string name="label_provide_voluntary_tutoring">Provide Voluntary Tutoring</string>
-    <string name="label_note">*By ticking this check box, you have agreed to disclose your contact details to our non-profit voluntary tutoring organisation partners</string>
+    <string name="label_note">*By ticking this check box, you have agreed to disclose your contact details to our voluntary tutoring partners. You will see their information on the next page once you have ticked this box.</string>
     <string name="label_activity_detail">Activity Detail</string>
+    <string name="label_please_choose_course">Please choose a course</string>
+    <!-- 2015-12-09 -->
+    <string name="label_blog">Blog</string>
+    <string name="label_tutorial_school">Tuition Center</string>
+    <string name="label_notification">Notifications</string>
+    <string name="label_tuition_centre_info">Tuition Center Info</string>
+    <string name="label_please_select_a_role">Please Choose Your Role</string>
+    <string name="btn_register_as_tuition_entre">Register As Tuition Center</string>
+    <string name="label_phone_number">Tel Number:</string>
+    <string name="hint_phone_number">Tel Number</string>
+    <string name="hint_phone">Phone:</string>
+    <string name="label_email">Email:</string>
+    <string name="hint_enter_tuition_center_address">Enter Tuition Center Address</string>
+    <string name="label_edit_service_grade">Edit Service Grade</string>
+    <string name="label_select_service_grade">Please choose your grade</string>
+    <string name="label_service_grades">Service Grade</string>
+    <string name="label_tuition_center_introduction">Introduction:</string>
+    <string name="label_search_tuition_center">Searching Tuition Center By Conditions</string>
+    <string name="label_please_choose_grade">Please choose a grade</string>
+    <string name="toast_no_match_tuition_center">No match tuition center</string>
+    <string name="label_join_tuition_center">Join This Tuition Center</string>
+    <string name="label_join_content">Apply to join Tuition Center</string>
+    <string name="label_join_people">"Apply join People : "</string>
+    <string name="label_rete">Rating</string>
+    <string name="label_tuition_center_introduce">Introduction</string>
+    <string name="label_service_areas">Service Area</string>
+    <string name="label_service_address">Address</string>
+    <string name="label_quality_of_tutors">"Quality of Tutors : "</string>
+    <string name="label_learning_environment">"Learning Environment : "</string>
+    <string name="label_comment">"Comment:"</string>
+    <string name="toast_share_cancel">Share cancelled</string>
+    <string name="toast_share_failed">Share failure</string>
+    <string name="label_share_success">Share success</string>
+    <string name="label_please_choose_a_course">Please select a course to save again</string>
+    <string name="label_invite_success">Send success</string>
+    <string name="label_volunteer_information">Volunteer Information</string>
+    <string name="toast_please_enter_comment">Please enter your comment</string>
+    <string name="toast_please_add_rating">Please rate</string>
+    <string name="label_is_certified">Verified Tutor: </string>
+    <string name="label_search_is_certified">Verified Tutor</string>
+    <string name="label_certified">Yes</string>
+    <string name="label_un_certified">No</string>
+    <string name="label_folllow">Attention Drawn: </string>
+    <string name="label_rate">Rate</string>
+    <string name="label_approved">Verified</string>
 
 </resources>

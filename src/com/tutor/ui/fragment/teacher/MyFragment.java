@@ -92,8 +92,9 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	private void initView(View view) {
 		avatar = ViewHelper.get(view, R.id.fragment_my_iv_avatar);
 		avatar.setOnClickListener(this);
-		// 加载头像
-		ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + ApiUrl.GET_OTHER_AVATAR + TutorApplication.getMemberId());
+		// // 加载头像
+		// ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + ApiUrl.GET_OTHER_AVATAR
+		// + TutorApplication.getMemberId());
 		//
 		userName = ViewHelper.get(view, R.id.fragment_my_tv_username);
 		gender = ViewHelper.get(view, R.id.fragment_my_tv_gender);
@@ -147,6 +148,8 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	private void setData(UserInfo profile) {
 		isVoluntaryTutoring = profile.isVoluntaryTutoring();
 		userInfo = profile;
+		// 加载头像
+		ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + ApiUrl.GET_OTHER_AVATAR + TutorApplication.getMemberId(), userInfo.getGender() != null ? userInfo.getGender() : Constants.General.MALE);
 		userName.setText(!TextUtils.isEmpty(profile.getUserName()) ? profile.getUserName() : "Tutor" + profile.getId());
 		int genderStr;
 		if (userInfo.getGender() == null) {
@@ -180,7 +183,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	public void onClick(View arg0) {
 		switch (arg0.getId()) {
 			case R.id.fragment_my_iv_avatar:
-				// 上傳頭像
+				// 上傳頭像 android 6.0 无法保存更改
 				if (null == dialog) {
 					dialog = new ChangeAvatarDialog((BaseActivity) getActivity());
 				}
@@ -279,7 +282,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 		LogUtils.d(json);
 		try {
 			StringEntity entity = new StringEntity(json, HTTP.UTF_8);
-			HttpHelper.put(getActivity(), ApiUrl.TUTORPROFILE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+			HttpHelper.getHelper().put( ApiUrl.TUTORPROFILE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {
@@ -352,7 +355,9 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 			case Constants.RequestResultCode.ZOOM:
 				// 裁剪完成
 				// 圖庫選擇
-				if (BaseActivity.RESULT_OK == resultCode && null != zoomUri) {
+				if (BaseActivity.RESULT_OK == resultCode && null != zoomUri) { // resultCode
+																				// =
+																				// 0
 					// 上傳頭像
 					String path = zoomUri.getPath();
 					if (!TextUtils.isEmpty(path)) {
@@ -385,9 +390,9 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 		intent.putExtra("outputY", 400);
 		// 保持缩放
 		intent.putExtra("scale", true);
-		String path = data.getPath();
+		String path = data.getPath();// /-1/1/content://media/external/images/media/10609/ACTUAL/1268057965
 		String fileName = path.substring(path.lastIndexOf(File.separatorChar) + 1);
-		zoomUri = Uri.fromFile(new File(Constants.SDCard.getCacheDir(), fileName + Constants.General.IMAGE_END));
+		zoomUri = Uri.fromFile(new File(Constants.SDCard.getCacheDir(), fileName + Constants.General.IMAGE_END));// file:///storage/emulated/0/Tutor/cache/1268057965.jpg
 		intent.putExtra(MediaStore.EXTRA_OUTPUT, zoomUri);
 		intent.putExtra("return-data", false);
 		intent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
@@ -413,7 +418,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 			try {
 				params.put("file", file, "form-data");
 				showDialogRes(R.string.uploading_avatar);
-				HttpHelper.post(getActivity(), ApiUrl.UPLOAD_AVATAR, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UploadAvatarResult>(UploadAvatarResult.class) {
+				HttpHelper.getHelper().post( ApiUrl.UPLOAD_AVATAR, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UploadAvatarResult>(UploadAvatarResult.class) {
 
 					@Override
 					public void onFailure(int status, String message) {
@@ -429,7 +434,10 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 						dismissDialog();
 						CheckTokenUtils.checkToken(t);
 						if (HttpURLConnection.HTTP_OK == t.getStatusCode()) {
-							ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + t.getResult());
+							ImageUtils.clearChache();
+							ImageUtils.loadImage(avatar, ApiUrl.DOMAIN + t.getResult(), userInfo.getGender() != null ? userInfo.getGender() : Constants.General.MALE);
+							// 把新头像设置进userInfo model(解决上传完头像马上编辑信息bug) 12/9
+							userInfo.setAvatar(t.getResult());
 						} else {
 							toast(R.string.toast_avatar_upload_fail);
 						}
@@ -448,7 +456,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 	private void getTutorProfile() {
 		RequestParams params = new RequestParams();
 		params.put("memberId", TutorApplication.getMemberId());
-		HttpHelper.get(getActivity(), ApiUrl.TUTORINFO, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.TUTORINFO, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -459,7 +467,7 @@ public class MyFragment extends BaseFragment implements OnClickListener {
 				if (CheckTokenUtils.checkToken(status)) {
 					return;
 				}
-				toast(R.string.toast_server_error);
+				// toast(R.string.toast_server_error);
 			}
 
 			@Override

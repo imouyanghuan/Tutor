@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/btn_adviser_bg"
+    android:gravity="center"
     android:orientation="horizontal" >
 
     <ImageView
@@ -21,7 +22,6 @@
         android:layout_marginLeft="3dp"
         android:layout_toRightOf="@id/iv_adviser"
         android:gravity="center_vertical"
-        android:text="Jerry Yao"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14" />
 

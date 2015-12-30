@@ -138,7 +138,7 @@ public class SysNotificationAdapter extends BaseSwipeAdapter {
 			}
 		}
 		if (mList != null) {
-			ImageUtils.loadImage(imgAvatar, ApiUrl.DOMAIN + mList.get(position).getAvatar());
+			ImageUtils.loadImage(imgAvatar, ApiUrl.DOMAIN + mList.get(position).getAvatar(),Constants.General.MALE);
 		}
 		String msgFrom = !TextUtils.isEmpty(mList.get(position).getUserName()) ? mList.get(position).getUserName() : mList.get(position).getNickName();
 		if (TextUtils.isEmpty(msgFrom)) {

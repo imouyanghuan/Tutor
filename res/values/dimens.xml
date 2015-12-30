@@ -16,7 +16,9 @@
     <dimen name="dp_20">20dp</dimen>
     <dimen name="dp_25">25dp</dimen>
     <dimen name="dp_26">26dp</dimen>
+    <dimen name="dp_28">28dp</dimen>
     <dimen name="dp_30">30dp</dimen>
+    <dimen name="dp_34">34dp</dimen>
     <dimen name="dp_35">35dp</dimen>
     <dimen name="dp_40">40dp</dimen>
     <dimen name="dp_45">45dp</dimen>
@@ -32,7 +34,7 @@
     <dimen name="dp_150">150dp</dimen>
     <dimen name="dp_240">240dp</dimen>
     <!-- 所有細線的高度 -->
-    <dimen name="line_height">1px</dimen>
+    <dimen name="line_height">1dp</dimen>
 
     <!-- sp -->
     <dimen name="sp_1">1sp</dimen>
@@ -42,6 +44,7 @@
     <dimen name="sp_14">14sp</dimen>
     <dimen name="sp_15">15sp</dimen>
     <dimen name="sp_16">16sp</dimen>
+    <dimen name="sp_17">17sp</dimen>
     <dimen name="sp_18">18sp</dimen>
     <dimen name="sp_20">20sp</dimen>
     <dimen name="sp_22">22sp</dimen>

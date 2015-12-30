@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/default_bg_color" >
+    android:background="@color/default_bg_color"
+    android:orientation="vertical" >
+
+    <include layout="@layout/title_bar" />
+<FrameLayout 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
     <com.mssky.mobile.ui.view.PullToRefreshListView
         android:id="@id/fragment_find_student_lv"
@@ -42,4 +49,4 @@
             android:textSize="@dimen/sp_14" />
     </LinearLayout>
 
-</FrameLayout>
+</FrameLayout></LinearLayout>

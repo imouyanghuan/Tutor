@@ -262,8 +262,9 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 							String COLON = ":";
 							timeStr = weekStr + " " + startHour + COLON + startM + " - " + endHour + COLON + endM + COM;
 						}
-						String voluntaryTutor = (condition.isVoluntaryTutoring() ? getString(R.string.label_provide_voluntary_tutoring) : "") + COM;
-						String searchKeyWork = keyword + courseName + areaName + genderName + timeStr + voluntaryTutor;
+						String voluntaryTutor = condition.isVoluntaryTutoring() ? getString(R.string.label_provide_voluntary_tutoring) + COM : "";
+						String isCertified = condition.isCertified() ? getString(R.string.label_search_is_certified) + COM : "";
+						String searchKeyWork = keyword + courseName + areaName + genderName + timeStr + voluntaryTutor + isCertified;
 						if (searchKeyWork.length() > 2) {
 							editText.setText(searchKeyWork.substring(0, (searchKeyWork.length() - 2)));
 						} else {
@@ -345,7 +346,7 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 		RequestParams params = new RequestParams();
 		params.put("pageIndex", pageIndex);
 		params.put("pageSize", pageSize);
-		HttpHelper.get(getActivity(), ApiUrl.TUTORRATING, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.TUTORRATING, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -374,7 +375,7 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 		RequestParams params = new RequestParams();
 		params.put("pageIndex", pageIndex);
 		params.put("pageSize", pageSize);
-		HttpHelper.get(getActivity(), ApiUrl.TUTORPOPULARITY, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.TUTORPOPULARITY, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -414,7 +415,7 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 		}
 		try {
 			StringEntity entity = new StringEntity(body, HTTP.UTF_8);
-			HttpHelper.post(getActivity(), sb.toString(), TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
+			HttpHelper.getHelper().post(sb.toString(), TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {

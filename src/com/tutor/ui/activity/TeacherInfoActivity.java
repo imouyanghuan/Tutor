@@ -68,6 +68,7 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 	private TextView tvEducation;
 	private int broadCastId = -1;
 	private TextView tvNickName;
+	private TextView tvIsCer, tvFollowCount;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -148,6 +149,10 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 				}
 			}
 		});
+		// 是否认证
+		tvIsCer = getView(R.id.tv_is_cer);
+		// 关注度
+		tvFollowCount = getView(R.id.tv_follow_count);
 		// 评价老师
 		btnRateTutor = getView(R.id.btn_rate_tutor);
 		btnRateTutor.setOnClickListener(this);
@@ -261,7 +266,7 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		}
 		RequestParams params = new RequestParams();
 		String url = String.format(ApiUrl.BOOTMARK_ADD_TUTOR, String.valueOf(userId));
-		HttpHelper.get(this, url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AddBookmarkResult>(AddBookmarkResult.class) {
+		HttpHelper.getHelper().get(url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AddBookmarkResult>(AddBookmarkResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -288,7 +293,7 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		showDialogRes(R.string.loading);
 		RequestParams params = new RequestParams();
 		params.put("memberId", id);
-		HttpHelper.get(this, ApiUrl.TUTORINFO, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.TUTORINFO, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -300,7 +305,7 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 				if (CheckTokenUtils.checkToken(status)) {
 					return;
 				}
-				toast(R.string.toast_server_error);
+				// toast(R.string.toast_server_error);
 			}
 
 			@Override
@@ -320,6 +325,14 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		if (userInfo == null) {
 			return;
 		}
+		// 是否认证
+		if (userInfo.isCertified()) {
+			tvIsCer.setText(R.string.label_certified);
+		} else {
+			tvIsCer.setText(R.string.label_un_certified);
+		}
+		// 关注度
+		tvFollowCount.setText(userInfo.getFollowCount());
 		// im id
 		imId = userInfo.getImid();
 		// title
@@ -352,7 +365,7 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		// rating
 		rating.setRating(userInfo.getRatingGrade());
 		// avatar
-		ImageUtils.loadImage(ivAvatar, ApiUrl.DOMAIN + userInfo.getAvatar());
+		ImageUtils.loadImage(ivAvatar, ApiUrl.DOMAIN + userInfo.getAvatar(), userInfo.getGender() != null ? userInfo.getGender() : Constants.General.MALE);
 		// current education
 		int curEducation = userInfo.getEducationDegree();
 		switch (curEducation) {
@@ -394,7 +407,14 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		tvStudentCount.setText(String.valueOf(userInfo.getStudentCount()));
 		rating.setRating(userInfo.getRatingGrade());
 		tvMajor.setText(!TextUtils.isEmpty(userInfo.getMajor()) ? userInfo.getMajor() : "");
-		tvGraduateSchool.setText(!TextUtils.isEmpty(userInfo.getGraduateSchool()) ? userInfo.getGraduateSchool() : "");
+		String graduateStr = userInfo.getGraduateSchool();
+		if (!TextUtils.isEmpty(userInfo.getGraduateSchool())) {
+			tvGraduateSchool.setText(graduateStr);
+			tvGraduateSchool.setVisibility(View.VISIBLE);
+		} else {
+			tvGraduateSchool.setText("");
+			tvGraduateSchool.setVisibility(View.GONE);
+		}
 		// add end
 		// 可接受时间段
 		ArrayList<Timeslot> timeslots = userInfo.getTimeslots();

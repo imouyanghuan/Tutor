@@ -80,7 +80,7 @@
     <string name="label_add_timeslot">添加時間段</string>
     <string name="label_edit_timeslot">編輯時間段</string>
     <string name="label_education_background">學歷</string>
-    <string name="label_education_background2">學歷 :</string>
+    <string name="label_education_background2">學歷: </string>
     <string name="label_education_status">學習狀態:</string>
     <string name="label_teaching_couress">教學課程</string>
     <string name="label_interested_couress">學習課程</string>
@@ -98,11 +98,11 @@
     <string name="lable_log_out">確定要註銷么？</string>
     <string name="label_nickname">暱稱:</string>
     <string name="label_school">學校或大學:</string>
-    <string name="label_major">專業:</string>
+    <string name="label_major">專業: </string>
     <string name="label_tutor_experience">教學經驗:</string>
     <string name="label_experience_year">年</string>
     <string name="label_experience_year2">%s年</string>
-    <string name="label_student">學生 :</string>
+    <string name="label_student">學生: </string>
     <string name="label_self_introduction">自我介紹（可選）:</string>
     <string name="label_self_introduction1">自我介紹</string>
     <string name="label_self_introduction_video">自我介紹視頻(可選):</string>
@@ -239,7 +239,7 @@
     <string name="label_punctuality">"守時 : "</string>
     <string name="label_communication_skill">"溝通技巧 : "</string>
     <string name="label_rating">評價</string>
-    <string name="label_please_input_your_comments_here">輸入你的評論</string>
+    <string name="label_please_input_your_comments_here">輸入你的評價</string>
     <string name="label_see_other_comments">查看其他評價</string>
     <string name="label_your_comments">評價內容:</string>
     <string name="toast_rating_success">評價成功</string>
@@ -289,7 +289,7 @@
     <string name="label_label_address">"居住地址 : "</string>
     <string name="label_time">"時間 : "</string>
     <string name="label_required_info">如果接受邀請則需要填寫以下信息</string>
-    <string name="label_graduate_school">畢業學校:</string>
+    <string name="label_graduate_school">畢業學校: </string>
     <!-- 2015-11-02 -->
     <string name="label_you_still_do_not_have_any_students_yet">"你現在還沒有匹配的學生! "</string>
     <string name="label_match_a_student_now">現在去匹配一個學生吧!</string>
@@ -304,7 +304,52 @@
     <string name="unusual_exception">很抱歉，程式出現異常，即將關閉.</string>
     <string name="chat_service_not_available">聊天服務暫時不可用, 請稍後再試</string>
     <string name="label_provide_voluntary_tutoring">願意義工補習</string>
-    <string name="label_note">*您同意披露自己的聯系方式給我們的非牟利志願機構伙伴</string>
+    <string name="label_note">*您同意披露自己的聯系方式給我們的非牟利志願機構伙伴, 按下後會在下一頁提供義補團體的資料</string>
     <string name="label_activity_detail">活動詳情</string>
+    <string name="label_please_choose_course">請選擇課程</string>
+    <!-- 2015-12-09 -->
+    <string name="label_blog">教育誌</string>
+    <string name="label_tutorial_school">補習社</string>
+    <string name="label_notification">通知</string>
+    <string name="label_tuition_centre_info">個人資料</string>
+    <string name="label_please_select_a_role">請選擇妳的角色</string>
+    <string name="btn_register_as_tuition_entre">註冊成為補習社</string>
+    <string name="label_phone_number">電話:</string>
+    <string name="hint_phone_number">電話</string>
+    <string name="hint_phone">電話:</string>
+    <string name="label_email">電郵:</string>
+    <string name="hint_enter_tuition_center_address">輸入補習社地址</string>
+    <string name="label_edit_service_grade">編輯服務年級</string>
+    <string name="label_select_service_grade">請選擇服務年級</string>
+    <string name="label_service_grades">服務年級</string>
+    <string name="label_tuition_center_introduction">補習社簡介:</string>
+    <string name="label_search_tuition_center">按條件找尋補習社</string>
+    <string name="label_please_choose_grade">請選擇一個年級</string>
+    <string name="toast_no_match_tuition_center">沒有匹配的補習社</string>
+    <string name="label_join_tuition_center">加入補習社</string>
+    <string name="label_join_content">申請加入補習社</string>
+    <string name="label_join_people">"申請加入人 : "</string>
+    <string name="label_rete">評分</string>
+    <string name="label_tuition_center_introduce">補習社介紹</string>
+    <string name="label_service_areas">服務區域</string>
+    <string name="label_service_address">地址</string>
+    <string name="label_quality_of_tutors">"教師質素 : "</string>
+    <string name="label_learning_environment">"學習環境 : "</string>
+    <string name="label_comment">"評價:"</string>
+    <string name="toast_share_cancel">分享取消</string>
+    <string name="toast_share_failed">分享失敗</string>
+    <string name="label_share_success">分享成功</string>
+    <string name="label_please_choose_a_course">請選擇課程再保存</string>
+    <string name="label_invite_success">已經發送邀請</string>
+    <string name="label_volunteer_information">義補信息</string>
+    <string name="toast_please_enter_comment">請輸入評價內容</string>
+    <string name="toast_please_add_rating">請先給老師評分</string>
+    <string name="label_is_certified">是否認證: </string>
+    <string name="label_search_is_certified">是否認證</string>
+    <string name="label_certified">是</string>
+    <string name="label_un_certified">否</string>
+    <string name="label_folllow">關注度: </string>
+    <string name="label_rate">評價</string>
+    <string name="label_approved">已認證</string>
 
 </resources>

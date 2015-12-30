@@ -22,6 +22,7 @@ import cn.jpush.android.api.JPushInterface;
 
 import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
+import com.mssky.mobile.helper.SharePrefUtil;
 import com.tutor.TutorApplication;
 import com.tutor.model.EditProfileResult;
 import com.tutor.model.Log;
@@ -49,6 +50,19 @@ public class WelcomeActivity extends InstrumentedActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_welcome);
+		Intent intent = getIntent();
+		if (intent != null) {
+			Uri uri = intent.getData();
+			if (uri != null) {
+				String URI = uri.toString();
+				int lastIndex = URI.lastIndexOf("/");
+				String blogId = URI.substring(lastIndex + 1);
+				android.util.Log.e("Tutor", "============== 来自Facebook WelcomeActivity, blogId = " + blogId);
+				if(!TextUtils.isEmpty(blogId)){
+					SharePrefUtil.saveString(WelcomeActivity.this, Constants.General.BLOG_ID, blogId);
+				}
+			}
+		}
 		// 檢查版本更新
 		checkVersion();
 		// 发送错误日志
@@ -66,7 +80,7 @@ public class WelcomeActivity extends InstrumentedActivity {
 		StringEntity entity = null;
 		try {
 			entity = new StringEntity(body, HTTP.UTF_8);
-			HttpHelper.post(this, ApiUrl.LOG, null, entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+			HttpHelper.getHelper().post(ApiUrl.LOG, null, entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {
@@ -89,7 +103,7 @@ public class WelcomeActivity extends InstrumentedActivity {
 			ToastUtil.showToastLong(this, R.string.toast_netwrok_disconnected);
 			return;
 		}
-		HttpHelper.get(this, ApiUrl.UPDATEVERSION, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<VersionUpDateResult>(VersionUpDateResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.UPDATEVERSION, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<VersionUpDateResult>(VersionUpDateResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -150,6 +164,8 @@ public class WelcomeActivity extends InstrumentedActivity {
 				} else if (Constants.General.ROLE_TUTOR == role) {
 					// 老師
 					intent.setClass(WelcomeActivity.this, TeacherMainActivity.class);
+				} else if (Constants.General.ROLE_TUITION_SCHOOL == role) {
+					intent.setClass(WelcomeActivity.this, TuitionCentreActivity.class);
 				}
 			} else {
 				// 未登錄

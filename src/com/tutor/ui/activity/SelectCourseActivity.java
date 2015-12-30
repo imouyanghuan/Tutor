@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -17,6 +18,9 @@ import com.tutor.model.Course;
 import com.tutor.model.CourseItem1;
 import com.tutor.model.CourseItem2;
 import com.tutor.model.CourseListResult;
+import com.tutor.model.SubjectCourseListResult;
+import com.tutor.model.SubjectCourseModel;
+import com.tutor.model.SubjectModel;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
@@ -41,8 +45,10 @@ public class SelectCourseActivity extends BaseActivity {
 	private boolean isEdit;
 	private int role = -1;
 	private UserInfo userInfo;
-	// 课程列表
-	private ArrayList<Course> courses;
+	// 学生课程列表
+	private ArrayList<Course> studentCourses;
+	// 老师课程列表
+	private ArrayList<SubjectCourseModel> tutorCourses;
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -58,7 +64,43 @@ public class SelectCourseActivity extends BaseActivity {
 		}
 		initView();
 		// 获取数据
-		getCourse();
+		if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+			getStudentCourse();
+		} else {
+			getTutorCourse();
+		}
+	}
+
+	private void getTutorCourse() {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		showDialogRes(R.string.loading);
+		HttpHelper.getHelper().get(ApiUrl.COURSE_LIST_FOR_TUTOR, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<SubjectCourseListResult>(SubjectCourseListResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				// 连接超时,再获取一次
+				if (0 == status) {
+					getTutorCourse();
+					return;
+				}
+				dismissDialog();
+				toast(R.string.toast_server_error);
+			}
+
+			@Override
+			public void onSuccess(SubjectCourseListResult t) {
+				dismissDialog();
+				if (null != t) {
+					tutorCourses = t.getResult();
+					setData();
+				} else {
+					toast(R.string.toast_server_error);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -117,19 +159,19 @@ public class SelectCourseActivity extends BaseActivity {
 	/**
 	 * 获取选择课程列表
 	 */
-	private void getCourse() {
+	private void getStudentCourse() {
 		if (!HttpHelper.isNetworkConnected(this)) {
 			toast(R.string.toast_netwrok_disconnected);
 			return;
 		}
 		showDialogRes(R.string.loading);
-		HttpHelper.get(this, ApiUrl.COURSELIST, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<CourseListResult>(CourseListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.COURSELIST, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<CourseListResult>(CourseListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
 				// 连接超时,再获取一次
 				if (0 == status) {
-					getCourse();
+					getStudentCourse();
 					return;
 				}
 				dismissDialog();
@@ -140,8 +182,8 @@ public class SelectCourseActivity extends BaseActivity {
 			public void onSuccess(CourseListResult t) {
 				dismissDialog();
 				if (null != t) {
-					courses = t.getResult();
-					setData(courses);
+					studentCourses = t.getResult();
+					setData();
 				} else {
 					toast(R.string.toast_server_error);
 				}
@@ -149,11 +191,33 @@ public class SelectCourseActivity extends BaseActivity {
 		});
 	}
 
-	private void setData(ArrayList<Course> courses) {
-		if (null != courses && 0 != courses.size()) {
-			CourseLayout courseLayout = new CourseLayout(SelectCourseActivity.this, courses, null);
-			scrollView.addView(courseLayout);
+	/**
+	 * 为老师和学生设置不同的数据
+	 */
+	private void setData() {
+		CourseLayout courseLayout = null;
+		if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+			if (null != studentCourses && 0 != studentCourses.size()) {
+				courseLayout = new CourseLayout(SelectCourseActivity.this);
+				courseLayout.setCourse(studentCourses, null, null, false);
+			}
+		} else {
+			if (null != tutorCourses && 0 != tutorCourses.size()) {
+				for (SubjectCourseModel subjectCourseModel : tutorCourses) {
+					ArrayList<SubjectModel> subjectModels = subjectCourseModel.getSubjects();
+					if (subjectModels != null && subjectModels.size() > 0) {
+						for (SubjectModel subjectModel : subjectModels) {
+							if (TextUtils.isEmpty(subjectModel.getName())) {
+								subjectModel.setName(subjectCourseModel.getCategory());
+							}
+						}
+					}
+				}
+				courseLayout = new CourseLayout(SelectCourseActivity.this);
+				courseLayout.setCourse(tutorCourses, null, null, false);
+			}
 		}
+		scrollView.addView(courseLayout);
 	}
 
 	/**
@@ -162,31 +226,81 @@ public class SelectCourseActivity extends BaseActivity {
 	 * @return
 	 */
 	private int[] getChoiceCourses() {
-		if (null == courses) {
-			return new int[] {};
-		}
-		// 选中的课程集合
-		ArrayList<CourseItem2> selectCourses = new ArrayList<CourseItem2>();
-		for (Course course : courses) {
-			ArrayList<CourseItem1> item1s = course.getResult();
-			for (CourseItem1 item1 : item1s) {
-				ArrayList<CourseItem2> item2s = item1.getResult();
-				for (CourseItem2 item2 : item2s) {
-					if (item2.isChecked()) {
-						selectCourses.add(item2);
+		if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+			if (null == studentCourses) {
+				return new int[] {};
+			}
+			// 选中的课程集合
+			ArrayList<CourseItem2> selectCourses = new ArrayList<CourseItem2>();
+			for (Course course : studentCourses) {
+				ArrayList<CourseItem1> item1s = course.getResult();
+				for (CourseItem1 item1 : item1s) {
+					ArrayList<CourseItem2> item2s = item1.getResult();
+					for (CourseItem2 item2 : item2s) {
+						// LogUtils.e("is checked ====== > " +
+						// item2.getCourseName() + item2.getType() +
+						// item2.getSubType() + "==" + item2.isChecked());
+						if (item2.isChecked()) {
+							selectCourses.add(item2);
+						}
 					}
 				}
 			}
-		}
-		int size = selectCourses.size();
-		if (size > 0) {
-			int[] result = new int[size];
-			for (int i = 0; i < size; i++) {
-				result[i] = selectCourses.get(i).getValue();
+			int size = selectCourses.size();
+			if (size > 0) {
+				int[] result = new int[size];
+				for (int i = 0; i < size; i++) {
+					result[i] = selectCourses.get(i).getValue();
+				}
+				LogUtils.d(result.toString());
+				return result;
 			}
-			LogUtils.d(result.toString());
-			return result;
+			return new int[] {};
+		} else {
+			if (null == tutorCourses) {
+				return new int[] {};
+			}
+			// 老师选中的课程集合
+			ArrayList<SubjectModel> selectCourses = new ArrayList<SubjectModel>();
+			for (SubjectCourseModel subjectCourse : tutorCourses) {
+				ArrayList<SubjectModel> subjectModels = subjectCourse.getSubjects();
+				for (SubjectModel sModel : subjectModels) {
+					// LogUtils.e("is checked ====== > " + sModel.getName() +
+					// "==" + sModel.isChecked());
+					if (sModel.isChecked()) {
+						selectCourses.add(sModel);
+					}
+				}
+			}
+			int selectCoursesSize = selectCourses.size();
+			if (selectCoursesSize > 0) {
+				ArrayList<Integer> selectedCourseValuses = new ArrayList<Integer>();
+				for (int i = 0; i < selectCoursesSize; i++) {
+					ArrayList<Integer> courseValuses = selectCourses.get(i).getCourseValues();
+					for (int j = 0; j < courseValuses.size(); j++) {
+						selectedCourseValuses.add(courseValuses.get(j));
+					}
+				}
+				int size = selectedCourseValuses.size();
+				int[] result = new int[size];
+				for (int i = 0; i < size; i++) {
+					result[i] = selectedCourseValuses.get(i);
+					// LogUtils.e("老师选中的课程 ====> " +
+					// selectedCourseValuses.get(i));
+				}
+				return result;
+			}
+			return new int[] {};
 		}
-		return new int[] {};
 	}
+	// @SuppressWarnings("unchecked")
+	// @Override
+	// public void onSelectedValues(Object obj) {
+	//
+	// if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+	// this.courseItem1s = (ArrayList<CourseItem1>) obj;
+	// } else {
+	// tutorCourses = (ArrayList<SubjectCourseModel>) obj;
+	// }
+	// }
 }

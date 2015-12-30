@@ -9,19 +9,18 @@ package com.tutor.params;
  */
 public class ApiUrl {
 
-	/** 即时通讯相关 */
-	public static final String XMPP_HOST = "192.168.0.187";
-	public static final int XMPP_PORT = 5222;
-	public static final String XMPP_SERVERNAME = "vm-server4";
-	// 公网
-	// public static final String XMPP_HOST = "54.255.164.232";
-	// public static final int XMPP_PORT = 5222;
-	// public static final String XMPP_SERVERNAME = "win-iimo7nuvj0r";
+	/** 内网 即时通讯相关 */
+	 public static final String XMPP_HOST = "192.168.0.187";
+	 public static final int XMPP_PORT = 5222;
+	 public static final String XMPP_SERVERNAME = "vm-server4";
+	 public static final String DOMAIN = "http://192.168.0.187:8081/Tutor/";
 	// ------------------------------------------------------------------
-	/** api */
-	public static final String DOMAIN = "http://192.168.0.187:8081/Tutor/";
-	// http://192.168.0.187:8081/Tutor/ 本地
-	// http://54.255.164.232/TutorApi/
+	// 外网
+//	public static final String XMPP_HOST = "54.255.164.232";
+//	public static final int XMPP_PORT = 5222;
+//	public static final String XMPP_SERVERNAME = "win-iimo7nuvj0r";
+//	public static final String DOMAIN = "http://54.255.164.232/TutorApi/";
+	// ------------------------------------------------------------------
 	/** 用戶註冊 */
 	public static final String REGISTER = "api/v1/accounts/register";
 	/** 用戶登錄 */
@@ -124,4 +123,32 @@ public class ApiUrl {
 	public static final String LOG = "api/v1/log/loginfo";
 	/** 获取活动(按月,1-12) */
 	public static final String ACTIVITIES = "api/v1/notification/activities";
+	/** 按分类获取课程列表 */
+	public static final String COURSE_LIST_FOR_TUTOR = "api/v1/course/listfortutor";
+	/** 获取补习社服务年级 */
+	public static final String SERVICE_GRADES = "api/v1/config/servicegrades";
+	/** 编辑补习社信息 */
+	public static final String TUITION_CENTER_PROFILE_EDIT = "api/v1/members/tuitioncentre/profile";
+	/** 获取补习社信息 */
+	public static final String TUITION_CENTER_INFO = "api/v1/members/tuitioncentre";
+	/** 搜索补习社信息 */
+	public static final String TUITION_CENTER_SEARCH = "api/v1/members/tuitioncentre/search";
+	/** 申请加入补习社(发送者：学生) */
+	public static final String JOIN_TUITION_CENTER = "api/v1/notification/tuitioncentre";
+	/** 新闻列表 */
+	public static final String BLOG_LIST = "api/v1/blog/list";
+	/** 增加对补习社的评价 */
+	public static final String RATING_TUITION_CENTER = "api/v1/rating/tuitioncentre/%s";
+	/** 接受或者拒绝邀请(补习社) */
+	public static final String TUITION_CENTER_NOTIFICATION_UPDATE = "api/v1/notification/%s/update?status=%s";
+	/** 获取义务补习的公告信息 */
+	public static final String VOLUNTEER_INFO = "api/v1/config/volunteerinfo";
+	/** 獲取18大区列表 */
+	public static final String FIRST_LEVEL_AREAS = "api/v1/area/firstlevelareas";
+	/** 获取Blog列表 */
+	public static final String BLOG_LIST_BY_CATEGORY = "api/v1/blog/list";
+	/** 获取博客类别 */
+	public static final String BLOG_CATEGORY = "api/v1/blog/categories";
+	/** 根据Id获取单个Blog */
+	public static final String BLOG_DETAIL = "api/v1/blog/%s";
 }

@@ -100,7 +100,7 @@ public class ChangePasswordActivity extends BaseActivity implements OnClickListe
 		String body = JsonUtil.parseObject2Str(changePassword);
 		try {
 			StringEntity entity = new StringEntity(body, HTTP.UTF_8);
-			HttpHelper.post(this, ApiUrl.CHANGE_PASSWORD, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+			HttpHelper.getHelper().post(ApiUrl.CHANGE_PASSWORD, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {

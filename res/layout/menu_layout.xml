@@ -45,7 +45,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/menu_item_tv_notification_Count"
+                android:id="@+id/tv_notification_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
@@ -138,6 +138,41 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/menu_item_mystudents_or_mytutors"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/menu_bg_selector"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_10"
+        android:visibility="gone" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@color/transparent"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/tab_my_ts" />
+
+            <TextView
+                android:id="@+id/tv_mystudents_or_mytutors"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_3"
+                android:text="@string/myteachers"
+                android:textColor="@color/menu_txt_color"
+                android:textSize="@dimen/sp_12" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/menu_item_calendar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -159,6 +194,39 @@
             android:text="@string/label_time_table"
             android:textColor="@color/menu_txt_color"
             android:textSize="@dimen/sp_12" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/menu_item_my_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/menu_bg_selector"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_10" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@color/transparent"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ImageView
+                android:layout_width="@dimen/dp_34"
+                android:layout_height="@dimen/dp_34"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/tab_mp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_3"
+                android:text="@string/my"
+                android:textColor="@color/menu_txt_color"
+                android:textSize="@dimen/sp_12" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

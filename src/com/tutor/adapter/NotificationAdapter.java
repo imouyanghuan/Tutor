@@ -120,7 +120,7 @@ public class NotificationAdapter extends BaseSwipeAdapter {
 			}
 		});
 		if (mList != null) {
-			ImageUtils.loadImage(imgAvatar, mList.get(position).getAvatar());
+			ImageUtils.loadImage(imgAvatar, mList.get(position).getAvatar(),Constants.General.MALE);
 			if (mList.get(position).getMsgType() == IMMessage.MESSAGE_TYPE_SYS_MSG) {
 				tvDelete.setVisibility(View.GONE);
 			} else {

@@ -13,8 +13,7 @@
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_toRightOf="@id/iv_course_select"
         android:gravity="center"
-        android:text="@string/label_course_selection"
-        android:textColor="@color/black1"
+        android:textColor="@color/black"
         android:textSize="@dimen/sp_15" />
 
     <ImageView

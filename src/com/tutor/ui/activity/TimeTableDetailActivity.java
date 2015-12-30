@@ -178,7 +178,7 @@ public class TimeTableDetailActivity extends BaseActivity {
 
 	private void getTimeTable() {
 		RequestParams params = new RequestParams();
-		HttpHelper.get(this, ApiUrl.TIME_TABLE, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<TimeTableListResult>(TimeTableListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.TIME_TABLE, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<TimeTableListResult>(TimeTableListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {

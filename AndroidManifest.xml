@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hk.tutor"
-    android:versionCode="8"
-    android:versionName="1.5" >
+    android:versionCode="9"
+    android:versionName="2.0" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -27,7 +27,6 @@
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -219,6 +218,47 @@
         <activity
             android:name="com.tutor.ui.activity.FAQDetailActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tutor.ui.activity.TutorProfileActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name="com.tutor.ui.activity.StudentProfileActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name="com.tutor.ui.activity.MyStudentsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tutor.ui.activity.MyTutorsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tutor.ui.activity.TuitionCenterServiceGradesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tutor.ui.activity.TuitionCentreActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name="com.tutor.ui.activity.SearchConditionsOfTuitionCenterActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tutor.ui.activity.TuitionCenterInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tutor.ui.activity.TuitionCenterDetailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name="com.tutor.ui.activity.BlogDetailActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.tutor.ui.activity.VolunteerInfoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tutor.ui.activity.SelectTuitionCenterAreaActivity"
+            android:screenOrientation="portrait" />
         <!-- IM服务 -->
         <service android:name="com.tutor.service.IMService" >
         </service>
@@ -241,7 +281,7 @@
             android:value="@string/facebook_app_id" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationName"
-            android:value="@string/app_name" />
+            android:value="@string/tutor" />
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
@@ -273,7 +313,7 @@
             <intent-filter>
                 <action android:name="cn.jpush.android.ui.PushActivity" />
 
-                <category android:name="android.intent.category.DEFAULT" />
+                <!-- <category android:name="android.intent.category.DEFAULT" /> -->
                 <category android:name="com.hk.tutor" />
             </intent-filter>
         </activity>

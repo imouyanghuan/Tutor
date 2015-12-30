@@ -62,8 +62,12 @@ public class SystemNotificationActivity extends BaseActivity implements OnClickL
 			Intent intent = null;
 			if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
 				intent = new Intent(this, StudentMainActivity.class);
-			} else {
+			} else if (TutorApplication.getRole() == Constants.General.ROLE_TUTOR) {
 				intent = new Intent(this, TeacherMainActivity.class);
+			} else if (TutorApplication.getRole() == Constants.General.ROLE_TUITION_SCHOOL) {
+				intent = new Intent(this, TuitionCentreActivity.class);
+				// 选中通知tab
+				intent.putExtra(Constants.General.IS_NOTIFICATION, true);
 			}
 			startActivity(intent);
 			this.finish();
@@ -131,7 +135,7 @@ public class SystemNotificationActivity extends BaseActivity implements OnClickL
 		RequestParams params = new RequestParams();
 		params.put("pageIndex", "0");
 		params.put("pageSize", "30");
-		HttpHelper.get(this, ApiUrl.NOTIFICATIONLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<NotificationListResult>(NotificationListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.NOTIFICATIONLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<NotificationListResult>(NotificationListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -188,7 +192,7 @@ public class SystemNotificationActivity extends BaseActivity implements OnClickL
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		HttpHelper.put(this, ApiUrl.NOTIFICATION_UPDATE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+		HttpHelper.getHelper().put(ApiUrl.NOTIFICATION_UPDATE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {

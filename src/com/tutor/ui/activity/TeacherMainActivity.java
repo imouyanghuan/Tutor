@@ -5,16 +5,19 @@ import java.util.Set;
 
 import net.simonvt.menudrawer.MenuDrawer;
 import net.simonvt.menudrawer.Position;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
@@ -23,23 +26,24 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 import cn.jpush.android.api.JPushInterface;
 
-import com.facebook.login.LoginManager;
 import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.mssky.mobile.helper.SharePrefUtil;
 import com.tutor.TutorApplication;
 import com.tutor.im.IMMessageManager;
-import com.tutor.im.XMPPConnectionManager;
 import com.tutor.im.XmppManager;
 import com.tutor.model.Account;
+import com.tutor.model.BlogDetailResult;
+import com.tutor.model.BlogModel;
 import com.tutor.model.NotificationListResult;
 import com.tutor.model.Page;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.service.IMService;
 import com.tutor.ui.fragment.BaseFragment;
+import com.tutor.ui.fragment.blog.BlogFragment;
+import com.tutor.ui.fragment.student.TuitionCentreFragment;
 import com.tutor.ui.fragment.teacher.FindStudentFragment;
-import com.tutor.ui.fragment.teacher.MyFragment;
 import com.tutor.ui.fragment.teacher.MyStudentFragment;
 import com.tutor.ui.fragment.teacher.OverseasEducationFragment;
 import com.tutor.ui.view.TitleBar;
@@ -59,7 +63,7 @@ import com.tutor.util.ScreenUtil;
 public class TeacherMainActivity extends BaseActivity implements OnClickListener {
 
 	/** 滑動菜單 */
-	private MenuDrawer mMenuDrawer;
+	public MenuDrawer mMenuDrawer;
 	/** 頂部菜單 */
 	private TitleBar bar;
 	/** 底部菜單欄 */
@@ -70,7 +74,9 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 	private FindStudentFragment findStudentFragment;
 	private OverseasEducationFragment overseasEducationFragment;
 	private MyStudentFragment studentFragment;
-	private MyFragment myFragment;
+	// private MyFragment myFragment;
+	private TuitionCentreFragment tuitionCentreFragment;
+	private BlogFragment blogFragment;
 	/** fragment操作管理對象 */
 	private FragmentTransaction ft;
 	// 顯示未讀消息
@@ -90,6 +96,69 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		// 初始化fragment
 		initFragment();
 		imLogin();
+		isFromFacebook();
+	}
+
+	private void showTip() {
+		// 当切换为这个tab的时候才显示tip
+		boolean isNeedShow = SharePrefUtil.getBoolean(getApplicationContext(), Constants.General.IS_NEED_SHOW_STUDENT_TIP, true);
+		if (isNeedShow && currentFragment instanceof FindStudentFragment) {
+			flTipFindStudent.setVisibility(View.VISIBLE);
+		} else {
+			flTipFindStudent.setVisibility(View.GONE);
+		}
+	}
+
+	/**
+	 * 判断是否是Facebook点击进来的
+	 */
+	private void isFromFacebook() {
+		blogId = SharePrefUtil.getString(this, Constants.General.BLOG_ID, "");
+		if (!TextUtils.isEmpty(blogId)) {
+			getBlogDetail();
+		} else {
+			showTip();
+		}
+	}
+
+	/**
+	 * 获取博客详情
+	 */
+	private void getBlogDetail() {
+		if (!HttpHelper.isNetworkConnected(this)) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		String url = String.format(ApiUrl.BLOG_DETAIL, blogId);
+		HttpHelper.getHelper().get(url, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<BlogDetailResult>(BlogDetailResult.class) {
+
+			@Override
+			public void onFailure(int status, String message) {
+				if (0 == status) {
+					getBlogDetail();
+					return;
+				}
+				// CheckTokenUtils.checkToken(status);
+			}
+
+			@Override
+			public void onSuccess(BlogDetailResult result) {
+				// CheckTokenUtils.checkToken(result);
+				if (null != result && 200 == result.getStatusCode()) {
+					BlogModel blog = result.getResult();
+					if (blog == null) {
+						return;
+					}
+					setBlogAsSelectedTab();
+					mRadioGroup.check(R.id.ac_main_rb4);
+					showTip();
+					Intent intent = new Intent(TeacherMainActivity.this, BlogDetailActivity.class);
+					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_BLOG, blog);
+					intent.putExtra(Constants.General.IS_FROM_FACEBOOK, true);
+					TeacherMainActivity.this.startActivity(intent);
+				}
+			}
+		});
 	}
 
 	private void imLogin() {
@@ -215,73 +284,96 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 						}
 						break;
 					case R.id.ac_main_rb4:
-						if (currentFragment != myFragment) {
+						setBlogAsSelectedTab();
+						break;
+					case R.id.ac_main_rb5:
+						if (currentFragment != tuitionCentreFragment) {
 							ft = getSupportFragmentManager().beginTransaction();
-							if (null == myFragment) {
-								myFragment = new MyFragment();
-								ft.add(R.id.ac_main_content_fragment, myFragment, "myFragment");
+							if (null == tuitionCentreFragment) {
+								tuitionCentreFragment = new TuitionCentreFragment();
+								ft.add(R.id.ac_main_content_fragment, tuitionCentreFragment, "tuitionCentreFragment");
 							}
 							ft.hide(currentFragment);
-							ft.show(myFragment);
+							ft.show(tuitionCentreFragment);
 							ft.commit();
-							bar.setTitle(R.string.my);
-							bar.setRightText(R.string.log_out, new OnClickListener() {
-
-								@Override
-								public void onClick(View arg0) {
-									loginOut();
-								}
-							});
-							currentFragment = myFragment;
+							bar.setTitle(R.string.label_tutorial_school);
+							bar.setRightTextVisibility(false);
+							currentFragment = tuitionCentreFragment;
 						}
 						break;
 				}
 			}
 		});
 		// 菜單項
+		TextView tvMystudentsOrMytutors = getView(R.id.tv_mystudents_or_mytutors);
+		if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+			tvMystudentsOrMytutors.setText(R.string.myteachers);
+		} else {
+			tvMystudentsOrMytutors.setText(R.string.mystudents);
+		}
+		getView(R.id.menu_item_mystudents_or_mytutors).setOnClickListener(this);
+		getView(R.id.menu_item_my_profile).setOnClickListener(this);
 		getView(R.id.menu_item_notification).setOnClickListener(this);
 		getView(R.id.menu_item_bookmark).setOnClickListener(this);
 		getView(R.id.menu_item_chatlist).setOnClickListener(this);
 		getView(R.id.menu_item_calendar).setOnClickListener(this);
 		msgCount = getView(R.id.menu_item_tv_msgCount);
-		notificationCount = getView(R.id.menu_item_tv_notification_Count);
+		notificationCount = getView(R.id.tv_notification_count);
 		// tip
 		flTipFindStudent = getView(R.id.fl_tip_find_student);
 		flTipFindStudent.setOnClickListener(this);
 	}
 
-	private void loginOut() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(R.string.log_out);
-		builder.setMessage(R.string.lable_log_out);
-		builder.setPositiveButton(R.string.cancel, null);
-		builder.setNegativeButton(R.string.ok, new DialogInterface.OnClickListener() {
-
-			@Override
-			public void onClick(DialogInterface arg0, int arg1) {
-				Account account = TutorApplication.getAccountDao().load("1");
-				if (account != null && !TextUtils.isEmpty(account.getFacebookId())) {
-					try {
-						LoginManager.getInstance().logOut();
-					} catch (Exception e) {
-						// TODO: handle exception
-					}
-				}
-				// TODO 请求退出登录api
-				// 斷開IM連接
-				XMPPConnectionManager.getManager().disconnect();
-				// 停止Push服务
-				JPushInterface.stopPush(TeacherMainActivity.this);
-				TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN, false);
-				Intent intent = new Intent(TeacherMainActivity.this, ChoiceRoleActivity.class);
-				startActivity(intent);
-				finishNoAnim();
+	private void setBlogAsSelectedTab() {
+		if (currentFragment != blogFragment) {
+			ft = getSupportFragmentManager().beginTransaction();
+			if (null == blogFragment) {
+				blogFragment = new BlogFragment();
+				ft.add(R.id.ac_main_content_fragment, blogFragment, "blogFragment");
 			}
-		});
-		AlertDialog dialog = builder.create();
-		dialog.show();
+			ft.hide(currentFragment);
+			ft.show(blogFragment);
+			ft.commit();
+			bar.setTitle(R.string.label_blog);
+			bar.setRightTextVisibility(false);
+			currentFragment = blogFragment;
+		}
 	}
 
+	// private void loginOut() {
+	// AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	// builder.setTitle(R.string.log_out);
+	// builder.setMessage(R.string.lable_log_out);
+	// builder.setPositiveButton(R.string.cancel, null);
+	// builder.setNegativeButton(R.string.ok, new
+	// DialogInterface.OnClickListener() {
+	//
+	// @Override
+	// public void onClick(DialogInterface arg0, int arg1) {
+	// Account account = TutorApplication.getAccountDao().load("1");
+	// if (account != null && !TextUtils.isEmpty(account.getFacebookId())) {
+	// try {
+	// LoginManager.getInstance().logOut();
+	// } catch (Exception e) {
+	// // TODO: handle exception
+	// }
+	// }
+	// // TODO 请求退出登录api
+	// // 斷開IM連接
+	// XMPPConnectionManager.getManager().disconnect();
+	// // 停止Push服务
+	// JPushInterface.stopPush(TeacherMainActivity.this);
+	// TutorApplication.settingManager.writeSetting(Constants.SharedPreferences.SP_ISLOGIN,
+	// false);
+	// Intent intent = new Intent(TeacherMainActivity.this,
+	// ChoiceRoleActivity.class);
+	// startActivity(intent);
+	// finishNoAnim();
+	// }
+	// });
+	// AlertDialog dialog = builder.create();
+	// dialog.show();
+	// }
 	/**
 	 * 初始化fragment
 	 */
@@ -292,13 +384,6 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		ft.show(findStudentFragment);
 		ft.commit();
 		currentFragment = findStudentFragment;
-		// 当切换为这个tab的时候才显示tip
-		boolean isNeedShow = SharePrefUtil.getBoolean(getApplicationContext(), Constants.General.IS_NEED_SHOW_STUDENT_TIP, true);
-		if (isNeedShow) {
-			flTipFindStudent.setVisibility(View.VISIBLE);
-		} else {
-			flTipFindStudent.setVisibility(View.GONE);
-		}
 	}
 
 	@Override
@@ -315,9 +400,9 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 	@Override
 	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
 		super.onActivityResult(arg0, arg1, arg2);
-		if (null != myFragment) {
-			myFragment.onActivityResult(arg0, arg1, arg2);
-		}
+		// if (null != tuitionCentreFragment) {
+		// tuitionCentreFragment.onActivityResult(arg0, arg1, arg2);
+		// }
 	}
 
 	/**
@@ -345,7 +430,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 		RequestParams params = new RequestParams();
 		params.put("pageIndex", "0");
 		params.put("pageSize", "1");
-		HttpHelper.get(this, ApiUrl.NOTIFICATIONLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<NotificationListResult>(NotificationListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.NOTIFICATIONLIST, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<NotificationListResult>(NotificationListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -409,6 +494,7 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 
 	private static long lastTime = 0;
 	private FrameLayout flTipFindStudent;
+	private String blogId;
 
 	/**
 	 * 菜單打開是按返回鍵關閉菜單,否則按兩次退出
@@ -420,13 +506,28 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 			mMenuDrawer.closeMenu();
 			return;
 		}
-		long currentTime = System.currentTimeMillis();
-		if (currentTime - lastTime < 800) {
-			super.onBackPressed();
-		} else {
-			lastTime = currentTime;
-			toast(R.string.toast_exit);
+		// long currentTime = System.currentTimeMillis();
+		// if (currentTime - lastTime < 800) {
+		// super.onBackPressed();
+		// } else {
+		// lastTime = currentTime;
+		// toast(R.string.toast_exit);
+		// }
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		PackageManager pm = getPackageManager();
+		ResolveInfo homeInfo = pm.resolveActivity(new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME), 0);
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			ActivityInfo ai = homeInfo.activityInfo;
+			Intent startIntent = new Intent(Intent.ACTION_MAIN);
+			startIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+			startIntent.setComponent(new ComponentName(ai.packageName, ai.name));
+			startActivity(startIntent);
+			return true;
 		}
+		return super.onKeyDown(keyCode, event);
 	}
 
 	@Override
@@ -441,9 +542,29 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		// notification
+		// my students or my tutors
+			case R.id.menu_item_mystudents_or_mytutors:
+				Intent intent = null;
+				if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+					intent = new Intent(this, MyTutorsActivity.class);
+				} else if (TutorApplication.getRole() == Constants.General.ROLE_TUTOR) {
+					intent = new Intent(this, MyStudentsActivity.class);
+				}
+				startActivity(intent);
+				break;
+			// profile
+			case R.id.menu_item_my_profile:
+				Intent profile = null;
+				if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
+					profile = new Intent(this, StudentProfileActivity.class);
+				} else if (TutorApplication.getRole() == Constants.General.ROLE_TUTOR) {
+					profile = new Intent(this, TutorProfileActivity.class);
+				}
+				startActivity(profile);
+				break;
+			// notification
 			case R.id.menu_item_notification:
-				Intent notification = new Intent(this, SystemNotificationActivity.class);// NotificationActivity.class
+				Intent notification = new Intent(this, SystemNotificationActivity.class);
 				startActivity(notification);
 				break;
 			// Bookmark

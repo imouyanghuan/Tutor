@@ -126,7 +126,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		// im id
 		imId = userInfo.getImid();
 		// avatar
-		ImageUtils.loadImage(avatarImageView, ApiUrl.DOMAIN + userInfo.getAvatar());
+		ImageUtils.loadImage(avatarImageView, ApiUrl.DOMAIN + userInfo.getAvatar(), userInfo.getGender() != null ? userInfo.getGender() : Constants.General.MALE);
 		if (userInfo.isMatched()) {
 			button.setEnabled(false);
 		} else {
@@ -311,7 +311,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		showDialogRes(R.string.loading);
 		RequestParams params = new RequestParams();
 		String url = String.format(ApiUrl.BOOTMARK_ADD_STUDENT, String.valueOf(userId));
-		HttpHelper.get(this, url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AddBookmarkResult>(AddBookmarkResult.class) {
+		HttpHelper.getHelper().get(url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AddBookmarkResult>(AddBookmarkResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -341,7 +341,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		showDialogRes(R.string.loading);
 		RequestParams params = new RequestParams();
 		params.put("memberId", id);
-		HttpHelper.get(this, ApiUrl.STUDENTINFO, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.STUDENTINFO, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -353,7 +353,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 				if (CheckTokenUtils.checkToken(status)) {
 					return;
 				}
-				toast(R.string.toast_server_error);
+				// toast(R.string.toast_server_error);
 			}
 
 			@Override

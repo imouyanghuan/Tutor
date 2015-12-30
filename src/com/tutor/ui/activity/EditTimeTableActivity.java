@@ -241,7 +241,7 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 				e.printStackTrace();
 			}
 			String url = String.format(ApiUrl.TIME_TABLE_UPDATE, curTimeTableId);
-			HttpHelper.put(this, url, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+			HttpHelper.getHelper().put(url, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 				// private ArrayList<TimeTableDetail> sameDayTimeTable;
 				@Override
@@ -285,7 +285,7 @@ public class EditTimeTableActivity extends BaseActivity implements OnClickListen
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		HttpHelper.put(this, ApiUrl.NOTIFICATION_UPDATE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+		HttpHelper.getHelper().put(ApiUrl.NOTIFICATION_UPDATE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {

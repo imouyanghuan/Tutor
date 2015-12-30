@@ -19,6 +19,10 @@ public class RatingModel {
 	private String createdTime;
 	private int id;
 
+	// 补习社字段
+	private int qualityOfTutors;
+	private int learningEnvironment;
+	
 	public int getTeachingContentGrade() {
 		return teachingContentGrade;
 	}
@@ -97,5 +101,25 @@ public class RatingModel {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	
+	public int getQualityOfTutors() {
+		return qualityOfTutors;
+	}
+
+	
+	public void setQualityOfTutors(int qualityOfTutors) {
+		this.qualityOfTutors = qualityOfTutors;
+	}
+
+	
+	public int getLearningEnvironment() {
+		return learningEnvironment;
+	}
+
+	
+	public void setLearningEnvironment(int learningEnvironment) {
+		this.learningEnvironment = learningEnvironment;
 	}
 }

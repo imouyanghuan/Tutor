@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#065481"
+    android:orientation="vertical" >
+
+    <Button android:id="@+id/btn_role_tutor"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/choice_role_student_btn_bg"
+        android:gravity="center"
+        android:text="@string/label_role_tutor"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_17" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/white" />
+
+    <Button android:id="@+id/btn_role_student"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/choice_role_student_btn_bg"
+        android:gravity="center"
+        android:text="@string/label_role_student"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_17" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/white" />
+
+    <Button android:id="@+id/btn_role_tuition_school"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/choice_role_student_btn_bg"
+        android:gravity="center"
+        android:text="@string/label_tutorial_school"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_17" />
+
+</LinearLayout>

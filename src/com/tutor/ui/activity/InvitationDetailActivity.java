@@ -232,7 +232,7 @@ public class InvitationDetailActivity extends BaseActivity implements OnClickLis
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		HttpHelper.put(this, ApiUrl.NOTIFICATION_UPDATE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+		HttpHelper.getHelper().put(ApiUrl.NOTIFICATION_UPDATE, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {

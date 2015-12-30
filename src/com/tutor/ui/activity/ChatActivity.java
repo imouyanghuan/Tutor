@@ -241,7 +241,7 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		HttpHelper.post(this, ApiUrl.STUDY_ABROAD_LOGCHAT, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+		HttpHelper.getHelper().post(ApiUrl.STUDY_ABROAD_LOGCHAT, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -266,7 +266,7 @@ public class ChatActivity extends BaseChatActivity implements OnClickListener, O
 
 	private void getUserInfo(final String imId) {
 		String url = String.format(ApiUrl.IM_GET_INFO, imId);
-		HttpHelper.get(TutorApplication.instance, url, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
+		HttpHelper.getHelper().get(url, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {

@@ -80,11 +80,16 @@ public class SelectAreaActivity extends BaseActivity {
 
 			@Override
 			public void onClick(View arg0) {
+				Intent intent = null;
+				if (role != Constants.General.ROLE_TUITION_SCHOOL) {
+					intent = new Intent(SelectAreaActivity.this, SelectTimeSlotActivity.class);
+				} else {
+					intent = new Intent(SelectAreaActivity.this, TuitionCenterServiceGradesActivity.class);
+				}
 				// 区域列表
 				int[] choiceAreas = getChoiceAreas();
-				Intent intent = new Intent(SelectAreaActivity.this, SelectTimeSlotActivity.class);
-				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, isEdit);
 				userInfo.setAreaValues(choiceAreas);
+				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, isEdit);
 				intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
 				startActivity(intent);
 			}
@@ -122,7 +127,7 @@ public class SelectAreaActivity extends BaseActivity {
 			return;
 		}
 		showDialogRes(R.string.loading);
-		HttpHelper.get(this, ApiUrl.AREALIST, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<AreaListResult>(AreaListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.AREALIST, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<AreaListResult>(AreaListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -139,7 +144,7 @@ public class SelectAreaActivity extends BaseActivity {
 				dismissDialog();
 				if (null != t) {
 					areas = t.getResult();
-					setData(areas);
+					setData();
 				} else {
 					toast(R.string.toast_server_error);
 				}
@@ -147,8 +152,8 @@ public class SelectAreaActivity extends BaseActivity {
 		});
 	}
 
-	private void setData(ArrayList<Area> areas) {
-		if (null != areas && 0 != areas.size()) {
+	private void setData() {
+		if (null != areas && areas.size() > 0) {
 			AreaAdapter adapter = new AreaAdapter(this, areas);
 			expandableListView.setAdapter(adapter);
 		}
@@ -239,6 +244,14 @@ public class SelectAreaActivity extends BaseActivity {
 			final Area1 area1 = getChild(arg0, arg1);
 			childHolder.name.setText(area1.getAddress());
 			childHolder.box.setChecked(area1.isChecked());
+			childHolder.box.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					area1.setChecked(!area1.isChecked());
+					notifyDataSetChanged();
+				}
+			});
 			view.setOnClickListener(new OnClickListener() {
 
 				@Override

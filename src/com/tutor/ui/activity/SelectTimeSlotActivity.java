@@ -404,7 +404,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 			} else {
 				url = ApiUrl.STUDENTPROFILE;
 			}
-			HttpHelper.put(this, url, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+			HttpHelper.getHelper().put(url, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {

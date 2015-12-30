@@ -297,7 +297,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		RequestParams params = new RequestParams();
 		params.put("pageIndex", pageIndex);
 		params.put("pageSize", pageSize);
-		HttpHelper.get(getActivity(), ApiUrl.STUDENTMATCH, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
+		HttpHelper.getHelper().get( ApiUrl.STUDENTMATCH, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -345,7 +345,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		}
 		try {
 			StringEntity entity = new StringEntity(body, HTTP.UTF_8);
-			HttpHelper.post(getActivity(), sb.toString(), TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
+			HttpHelper.getHelper().post(sb.toString(), TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {

@@ -215,9 +215,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		JPushInterface.setAliasAndTags(LoginActivity.this, imId, tags);
 		showDialogRes(R.string.logining);
 		String content = JsonUtil.parseObject2Str(model);
+
 		try {
 			StringEntity entity = new StringEntity(content, HTTP.UTF_8);
-			HttpHelper.post(this, ApiUrl.LOGIN, null, entity, new ObjectHttpResponseHandler<LoginResponseResult>(LoginResponseResult.class) {
+			HttpHelper.getHelper().post(ApiUrl.LOGIN, null, entity, new ObjectHttpResponseHandler<LoginResponseResult>(LoginResponseResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {
@@ -279,8 +280,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 							Intent intent = new Intent();
 							if (Constants.General.ROLE_TUTOR == role) {
 								intent.setClass(LoginActivity.this, TeacherMainActivity.class);
-							} else {
+							} else if (Constants.General.ROLE_STUDENT == role) {
 								intent.setClass(LoginActivity.this, StudentMainActivity.class);
+							} else if (Constants.General.ROLE_TUITION_SCHOOL == role) {
+								intent.setClass(LoginActivity.this, TuitionCentreActivity.class);
 							}
 							startActivity(intent);
 							// 發廣播結束前面的activity
@@ -303,7 +306,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 	private void checkIMIDisExit(final String imId) {
 		RequestParams params = new RequestParams();
 		params.put("imid", imId);
-		HttpHelper.get(this, ApiUrl.IM_ID_VALID, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.IM_ID_VALID, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<EditProfileResult>(EditProfileResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -333,13 +336,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		// 先获取个人资料
 		RequestParams params = new RequestParams();
 		params.put("memberId", id);
-		String url;
+		String url = null;
 		if (Constants.General.ROLE_TUTOR == role) {
 			url = ApiUrl.TUTORINFO;
-		} else {
+		} else if (Constants.General.ROLE_STUDENT == role) {
 			url = ApiUrl.STUDENTINFO;
+		} else if (Constants.General.ROLE_TUITION_SCHOOL == role) {
+			url = ApiUrl.TUITION_CENTER_INFO;
 		}
-		HttpHelper.get(this, url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
+		HttpHelper.getHelper().get(url, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -398,7 +403,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		RequestParams params = new RequestParams();
 		params.put("accountType", role + "");
 		params.put("FBOpenID", id);
-		HttpHelper.get(this, ApiUrl.ACCOUNT_EXIST, null, params, new ObjectHttpResponseHandler<CheckExistResult>(CheckExistResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.ACCOUNT_EXIST, null, params, new ObjectHttpResponseHandler<CheckExistResult>(CheckExistResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -460,7 +465,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 		String content = JsonUtil.parseObject2Str(model);
 		try {
 			StringEntity entity = new StringEntity(content, HTTP.UTF_8);
-			HttpHelper.post(this, ApiUrl.REGISTER, null, entity, new ObjectHttpResponseHandler<RegisterInfoResult>(RegisterInfoResult.class) {
+			HttpHelper.getHelper().post(ApiUrl.REGISTER, null, entity, new ObjectHttpResponseHandler<RegisterInfoResult>(RegisterInfoResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {

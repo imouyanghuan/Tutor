@@ -95,7 +95,7 @@ public class CourseSelectionResultActivity extends BaseActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		HttpHelper.post(this, ApiUrl.STUDY_ABROAD_COURSE_QUERY, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<StringResult>(StringResult.class) {
+		HttpHelper.getHelper().post(ApiUrl.STUDY_ABROAD_COURSE_QUERY, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<StringResult>(StringResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {

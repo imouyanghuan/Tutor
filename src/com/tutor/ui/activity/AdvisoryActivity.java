@@ -71,7 +71,7 @@ public class AdvisoryActivity extends BaseActivity implements OnClickListener, S
 		}
 		// 获取客服
 		getIMIds();
-		HttpHelper.get(this, ApiUrl.STUDY_ABROAD_ADVISORY, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<StringResult>(StringResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.STUDY_ABROAD_ADVISORY, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<StringResult>(StringResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
@@ -128,7 +128,7 @@ public class AdvisoryActivity extends BaseActivity implements OnClickListener, S
 			return;
 		}
 		RequestParams params = new RequestParams();
-		HttpHelper.get(this, ApiUrl.STUDY_ABROAD_IM_IDS, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AbroadConfigListResult>(AbroadConfigListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.STUDY_ABROAD_IM_IDS, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<AbroadConfigListResult>(AbroadConfigListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {

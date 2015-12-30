@@ -226,7 +226,7 @@ public class JPushReceiver extends BroadcastReceiver {
 
 	private void getUserInfo(final IMMessage imMessage, final String imId) {
 		String url = String.format(ApiUrl.IM_GET_INFO, imId);
-		HttpHelper.get(TutorApplication.instance, url, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
+		HttpHelper.getHelper().get(url, TutorApplication.getHeaders(), new RequestParams(), new ObjectHttpResponseHandler<UserInfoResult>(UserInfoResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {
