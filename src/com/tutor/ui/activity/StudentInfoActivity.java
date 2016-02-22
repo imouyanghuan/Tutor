@@ -63,6 +63,7 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 	private LinearLayout llIntroduction;
 	private TitleBar bar;
 	private int broadCastId = -1;
+	private ArrayList<CourseItem2> courseItem2s = new ArrayList<CourseItem2>();
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -191,13 +192,34 @@ public class StudentInfoActivity extends BaseActivity implements OnClickListener
 		// 课程
 		ArrayList<Course> courses = userInfo.getCourses();
 		if (null != courses && courses.size() > 0) {
-			ArrayList<CourseItem2> courseItem2s = getCourseItem2(courses);
+			ArrayList<CourseItem2> tempCourseItem2s = getCourseItem2(courses);
+			if (tempCourseItem2s != null && tempCourseItem2s.size() > 0) {
+				courseItem2s.addAll(this.removeDuplicateData(tempCourseItem2s));
+			}
 			CourseListAdapter courseListAdapter = new CourseListAdapter(this, courseItem2s);
 			couresListView.setAdapter(courseListAdapter);
 		} else {
 			couresListView.setVisibility(View.GONE);
 			courseTip.setVisibility(View.VISIBLE);
 		}
+	}
+
+	/**
+	 * 去除重复课程名
+	 * 
+	 * @param data
+	 * @return
+	 */
+	private ArrayList<CourseItem2> removeDuplicateData(ArrayList<CourseItem2> data) {
+		for (int i = 0; i < data.size() - 1; i++) {
+			for (int j = i + 1; j < data.size(); j++) {
+				if ((data.get(i).getCourseName()).equals((data.get(j).getCourseName()))) {
+					data.remove(j);
+					j--;
+				}
+			}
+		}
+		return data;
 	}
 
 	private ArrayList<CourseItem2> getCourseItem2(ArrayList<Course> courses) {

@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.sqlite.SQLiteDatabase;
 import cn.jpush.android.api.JPushInterface;
+import cn.smssdk.SMSSDK;
 
 import com.facebook.FacebookSdk;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -59,6 +60,8 @@ public class TutorApplication extends Application {
 	public static XMPPConnectionManager connectionManager;
 	public static int jPushMessageType;
 	public static boolean isTimeTableMessage;
+	private static String SMS_APP_KEY = "f899577a1770";
+	private static String SMS_APP_SECRET = "32a895c12a6c05fe52235491afc914fb";
 
 	// public static GoogleAnalytics analytics;
 	// public static Tracker tracker;
@@ -95,17 +98,20 @@ public class TutorApplication extends Application {
 		connectionManager = XMPPConnectionManager.getManager();
 		initDao();
 		initImageLoader(this);
+		// 短信验证码
+		SMSSDK.initSDK(this, SMS_APP_KEY, SMS_APP_SECRET);
 		// 设置开启日志,发布时请关闭日志
 		JPushInterface.setDebugMode(true);
 		// 初始化 JPush
 		JPushInterface.init(this);
 		HanderException.getInstance().init(this, null);
-		//初始化Facebook
+		// 初始化Facebook
 		FacebookSdk.sdkInitialize(getApplicationContext());
 		HttpHelper.init(getApplicationContext());
 		// 初始化谷歌分析工具
 		// initGoogleAnalytics();
 	}
+
 	public int getVersionCode(Context activity) {
 		String pName = activity.getPackageName();
 		int versionCode = -1;
@@ -257,6 +263,19 @@ public class TutorApplication extends Application {
 		Account account = accountDao.load("1");
 		if (null != account) {
 			return account.getResidentialAddress();
+		}
+		return "";
+	}
+
+	/**
+	 * 获取老师的identity code
+	 * 
+	 * @return
+	 */
+	public static String getIdentityCode() {
+		Account account = accountDao.load("1");
+		if (null != account) {
+			return account.getIdentityCode();
 		}
 		return "";
 	}

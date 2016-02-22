@@ -7,8 +7,9 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_gravity="center"
+        android:gravity="center"
         android:padding="@dimen/dp_8"
         android:singleLine="true"
         android:text="@string/team_conditions"
@@ -16,9 +17,9 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2"
+        android:layout_height="@dimen/dp_1"
         android:layout_marginBottom="@dimen/dp_2"
-        android:background="@color/btn_normal" />
+        android:background="@color/gray" />
 
     <com.tutor.ui.view.OverScrollView
         android:layout_width="match_parent"
@@ -39,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/dp_2"
-        android:background="@drawable/selector_yellow_btn2"
+        android:background="@drawable/selector_blue_btn_no_corner"
         android:text="@string/ok"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_20" />

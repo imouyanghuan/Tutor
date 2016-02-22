@@ -164,20 +164,24 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 				}
 				break;
 			case R.id.fragment_find_student_btn:
-				isSearchStatus = true;
-				// 獲取搜索的老师列表
-				pageIndex = 0;
-				if (!HttpHelper.isNetworkConnected(getActivity())) {
-					toast(R.string.toast_netwrok_disconnected);
-					return;
-				}
-				goneBtn.setChecked(true);
-				showDialogRes(R.string.loading);
-				getSearchTeachers(pageIndex, pageSize);
+				searchByCondition();
 				break;
 			default:
 				break;
 		}
+	}
+
+	private void searchByCondition() {
+		isSearchStatus = true;
+		// 獲取搜索的老师列表
+		pageIndex = 0;
+		if (!HttpHelper.isNetworkConnected(getActivity())) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		goneBtn.setChecked(true);
+		showDialogRes(R.string.loading);
+		getSearchTeachers(pageIndex, pageSize);
 	}
 
 	@Override
@@ -263,7 +267,7 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 							timeStr = weekStr + " " + startHour + COLON + startM + " - " + endHour + COLON + endM + COM;
 						}
 						String voluntaryTutor = condition.isVoluntaryTutoring() ? getString(R.string.label_provide_voluntary_tutoring) + COM : "";
-						String isCertified = condition.isCertified() ? getString(R.string.label_search_is_certified) + COM : "";
+						String isCertified = condition.isCertified() ? getString(R.string.label_approved) + COM : "";
 						String searchKeyWork = keyword + courseName + areaName + genderName + timeStr + voluntaryTutor + isCertified;
 						if (searchKeyWork.length() > 2) {
 							editText.setText(searchKeyWork.substring(0, (searchKeyWork.length() - 2)));
@@ -276,6 +280,7 @@ public class FindTeacherFragment extends BaseFragment implements OnRefreshListen
 							ibDelete.setVisibility(View.GONE);
 						}
 					}
+					searchByCondition();
 				}
 				break;
 			default:

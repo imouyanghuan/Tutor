@@ -40,6 +40,8 @@ import com.tutor.model.Page;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
 import com.tutor.service.IMService;
+import com.tutor.ui.dialog.ActivityDialog;
+import com.tutor.ui.dialog.ActivityDialog.OnOkClickListener;
 import com.tutor.ui.fragment.BaseFragment;
 import com.tutor.ui.fragment.blog.BlogFragment;
 import com.tutor.ui.fragment.student.TuitionCentreFragment;
@@ -229,6 +231,26 @@ public class TeacherMainActivity extends BaseActivity implements OnClickListener
 				mMenuDrawer.openMenu();
 			}
 		});
+		// 有identity code才显示dialog
+		if (!TextUtils.isEmpty(TutorApplication.getIdentityCode())) {
+			bar.setRightButton(R.drawable.info_selector, new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					final ActivityDialog dialog = new ActivityDialog(TeacherMainActivity.this);
+					dialog.setContextAndUserInfo(TeacherMainActivity.this, null);
+					dialog.setCancelable(false);
+					dialog.show();
+					dialog.setOnOkClickListener(new OnOkClickListener() {
+
+						@Override
+						public void onClickListener() {
+							dialog.dismiss();
+						}
+					});
+				}
+			});
+		}
 		mRadioGroup = getView(R.id.ac_main_rg);
 		// 底部菜單切換時的操作
 		mRadioGroup.setOnCheckedChangeListener(new OnCheckedChangeListener() {

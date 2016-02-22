@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.hk.tutor.R;
@@ -29,7 +28,6 @@ import com.tutor.ui.view.CustomGridView;
 import com.tutor.ui.view.CustomListView;
 import com.tutor.ui.view.TitleBar;
 import com.tutor.util.HttpHelper;
-import com.tutor.util.LogUtils;
 import com.tutor.util.ObjectHttpResponseHandler;
 
 /**
@@ -71,7 +69,7 @@ public class SearchConditionsOfTuitionCenterActivity extends BaseActivity implem
 		TitleBar bar = getView(R.id.title_bar);
 		bar.setTitle(R.string.label_search_conditions);
 		bar.initBack(this);
-		bar.setRightText(R.string.btn_save, new OnClickListener() {
+		bar.setRightText(R.string.label_search, new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {

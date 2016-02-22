@@ -155,15 +155,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.fragment_find_student_btn:
-				isSearchStatus = true;
-				// 獲取搜索的學生列表
-				pageIndex = 0;
-				if (!HttpHelper.isNetworkConnected(getActivity())) {
-					toast(R.string.toast_netwrok_disconnected);
-					return;
-				}
-				showDialogRes(R.string.loading);
-				getSearchStudent(pageIndex, pageSize);
+				searchByCondication();
 				break;
 			// 添加条件搜索
 			case R.id.fragment_find_student_et:
@@ -182,6 +174,18 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 			default:
 				break;
 		}
+	}
+
+	private void searchByCondication() {
+		isSearchStatus = true;
+		// 獲取搜索的學生列表
+		pageIndex = 0;
+		if (!HttpHelper.isNetworkConnected(getActivity())) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		showDialogRes(R.string.loading);
+		getSearchStudent(pageIndex, pageSize);
 	}
 
 	@Override
@@ -278,6 +282,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 							ibDelete.setVisibility(View.GONE);
 						}
 					}
+					searchByCondication();
 				}
 				break;
 			default:
@@ -297,7 +302,7 @@ public class FindStudentFragment extends BaseFragment implements OnRefreshListen
 		RequestParams params = new RequestParams();
 		params.put("pageIndex", pageIndex);
 		params.put("pageSize", pageSize);
-		HttpHelper.getHelper().get( ApiUrl.STUDENTMATCH, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
+		HttpHelper.getHelper().get(ApiUrl.STUDENTMATCH, TutorApplication.getHeaders(), params, new ObjectHttpResponseHandler<UserListResult>(UserListResult.class) {
 
 			@Override
 			public void onFailure(int status, String message) {

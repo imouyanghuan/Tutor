@@ -18,6 +18,7 @@ public class BlogModel implements Serializable {
 	private String linkUrl;
 	private String createdTime;
 	private int id;
+	private String logoUrl;
 
 	public String getTitle() {
 		return title;
@@ -97,5 +98,13 @@ public class BlogModel implements Serializable {
 
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
+	}
+
+	public String getLogoUrl() {
+		return logoUrl;
+	}
+
+	public void setLogoUrl(String logoUrl) {
+		this.logoUrl = logoUrl;
 	}
 }

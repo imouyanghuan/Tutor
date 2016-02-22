@@ -129,7 +129,7 @@ public class BlogFragment extends BaseFragment {
 			@Override
 			public void onTabSelected(Tab tab) {
 				if (TutorApplication.getRole() == Constants.General.ROLE_STUDENT) {
-					if (((StudentMainActivity) getActivity()).mMenuDrawer != null) {
+					if (((StudentMainActivity) getActivity()) != null && ((StudentMainActivity) getActivity()).mMenuDrawer != null) {
 						if (tab.getPosition() == 0) {
 							((StudentMainActivity) getActivity()).mMenuDrawer.setTouchBezelSize(160);
 						} else {
@@ -138,7 +138,7 @@ public class BlogFragment extends BaseFragment {
 						((StudentMainActivity) getActivity()).mMenuDrawer.invalidate();
 					}
 				} else if (TutorApplication.getRole() == Constants.General.ROLE_TUTOR) {
-					if (((TeacherMainActivity) getActivity()).mMenuDrawer != null) {
+					if (((TeacherMainActivity) getActivity()) != null && ((TeacherMainActivity) getActivity()).mMenuDrawer != null) {
 						if (tab.getPosition() == 0) {
 							((TeacherMainActivity) getActivity()).mMenuDrawer.setTouchBezelSize(160);
 						} else {

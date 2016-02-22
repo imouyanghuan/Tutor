@@ -45,15 +45,13 @@
                         android:background="@drawable/selector_rate_tutor"
                         android:drawableLeft="@drawable/selrctor_pen"
                         android:drawableStart="@drawable/selrctor_pen"
-                        android:enabled="false"
                         android:gravity="center"
                         android:paddingEnd="@dimen/dp_0"
                         android:paddingLeft="@dimen/dp_10"
                         android:paddingRight="@dimen/dp_0"
                         android:paddingStart="@dimen/dp_10"
-                        android:text="@string/label_rete_tutor"
                         android:textColor="@color/rate_txt_color_selector"
-                        android:textSize="@dimen/sp_15" />
+                        android:textSize="@dimen/sp_14" />
 
                     <Button
                         android:id="@+id/btn_play_video"
@@ -71,7 +69,7 @@
                         android:paddingStart="@dimen/dp_10"
                         android:text="@string/label_paly_video"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/sp_15" />
+                        android:textSize="@dimen/sp_14" />
                 </LinearLayout>
 
                 <LinearLayout

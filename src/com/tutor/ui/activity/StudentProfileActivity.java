@@ -123,10 +123,17 @@ public class StudentProfileActivity extends BaseActivity implements OnClickListe
 			@Override
 			public void onClick(DialogInterface arg0, int arg1) {
 				Account account = TutorApplication.getAccountDao().load("1");
-				if (account != null && !TextUtils.isEmpty(account.getFacebookId())) {
-					try {
-						LoginManager.getInstance().logOut();
-					} catch (Exception e) {}
+				if (account != null) {
+					// 注销角色
+					account.setRole(-1);
+					TutorApplication.getAccountDao().update(account);
+					if (!TextUtils.isEmpty(account.getFacebookId())) {
+						try {
+							LoginManager.getInstance().logOut();
+						} catch (Exception e) {
+							// TODO: handle exception
+						}
+					}
 				}
 				// TODO 调用api退出登录
 				// 斷開IM連接

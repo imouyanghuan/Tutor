@@ -35,7 +35,7 @@ public class UserInfo implements Serializable {
 	private String major;
 	private String introductionVideo;
 	private boolean isCertified; // 是否已经认证
-	private String followCount;     // 关注度
+	private String followCount; // 关注度
 	// 学生字段
 	private int grade;
 	// 教师和学生都有的字段
@@ -72,6 +72,14 @@ public class UserInfo implements Serializable {
 	private ArrayList<ServiceGrade> serviceGrades;
 	// 补习社联系邮箱
 	private String contactEmail;
+	// 老师唯一标识码
+	private String identityCode;
+	// 活动相关
+	private String alertTitle;
+	private String alertContent;
+	private String alertLink;
+	// 手机号是否已经认证
+	private boolean isPhoneVerified;
 
 	public String getHkidNumber() {
 		return hkidNumber;
@@ -428,23 +436,59 @@ public class UserInfo implements Serializable {
 		this.serviceGrades = serviceGrades;
 	}
 
-	
 	public boolean isCertified() {
 		return isCertified;
 	}
 
-	
 	public void setCertified(boolean isCertified) {
 		this.isCertified = isCertified;
 	}
 
-	
 	public String getFollowCount() {
 		return followCount;
 	}
 
-	
 	public void setFollowCount(String followCount) {
 		this.followCount = followCount;
+	}
+
+	public String getIdentityCode() {
+		return identityCode;
+	}
+
+	public void setIdentityCode(String identityCode) {
+		this.identityCode = identityCode;
+	}
+
+	public String getAlertTitle() {
+		return alertTitle;
+	}
+
+	public void setAlertTitle(String alertTitle) {
+		this.alertTitle = alertTitle;
+	}
+
+	public String getAlertContent() {
+		return alertContent;
+	}
+
+	public void setAlertContent(String alertContent) {
+		this.alertContent = alertContent;
+	}
+
+	public String getAlertLink() {
+		return alertLink;
+	}
+
+	public void setAlertLink(String alertLink) {
+		this.alertLink = alertLink;
+	}
+
+	public boolean isPhoneVerified() {
+		return isPhoneVerified;
+	}
+
+	public void setPhoneVerified(boolean isPhoneVerified) {
+		this.isPhoneVerified = isPhoneVerified;
 	}
 }

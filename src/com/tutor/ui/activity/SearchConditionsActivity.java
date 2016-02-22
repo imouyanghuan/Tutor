@@ -131,7 +131,7 @@ public class SearchConditionsActivity extends BaseActivity implements OnClickLis
 		TitleBar bar = getView(R.id.title_bar);
 		bar.setTitle(R.string.label_search_conditions);
 		bar.initBack(this);
-		bar.setRightText(R.string.btn_save, new OnClickListener() {
+		bar.setRightText(R.string.label_search, new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {

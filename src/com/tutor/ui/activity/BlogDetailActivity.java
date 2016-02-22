@@ -1,20 +1,37 @@
 package com.tutor.ui.activity;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.apache.http.protocol.HTTP;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Html;
+import android.text.Html.ImageGetter;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
+import android.widget.TextView;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -35,9 +52,12 @@ import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 import com.hk.tutor.R;
 import com.mssky.mobile.helper.SharePrefUtil;
+import com.mssky.mobile.helper.UIUtils;
 import com.tutor.model.BlogModel;
 import com.tutor.params.Constants;
+import com.tutor.ui.view.OverScrollView;
 import com.tutor.ui.view.TitleBar;
+import com.tutor.util.ScreenUtil;
 
 /**
  * 博客详情页面
@@ -48,6 +68,12 @@ import com.tutor.ui.view.TitleBar;
  */
 public class BlogDetailActivity extends BaseActivity {
 
+	public static final String ICON_GIF = "data:image/gif;base64,";
+	public static final String ICON_PNG = "data:image/png;base64,";
+	public static final String ICON_JPEG = "data:image/jpeg;base64,";
+	public static final String ICON_XICON = "data:image/x-icon;base64,";
+	private static int imageHeight = 600;
+	private static int imageWidth = 300;
 	private WebView webView;
 	private String contentHtml;
 	private BlogModel blogModel;
@@ -193,6 +219,10 @@ public class BlogDetailActivity extends BaseActivity {
 		blogModel = (BlogModel) intent.getSerializableExtra(Constants.IntentExtra.INTENT_EXTRA_BLOG);
 		contentHtml = blogModel.getContent();
 		initView();
+		int imageW = ScreenUtil.getSW(this) - 2 * ScreenUtil.dip2Px(this, 15);
+		int imageH = imageW * 2 / 3;
+		imageWidth = imageW;
+		imageHeight = imageH;
 	}
 
 	@Override
@@ -200,22 +230,190 @@ public class BlogDetailActivity extends BaseActivity {
 		TitleBar bar = getView(R.id.title_bar);
 		bar.initBack(this);
 		bar.setTitle(blogModel.getTitle());
-		bar.setRightButton(R.drawable.share, new OnClickListener() {
+		bar.setRightButton(R.drawable.fb_share, new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				shareToFacebook();
+				if (blogModel != null) {
+					shareToFacebook();
+				}
 			}
 		});
 		webView = getView(R.id.webview);
+		webView.setVisibility(View.GONE);
 		webView.getSettings().setDefaultTextEncodingName(HTTP.UTF_8);
-		if (!TextUtils.isEmpty(contentHtml)) {
-			try {
-				webView.loadDataWithBaseURL("about:blank", Html.fromHtml(contentHtml).toString(), "text/html", HTTP.UTF_8, null);
-			} catch (Exception e) {
-				e.printStackTrace();
+		OverScrollView scrollView = getView(R.id.scrollView);
+		scrollView.setVisibility(View.VISIBLE);
+		content = getView(R.id.tv_content);
+		new MyThread().start();
+		// if (!TextUtils.isEmpty(contentHtml)) {
+		// try {
+		// webView.loadDataWithBaseURL("about:blank", Html.fromHtml(contentHtml,
+		// imgGetter, null).toString(), "text/html", HTTP.UTF_8, null);
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// }
+		// }
+	}
+
+	public class MyThread extends Thread {
+
+		public void run() {
+			Spanned spanned = Html.fromHtml(Html.fromHtml(contentHtml).toString(), imgGetter, null);
+			Message msg = new Message();
+			msg.obj = spanned;
+			handler.sendMessage(msg);
+		}
+	}
+
+	private Handler handler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			content.setText((Spanned) msg.obj);
+		}
+	};
+	ImageGetter imgGetter = new Html.ImageGetter() {
+
+		public Drawable getDrawable(String source) {
+			if (TextUtils.isEmpty(source)) {
+				return null;
+			}
+			Log.e("ImagePath", source);
+			if (source.startsWith(ICON_GIF) || source.startsWith(ICON_PNG) || source.startsWith(ICON_JPEG) || source.startsWith(ICON_XICON)) {
+				Drawable htmlDrawable = setHtmlImage(source);
+				return (htmlDrawable == null) ? getResources().getDrawable(R.drawable.post_pic_default) : htmlDrawable;
+			} else {
+				if (!source.toLowerCase().startsWith("http")) {
+					// source = Constants.BASE_URL + "/" + source;
+				}
+				URL url;
+				Drawable drawable = getResources().getDrawable(R.drawable.post_pic_default);
+				Bitmap bitmap = null;
+				try {
+					String filePath = UIUtils.makeFilePath(BlogDetailActivity.this, "cache") + "/" + Uri.parse(source).getLastPathSegment();
+					bitmap = getBitmapFromFile(BlogDetailActivity.this, filePath);
+					if (bitmap == null) {
+						BitmapFactory.Options options = new BitmapFactory.Options();
+						options.inSampleSize = 5;
+						options.inDither = false;
+						options.inPreferredConfig = Bitmap.Config.RGB_565;
+						url = new URL(source);
+						bitmap = BitmapFactory.decodeStream(url.openStream(), null, options); // 获取网路图片
+						// 2.缓存bitmap至/data/data/packageName/cache/文件夹中
+						FileOutputStream fos = new FileOutputStream(filePath);
+						bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+						fos.close();
+					}
+					if (bitmap != null) {
+						drawable = new BitmapDrawable(bitmap);
+					}
+					if (drawable != null) {
+						// 设置图片边界
+						imageHeight = (int) (imageWidth / ((float) drawable.getIntrinsicWidth() / (float) drawable.getIntrinsicHeight()));
+					}
+					if ((int) (imageWidth / ((float) drawable.getIntrinsicWidth())) > 2) {
+						drawable.setBounds(0, 0, imageWidth / 2, imageWidth / 2);
+					} else {
+						drawable.setBounds(0, 0, imageWidth, imageHeight);
+					}
+				} catch (Throwable e) {
+					e.printStackTrace();
+					return drawable;
+				}
+				return drawable;
 			}
 		}
+	};
+	private TextView content;
+
+	/**
+	 * 从外部文件缓存中获取bitmap
+	 * 
+	 * @param url
+	 * @return
+	 */
+	public static Bitmap getBitmapFromFile(Context mContext, String fileName) {
+		Bitmap bitmap = null;
+		if (fileName == null)
+			return null;
+		try {
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inSampleSize = 1;
+			options.inDither = false;
+			options.inPreferredConfig = Bitmap.Config.RGB_565;
+			FileInputStream fis = new FileInputStream(fileName);
+			bitmap = BitmapFactory.decodeStream(fis, null, options);
+			fis.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			bitmap = null;
+		} catch (Throwable e) {
+			System.gc();
+			bitmap = null;
+		}
+		return bitmap;
+	}
+
+	public static Drawable setHtmlImage(String source) {
+		if (!TextUtils.isEmpty(source)) {
+			Drawable drawable = null;
+			String icon = "";
+			if (source.startsWith(ICON_GIF)) {
+				icon = ICON_GIF;
+			} else if (source.startsWith(ICON_PNG)) {
+				icon = ICON_PNG;
+			} else if (source.startsWith(ICON_JPEG)) {
+				icon = ICON_JPEG;
+			} else if (source.startsWith(ICON_XICON)) {
+				icon = ICON_XICON;
+			}
+			try {
+				if (!TextUtils.isEmpty(icon)) {
+					icon = source.replace(icon, "");
+					byte[] decodedString = Base64.decode(icon.getBytes(), Base64.DEFAULT);
+					System.gc();
+					Bitmap bitmap = null;
+					if (decodedString != null) {
+						BitmapFactory.Options options = new BitmapFactory.Options();
+						options.inSampleSize = 1;
+						// if (source.getBytes().length > 0.5 * 1024 * 1024) {
+						options.inSampleSize = 4;
+						// }
+						options.inDither = false;
+						options.inPreferredConfig = Bitmap.Config.RGB_565;
+						InputStream input = new ByteArrayInputStream(decodedString);
+						bitmap = BitmapFactory.decodeStream(input, null, options);
+						// bitmap = BitmapFactory.decodeByteArray(img,
+						// 0, img.length);
+						if (bitmap != null) {
+							drawable = new BitmapDrawable(bitmap);
+							if (drawable != null) {
+								// 设置图片边界
+								imageHeight = (int) (imageWidth / ((float) drawable.getIntrinsicWidth() / (float) drawable.getIntrinsicHeight()));
+							}
+							drawable.setBounds(0, 0, imageWidth, imageHeight);
+						}
+						input.close();
+					}
+				} else {
+					drawable = Drawable.createFromPath(source); // Or fetch it
+																// from
+					// the URL
+					if (drawable != null) {
+						// Important
+						// 设置图片边界
+						imageHeight = (int) (imageWidth / ((float) drawable.getIntrinsicWidth() / (float) drawable.getIntrinsicHeight()));
+						drawable.setBounds(0, 0, imageWidth, imageHeight);
+					}
+				}
+				return drawable;
+			} catch (Throwable e) {
+				System.gc();
+			}
+		}
+		return null;
 	}
 
 	// 分享到facebook
@@ -292,10 +490,10 @@ public class BlogDetailActivity extends BaseActivity {
 
 	private void postStatusUpdate() {
 		Profile profile = Profile.getCurrentProfile();
-		Uri uri = Uri.parse("http://ec2-54-255-164-232.ap-southeast-1.compute.amazonaws.com/tutorPortal/Content/images/2utor.png");
-		// Uri uri = Uri.parse(blogModel.getMainImage());
+		Uri uri = Uri.parse(blogModel.getMainImage());
 		String linkUrl = blogModel.getLinkUrl();
 		// Log.e("Tutor", "linkUrl === : " + linkUrl);
+		
 		ShareLinkContent linkContent = new ShareLinkContent.Builder().setImageUrl(uri).setContentTitle(blogModel.getTitle()).setContentDescription(blogModel.getSummary())
 				.setContentUrl(Uri.parse(linkUrl)).build();
 		if (canPresentShareDialog) {

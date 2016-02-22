@@ -67,10 +67,12 @@ public class ToBeMyStudentActivity extends BaseActivity implements OnItemSelecte
 	private Timeslot timeslot = null;
 	private TimeSlotAdapter timeSlotAdapter;
 	/** 證件號,電話號碼 ,地址 */
-	private EditText hKidEditText, phoneEditText, myAddressEditText;
-	private TextView hKidRequired;
-	private String hkId;
-	private String replaceId;
+	private EditText phoneEditText;
+	// private EditText hKidEditText;
+	// private EditText myAddressEditText;
+	// private TextView hKidRequired;
+	// private String hkId;
+	// private String replaceId;
 	private int broadCastId;
 
 	@Override
@@ -127,29 +129,37 @@ public class ToBeMyStudentActivity extends BaseActivity implements OnItemSelecte
 	@Override
 	protected void initView() {
 		initTitleBar();
-		hKidRequired = getView(R.id.ac_fill_personal_tv_hkid);
-		hKidEditText = getView(R.id.ac_fill_personal_info_et_hkid);
-		hkId = TutorApplication.getHKID();
-		replaceId = "";
-		if (!TextUtils.isEmpty(hkId)) {
-			if (hkId.length() > 4) {
-				replaceId = hkId.replace(hkId.substring(4), "****");
-				hKidEditText.setText(replaceId);
-				hKidEditText.setSelection(replaceId.length());
-			} else {
-				hKidEditText.setText(hkId);
-				hKidEditText.setSelection(hkId.length());
-			}
-		} else {
-			hKidEditText.setText("");
-		}
+		// hKidRequired = getView(R.id.ac_fill_personal_tv_hkid);
+		// hKidEditText = getView(R.id.ac_fill_personal_info_et_hkid);
+		// hkId = TutorApplication.getHKID();
+		// replaceId = "";
+		// if (!TextUtils.isEmpty(hkId)) {
+		// if (hkId.length() > 4) {
+		// replaceId = hkId.replace(hkId.substring(4), "****");
+		// hKidEditText.setText(replaceId);
+		// hKidEditText.setSelection(replaceId.length());
+		// } else {
+		// hKidEditText.setText(hkId);
+		// hKidEditText.setSelection(hkId.length());
+		// }
+		// } else {
+		// hKidEditText.setText("");
+		// }
 		phoneEditText = getView(R.id.ac_fill_personal_info_et_phone);
-		phoneEditText.setText(TutorApplication.getPhoneNum());
-		myAddressEditText = getView(R.id.ac_fill_personal_info_et_address);
-		myAddressEditText.setText(TutorApplication.getResidentialAddress());
-		if (Constants.General.ROLE_TUTOR != TutorApplication.getRole()) {
-			hKidRequired.setVisibility(View.INVISIBLE);
+		String savedNum = TutorApplication.getPhoneNum();
+		if (!TextUtils.isEmpty(savedNum)) {
+			phoneEditText.setText(savedNum);
+			phoneEditText.setSelection(savedNum.length());
+			phoneEditText.setClickable(false);
+			phoneEditText.setEnabled(false);
+		} else {
+			phoneEditText.setText("");
 		}
+		// myAddressEditText = getView(R.id.ac_fill_personal_info_et_address);
+		// myAddressEditText.setText(TutorApplication.getResidentialAddress());
+		// if (Constants.General.ROLE_TUTOR != TutorApplication.getRole()) {
+		// hKidRequired.setVisibility(View.INVISIBLE);
+		// }
 		nickEditText = getView(R.id.et_nick);
 		courseTextView = getView(R.id.et_course);
 		frequencyEditText = getView(R.id.et_frequency);
@@ -165,7 +175,7 @@ public class ToBeMyStudentActivity extends BaseActivity implements OnItemSelecte
 		if (!TextUtils.isEmpty(username)) {
 			nickEditText.setSelection(username.length());
 		}
-		//课程点击
+		// 课程点击
 		courseTextView.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -249,37 +259,37 @@ public class ToBeMyStudentActivity extends BaseActivity implements OnItemSelecte
 		Notification notification = new Notification();
 		Account account = TutorApplication.getAccountDao().load("1");
 		// hkid 教师才有
-		String curHKID = hKidEditText.getEditableText().toString().trim();
-		if (Constants.General.ROLE_TUTOR == TutorApplication.getRole()) {
-			if (TextUtils.isEmpty(curHKID)) {
-				toast(R.string.toast_hkid_isEmpty);
-				hKidEditText.requestFocus();
-				return;
-			}
-			if (!replaceId.equalsIgnoreCase(curHKID)) { // 修改过
-				if (!StringUtils.isHKID(curHKID)) {
-					toast(R.string.toast_hkid_error);
-					hKidEditText.requestFocus();
-					return;
-				}
-				notification.setHkidNumber(curHKID);
-				account.setHkidNumber(curHKID);
-			} else {
-				// 没有修改
-				notification.setHkidNumber(hkId);
-				account.setHkidNumber(hkId);
-			}
-		} else {
-			if (!TextUtils.isEmpty(curHKID)) {
-				if (!StringUtils.isHKID(curHKID)) {
-					toast(R.string.toast_hkid_error);
-					hKidEditText.requestFocus();
-					return;
-				}
-				notification.setHkidNumber(curHKID);
-				account.setHkidNumber(curHKID);
-			}
-		}
+		// String curHKID = hKidEditText.getEditableText().toString().trim();
+		// if (Constants.General.ROLE_TUTOR == TutorApplication.getRole()) {
+		// if (TextUtils.isEmpty(curHKID)) {
+		// toast(R.string.toast_hkid_isEmpty);
+		// hKidEditText.requestFocus();
+		// return;
+		// }
+		// if (!replaceId.equalsIgnoreCase(curHKID)) { // 修改过
+		// if (!StringUtils.isHKID(curHKID)) {
+		// toast(R.string.toast_hkid_error);
+		// hKidEditText.requestFocus();
+		// return;
+		// }
+		// notification.setHkidNumber(curHKID);
+		// account.setHkidNumber(curHKID);
+		// } else {
+		// // 没有修改
+		// notification.setHkidNumber(hkId);
+		// account.setHkidNumber(hkId);
+		// }
+		// } else {
+		// if (!TextUtils.isEmpty(curHKID)) {
+		// if (!StringUtils.isHKID(curHKID)) {
+		// toast(R.string.toast_hkid_error);
+		// hKidEditText.requestFocus();
+		// return;
+		// }
+		// notification.setHkidNumber(curHKID);
+		// account.setHkidNumber(curHKID);
+		// }
+		// }
 		// 电话号码
 		String phone = phoneEditText.getEditableText().toString().trim();
 		if (TextUtils.isEmpty(phone)) {
@@ -293,12 +303,13 @@ public class ToBeMyStudentActivity extends BaseActivity implements OnItemSelecte
 			return;
 		}
 		// 地址
-		String myAddress = myAddressEditText.getEditableText().toString().trim();
-		if (TextUtils.isEmpty(myAddress)) {
-			toast(R.string.toast_address_isEmpty);
-			myAddressEditText.requestFocus();
-			return;
-		}
+		// String myAddress =
+		// myAddressEditText.getEditableText().toString().trim();
+		// if (TextUtils.isEmpty(myAddress)) {
+		// toast(R.string.toast_address_isEmpty);
+		// myAddressEditText.requestFocus();
+		// return;
+		// }
 		// 课程是必选
 		if (null == courseValue) {
 			toast(R.string.toast_not_select_cours);
@@ -318,7 +329,7 @@ public class ToBeMyStudentActivity extends BaseActivity implements OnItemSelecte
 		}
 		notification.setBroadcastId(broadCastId);
 		notification.setPhone(phone);
-		notification.setResidentialAddress(myAddress);
+		// notification.setResidentialAddress(myAddress);
 		notification.setTimeslots(timeslots);
 		notification.setSource(TutorApplication.getMemberId());
 		notification.setDestination(userInfo.getId());
@@ -350,7 +361,7 @@ public class ToBeMyStudentActivity extends BaseActivity implements OnItemSelecte
 		send(body);
 		// 重新保存到数据库
 		account.setPhone(phone);
-		account.setResidentialAddress(myAddress);
+		// account.setResidentialAddress(myAddress);
 		TutorApplication.getAccountDao().insertOrReplace(account);
 	}
 

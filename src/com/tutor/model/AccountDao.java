@@ -34,6 +34,10 @@ public class AccountDao extends AbstractDao<Account, String> {
         public final static Property ImPswd = new Property(11, String.class, "imPswd", false, "IM_PSWD");
         public final static Property Token = new Property(12, String.class, "token", false, "TOKEN");
         public final static Property CreatedTime = new Property(13, String.class, "createdTime", false, "CREATED_TIME");
+        public final static Property IdentityCode = new Property(14, String.class, "identityCode", false, "IDENTITY_CODE");
+        public final static Property AlertTitle = new Property(15, String.class, "alertTitle", false, "ALERT_TITLE");
+        public final static Property AlertContent = new Property(16, String.class, "alertContent", false, "ALERT_CONTENT");
+        public final static Property AlertLink = new Property(17, String.class, "alertLink", false, "ALERT_LINK");
     };
 
 
@@ -62,7 +66,11 @@ public class AccountDao extends AbstractDao<Account, String> {
                 "\"IM_ACCOUNT\" TEXT," + // 10: imAccount
                 "\"IM_PSWD\" TEXT," + // 11: imPswd
                 "\"TOKEN\" TEXT," + // 12: token
-                "\"CREATED_TIME\" TEXT);"); // 13: createdTime
+                "\"CREATED_TIME\" TEXT," + // 13: createdTime
+                "\"IDENTITY_CODE\" TEXT," + // 14: identityCode
+                "\"ALERT_TITLE\" TEXT," + // 15: alertTitle
+                "\"ALERT_CONTENT\" TEXT," + // 16: alertContent
+                "\"ALERT_LINK\" TEXT);"); // 17: alertLink
     }
 
     /** Drops the underlying database table. */
@@ -141,6 +149,26 @@ public class AccountDao extends AbstractDao<Account, String> {
         if (createdTime != null) {
             stmt.bindString(14, createdTime);
         }
+ 
+        String identityCode = entity.getIdentityCode();
+        if (identityCode != null) {
+            stmt.bindString(15, identityCode);
+        }
+ 
+        String alertTitle = entity.getAlertTitle();
+        if (alertTitle != null) {
+            stmt.bindString(16, alertTitle);
+        }
+ 
+        String alertContent = entity.getAlertContent();
+        if (alertContent != null) {
+            stmt.bindString(17, alertContent);
+        }
+ 
+        String alertLink = entity.getAlertLink();
+        if (alertLink != null) {
+            stmt.bindString(18, alertLink);
+        }
     }
 
     /** @inheritdoc */
@@ -166,7 +194,11 @@ public class AccountDao extends AbstractDao<Account, String> {
             cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // imAccount
             cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // imPswd
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // token
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13) // createdTime
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // createdTime
+            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // identityCode
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // alertTitle
+            cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16), // alertContent
+            cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17) // alertLink
         );
         return entity;
     }
@@ -188,6 +220,10 @@ public class AccountDao extends AbstractDao<Account, String> {
         entity.setImPswd(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setToken(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
         entity.setCreatedTime(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setIdentityCode(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
+        entity.setAlertTitle(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setAlertContent(cursor.isNull(offset + 16) ? null : cursor.getString(offset + 16));
+        entity.setAlertLink(cursor.isNull(offset + 17) ? null : cursor.getString(offset + 17));
      }
     
     /** @inheritdoc */

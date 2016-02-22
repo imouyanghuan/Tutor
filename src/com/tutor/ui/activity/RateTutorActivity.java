@@ -163,7 +163,7 @@ public class RateTutorActivity extends BaseActivity implements OnClickListener {
 				public void onSuccess(AddBookmarkResult result) {
 					if (result.getStatusCode() == HttpURLConnection.HTTP_OK) {
 						toast(R.string.toast_rating_success);
-						RateTutorActivity.this.finish();
+//						RateTutorActivity.this.finish();
 					}
 				}
 			});

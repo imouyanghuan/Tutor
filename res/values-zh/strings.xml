@@ -18,7 +18,7 @@
     <string name="login">登錄</string>
     <string name="next">下一步</string>
     <string name="register">註冊</string>
-    <string name="log_out">註銷</string>
+    <string name="log_out">登出</string>
     <string name="loading">正在加載中&#8230;</string>
     <string name="cancel">取消</string>
     <string name="done">完成</string>
@@ -37,9 +37,9 @@
     <string name="edit_personal_info">編輯個人信息</string>
     <string name="add_timeslot">添加時間段</string>
     <string name="eb_1">中學</string>
-    <string name="eb_2">高中(DSC)</string>
-    <string name="eb_3">大學</string>
-    <string name="eb_4">學士</string>
+    <string name="eb_2">高級文憑/副學士</string>
+    <string name="eb_3">學士</string>
+    <string name="eb_4">碩士或以上</string>
     <string name="uploading_avatar">上傳頭像</string>
     <string name="set_pswd">重置密碼</string>
     <string name="change_pswd">修改密碼</string>
@@ -95,7 +95,7 @@
     <string name="label_start">開始時間</string>
     <string name="label_end">結束時間</string>
     <string name="label_week">星期</string>
-    <string name="lable_log_out">確定要註銷么？</string>
+    <string name="lable_log_out">確定要登出么？</string>
     <string name="label_nickname">暱稱:</string>
     <string name="label_school">學校或大學:</string>
     <string name="label_major">專業: </string>
@@ -351,5 +351,24 @@
     <string name="label_folllow">關注度: </string>
     <string name="label_rate">評價</string>
     <string name="label_approved">已認證</string>
+    <string name="label_activity_title">2utor智力比拼!</string>
+    <string name="label_activity_content">想知道自己夠唔夠博學多材成為2utor的優質導師？快啲完成呢個測試啦!</string>
+    <string name="label_identity_code">用戶編碼:%s</string>
+    <string name="label_activity_url">http://dev.oicomg.in:10012</string>
+    <string name="label_see_comment">查看評價</string>
+    <string name="label_search">搜索</string>
+    <string name="label_send_verify_code">發送驗證碼</string>
+    <string name="hint_please_input_code">請輸入驗證碼</string>
+    <string name="label_resend_captcha">重新发送（%s）</string>
+    <string name="label_852">+852</string>
+    <string name="label_86">+86</string>
+    <string name="label_44">+44</string>
+    <string name="label_1">+1</string>
+    <string name="toast_phone_number_is_empty">請填寫手機號</string>
+    <string name="toast_phone_number_invalid">無效的手機號碼</string>
+    <string name="toast_internet_disconnect">暫無網絡連接</string>
+    <string name="toast_verify_code_is_empty">請填寫驗證碼</string>
+    <string name="toast_have_send_verify_code">驗證碼已經發送到您的手機</string>
+    <string name="label_is_verify">已校驗</string>
 
 </resources>

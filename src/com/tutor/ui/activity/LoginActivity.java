@@ -218,7 +218,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 
 		try {
 			StringEntity entity = new StringEntity(content, HTTP.UTF_8);
-			HttpHelper.getHelper().post(ApiUrl.LOGIN, null, entity, new ObjectHttpResponseHandler<LoginResponseResult>(LoginResponseResult.class) {
+			HttpHelper.getHelper().post(ApiUrl.LOGIN, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<LoginResponseResult>(LoginResponseResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {
@@ -257,6 +257,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener, LogI
 							account.setHkidNumber(result.getResult().getHkidNumber());
 							account.setResidentialAddress(result.getResult().getResidentialAddress());
 							// add end
+							
+							// 活动相关
+							account.setIdentityCode(result.getResult().getIdentityCode());
+							account.setAlertContent(result.getResult().getAlertContent());
+							account.setAlertLink(result.getResult().getAlertLink());
+							account.setAlertTitle(result.getResult().getAlertTitle());
+							
 							TutorApplication.getAccountDao().insertOrReplace(account);
 							// 检查imid是否存在
 							checkIMIDisExit(imId);

@@ -170,7 +170,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 		String content = JsonUtil.parseObject2Str(model);
 		try {
 			StringEntity entity = new StringEntity(content, HTTP.UTF_8);
-			HttpHelper.getHelper().post(ApiUrl.REGISTER, null, entity, new ObjectHttpResponseHandler<RegisterInfoResult>(RegisterInfoResult.class) {
+			HttpHelper.getHelper().post(ApiUrl.REGISTER, TutorApplication.getHeaders(), entity, new ObjectHttpResponseHandler<RegisterInfoResult>(RegisterInfoResult.class) {
 
 				@Override
 				public void onFailure(int status, String message) {
@@ -257,6 +257,12 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 							account.setPswd(model.getPassword());
 							account.setImAccount(model.getIMID());
 							account.setImPswd(model.getIMID());
+							// 活动相关
+							account.setIdentityCode(result.getResult().getIdentityCode());
+							account.setAlertContent(result.getResult().getAlertContent());
+							account.setAlertLink(result.getResult().getAlertLink());
+							account.setAlertTitle(result.getResult().getAlertTitle());
+							
 							String token = result.getResult().getToken();
 							account.setToken(token);
 							TutorApplication.getAccountDao().insertOrReplace(account);

@@ -346,14 +346,19 @@ public class TuitionCenterInfoActivity extends BaseActivity implements OnClickLi
 		// break;
 		// }
 		if (userInfo.isMatched()) {
-			llRate.setEnabled(true);
-			ivPan.setEnabled(true);
-			tvRate.setEnabled(true);
+			// llRate.setEnabled(true);
+			// ivPan.setEnabled(true);
+			// tvRate.setEnabled(true);
+			tvRate.setText(R.string.label_rete);
+			tvRate.setTextSize(14);
 			btnJoinTuitionCenter.setEnabled(false);
 		} else {
-			llRate.setEnabled(false);
-			ivPan.setEnabled(false);
-			tvRate.setEnabled(false);
+			// llRate.setEnabled(false);
+			// ivPan.setEnabled(false);
+			// tvRate.setEnabled(false);
+			// 不是该补习社的学生
+			tvRate.setText(R.string.label_see_comment);
+			tvRate.setTextSize(12);
 			btnJoinTuitionCenter.setEnabled(true);
 		}
 		String introductionString = userInfo.getIntroduction();
@@ -429,9 +434,16 @@ public class TuitionCenterInfoActivity extends BaseActivity implements OnClickLi
 				break;
 			// rate tutor
 			case R.id.ll_rate:
-				if (userInfo != null) {
+				if (userInfo == null)
+					return;
+				if (userInfo.isMatched()) {
 					Intent intent = new Intent(TuitionCenterInfoActivity.this, RateTutorActivity.class);
 					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
+					startActivity(intent);
+				} else {
+					Intent intent = new Intent(TuitionCenterInfoActivity.this, RateCommentListActivity.class);
+					intent.putExtra(Constants.General.TUTOR_ID, userInfo.getId());
+					intent.putExtra("role", userInfo.getAccountType());
 					startActivity(intent);
 				}
 				break;

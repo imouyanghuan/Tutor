@@ -5,6 +5,10 @@ import java.io.FileNotFoundException;
 import java.net.HttpURLConnection;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import org.json.JSONObject;
 
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -13,29 +17,42 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+import cn.smssdk.EventHandler;
+import cn.smssdk.SMSSDK;
+import cn.smssdk.utils.SMSLog;
 
 import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
 import com.tutor.TutorApplication;
 import com.tutor.adapter.CurrencysAdapter;
 import com.tutor.model.Account;
+import com.tutor.model.AccountDao;
 import com.tutor.model.Currency;
 import com.tutor.model.CurrencyListResult;
 import com.tutor.model.UploadAvatarResult;
@@ -49,6 +66,7 @@ import com.tutor.util.HttpHelper;
 import com.tutor.util.ImageUtils;
 import com.tutor.util.LogUtils;
 import com.tutor.util.ObjectHttpResponseHandler;
+import com.tutor.util.ScreenUtil;
 
 /**
  * 完善資料界面
@@ -91,7 +109,21 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	private boolean isVoluntaryTutoring;
 	private EditText etEmail;
 	private EditText etPhone;
+	private EditText etVerifyPhone;
+	private EditText etVerifyCode;
+	private Button btnSendVerifyCode;
+	private Button btnCountryCode;
+	/**
+	 * 国家地区代码, 默认是香港
+	 */
+	private String COUNTRY_CODE = "852";
+	private Timer timer;
+	private int reSendSeconds;
 	private String name;
+	/**
+	 * 已经认证过的手机号码
+	 */
+	private String verifyPhone = "";
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -128,7 +160,105 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		if (role == Constants.General.ROLE_STUDENT) {
 			getGrades();
 		}
+		// 短信服务监听
+		smsInit();
 	}
+
+	private void smsInit() {
+		EventHandler eh = new EventHandler() {
+
+			@Override
+			public void afterEvent(int event, int result, Object data) {
+				Message msg = new Message();
+				msg.arg1 = event;
+				msg.arg2 = result;
+				msg.obj = data;
+				mHandler.sendMessage(msg);
+			}
+		};
+		SMSSDK.registerEventHandler(eh);
+	}
+
+	Handler mHandler = new Handler() {
+
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+			int event = msg.arg1;
+			int result = msg.arg2;
+			Object data = msg.obj;
+			Log.e("event", "event=" + event);
+			if (result == SMSSDK.RESULT_COMPLETE) {
+				System.out.println("--------result" + event);
+				// 短信注册成功后，返回MainActivity,然后提示新好友
+				if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {
+					// 提交验证码成功
+					// Toast.makeText(getApplicationContext(), "提交验证码成功",
+					// Toast.LENGTH_SHORT).show();
+					nextPage();
+				} else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
+					// 已经验证
+					Toast.makeText(getApplicationContext(), R.string.toast_have_send_verify_code, Toast.LENGTH_SHORT).show();
+				}
+			} else {
+				// ((Throwable) data).printStackTrace();
+				// Toast.makeText(MainActivity.this, "验证码错误",
+				// Toast.LENGTH_SHORT).show();
+				// Toast.makeText(MainActivity.this, "123",
+				// Toast.LENGTH_SHORT).show();
+				int status = 0;
+				try {
+					((Throwable) data).printStackTrace();
+					Throwable throwable = (Throwable) data;
+					JSONObject object = new JSONObject(throwable.getMessage());
+					String des = object.optString("detail");
+					status = object.optInt("status");
+					if (!TextUtils.isEmpty(des) && (des.contains("验证码错误") || des.contains("Invalid"))) {
+						toast(des);
+						return;
+					}
+				} catch (Exception e) {
+					SMSLog.getInstance().w(e);
+				}
+			}
+		}
+	};
+
+	private void nextPage() {
+		timer.cancel();
+		timer = null;
+		btnSendVerifyCode.setText(R.string.label_send_verify_code);
+		btnSendVerifyCode.setEnabled(true);
+		// 老师和学生验证完手机走此逻辑
+		transferToNextPage();
+	}
+
+	private void transferToNextPage() {
+		userInfo.setGrade(gradeValue);
+		userInfo.setBirth(birth);
+		userInfo.setGender(sex);
+		userInfo.setVoluntaryTutoring(cbIsVoluntary.isChecked());
+		// 已验证的电话
+		userInfo.setPhone("(" + COUNTRY_CODE + ")" + etVerifyPhone.getText().toString());
+		// 标记为已经验证
+		userInfo.setPhoneVerified(true);
+		// 更新数据库
+		AccountDao accountDao = TutorApplication.getAccountDao();
+		Account account = accountDao.load("1");
+		account.setPhone(etVerifyPhone.getText().toString());
+		accountDao.update(account);
+		//
+		Intent intent = null;
+		// 选中义务补习
+		if (cbIsVoluntary != null && cbIsVoluntary.isChecked()) {
+			intent = new Intent(this, VolunteerInfoActivity.class);
+		} else {
+			intent = new Intent(this, SelectCourseActivity.class);
+		}
+		intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, isEdit);
+		intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
+		startActivity(intent);
+	};
 
 	@Override
 	protected void initView() {
@@ -167,6 +297,56 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 			// 补习社地址
 			addressEditText = getView(R.id.et_tuition_school_address);
 		} else {
+			etVerifyCode = getView(R.id.et_verify_code);
+			btnSendVerifyCode = getView(R.id.btn_send_verify_code);
+			btnSendVerifyCode.setOnClickListener(this);
+			btnCountryCode = getView(R.id.btn_country_code);
+			btnCountryCode.setOnClickListener(this);
+			// 验证码
+			etVerifyPhone = getView(R.id.et_verify_phone);
+			if (userInfo != null && userInfo.isPhoneVerified()) {
+				verifyPhone = userInfo.getPhone();
+				if (!TextUtils.isEmpty(verifyPhone)) {
+					int preBraceIndex = verifyPhone.indexOf("(");
+					int suffixBraceIndex = verifyPhone.indexOf(")");
+					if (preBraceIndex != -1 && suffixBraceIndex != -1) {
+						String countryCode = verifyPhone.substring(preBraceIndex + 1, suffixBraceIndex);
+						this.COUNTRY_CODE = countryCode;
+						btnCountryCode.setText("+" + countryCode);
+						verifyPhone = verifyPhone.substring(suffixBraceIndex + 1);
+						etVerifyPhone.setText(verifyPhone);
+						String curPhoneNumber = etVerifyPhone.getText().toString();
+						if (curPhoneNumber.equals(verifyPhone)) {
+							btnSendVerifyCode.setText(R.string.label_is_verify);
+							btnSendVerifyCode.setEnabled(false);
+						}
+					}
+				}
+			}
+			etVerifyPhone.addTextChangedListener(new TextWatcher() {
+
+				@Override
+				public void onTextChanged(CharSequence s, int start, int before, int count) {
+					String curPhoneNumber = etVerifyPhone.getText().toString();
+					if (curPhoneNumber.equals(verifyPhone)) {
+						btnSendVerifyCode.setText(R.string.label_is_verify);
+						btnSendVerifyCode.setEnabled(false);
+					} else {
+						btnSendVerifyCode.setText(R.string.label_send_verify_code);
+						btnSendVerifyCode.setEnabled(true);
+					}
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+					// TODO Auto-generated method stub
+				}
+
+				@Override
+				public void afterTextChanged(Editable s) {
+					// TODO Auto-generated method stub
+				}
+			});
 			// 老师或者学生的布局
 			getView(R.id.ll_tutor_or_student_info).setVisibility(View.VISIBLE);
 			// 是否义务补习
@@ -289,10 +469,132 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 				dialog.setUri(imageUri);
 				dialog.show();
 				break;
+			case R.id.btn_send_verify_code:
+				// 发送验证码
+				sendVerifyCode();
+				break;
+			case R.id.btn_country_code:
+				// 改变国家代码
+				showCountryCode(btnCountryCode);
+				break;
 			default:
 				break;
 		}
 	}
+
+	private void showCountryCode(Button btnChat) {
+		View view = View.inflate(FillPersonalInfoActivity.this, R.layout.layout_country_code, null);
+		final PopupWindow popupWindow = new PopupWindow(view);
+		popupWindow.setFocusable(true);
+		int itemWidth = ScreenUtil.dip2Px(FillPersonalInfoActivity.this, 60);
+		int itemHeight = ScreenUtil.dip2Px(FillPersonalInfoActivity.this, 45) * 4;
+		// 设置SelectPicPopupWindow弹出窗体的宽
+		popupWindow.setWidth(itemWidth);
+		// 设置SelectPicPopupWindow弹出窗体的高
+		popupWindow.setHeight(itemHeight);
+		// 点击“返回Back”也能使其消失
+		popupWindow.setOutsideTouchable(true);
+		popupWindow.setBackgroundDrawable(new ColorDrawable(R.color.white));
+		popupWindow.showAsDropDown(btnChat, 0, 0);
+		view.findViewById(R.id.btn_hk).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				COUNTRY_CODE = "852";
+				btnCountryCode.setText(R.string.label_852);
+				popupWindow.dismiss();
+			}
+		});
+		view.findViewById(R.id.btn_cn).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				COUNTRY_CODE = "86";
+				btnCountryCode.setText(R.string.label_86);
+				popupWindow.dismiss();
+			}
+		});
+		view.findViewById(R.id.btn_uk).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				COUNTRY_CODE = "44";
+				btnCountryCode.setText(R.string.label_44);
+				popupWindow.dismiss();
+			}
+		});
+		view.findViewById(R.id.btn_usa).setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				COUNTRY_CODE = "1";
+				btnCountryCode.setText(R.string.label_1);
+				popupWindow.dismiss();
+			}
+		});
+	}
+
+	private void sendVerifyCode() {
+		String phoneNum = etVerifyPhone.getText().toString();
+		if (TextUtils.isEmpty(phoneNum)) {
+			toast(R.string.toast_phone_number_is_empty);
+			return;
+		} else if (phoneNum.length() < 8 || phoneNum.length() > 11) {
+			toast(R.string.toast_phone_number_invalid);
+			return;
+		} else if (!HttpHelper.isNetworkConnected(FillPersonalInfoActivity.this)) {
+			toast(R.string.toast_internet_disconnect);
+		} else {
+			reSendSeconds = 60;
+			btnSendVerifyCode.setEnabled(false);
+			if (timer == null) {
+				timer = new Timer();
+			}
+			timer.schedule(new SecondTask(), 0, 1000);
+			// 发送短信验证码
+			SMSSDK.getVerificationCode(this.COUNTRY_CODE, phoneNum);
+		}
+	}
+
+	/**
+	 * 改变获取验证码按钮上面文字的线程
+	 * 
+	 */
+	private class SecondTask extends TimerTask {
+
+		@Override
+		public void run() {
+			Message message = Message.obtain();
+			message.what = 1;
+			handler.sendMessage(message);
+			reSendSeconds--;
+		}
+	}
+
+	/**
+	 * 改变获取验证码按钮上面文字
+	 */
+	private Handler handler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+				case 1:
+					String label = String.format(getString(R.string.label_resend_captcha), reSendSeconds);
+					btnSendVerifyCode.setText(label);
+					if (reSendSeconds == 0) {
+						timer.cancel();
+						timer = null;
+						btnSendVerifyCode.setText(R.string.label_send_verify_code);
+						btnSendVerifyCode.setEnabled(true);
+					}
+					break;
+				default:
+					break;
+			}
+			super.handleMessage(msg);
+		}
+	};
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -415,6 +717,7 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 	@Override
 	protected void onDestroy() {
 		unregisterReceiver(receiver);
+		SMSSDK.unregisterAllEventHandler();
 		super.onDestroy();
 	}
 
@@ -444,37 +747,44 @@ public class FillPersonalInfoActivity extends BaseActivity implements OnClickLis
 		if (!isEdit) {
 			userInfo = getUserInfo();
 		}
+		Intent intent = null;
 		// 补习社
 		if (role == Constants.General.ROLE_TUITION_SCHOOL) {
 			userInfo.setContactEmail(etEmail.getText().toString());
 			userInfo.setPhone(etPhone.getText().toString());
 			userInfo.setResidentialAddress(addressEditText.getText().toString());
+			intent = new Intent(this, SelectTuitionCenterAreaActivity.class);
+			intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, isEdit);
+			intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
+			startActivity(intent);
 		} else {
 			// 学生必须填写年级
 			if (Constants.General.ROLE_STUDENT == role && gradeValue == -1) {
 				toast(R.string.toast_grade_noChoice);
 				return;
 			}
-			userInfo.setGrade(gradeValue);
-			userInfo.setBirth(birth);
-			userInfo.setGender(sex);
-			userInfo.setVoluntaryTutoring(cbIsVoluntary.isChecked());
-		}
-		Intent intent = null;
-		// 正常流程
-		if (role == Constants.General.ROLE_TUITION_SCHOOL) {
-			intent = new Intent(this, SelectTuitionCenterAreaActivity.class);
-		} else {
-			// 选中义务补习
-			if (cbIsVoluntary != null && cbIsVoluntary.isChecked()) {
-				intent = new Intent(this, VolunteerInfoActivity.class);
+			// 手机号和验证码必填
+			String phone = etVerifyPhone.getText().toString();
+			if (TextUtils.isEmpty(phone)) {
+				toast(R.string.toast_phone_number_is_empty);
+				return;
+			} else if (phone.length() < 8 || phone.length() > 11) {
+				toast(R.string.toast_phone_number_invalid);
+				return;
+			}
+			if (!TextUtils.isEmpty(verifyPhone) && verifyPhone.equals(phone)) {
+				// 之前验证过 下一步
+				transferToNextPage();
 			} else {
-				intent = new Intent(this, SelectCourseActivity.class);
+				String verifyCode = etVerifyCode.getText().toString();
+				if (TextUtils.isEmpty(verifyCode)) {
+					toast(R.string.toast_verify_code_is_empty);
+					return;
+				}
+				// 发送验证码到短信服务器校验
+				SMSSDK.submitVerificationCode(this.COUNTRY_CODE, phone, verifyCode);
 			}
 		}
-		intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_ISEDIT, isEdit);
-		intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
-		startActivity(intent);
 	}
 
 	private UserInfo getUserInfo() {

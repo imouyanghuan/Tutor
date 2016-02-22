@@ -42,14 +42,16 @@ public class InvitationDetailActivity extends BaseActivity implements OnClickLis
 	private Button btnAccept;
 	private Button btnReject;
 	/** 證件號,電話號碼 ,地址 */
-	private EditText hKidEditText, phoneEditText, myAddressEditText;
+	private EditText phoneEditText;
+	// private EditText hKidEditText;
+	// private EditText myAddressEditText;
 	int curStatus = -1;
 	private String curHKID;
 	private String phone;
-	private String myAddress;
-	private String replaceId;
-	private String hkId;
 
+	// private String myAddress;
+	// private String replaceId;
+	// private String hkId;
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -75,29 +77,35 @@ public class InvitationDetailActivity extends BaseActivity implements OnClickLis
 		bar.setTitle(R.string.label_invitation_detail);
 		bar.initBack(this);
 		// view 如果之前有填寫則自動填寫上去
-		hKidEditText = getView(R.id.ac_fill_personal_info_et_hkid);
-		hkId = TutorApplication.getHKID();
-		replaceId = "";
-		if (!TextUtils.isEmpty(hkId)) {
-			if (hkId.length() > 4) {
-				replaceId = hkId.replace(hkId.substring(4), "****");
-				hKidEditText.setText(replaceId);
-				hKidEditText.setSelection(replaceId.length());
-			} else {
-				hKidEditText.setText(hkId);
-				hKidEditText.setSelection(hkId.length());
-			}
-		} else {
-			hKidEditText.setText("");
-		}
+		// hKidEditText = getView(R.id.ac_fill_personal_info_et_hkid);
+		// hkId = TutorApplication.getHKID();
+		// replaceId = "";
+		// if (!TextUtils.isEmpty(hkId)) {
+		// if (hkId.length() > 4) {
+		// replaceId = hkId.replace(hkId.substring(4), "****");
+		// hKidEditText.setText(replaceId);
+		// hKidEditText.setSelection(replaceId.length());
+		// } else {
+		// hKidEditText.setText(hkId);
+		// hKidEditText.setSelection(hkId.length());
+		// }
+		// } else {
+		// hKidEditText.setText("");
+		// }
 		phoneEditText = getView(R.id.ac_fill_personal_info_et_phone);
-		phoneEditText.setText(TutorApplication.getPhoneNum());
-		myAddressEditText = getView(R.id.ac_fill_personal_info_et_address);
-		myAddressEditText.setText(TutorApplication.getResidentialAddress());
-		TextView hKidRequired = getView(R.id.ac_fill_personal_tv_hkid);
-		if (Constants.General.ROLE_TUTOR != TutorApplication.getRole()) {
-			hKidRequired.setVisibility(View.INVISIBLE);
+		String savedNum = TutorApplication.getPhoneNum();
+		if (!TextUtils.isEmpty(savedNum)) {
+			phoneEditText.setText(savedNum);
+			phoneEditText.setSelection(savedNum.length());
+		} else {
+			phoneEditText.setText("");
 		}
+		// myAddressEditText = getView(R.id.ac_fill_personal_info_et_address);
+		// myAddressEditText.setText(TutorApplication.getResidentialAddress());
+		// TextView hKidRequired = getView(R.id.ac_fill_personal_tv_hkid);
+		// if (Constants.General.ROLE_TUTOR != TutorApplication.getRole()) {
+		// hKidRequired.setVisibility(View.INVISIBLE);
+		// }
 		TextView tvInviteGuy = getView(R.id.tv_invite_guys);
 		tvInviteGuy.setText(!TextUtils.isEmpty(notificaiton.getUserName()) ? notificaiton.getUserName() : notificaiton.getNickName());
 		TextView tvCourse = getView(R.id.tv_course);
@@ -106,8 +114,8 @@ public class InvitationDetailActivity extends BaseActivity implements OnClickLis
 		// tvFrequent.setText(notificaiton.getFrequent());
 		TextView tvPrice = getView(R.id.tv_price);
 		tvPrice.setText(notificaiton.getPricePerHour());
-		TextView tvAddress = getView(R.id.tv_address);
-		tvAddress.setText(notificaiton.getAddress());
+		// TextView tvAddress = getView(R.id.tv_address);
+		// tvAddress.setText(notificaiton.getAddress());
 		TextView tvTime = getView(R.id.tv_time);
 		String nofityTime = notificaiton.getCreatedTime();
 		if (nofityTime.length() > 11) {
@@ -127,9 +135,9 @@ public class InvitationDetailActivity extends BaseActivity implements OnClickLis
 		if (status == Constants.General.ACCEPT || status == Constants.General.REJECT) {
 			btnAccept.setVisibility(View.GONE);
 			btnReject.setVisibility(View.GONE);
-			hKidEditText.setEnabled(false);
+			// hKidEditText.setEnabled(false);
 			phoneEditText.setEnabled(false);
-			myAddressEditText.setEnabled(false);
+			// myAddressEditText.setEnabled(false);
 		}
 	}
 
@@ -143,37 +151,38 @@ public class InvitationDetailActivity extends BaseActivity implements OnClickLis
 			case R.id.btn_accept:
 				curStatus = Constants.General.ACCEPT;
 				// hkid 教师才有
-				curHKID = hKidEditText.getEditableText().toString().trim();
-				if (Constants.General.ROLE_TUTOR == TutorApplication.getRole()) {
-					if (TextUtils.isEmpty(curHKID)) {
-						toast(R.string.toast_hkid_isEmpty);
-						hKidEditText.requestFocus();
-						return;
-					}
-					if (!replaceId.equalsIgnoreCase(curHKID)) { // 修改过
-						if (!StringUtils.isHKID(curHKID)) {
-							toast(R.string.toast_hkid_error);
-							hKidEditText.requestFocus();
-							return;
-						}
-						notify.setHkidNumber(curHKID);
-						account.setHkidNumber(curHKID);
-					} else {
-						// 没有修改
-						notify.setHkidNumber(hkId);
-						account.setHkidNumber(hkId);
-					}
-				} else {
-					if (!TextUtils.isEmpty(curHKID)) {
-						if (!StringUtils.isHKID(curHKID)) {
-							toast(R.string.toast_hkid_error);
-							hKidEditText.requestFocus();
-							return;
-						}
-						notify.setHkidNumber(curHKID);
-						account.setHkidNumber(curHKID);
-					}
-				}
+				// curHKID = hKidEditText.getEditableText().toString().trim();
+				// if (Constants.General.ROLE_TUTOR ==
+				// TutorApplication.getRole()) {
+				// if (TextUtils.isEmpty(curHKID)) {
+				// toast(R.string.toast_hkid_isEmpty);
+				// hKidEditText.requestFocus();
+				// return;
+				// }
+				// if (!replaceId.equalsIgnoreCase(curHKID)) { // 修改过
+				// if (!StringUtils.isHKID(curHKID)) {
+				// toast(R.string.toast_hkid_error);
+				// hKidEditText.requestFocus();
+				// return;
+				// }
+				// notify.setHkidNumber(curHKID);
+				// account.setHkidNumber(curHKID);
+				// } else {
+				// // 没有修改
+				// notify.setHkidNumber(hkId);
+				// account.setHkidNumber(hkId);
+				// }
+				// } else {
+				// if (!TextUtils.isEmpty(curHKID)) {
+				// if (!StringUtils.isHKID(curHKID)) {
+				// toast(R.string.toast_hkid_error);
+				// hKidEditText.requestFocus();
+				// return;
+				// }
+				// notify.setHkidNumber(curHKID);
+				// account.setHkidNumber(curHKID);
+				// }
+				// }
 				// 电话号码
 				phone = phoneEditText.getEditableText().toString().trim();
 				if (TextUtils.isEmpty(phone)) {
@@ -187,20 +196,21 @@ public class InvitationDetailActivity extends BaseActivity implements OnClickLis
 					return;
 				}
 				// 地址
-				myAddress = myAddressEditText.getEditableText().toString().trim();
-				if (TextUtils.isEmpty(myAddress)) {
-					toast(R.string.toast_address_isEmpty);
-					myAddressEditText.requestFocus();
-					return;
-				}
+				// myAddress =
+				// myAddressEditText.getEditableText().toString().trim();
+				// if (TextUtils.isEmpty(myAddress)) {
+				// toast(R.string.toast_address_isEmpty);
+				// myAddressEditText.requestFocus();
+				// return;
+				// }
 				notify.setHkidNumber(curHKID);
 				notify.setPhone(phone);
-				notify.setResidentialAddress(myAddress);
+				// notify.setResidentialAddress(myAddress);
 				notify.setStatus(curStatus);
 				acceptOrReject(notify);
 				account.setPhone(phone);
 				account.setHkidNumber(curHKID);
-				account.setResidentialAddress(myAddress);
+				// account.setResidentialAddress(myAddress);
 				TutorApplication.getAccountDao().insertOrReplace(account);
 				break;
 			case R.id.btn_reject:

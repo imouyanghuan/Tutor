@@ -37,9 +37,9 @@
     <string name="edit_personal_info">Edit Your Person Information</string>
     <string name="add_timeslot">Add Timeslot</string>
     <string name="eb_1">Secondary School</string>
-    <string name="eb_2">High School(DSC)</string>
-    <string name="eb_3">University</string>
-    <string name="eb_4">Bachelor</string>
+    <string name="eb_2">Higher Diploma/Associate Degree</string>
+    <string name="eb_3">Bachelor</string>
+    <string name="eb_4">Master or above</string>
     <string name="uploading_avatar">Uploading Avatar</string>
     <string name="set_pswd">Reset password</string>
     <string name="change_pswd">Change password</string>
@@ -56,13 +56,13 @@
     <!-- label -->
     <string name="label_role_student">Students/Parents</string>
     <string name="label_role_tutor">Tutors</string>
-    <string name="label_name">Name:</string>
+    <string name="label_name">Name: </string>
     <string name="label_avatar">Avatar:</string>
     <string name="label_hkid_number">HKID Number</string>
     <string name="label_phone">Phone Number</string>
     <string name="label_gender">Gender: </string>
     <string name="label_grade">Grade: </string>
-    <string name="label_birth">Date of Birth:</string>
+    <string name="label_birth">Date of Birth: </string>
     <string name="label_birthday">Birth:</string>
     <string name="label_address">Residential Address</string>
     <string name="label_address1">Address:</string>
@@ -171,8 +171,8 @@
     <string name="toast_login_im_fail">IM Service does not Started</string>
     <string name="toast_no_match_student">No match student</string>
     <string name="toast_no_match_tutor">No match tutor</string>
-    <string name="toast_not_select_cours">Please choice a Course at least</string>
-    <string name="toast_not_select_area">Please choice an Area at least</string>
+    <string name="toast_not_select_cours">Please choice a course at least</string>
+    <string name="toast_not_select_area">Please choice an area at least</string>
     <string name="toast_endtime_behind_starttime">Ending time must be behind the start time</string>
     <string name="toast_starttime_front_endtime">Starting Time must be in front of the end of time</string>
     <string name="toast_video_unplay">Video link or video format errors</string>
@@ -243,7 +243,7 @@
     <string name="label_see_other_comments">See Other Comments</string>
     <string name="label_your_comments">Your Comment:</string>
     <string name="toast_rating_success">Rating success</string>
-    <string name="label_other_comments">Other Comments</string>
+    <string name="label_other_comments">Comments</string>
     <string name="label_unknow_major">Unknow Major</string>
     <string name="label_unknow_grade">Unknow Grade</string>
     <string name="chatlist">Chat List</string>
@@ -287,7 +287,7 @@
     <string name="label_label_frequency_of_lessons">"Frequency Of Lessons : "</string>
     <string name="label_label_price_per_hour">"Price Per Hour : "</string>
     <string name="label_label_address">"Residential Address : "</string>
-    <string name="label_time">"Time : "</string>
+    <string name="label_time">"Invite Time : "</string>
     <string name="label_required_info">If you accept the invitation you need to fill in the following information</string>
     <string name="label_graduate_school">Graduate School: </string>
     <!-- 2015-11-02 -->
@@ -316,7 +316,7 @@
     <string name="btn_register_as_tuition_entre">Register As Tuition Center</string>
     <string name="label_phone_number">Tel Number:</string>
     <string name="hint_phone_number">Tel Number</string>
-    <string name="hint_phone">Phone:</string>
+    <string name="hint_phone">Phone: </string>
     <string name="label_email">Email:</string>
     <string name="hint_enter_tuition_center_address">Enter Tuition Center Address</string>
     <string name="label_edit_service_grade">Edit Service Grade</string>
@@ -351,5 +351,24 @@
     <string name="label_folllow">Attention Drawn: </string>
     <string name="label_rate">Rate</string>
     <string name="label_approved">Verified</string>
+    <string name="label_activity_title">2utor Intelligence Contest!</string>
+    <string name="label_activity_content">Are you smart enough to register as a tutor at 2utor? Let’s check it out!\nThis contest consists of 3 exciting games. Only the smart ones can win the prize. Let’s get started!</string>
+    <string name="label_identity_code">Identity code:%s</string>
+    <string name="label_activity_url">http://dev.oicomg.in:10012</string>
+    <string name="label_see_comment">View Comments</string>
+    <string name="label_search">Search</string>
+    <string name="label_send_verify_code">Send Verify Code</string>
+    <string name="hint_please_input_code">Verify Code</string>
+    <string name="label_resend_captcha">Resend(%s)</string>
+    <string name="label_852">+852</string>
+    <string name="label_86">+86</string>
+    <string name="label_44">+44</string>
+    <string name="label_1">+1</string>
+    <string name="toast_phone_number_is_empty">Please enter phone number</string>
+    <string name="toast_phone_number_invalid">Invalid phone number</string>
+    <string name="toast_internet_disconnect">Network disconnect</string>
+    <string name="toast_verify_code_is_empty">Please enter verify code</string>
+    <string name="toast_have_send_verify_code">Verify code send success</string>
+    <string name="label_is_verify">Verified</string>
 
 </resources>

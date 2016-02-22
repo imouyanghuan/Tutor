@@ -21,6 +21,10 @@ public class Account {
     private String imPswd;
     private String token;
     private String createdTime;
+    private String identityCode;
+    private String alertTitle;
+    private String alertContent;
+    private String alertLink;
 
     public Account() {
     }
@@ -29,7 +33,7 @@ public class Account {
         this.id = id;
     }
 
-    public Account(String id, Integer memberId, Integer role, Integer status, String email, String pswd, String phone, String hkidNumber, String residentialAddress, String facebookId, String imAccount, String imPswd, String token, String createdTime) {
+    public Account(String id, Integer memberId, Integer role, Integer status, String email, String pswd, String phone, String hkidNumber, String residentialAddress, String facebookId, String imAccount, String imPswd, String token, String createdTime, String identityCode, String alertTitle, String alertContent, String alertLink) {
         this.id = id;
         this.memberId = memberId;
         this.role = role;
@@ -44,6 +48,10 @@ public class Account {
         this.imPswd = imPswd;
         this.token = token;
         this.createdTime = createdTime;
+        this.identityCode = identityCode;
+        this.alertTitle = alertTitle;
+        this.alertContent = alertContent;
+        this.alertLink = alertLink;
     }
 
     /** Not-null value. */
@@ -158,6 +166,38 @@ public class Account {
 
     public void setCreatedTime(String createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public String getIdentityCode() {
+        return identityCode;
+    }
+
+    public void setIdentityCode(String identityCode) {
+        this.identityCode = identityCode;
+    }
+
+    public String getAlertTitle() {
+        return alertTitle;
+    }
+
+    public void setAlertTitle(String alertTitle) {
+        this.alertTitle = alertTitle;
+    }
+
+    public String getAlertContent() {
+        return alertContent;
+    }
+
+    public void setAlertContent(String alertContent) {
+        this.alertContent = alertContent;
+    }
+
+    public String getAlertLink() {
+        return alertLink;
+    }
+
+    public void setAlertLink(String alertLink) {
+        this.alertLink = alertLink;
     }
 
 }

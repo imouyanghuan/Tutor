@@ -15,13 +15,6 @@ public class CourseListAdapter extends TutorBaseAdapter<CourseItem2> {
 
 	@Override
 	protected void convert(ViewHolder holder, CourseItem2 courseItem, int position) {
-		String courseType = courseItem.getType();
-		if (courseType.contains("Primary")) {
-			courseType = "P.";
-		}
-		if (courseType.contains("Secondary")) {
-			courseType = "S.";
-		}
-		holder.setText(R.id.tv_item, " - " + courseType + "  " + courseItem.getSubType() + "  " + courseItem.getCourseName());
+		holder.setText(R.id.tv_item, courseItem.getCourseName());
 	}
 }

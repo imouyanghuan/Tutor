@@ -69,6 +69,7 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 	private int broadCastId = -1;
 	private TextView tvNickName;
 	private TextView tvIsCer, tvFollowCount;
+	private ArrayList<CourseItem2> courseItem2s = new ArrayList<CourseItem2>();
 
 	@Override
 	protected void onCreate(Bundle arg0) {
@@ -383,10 +384,13 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 				break;
 		}
 		if (userInfo.isMatched()) {
-			btnRateTutor.setEnabled(true);
+			btnRateTutor.setText(R.string.label_rete_tutor);
+			btnRateTutor.setTextSize(14);
 			btnToBeMyTutor.setEnabled(false);
 		} else {
-			btnRateTutor.setEnabled(false);
+			// 不是该老师的学生
+			btnRateTutor.setText(R.string.label_see_comment);
+			btnRateTutor.setTextSize(12);
 			btnToBeMyTutor.setEnabled(true);
 		}
 		String introductionString = userInfo.getIntroduction();
@@ -439,13 +443,35 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 		// 课程
 		ArrayList<Course> courses = userInfo.getCourses();
 		if (null != courses && courses.size() > 0) {
-			ArrayList<CourseItem2> courseItem2s = getCourseItem2(courses);
+			ArrayList<CourseItem2> tempCourseItem2s = getCourseItem2(courses);
+			if (tempCourseItem2s != null && tempCourseItem2s.size() > 0) {
+				courseItem2s.addAll(this.removeDuplicateData(tempCourseItem2s));
+			}
 			CourseListAdapter courseListAdapter = new CourseListAdapter(this, courseItem2s);
 			couresListView.setAdapter(courseListAdapter);
 		} else {
 			couresListView.setVisibility(View.GONE);
 			courseTip.setVisibility(View.VISIBLE);
 		}
+	}
+
+	/**
+	 * 去除重复课程名
+	 * 
+	 * @param data
+	 * @return
+	 */
+	private ArrayList<CourseItem2> removeDuplicateData(ArrayList<CourseItem2> data) {
+		// 上面写的那句是多余的，这个是最终的
+		for (int i = 0; i < data.size() - 1; i++) {
+			for (int j = i + 1; j < data.size(); j++) {
+				if ((data.get(i).getCourseName().trim()).equals((data.get(j).getCourseName().trim()))) {
+					data.remove(j);
+					j--;
+				}
+			}
+		}
+		return data;
 	}
 
 	private ArrayList<CourseItem2> getCourseItem2(ArrayList<Course> courses) {
@@ -488,9 +514,16 @@ public class TeacherInfoActivity extends BaseActivity implements OnClickListener
 				break;
 			// rate tutor
 			case R.id.btn_rate_tutor:
-				if (userInfo != null) {
+				if (userInfo == null)
+					return;
+				if (userInfo.isMatched()) {
 					Intent intent = new Intent(TeacherInfoActivity.this, RateTutorActivity.class);
 					intent.putExtra(Constants.IntentExtra.INTENT_EXTRA_USER_INFO, userInfo);
+					startActivity(intent);
+				} else {
+					Intent intent = new Intent(TeacherInfoActivity.this, RateCommentListActivity.class);
+					intent.putExtra(Constants.General.TUTOR_ID, userInfo.getId());
+					intent.putExtra("role", userInfo.getAccountType());
 					startActivity(intent);
 				}
 				break;

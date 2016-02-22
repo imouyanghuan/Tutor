@@ -62,7 +62,7 @@ public class TuitionCentreFragment extends BaseFragment implements OnRefreshList
 	// 頁碼,每頁大小
 	private int pageIndex = 0, pageSize = 5;
 	// 是否是搜索狀態
-//	private boolean isSearchStatus = false;
+	// private boolean isSearchStatus = false;
 	private SearchCondition condition = null;
 	private ImageButton ibDelete;
 
@@ -105,12 +105,12 @@ public class TuitionCentreFragment extends BaseFragment implements OnRefreshList
 		refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
 		pageIndex = 0;
 		getTuitionCenterList(pageIndex, pageSize);
-//		if (isSearchStatus) {
-//			// 加載搜索學生列表
-//		} else {
-//			// 加載匹配學生列表
-//			getTuitionCenterList(pageIndex, pageSize);
-//		}
+		// if (isSearchStatus) {
+		// // 加載搜索學生列表
+		// } else {
+		// // 加載匹配學生列表
+		// getTuitionCenterList(pageIndex, pageSize);
+		// }
 	}
 
 	/**
@@ -123,12 +123,12 @@ public class TuitionCentreFragment extends BaseFragment implements OnRefreshList
 			if (null != page && page.isHasNextPage()) {
 				pageIndex += 1;
 				getTuitionCenterList(pageIndex, pageSize);
-//				if (isSearchStatus) {
-//					// 加載搜索學生列表
-//				} else {
-//					// 加載匹配學生列表
-//					getTuitionCenterList(pageIndex, pageSize);
-//				}
+				// if (isSearchStatus) {
+				// // 加載搜索學生列表
+				// } else {
+				// // 加載匹配學生列表
+				// getTuitionCenterList(pageIndex, pageSize);
+				// }
 			} else {
 				new Handler().post(new Runnable() {
 
@@ -155,14 +155,7 @@ public class TuitionCentreFragment extends BaseFragment implements OnRefreshList
 	public void onClick(View v) {
 		switch (v.getId()) {
 			case R.id.fragment_find_student_btn:
-//				isSearchStatus = true;
-				// 獲取搜索的學生列表
-				pageIndex = 0;
-				if (!HttpHelper.isNetworkConnected(getActivity())) {
-					toast(R.string.toast_netwrok_disconnected);
-					return;
-				}
-				getTuitionCenterList(pageIndex, pageSize);
+				searchByCondition();
 				break;
 			// 添加条件搜索
 			case R.id.fragment_find_student_et:
@@ -181,6 +174,16 @@ public class TuitionCentreFragment extends BaseFragment implements OnRefreshList
 			default:
 				break;
 		}
+	}
+
+	private void searchByCondition() {
+		// 獲取搜索的學生列表
+		pageIndex = 0;
+		if (!HttpHelper.isNetworkConnected(getActivity())) {
+			toast(R.string.toast_netwrok_disconnected);
+			return;
+		}
+		getTuitionCenterList(pageIndex, pageSize);
 	}
 
 	@Override
@@ -223,6 +226,7 @@ public class TuitionCentreFragment extends BaseFragment implements OnRefreshList
 							ibDelete.setVisibility(View.GONE);
 						}
 					}
+					searchByCondition();
 				}
 				break;
 			default:

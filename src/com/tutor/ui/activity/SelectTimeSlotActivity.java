@@ -29,6 +29,8 @@ import com.tutor.model.Timeslot;
 import com.tutor.model.UserInfo;
 import com.tutor.params.ApiUrl;
 import com.tutor.params.Constants;
+import com.tutor.ui.dialog.ActivityDialog;
+import com.tutor.ui.dialog.ActivityDialog.OnOkClickListener;
 import com.tutor.ui.dialog.TimeSlotDialog;
 import com.tutor.ui.dialog.TimeSlotDialog.onTimeSelectedCallBack;
 import com.tutor.ui.dialog.WeekDialog;
@@ -66,10 +68,10 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 	private LinearLayout ebFrameLayout;
 	/** 教育背景 */
 	private int eb;
-
 	// 是否编辑开始时间
 	private boolean isStrat;
 	private Timeslot timeslot = null;
+
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -382,7 +384,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 		Intent finish = new Intent();
 		finish.setAction(Constants.Action.FINISH_LOGINACTIVITY);
 		sendBroadcast(finish);
-	} 
+	}
 
 	/**
 	 * 提信息任务
@@ -395,7 +397,7 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 		}
 		showDialogRes(R.string.loading);
 		String json = JsonUtil.parseObject2Str(profile);
-		LogUtils.d(json);
+		LogUtils.d("submitTutorProfile = " + json);
 		try {
 			StringEntity entity = new StringEntity(json, HTTP.UTF_8);
 			String url;
@@ -422,7 +424,24 @@ public class SelectTimeSlotActivity extends BaseActivity implements OnClickListe
 					dismissDialog();
 					if (null != result) {
 						if (200 == result.getStatusCode() && result.getResult()) {
-							go2Main();
+							if (!TextUtils.isEmpty(userInfo.getIdentityCode())) {
+								// 显示dialog
+								final ActivityDialog dialog = new ActivityDialog(SelectTimeSlotActivity.this);
+								dialog.setContextAndUserInfo(SelectTimeSlotActivity.this, userInfo);
+								dialog.setCancelable(false);
+								dialog.show();
+								dialog.setOnOkClickListener(new OnOkClickListener() {
+
+									@Override
+									public void onClickListener() {
+										dialog.dismiss();
+										go2Main();
+									}
+								});
+							} else {
+								// 直接进入主页
+								go2Main();
+							}
 						} else {
 							toast(result.getMessage());
 						}

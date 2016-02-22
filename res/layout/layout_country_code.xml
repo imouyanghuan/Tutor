@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/editview_bg_no_padding"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/btn_hk"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:background="@null"
+        android:gravity="center"
+        android:text="@string/label_852"
+        android:textColor="@color/black1"
+        android:textSize="@dimen/sp_12" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray" />
+
+    <Button
+        android:id="@+id/btn_cn"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:background="@null"
+        android:gravity="center"
+        android:text="@string/label_86"
+        android:textColor="@color/black1"
+        android:textSize="@dimen/sp_12" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray" />
+
+    <Button
+        android:id="@+id/btn_uk"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:background="@null"
+        android:gravity="center"
+        android:text="@string/label_44"
+        android:textColor="@color/black1"
+        android:textSize="@dimen/sp_12" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/gray" />
+
+    <Button
+        android:id="@+id/btn_usa"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_45"
+        android:background="@null"
+        android:gravity="center"
+        android:text="@string/label_1"
+        android:textColor="@color/black1"
+        android:textSize="@dimen/sp_12" />
+
+</LinearLayout>

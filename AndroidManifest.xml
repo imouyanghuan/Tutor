@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hk.tutor"
-    android:versionCode="9"
-    android:versionName="2.0" >
+    android:versionCode="10"
+    android:versionName="2.0.0" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -16,6 +16,9 @@
     <!-- Google Analytics required permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
 
     <!-- Required 自定义用来收发消息的相关权限 -->
     <permission
@@ -43,7 +46,12 @@
         android:icon="@drawable/icon"
         android:label="@string/tutor"
         android:theme="@style/AppTheme" >
-
+        <!-- 短信验证码 -->
+        <activity
+            android:name="com.mob.tools.MobUIShell"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <!-- 啟動頁 -->
         <activity
             android:name="com.tutor.ui.activity.WelcomeActivity"

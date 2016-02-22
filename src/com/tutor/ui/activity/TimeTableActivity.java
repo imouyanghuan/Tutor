@@ -12,8 +12,10 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import com.hk.tutor.R;
 import com.loopj.android.http.RequestParams;
@@ -38,7 +40,7 @@ import com.tutor.util.ObjectHttpResponseHandler;
  * @author jerry.yao
  * 
  */
-public class TimeTableActivity extends BaseActivity {
+public class TimeTableActivity extends BaseActivity implements OnClickListener {
 
 	// -----------------------------组件----------------------
 	private GridView mGridView;
@@ -55,6 +57,9 @@ public class TimeTableActivity extends BaseActivity {
 	private String currentDate = ""; // 当前日期
 	private ArrayList<TimeTable> timeTables = new ArrayList<TimeTable>();
 	private float downX;
+	private boolean isNextMonth = false;
+	private boolean isLastMonth = false;
+	private TextView tvDateTime;
 
 	/**
 	 * 构造函数: 获取系统的当前时间
@@ -151,11 +156,11 @@ public class TimeTableActivity extends BaseActivity {
 						mAdapter.setClanderData(0, 0, curYear, curMonth, curDay);
 						// mAdapter.getCalendar(curYear, curMonth);
 					}
-					if (TutorApplication.isCH()) {
-						titleBar.setTitle(getString(R.string.yyyy_mm).replace("YYYY", mAdapter.getShowYear()).replace("MM", mAdapter.getShowMonth()));
-					} else {
-						titleBar.setTitle(mAdapter.getShowYear() + " - " + mAdapter.getShowMonth());
-					}
+//					if (TutorApplication.isCH()) {
+//						titleBar.setTitle(getString(R.string.yyyy_mm).replace("YYYY", mAdapter.getShowYear()).replace("MM", mAdapter.getShowMonth()));
+//					} else {
+//						titleBar.setTitle(mAdapter.getShowYear() + " - " + mAdapter.getShowMonth());
+//					}
 				} else {
 					toast(t.getMessage());
 				}
@@ -164,17 +169,22 @@ public class TimeTableActivity extends BaseActivity {
 	}
 
 	public void initView() {
+		// 日历年月
+		tvDateTime = getView(R.id.tv_datetime);
+		// 上下翻页
+		getView(R.id.ib_previous).setOnClickListener(this);
+		getView(R.id.ib_next).setOnClickListener(this);
 		titleBar = getView(R.id.title_bar);
 		titleBar.initBack(this);
+		titleBar.setTitle(R.string.label_time_table);
 		mGridView = getView(R.id.clander_main_gridView);
 		// 初始化适配器
 		mAdapter = new GridViewAdapter(this, (dm.widthPixels - 7) / 7);
 		mAdapter.setClanderData(0, 0, curYear, curMonth, curDay);
-		// mAdapter.getCalendar(curYear, curMonth);
 		if (TutorApplication.isCH()) {
-			titleBar.setTitle(getString(R.string.yyyy_mm).replace("YYYY", mAdapter.getShowYear()).replace("MM", mAdapter.getShowMonth()));
+			tvDateTime.setText(getString(R.string.yyyy_mm).replace("YYYY", mAdapter.getShowYear()).replace("MM", mAdapter.getShowMonth()));
 		} else {
-			titleBar.setTitle(mAdapter.getShowYear() + " - " + mAdapter.getShowMonth());
+			tvDateTime.setText(mAdapter.getShowYear() + " - " + mAdapter.getShowMonth());
 		}
 		mGridView.setAdapter(mAdapter);
 		mAdapter.setOnTimeTableClickListener(new OnTimeTableClickListener() {
@@ -206,19 +216,19 @@ public class TimeTableActivity extends BaseActivity {
 		}
 	}
 
-	// 刷新title
+	// 刷新日历时间
 	private void setTextCurrentYM() {
 		if (TutorApplication.isCH()) {
-			titleBar.setTitle(getString(R.string.yyyy_mm).replace("YYYY", mAdapter.getShowYear()).replace("MM", mAdapter.getShowMonth()));
+			tvDateTime.setText(getString(R.string.yyyy_mm).replace("YYYY", mAdapter.getShowYear()).replace("MM", mAdapter.getShowMonth()));
 		} else {
-			titleBar.setTitle(mAdapter.getShowYear() + " - " + mAdapter.getShowMonth());
+			tvDateTime.setText(mAdapter.getShowYear() + " - " + mAdapter.getShowMonth());
 		}
 	}
 
 	/**
 	 * 上一月
 	 */
-	private void lastMonth() {
+	private void previousMonth() {
 		jumpMonth--;
 		mAdapter.setClanderData(jumpMonth, jumpYear, curYear, curMonth, curDay);
 		mAdapter.upData();
@@ -237,10 +247,7 @@ public class TimeTableActivity extends BaseActivity {
 		getActivities();
 	}
 
-	boolean isNextMonth = false;
-	boolean isLastMonth = false;
-
-	@Override
+/*	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
@@ -264,10 +271,22 @@ public class TimeTableActivity extends BaseActivity {
 				if (isNextMonth) {
 					nextMonth();
 				} else if (isLastMonth) {
-					lastMonth();
+					previousMonth();
 				}
 				break;
 		}
 		return true;
+	}*/
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+			case R.id.ib_previous:
+				previousMonth();
+				break;
+			case R.id.ib_next:
+				nextMonth();
+				break;
+		}
 	}
 }

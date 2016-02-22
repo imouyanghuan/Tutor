@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/default_bg_color"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tv_activity_title"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="@dimen/dp_5"
+        android:singleLine="true"
+        android:text="@string/label_activity_title"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="@dimen/sp_20" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginBottom="@dimen/dp_2"
+        android:background="@color/gray" />
+
+    <com.tutor.ui.view.OverScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tv_activity_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_8"
+                android:text="@string/label_activity_content"
+                android:textColor="@color/black_2"
+                android:textSize="@dimen/sp_16" />
+
+            <TextView
+                android:id="@+id/tv_activity_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/dp_8"
+                android:text="@string/label_identity_code"
+                android:textColor="@color/black_2"
+                android:textSize="@dimen/sp_16" />
+
+            <Button
+                android:id="@+id/btn_activity_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="center"
+                android:padding="@dimen/dp_8"
+                android:text="@string/label_activity_url"
+                android:textColor="@color/black_2"
+                android:textSize="@dimen/sp_16" />
+        </LinearLayout>
+    </com.tutor.ui.view.OverScrollView>
+
+    <Button
+        android:id="@+id/btn_ok"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/dp_2"
+        android:background="@drawable/selector_blue_btn_no_corner"
+        android:text="@string/ok"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_20" />
+
+</LinearLayout>
